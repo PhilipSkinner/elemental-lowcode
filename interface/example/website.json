@@ -1,0 +1,9 @@
+{
+	"name" : "website",
+	"routes" : {
+		"/" : {
+			"controller" : "./example/controllers/home.js",
+			"view" : "./example/view/home.json"
+		}
+	}
+}

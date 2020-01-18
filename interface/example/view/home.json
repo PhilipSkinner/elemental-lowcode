@@ -1,0 +1,32 @@
+{
+	"tag" : "html",
+	"children" : [
+		{
+			"tag" : "head",
+			"children" : [
+				{
+					"tag" : "title",
+					"text" : "My website"
+				},
+				{
+					"tag" : "style",
+					"text" : ".hello { color : red }"
+				}
+			]
+		},		
+		{
+			"tag" : "body",
+			"children" : [
+				{
+					"tag" : "h1",
+					"text" : "Welcome!",
+					"class" : [
+						"hello",
+						"world"
+					],
+					"onclick" : "headerClick"					
+				}
+			]
+		}
+	]
+}
