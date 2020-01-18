@@ -1,0 +1,10 @@
+{
+	"name": "integration",
+	"version": "0.0.1",
+	"dependencies": {
+		"ajv": "^6.11.0",
+		"express": "^4.17.1",
+		"glob": "^7.1.6",
+		"request": "^2.88.0"
+	}
+}
