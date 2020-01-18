@@ -7,7 +7,8 @@ const websiteInstance = function(app, definition, controllerInstance) {
 websiteInstance.prototype.configureRoute = function(route) {
 	let instance = this.controllerInstance(this.definition.routes[route]);	
 
-	this.app.get(route, instance.handler.bind(instance));
+	console.log(`Hosting ${route} on ${this.definition.name} - /${this.definition.name}${route}`);
+	this.app.get(`/${this.definition.name}${route}`, instance.handler.bind(instance));
 };
 
 websiteInstance.prototype.init = function() {

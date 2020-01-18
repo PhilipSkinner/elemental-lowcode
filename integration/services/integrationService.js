@@ -21,6 +21,7 @@ integrationService.prototype.init = function(dir) {
 			this.constructInstance(integrationName, config[integrationName]);
 		});
 
+		console.log("Discovery endpoint hosted");
 		//and add our discovery endpoint
 		this.app.get('/', (req, res, next) => {
 			res.json({

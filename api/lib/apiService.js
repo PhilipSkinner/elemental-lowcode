@@ -1,7 +1,9 @@
-const apiService = function(app, definitionProvider, apiInstance) {
+const apiService = function(app, definitionProvider, apiInstance, glob, path) {
 	this.app = app;
 	this.definitionProvider = definitionProvider;
 	this.apiInstance = apiInstance;
+	this.glob = glob;
+	this.path = path;
 };
 
 apiService.prototype.compileDefinition = function(definitionFile) {
@@ -15,23 +17,37 @@ apiService.prototype.compileDefinition = function(definitionFile) {
 	});
 };
 
-apiService.prototype.init = function(definitions) {
-	const doNext = () => {
-		if (definitions.length === 0) {
-			return Promise.resolve();
+apiService.prototype.findApiDefinitions = function(dir) {
+	return new Promise((resolve, reject) => {		
+		this.glob(this.path.join(process.cwd(), dir, '**/*.api.json'), (err, definitions) => {
+			if (err) {
+				return reject(err);
+			}
+
+			return resolve(definitions);
+		});
+	});
+};
+
+apiService.prototype.init = function(dir) {
+	return this.findApiDefinitions(dir).then((definitions) => {
+		const doNext = () => {
+			if (definitions.length === 0) {
+				return Promise.resolve();
+			}
+
+			const definition = definitions.pop();
+
+			return this.compileDefinition(definition).then(() => {
+				return doNext();
+			});
 		}
 
-		const definition = definitions.pop();
+		return doNext();
+	});	
+};
 
-		return this.compileDefinition(definition).then(() => {
-			return doNext();
-		});
-	}
-
-	return doNext();
-}
-
-module.exports = function(app, definitionProvider, apiInstance) {
+module.exports = function(app, definitionProvider, apiInstance, glob, path) {
 	if (!definitionProvider) {
 		definitionProvider = require('./definitionProvider')();
 	}
@@ -41,5 +57,13 @@ module.exports = function(app, definitionProvider, apiInstance) {
 		apiInstance = require('./apiInstance');
 	}
 
-	return new apiService(app, definitionProvider, apiInstance);
-}
+	if (!glob) {
+		glob = require('glob');
+	}
+
+	if (!path) {
+		path = require('path');
+	}
+
+	return new apiService(app, definitionProvider, apiInstance, glob, path);
+};

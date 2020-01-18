@@ -6,7 +6,7 @@ const configReader = function(fs, path, glob) {
 
 configReader.prototype._findConfigInDir = function(dir) {
 	return new Promise((resolve, reject) => {
-		this.glob(this.path.join(dir, '**/*.json'), (err, files) => {
+		this.glob(this.path.join(process.cwd(), dir, '**/*.json'), (err, files) => {
 			if (err) {
 				return reject(err);
 			}

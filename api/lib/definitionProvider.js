@@ -36,7 +36,7 @@ definitionProvider.prototype._readServices = function(config) {
 		//attempt to read in the source
 		return new Promise((resolve, reject) => {
 			try {
-				config.services[next]._code = require(this.path.join(process.cwd(), config.services[next].source));
+				config.services[next]._code = require(this.path.join(process.cwd(), process.env.DIR, config.services[next].source));
 			} catch(e) {
 				return reject(e);
 			}
@@ -59,7 +59,7 @@ definitionProvider.prototype._readControllers = function(config) {
 
 		return new Promise((resolve, reject) => {
 			try {
-				config.controllers[next] = require(this.path.join(process.cwd(), config.controllers[next]));
+				config.controllers[next] = require(this.path.join(process.cwd(), process.env.DIR, config.controllers[next]));
 			} catch(e) {
 				return reject(e);
 			}
