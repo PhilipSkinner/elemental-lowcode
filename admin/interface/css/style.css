@@ -5460,12 +5460,12 @@ a.close.disabled {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1050;
-  display: none;
+  z-index: 1050;  
   width: 100%;
   height: 100%;
   overflow: hidden;
   outline: 0;
+  background: rgba(255,255,255,0.25);
 }
 
 .modal-dialog {
@@ -10995,4 +10995,42 @@ footer.sticky-footer .copyright {
 
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
+}
+
+/*
+ * custom styles here
+ */
+
+.editorWindow {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+}
+
+#content {
+  position: relative;
+}
+
+.actionButtons {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.actionButtons button, .actionButtons a {
+  padding: 20px;
+  border-radius: 100%;
+}
+
+.alert {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  width: 200px;
+  margin-left: -100px;
+  z-index: 45000;
+  text-align: center;
+  font-size: 11px;
 }

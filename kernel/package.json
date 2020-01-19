@@ -2,6 +2,7 @@
 	"name": "kernel",
 	"version": "0.0.1",
 	"dependencies": {
+		"body-parser": "^1.19.0",
 		"cors": "^2.8.5",
 		"express": "^4.17.1",
 		"glob": "^7.1.6"

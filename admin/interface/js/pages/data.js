@@ -21,11 +21,13 @@ _dataController.prototype.fetchTypes = function(caller) {
 };
 
 const Data = { 
-	template : '<p><table><tr><th>Type</th></tr><tr v-for="item in dataTypes"><td>{{item.name}}</td></tr></table></p>',
+	template : '#template-dataTypes',
 	data 	 : () => {
 		return _dataControllerInstance.getData();
 	},
 	mounted  : function() {
+		console.log("mounting it");
+
 		return _dataControllerInstance.fetchTypes(this);		
 	}
 };
