@@ -1,9 +1,15 @@
 const serviceRunner = function(childProcess) {
 	this.childProcess = childProcess;
+
+	this.nodeProcess = 'node';
+
+	if (process.platform === "win32") {
+		this.nodeProcess = 'node.exe';
+	}
 };
 
 serviceRunner.prototype.runService = function(name, script, port, dir) {	
-	const proc = this.childProcess.spawn('node.exe', [
+	const proc = this.childProcess.spawn(this.nodeProcess, [
 		script
 	], {
 		cwd 	: process.cwd(),

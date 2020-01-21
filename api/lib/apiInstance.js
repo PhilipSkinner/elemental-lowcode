@@ -100,14 +100,13 @@ apiInstance.prototype.resolveSingletons = function() {
 };
 
 apiInstance.prototype._getRequires = function(fnString) {	
-	var regex = /\((.*?)\).?=>/;
+	var regex = /^\((.*?)\).?=>/;
 
 	if (fnString.indexOf('function') === 0) {
-		regex = /function\s+\w*\s*\((.*?)\)/;
+		regex = /^function.*?\((.*?)\)/;
 	}
 
 	return fnString
-		.replace(/\n/g, ' ')
 		.match(regex)[ 1 ].split( /\s*,\s*/ )
 		.map( function( parameterName ) { return parameterName.trim(); } )
 		.filter( function( parameterName ) { return parameterName.length > 0; } );		
