@@ -32,6 +32,40 @@
 	</div>
 </template>
 
+<template id="template-integrations">	
+	<div class="integrations">
+		<table>
+			<tr>
+				<th>Name</th>
+			</tr>
+			<tr v-for="item in integrations">
+				<td>
+					<router-link :to="{ name : 'integrationDetails', params : { name : item.name } }">{{item.name}}</router-link>
+				</td>
+			</tr>
+		</table>	
+		<div class="actionButtons">
+			<router-link to="/integrations/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>		
+		</div>
+	</div>	
+</template>
+
+<template id="template-integrationsEditor">
+	<div class="integrationsEditor">	
+		<div class="entityWrapper">			
+			<div id="integrationEditor" class="editorWindow"></div>		
+		</div>	
+		<div class="actionButtons">
+			<router-link to="/integrations" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_integrationsEditorInstance.saveIntegration();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+			{{error.description}}
+		</modal-error>
+		<alert text="Integration type saved!" v-bind:visible="showAlert"></alert>
+	</div>
+</template>
+
 <template id="template-alert">	
 	<div class="alert card" v-if="visible">
 		{{text}}
