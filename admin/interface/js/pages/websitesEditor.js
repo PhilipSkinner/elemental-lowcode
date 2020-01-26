@@ -19,6 +19,7 @@ _websitesEditorController.prototype.getData = function() {
 		mainVisible 			: this.mainVisible,
 		viewEditorVisible 		: this.viewEditorVisible,
 		controllerEditorVisible : this.controllerEditorVisible,
+		showAlert 				: false,
 	};
 };
 
@@ -85,7 +86,7 @@ _websitesEditorController.prototype.saveAll = function() {
 			return this.saveResource(k, this.resources[k]);
 		}));
 	}).then(() => {
-		console.log("All saved!");
+		this.showSaveMessage();
 	});
 };
 
@@ -204,6 +205,16 @@ _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 			this.tags = response.data.tags || [];
 			this.refreshState();
 		});
+};
+
+_websitesEditorController.prototype.showSaveMessage = function() {
+	this.caller.showAlert = true;
+	this.caller.$forceUpdate();
+
+	setTimeout(() => {
+		this.caller.showAlert = false;
+		this.caller.$forceUpdate();
+	}, 1500);
 };
 
 _websitesEditorController.prototype.newRoute = function() {

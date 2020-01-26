@@ -3,14 +3,14 @@ const _integrationsEditorController = function(page) {
 	this.integrations = {};
 	this.caller = null;
 	this.name = null;
-	this.editor = null;	
+	this.editor = null;
 	this.data = {
 		integration 	: this.integration,
 		showAlert 		: false,
 		error 	 		: {
 			visible 	: false
 		}
-	};	
+	};
 };
 
 _integrationsEditorController.prototype.initEditor = function() {
@@ -22,11 +22,11 @@ _integrationsEditorController.prototype.initEditor = function() {
 	this.editor.commands.addCommand({
 		name : 'save',
 		bindKey : {
-			win: "Ctrl-S", 
+			win: "Ctrl-S",
 			mac: "Cmd-S"
 		},
 		exec : () => {
-			this.saveType();
+			this.saveIntegration();
 		}
 	});
 	this.editor.setTheme('ace/theme/twilight');
@@ -77,26 +77,26 @@ _integrationsEditorController.prototype.initBlankType = function() {
 	        }
 	    },
 	    "transformer": "(input) => { return input; }"
-	}, null, 4));	
+	}, null, 4));
 };
 
 _integrationsEditorController.prototype.setCaller = function(caller) {
 	this.caller = caller;
 }
 
-_integrationsEditorController.prototype.getData = function() {	
-	return this.data;		
+_integrationsEditorController.prototype.getData = function() {
+	return this.data;
 };
 
 _integrationsEditorController.prototype.fetchType = function(name) {
 	this.name = name;
 	return axios
 		.get('http://localhost:8001/integrations/' + name)
-		.then((response) => {			
+		.then((response) => {
 			this.integration = response.data;
 			this.caller.integration = response.data;
 			this.caller.$forceUpdate();
-			
+
 			this.editor.setValue(JSON.stringify(response.data, null, 4));
 		});
 };
@@ -107,7 +107,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 	if (this.name) {
 		return axios
 			.put('http://localhost:8001/integrations/' + this.name, this.editor.getValue(), {headers: {"Content-Type": "application/json"}})
-			.then((response) => {				
+			.then((response) => {
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
 
@@ -117,21 +117,21 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 				}, 1500);
 			}).catch((err) => {
 				console.log(err);
-				this.data.error.visible = true;			
+				this.data.error.visible = true;
 				this.data.error.title = "Error saving integration";
 				this.data.error.description = err.toString();
 
-				this.caller.error = this.getData().error;				
+				this.caller.error = this.getData().error;
 				this.caller.$forceUpdate();
 			});
-	} else {		
-		return axios			
+	} else {
+		return axios
 			.post('http://localhost:8001/integrations', this.editor.getValue(), {headers: {"Content-Type": "application/json"}})
 			.then((response) => {
 				//set our name
 				this.name = parsed.name;
 				console.log(parsed.name, location.path);
-				location.href = "/#/integrations/" + this.name;
+				location.href = "/#/integrations/editor/" + this.name;
 
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
@@ -142,18 +142,18 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 				}, 1500);
 			}).catch((err) => {
 				console.log(err);
-				this.data.error.visible = true;			
+				this.data.error.visible = true;
 				this.data.error.title = "Error saving integration";
 				this.data.error.description = err.toString();
 
-				this.caller.error = this.getData().error;				
+				this.caller.error = this.getData().error;
 				this.caller.$forceUpdate();
 			});
 	}
-	
+
 };
 
-const IntegrationsEditor = { 
+const IntegrationsEditor = {
 	template : '#template-integrationsEditor',
 	data 	 : () => {
 		return _integrationsEditorInstance.getData();

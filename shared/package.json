@@ -1,0 +1,7 @@
+{
+	"name": "shared",
+	"version": "0.0.1",
+	"dependencies": {
+		"chokidar": "^3.3.1"
+	}
+}

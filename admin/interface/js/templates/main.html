@@ -55,6 +55,7 @@
 
 <template id="template-websiteEditor">
 	<div class="websiteEditor">
+		<alert text="Website saved!" v-bind:visible="showAlert"></alert>
 		<div class="container-fluid" v-if="viewEditorVisible">
 			<div class="editorWrapper">
 				<div id="viewEditor" class="editorWindow"></div>

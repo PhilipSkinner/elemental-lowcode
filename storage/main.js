@@ -1,21 +1,44 @@
 const
 	express 		= require('express'),
 	cors 			= require('cors'),
-	bodyParser 		= require('body-parser');
+	bodyParser 		= require('body-parser'),
+	hotreload 		= require('../shared/hotReload')();
 
-const app = express();
-const backingStore = require('./lib/stores/fsStore')();
-const storageEngine = require('./lib/storageEngine')(backingStore, app);
+let app = null;
+let server = null;
+let restarting = false;
 
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended : false }));
-app.use((res, req, next) => {
-	console.log("Request on", res.path);
-	next();
-});
+const startup = () => {
+	app = express();
 
-storageEngine.init(process.env.DIR).then(() => {
-	app.listen(process.env.PORT);
-});
+	const backingStore = require('./lib/stores/fsStore')();
+	const storageEngine = require('./lib/storageEngine')(backingStore, app);
 
+	app.use(cors());
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended : false }));
+	app.use((res, req, next) => {
+		console.log("Request on", res.path);
+		next();
+	});
+
+	storageEngine.init(process.env.DIR).then(() => {
+		console.log("Hotreload complete");
+		server = app.listen(process.env.PORT);
+		restarting = false;
+	});
+}
+
+const reload = () => {
+	if (!restarting) {
+		restarting = true;
+		if (server) {
+			console.log("Closing...");
+			server.close(startup);
+		} else {
+			startup();
+		}
+	}
+};
+
+hotreload.watch(process.env.DIR, reload);
