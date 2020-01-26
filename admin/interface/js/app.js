@@ -6,6 +6,7 @@ templates.fetchTemplates().then(() => {
 		'/js/pages/integrations.js',
 		'/js/pages/integrationsEditor.js',
 		'/js/pages/websites.js',
+		'/js/pages/websitesEditor.js',
 	];
 
 	const loadPage = (file) => {
@@ -75,6 +76,11 @@ templates.fetchTemplates().then(() => {
 			{
 				path 		: '/websites',
 				component 	: Websites
+			},
+			{
+				name		: 'websiteEditor',
+				path 		: '/websites/:name',
+				component 	: WebsiteEditor
 			}
 		];
 

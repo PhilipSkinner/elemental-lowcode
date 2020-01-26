@@ -12,6 +12,7 @@ const app = express();
 //middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended : false }));
 
 //init our controllers
 dataController(app);
