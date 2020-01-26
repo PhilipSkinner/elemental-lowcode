@@ -22,6 +22,18 @@ fileLister.prototype.executeGlob = function(lookup) {
 	});
 };
 
+fileLister.prototype.readFile = function(dir, file) {
+	return new Promise((resolve, reject) => {
+		this.fs.readFile(this.path.join(dir, file), (err, content) => {
+			if (err) {
+				return reject(err);				
+			}
+		
+			return resolve(content.toString('utf8'));
+		});
+	});
+};
+
 fileLister.prototype.readJSONFile = function(dir, file) {
 	return new Promise((resolve, reject) => {
 		this.fs.readFile(this.path.join(dir, file), (err, content) => {
