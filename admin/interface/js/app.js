@@ -1,6 +1,7 @@
 templates.fetchTemplates().then(() => {
 	const pages = [
 		'/js/pages/data.js',
+		'/js/pages/dataTypeDetails.js',
 		'/js/pages/dataTypeEditor.js',
 		'/js/pages/integrations.js',
 		'/js/pages/integrationsEditor.js'
@@ -15,7 +16,7 @@ templates.fetchTemplates().then(() => {
 				resolve();
 			};
 			document.body.appendChild(elem);
-		});		
+		});
 	};
 
 	//load our pages
@@ -41,16 +42,16 @@ templates.fetchTemplates().then(() => {
 
 		const routes = [
 			{
-				path 		: '/', 
+				path 		: '/',
 				component 	: Home
 			},
 			{
-				path 		: '/integrations', 
+				path 		: '/integrations',
 				component 	: Integrations
 			},
 			{
-				name 		: 'integrationDetails',
-				path 		: '/integrations/:name', 
+				name 		: 'integrationEditor',
+				path 		: '/integrations/editor/:name',
 				component 	: IntegrationsEditor
 			},
 			{
@@ -62,15 +63,20 @@ templates.fetchTemplates().then(() => {
 				component 	: Data
 			},
 			{
-				name 		: 'dataTypeDetails',
-				path 		: '/data/:type',
+				name 		: 'dataTypeEditor',
+				path 		: '/data/editor/:type',
 				component 	: DataTypeEditor
+			},
+			{
+				name 		: 'dataTypeDetails',
+				path 		: '/data/details/:type',
+				component 	: DataTypeDetails,
 			},
 			{
 				path 		: '/websites',
 				component 	: Websites
 			}
-		];		
+		];
 
 		Vue.component('modal-error', {
 			template : '#template-modal-error',
@@ -85,15 +91,15 @@ templates.fetchTemplates().then(() => {
 			props : [
 				'text',
 				'visible'
-			]			
+			]
 		});
 
 		const router = new VueRouter({
-			routes : routes,			
-		});		
+			routes : routes,
+		});
 
 		const app = new Vue({
 			router
-		}).$mount('#app');	
+		}).$mount('#app');
 	});
 });

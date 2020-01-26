@@ -1,4 +1,4 @@
-const fsStore = function(dir, fs, path) {	
+const fsStore = function(dir, fs, path) {
 	this.dir 	= dir;
 	this.fs 	= fs;
 	this.path 	= path;
@@ -25,6 +25,22 @@ fsStore.prototype.ensureDir = function(dir) {
 fsStore.prototype.initType = function(type) {
 	return this.ensureDir(this.dir).then(() => {
 		return this.ensureDir(this.path.join(this.dir, type))
+	});
+};
+
+fsStore.prototype.getDetails = function(type) {
+	return this.initType(type).then(() => {
+		return new Promise((resolve, reject) => {
+			this.fs.readdir(this.path.join(this.dir, type), (err, dir) => {
+				if (err) {
+					return reject(err);
+				}
+
+				return resolve({
+					count : dir.length
+				});
+			});
+		});
 	});
 };
 
@@ -67,13 +83,13 @@ fsStore.prototype.getResource = function(type, id) {
 				let object = JSON.parse(content.toString('utf8'));
 				object._id = id;
 				return resolve(object);
-			});	
-		});		
+			});
+		});
 	});
 };
 
 fsStore.prototype.createResource = function(type, id, data) {
-	return this.getResource(type, id).then((resource) => {	
+	return this.getResource(type, id).then((resource) => {
 		if (resource) {
 			return Promise.reject(new Error('Resource already exists'));
 		}
@@ -90,8 +106,8 @@ fsStore.prototype.createResource = function(type, id, data) {
 	});
 };
 
-fsStore.prototype.updateResource = function(type, id, data) {	
-	return this.getResource(type, id).then((resource) => {	
+fsStore.prototype.updateResource = function(type, id, data) {
+	return this.getResource(type, id).then((resource) => {
 		if (!resource) {
 			return Promise.reject(new Error('Resource does not exist'));
 		}
@@ -109,7 +125,7 @@ fsStore.prototype.updateResource = function(type, id, data) {
 };
 
 fsStore.prototype.deleteResource = function(type, id) {
-	return this.getResource(type, id).then((resource) => {	
+	return this.getResource(type, id).then((resource) => {
 		if (!resource) {
 			return Promise.reject(new Error('Resource does not exist'));
 		}
@@ -126,7 +142,7 @@ fsStore.prototype.deleteResource = function(type, id) {
 	});
 };
 
-module.exports = function(dir, fs, path) {	
+module.exports = function(dir, fs, path) {
 	if (!path) {
 		path = require('path');
 	}
