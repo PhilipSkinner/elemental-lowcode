@@ -7,7 +7,7 @@ const controllerInstance = function(routeDefinition, path, templateRenderer, fs)
 
 controllerInstance.prototype.loadView = function() {
 	return new Promise((resolve, reject) => {
-		this.fs.readFile(this.path.join(process.cwd(), this.routeDefinition.view), (err, content) => {
+		this.fs.readFile(this.path.join(process.env.DIR, this.routeDefinition.view), (err, content) => {
 			if (err) {
 				return reject(err);
 			}
@@ -28,10 +28,10 @@ controllerInstance.prototype.loadView = function() {
 
 controllerInstance.prototype.handler = function(req, res, next) {
 	//load the view
-	this.loadView().then((view) => {		
+	this.loadView().then((view) => {
 		return this.templateRenderer.renderView(view);
 	}).then((html) => {
-		res.send(html);	
+		res.send(html);
 		next();
 	}).catch((err) => {
 		res.send(err.toString());

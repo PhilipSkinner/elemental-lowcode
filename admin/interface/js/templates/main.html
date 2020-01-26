@@ -1,3 +1,58 @@
+<template id="template-websites">
+	<div class="websites">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">Websites</h1>
+			<p class="mb-4">Websites allow you to provide interactive interfaces to your users. To create a new website press the plus button in the bottom right.</p>
+
+			<!-- DataTales Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Current Websites</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-for="item in websites">
+									<td>
+										<router-link :to="{ name : 'websiteDetails', params : { type : item.name } }">{{item.name}}</router-link>
+									</td>
+									<td>
+										<a class="btn btn-sm btn-success" :href="item.url" target="_blank">
+											View
+										</a>
+										<router-link class="btn btn-sm btn-primary" :to="{ name : 'websiteEditor', params : { type : item.name } }">Modify</router-link>
+										<router-link class="btn btn-sm btn-danger" :to="{ name : 'websiteRemove', params : { type : item.name } }">Remove</router-link>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="actionButtons">
+			<router-link to="/websites/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+		</div>
+	</div>
+</template>
+
 <template id="template-dataTypes">
 	<div class="dataTypes">
 		<!-- Begin Page Content -->

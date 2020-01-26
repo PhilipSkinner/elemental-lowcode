@@ -1,10 +1,11 @@
-const 
+const
 	express 				= require('express'),
 	cors 					= require('cors'),
 	bodyParser 				= require('body-parser'),
 	serviceRunner 			= require('./lib/serviceRunner')(),
 	integrationsController 	= require('./controllers/integrationsController'),
-	dataController 			= require('./controllers/dataController');
+	dataController 			= require('./controllers/dataController'),
+	websitesController 		= require('./controllers/websitesController');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 //init our controllers
 dataController(app);
 integrationsController(app);
+websitesController(app);
 
 app.listen(8001);
 

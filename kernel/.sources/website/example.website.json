@@ -2,8 +2,8 @@
 	"name" : "example",
 	"routes" : {
 		"/" : {
-			"controller" : "./example/controllers/home.js",
-			"view" : "./example/view/home.json"
+			"controller" : "./controllers/home.js",
+			"view" : "./view/home.json"
 		}
 	}
 }

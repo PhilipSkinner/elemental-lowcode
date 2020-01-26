@@ -4,7 +4,8 @@ templates.fetchTemplates().then(() => {
 		'/js/pages/dataTypeDetails.js',
 		'/js/pages/dataTypeEditor.js',
 		'/js/pages/integrations.js',
-		'/js/pages/integrationsEditor.js'
+		'/js/pages/integrationsEditor.js',
+		'/js/pages/websites.js',
 	];
 
 	const loadPage = (file) => {
@@ -38,7 +39,6 @@ templates.fetchTemplates().then(() => {
 		console.log("pages loaded");
 		const Home = { template : '<p>Home</p>'};
 		const Apis = { template : '<p>APIs</p>' };
-		const Websites = { template : '<p>Websites</p>' };
 
 		const routes = [
 			{
