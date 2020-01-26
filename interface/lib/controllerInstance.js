@@ -34,18 +34,15 @@ controllerInstance.prototype.handler = function(req, res, next) {
 		res.send(html);
 		next();
 	}).catch((err) => {
+		console.error(err);
 		res.send(err.toString());
 		next();
 	});
 };
 
-module.exports = function(routeDefinition, path, templateRenderer, fs) {
+module.exports = function(routeDefinition, templateRenderer, path, fs) {
 	if (!path) {
 		path = require('path');
-	}
-
-	if (!templateRenderer) {
-		templateRenderer = require('./templating/render')();
 	}
 
 	if (!fs) {
