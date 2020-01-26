@@ -58,7 +58,7 @@ module.exports = function(app, fileLister, storageService) {
 	}
 
 	if (!storageService) {
-		storageService = require('../lib/storageService')();
+		storageService = require('../../shared/storageService')();
 	}
 
 	return new dataController(app, fileLister, storageService);
