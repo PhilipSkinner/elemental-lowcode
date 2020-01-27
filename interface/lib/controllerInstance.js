@@ -36,6 +36,13 @@ controllerInstance.prototype.handler = function(req, res, next) {
 
 	//ensure our state engine triggers on load
 	stateEngine.triggerEvent('load', req).then(() => {
+		//do we have an event to trigger?
+		if (req.query.event) {
+			return stateEngine.triggerEvent(req.query.event);
+		}
+
+		return Promise.resolve();
+	}).then(() => {
 		//load the view
 		this.loadView().then((view) => {
 			return this.templateRenderer.renderView(view, stateEngine.getBag());

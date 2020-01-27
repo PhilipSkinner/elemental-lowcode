@@ -7,13 +7,47 @@ const render = function(fs, path) {
 		'tag',
 		'onclick',
 		'children',
-		'repeat'
+		'repeat',
+		'submit',
+		'bind'
 	];
 	this.customTags = {};
 };
 
-render.prototype.resolveValue = function(path, bag) {
-	let current = bag;
+render.prototype.submitHandler = function(eventProps, toWrap) {
+	return `${toWrap} method="POST" action="" `;
+};
+
+render.prototype.clickHandler = function(eventProps, toWrap) {
+	return `<!-- @clickHandler --><a href="?event=${eventProps.eventName}">${toWrap}`;
+};
+
+render.prototype.endClickHandler = function(val) {
+	if (val.indexOf('<!-- @clickHandler -->') === 0) {
+		return `${val}</a><!-- /@clickHandler -->`;
+	}
+
+	return val;
+}
+
+render.prototype.flattenBag = function(bag) {
+	if (bag.bag) {
+		return bag.bag;
+	}
+
+	return bag;
+};
+
+render.prototype.generateData = function(objects) {
+	var ret = {};
+	objects.forEach((o) => {
+		ret = Object.assign(ret, o);
+	});
+	return ret;
+};
+
+render.prototype.resolveValue = function(path, data) {
+	let current = data;
 	let parts = path.split('.');
 	parts.forEach((p) => {
 		if (current) {
@@ -28,12 +62,12 @@ render.prototype.resolveValue = function(path, bag) {
 	return current;
 };
 
-render.prototype.handleVariables = function(string, bag) {
-	if (!string || string.indexOf('$') === -1) {
+render.prototype.handleVariables = function(string, data) {
+	if (!string || string.indexOf('$.') === -1) {
 		return string;
 	}
 
-	const regex = /\$([\w\.]+)/gm;
+	const regex = /\$\.([\w\.]+)/gm;
 	let m;
 
 	let replacements = [];
@@ -46,19 +80,23 @@ render.prototype.handleVariables = function(string, bag) {
 
 	    // The result can be accessed through the `m`-variable.
 	    m.forEach((match, groupIndex) => {
-	    	var rep = this.resolveValue(match, bag);
+	    	var rep = this.resolveValue(match, data);
 
 	    	if (rep) {
 	        	replacements.push({
 	        		val : match,
-	        		rep : this.resolveValue(match, bag)
+	        		rep : this.resolveValue(match, data)
 	        	});
 	    	}
 	    });
 	}
 
 	replacements.forEach((r) => {
-		string = string.replace('$' + r.val, r.rep);
+		if (typeof(r.rep) === 'object') {
+			string = r.rep;
+		} else {
+			string = string.replace('$.' + r.val, r.rep);
+		}
 	});
 
 	return string;
@@ -92,38 +130,40 @@ render.prototype.registerCustomTag = function(customTag) {
 	});
 };
 
-render.prototype.renderTagWithProperties = function(tag, properties, injectedProps, bag) {
+render.prototype.renderTagWithProperties = function(tag, properties, data) {
 	let render = `<${tag}`;
 
 	Object.keys(properties).forEach((p) => {
+		let propValue = properties[p];
+
 		if (this.invalidProperties.indexOf(p) === -1 && properties[p] !== null) {
-			let propValue = properties[p];
-
-			if (injectedProps) {
-				if (propValue.indexOf('$.') === 0 && injectedProps[propValue.replace('$.', '')]) {
-					propValue = injectedProps[propValue.replace('$.', '')];
-				}
-			}
-
 			if (Array.isArray(properties[p])) {
 				propValue = properties[p].join(' ');
 			}
 
-			propValue = this.handleVariables(propValue, bag);
+			propValue = this.handleVariables(propValue, data);
 
 			render += ` ${p}="${propValue}" `;
+		}
+
+		if (p === 'onclick') {
+			render = this.clickHandler(propValue, render);
+		}
+
+		if (p === 'submit') {
+			render = this.submitHandler(propValue, render);
 		}
 	});
 
 	return render;
 };
 
-render.prototype.handleTag = function(c, injectedProps, bag) {
+render.prototype.handleTag = function(c, data) {
 	//is it a custom tag?
 	if (this.customTags[c.tag]) {
 		return {
 			start 	: `<${c.tag}>`,
-			content : this.renderChildren([this.customTags[c.tag].definition], c, bag),
+			content : this.renderChildren([this.customTags[c.tag].definition], c, data),
 			end 	: `</${c.tag}>`,
 		};
 	}
@@ -131,31 +171,23 @@ render.prototype.handleTag = function(c, injectedProps, bag) {
 	if (c.children || c.text) {
 		var text = c.text;
 
-		if (injectedProps && text) {
-			if (text.indexOf('$.') === 0 && injectedProps[text.replace('$.', '')]) {
-				text = injectedProps[text.replace('$.', '')];
-			}
+		if (data && text) {
+			text = this.handleVariables(text, data);
 		}
 
 		var children = c.children;
-		if (typeof(children) === "string" && injectedProps) {
-			if (children.indexOf('$.') === 0 && injectedProps[children.replace('$.', '')]) {
-				children = injectedProps[children.replace('$.', '')];
-			}
-		}
-
-		if (text !== 'undefined') {
-			text = this.handleVariables(text, bag);
+		if (typeof(children) === "string") {
+			children = this.handleVariables(children, data);
 		}
 
 		return {
-			start 	: this.renderTagWithProperties(c.tag, c, injectedProps, bag) + '>',
-			content : (typeof(text) === 'undefined' || text === null ? '' : text) + this.renderChildren(children, injectedProps, bag),
+			start 	: this.renderTagWithProperties(c.tag, c, data) + '>',
+			content : (typeof(text) === 'undefined' || text === null ? '' : text) + this.renderChildren(children, {}, data),
 			end 	: `</${c.tag}>`
 		};
 	} else {
 		return {
-			start : this.renderTagWithProperties(c.tag, c, injectedProps, bag),
+			start : this.renderTagWithProperties(c.tag, c, data),
 			content : '',
 			end : ' />',
 		};
@@ -167,31 +199,33 @@ render.prototype.renderChildren = function(children, injectedProps, bag) {
 		return '';
 	}
 
+	let data = this.generateData([injectedProps, bag]);
+
 	return children.map((c) => {
 		if (c.repeat) {
 			//its a repeating group, repeat as many times as values in the bag
 			var parts = c.repeat.split(' ');
-			var arr = this.resolveValue(parts[2].replace('$', ''), bag);
+			var arr = this.resolveValue(parts[2].replace('$.', ''), data);
 
 			const calculated = arr.map((a) => {
 				var newBag = {};
-				newBag[parts[0].replace('$', '')] = a;
-				return this.handleTag(c, injectedProps, newBag);
+				newBag[parts[0].replace('$.', '')] = a;
+				let data = this.generateData([injectedProps, bag, newBag]);
+				return this.handleTag(c, data);
 			});
-
 
 			return calculated;
 		}
 
-		return this.handleTag(c, injectedProps, bag);
+		return this.handleTag(c, data);
 	}).reduce((s, a) => {
 		if (a) {
 			if (Array.isArray(a)) {
 				a.forEach((aa) => {
-					s += aa.start + aa.content + aa.end;
+					s += this.endClickHandler(aa.start + aa.content + aa.end);
 				});
 			} else {
-				s += a.start + a.content + a.end;
+				s += this.endClickHandler(a.start + a.content + a.end);
 			}
 		}
 
@@ -201,9 +235,8 @@ render.prototype.renderChildren = function(children, injectedProps, bag) {
 
 render.prototype.renderView = function(view, bag) {
 	return new Promise((resolve, reject) => {
-		return resolve(this.renderChildren([view], null, bag));
+		return resolve(this.renderChildren([view], {}, { bag : bag }));
 	});
-
 };
 
 module.exports = function(fs, path) {
