@@ -1,9 +1,43 @@
 {
-	"name" : "example",
-	"routes" : {
-		"/" : {
-			"controller" : "./controllers/home.js",
-			"view" : "./view/home.json"
-		}
-	}
+    "name": "example",
+    "routes": {
+        "/": {
+            "controller": "./controllers/byitc.js",
+            "view": "./view/byitc.json"
+        },
+        "/page1": {
+            "controller": "./controllers/arthy.js",
+            "view": "./view/arthy.json"
+        },
+        "/page2": {
+            "controller": "./controllers/xpoju.js",
+            "view": "./view/xpoju.json"
+        },
+        "/page3": {
+            "controller": "./controllers/tbokm.js",
+            "view": "./view/tbokm.json"
+        }
+    },
+    "tags": [
+        {
+            "name": "headerPartial",
+            "view": "./view/wvptl.json",
+            "controller": "./controllers/wvptl.js"
+        },
+        {
+            "name": "includes",
+            "view": "./view/aafyt.json",
+            "controller": "./controllers/aafyt.js"
+        },
+        {
+            "name": "menuItem",
+            "view": "./view/cbwwp.json",
+            "controller": "./controllers/cbwwp.js"
+        },
+        {
+            "name": "wrapper",
+            "view": "./view/crmob.json",
+            "controller": "./controllers/crmob.js"
+        }
+    ]
 }
