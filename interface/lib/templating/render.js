@@ -2,6 +2,7 @@ const render = function(fs, path, preProcessor) {
 	this.fs = fs;
 	this.path = path;
 	this.preProcessor = preProcessor;
+	this.tabLevel = -1;
 
 	this.invalidProperties = [
 		'text',
@@ -25,7 +26,7 @@ render.prototype.clickHandler = function(eventProps, toWrap) {
 };
 
 render.prototype.endClickHandler = function(val) {
-	if (val.indexOf('<!-- @clickHandler -->') === 0) {
+	if (val.trim().indexOf('<!-- @clickHandler -->') === 0) {
 		return `${val}</a><!-- /@clickHandler -->`;
 	}
 
@@ -94,10 +95,12 @@ render.prototype.handleTag = function(c, data) {
 	};
 
 	if (c.children || c.text) {
+		var content = ((typeof(c.text) === 'undefined' || c.text === null ? '' : '\n' + this.generateTabs() + '\t' + c.text + '\n') + this.renderChildren(c.children, data));
+
 		return {
 			start 	: this.renderTagWithProperties(c.tag, c, data) + '>',
-			content : (typeof(c.text) === 'undefined' || c.text === null ? '' : c.text) + this.renderChildren(c.children, data),
-			end 	: `</${c.tag}>`
+			content : content,
+			end 	: this.generateTabs() + `</${c.tag}>`
 		};
 	} else {
 		return {
@@ -108,33 +111,49 @@ render.prototype.handleTag = function(c, data) {
 	}
 };
 
+render.prototype.generateTabs = function() {
+	var ret = '';
+	for (var i = 0; i < this.tabLevel; i++) {
+		ret += '\t';
+	}
+	return ret;
+};
+
 render.prototype.renderChildren = function(children, data) {
 	if (!children) {
 		return '';
 	}
 
-	return children.map((c) => {
+	this.tabLevel++;
+
+	var ret = children.map((c) => {
 		return this.handleTag(c, data);
 	}).reduce((s, a) => {
 		if (a) {
 			if (Array.isArray(a)) {
 				a.forEach((aa) => {
-					s += this.endClickHandler(aa.start + aa.content + aa.end);
+					s += this.endClickHandler(this.generateTabs() + aa.start + aa.content + aa.end) + '\n';
 				});
 			} else {
-				s += this.endClickHandler(a.start + a.content + a.end);
+				s += this.endClickHandler(this.generateTabs() + a.start + a.content + a.end);
 			}
 		}
 
-		return s;
-	}, '');
+		return s + '\n';
+	}, '\n');
+
+	this.tabLevel--;
+
+	return ret;
 };
 
 render.prototype.renderView = function(view, bag) {
+	this.tabLevel = -1;
+
 	return this.preProcessor.process(view, {
 		bag : bag
 	}, this.customTags).then((processed) => {
-		return Promise.resolve(this.renderChildren(processed.view, processed.data));
+		return Promise.resolve('<!DOCTYPE HTML>' + this.renderChildren(processed.view, processed.data));
 	});
 };
 
