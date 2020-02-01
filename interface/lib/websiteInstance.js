@@ -14,6 +14,7 @@ websiteInstance.prototype.configureRoute = function(route) {
 
 	console.log(`Hosting ${route} on ${this.definition.name} - /${this.definition.name}${route}`);
 	this.app.get(`/${this.definition.name}${route}`, instance.handler.bind(instance));
+	this.app.post(`/${this.definition.name}${route}`, instance.handler.bind(instance));
 };
 
 websiteInstance.prototype.init = function() {

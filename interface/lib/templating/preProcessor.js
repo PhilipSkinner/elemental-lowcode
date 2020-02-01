@@ -1,10 +1,11 @@
-const preProcessor = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope) {
+const preProcessor = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues) {
 	this.visitors = {
 		arrayWrapper 		: arrayWrapper,
 		expandCustomTags 	: expandCustomTags,
 		handleLoops 		: handleLoops,
 		replaceValues 		: replaceValues,
 		defineScope			: defineScope,
+		bindValues 			: bindValues,
 	}
 };
 
@@ -25,13 +26,14 @@ preProcessor.prototype.process = function(definition, data, customTags) {
 		.then(this.visitors.expandCustomTags.apply.bind(this.visitors.expandCustomTags))
 		.then(this.visitors.defineScope.apply.bind(this.visitors.defineScope))
 		.then(this.visitors.handleLoops.apply.bind(this.visitors.handleLoops))
+		.then(this.visitors.bindValues.apply.bind(this.visitors.bindValues))
 		.then(this.visitors.replaceValues.apply.bind(this.visitors.replaceValues))
 		.then((obj) => {
 			return Promise.resolve(obj);
 		});
 };
 
-module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope) {
+module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues) {
 	if (!arrayWrapper) {
 		arrayWrapper = require('./visitors/arrayWrapper')();
 	}
@@ -52,5 +54,9 @@ module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceVa
 		defineScope = require('./visitors/defineScope')();
 	}
 
-	return new preProcessor(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope);
+	if (!bindValues) {
+		bindValues = require('./visitors/bindValues')();
+	}
+
+	return new preProcessor(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues);
 };

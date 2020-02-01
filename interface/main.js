@@ -1,5 +1,6 @@
 const
 	express 		= require('express'),
+	bodyParser 		= require('body-parser'),
 	hotreload 		= require('../shared/hotReload')();
 
 let app = null;
@@ -8,6 +9,8 @@ let restarting = false;
 
 const startup = () => {
 	app = express();
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended : false }));
 	let websiteService 	= require('./lib/websiteService')(app);
 
 	websiteService.init(process.env.DIR).then(() => {

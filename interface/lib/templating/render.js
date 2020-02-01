@@ -56,6 +56,8 @@ render.prototype.loadView = function(name) {
 
 render.prototype.registerCustomTag = function(customTag) {
 	this.loadView(customTag.view).then((definition) => {
+		console.log(customTag);
+
 		customTag.definition = definition;
 		this.customTags[customTag.name] = customTag;
 	});
@@ -95,7 +97,13 @@ render.prototype.handleTag = function(c, data) {
 	};
 
 	if (c.children || c.text) {
-		var content = ((typeof(c.text) === 'undefined' || c.text === null ? '' : '\n' + this.generateTabs() + '\t' + c.text + '\n') + this.renderChildren(c.children, data));
+		var text = c.text;
+
+		if (Array.isArray(text)) {
+			text = text.join(' ');
+		}
+
+		var content = ((typeof(text) === 'undefined' || text === null ? '' : '\n' + this.generateTabs() + '\t' + text + '\n') + this.renderChildren(c.children, data));
 
 		return {
 			start 	: this.renderTagWithProperties(c.tag, c, data) + '>',

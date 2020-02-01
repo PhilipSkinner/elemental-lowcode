@@ -3,7 +3,7 @@ const dataResolver = function() {
 };
 
 dataResolver.prototype.detectValues = function(string, data, scope) {
-	if (!string || string.indexOf('$.') === -1) {
+	if (!string || !string.indexOf || string.indexOf('$.') === -1) {
 		return string;
 	}
 

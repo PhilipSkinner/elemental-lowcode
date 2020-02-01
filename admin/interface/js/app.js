@@ -79,7 +79,7 @@ templates.fetchTemplates().then(() => {
 			},
 			{
 				name		: 'websiteEditor',
-				path 		: '/websites/:name',
+				path 		: '/websites/editor/:name',
 				component 	: WebsiteEditor
 			}
 		];

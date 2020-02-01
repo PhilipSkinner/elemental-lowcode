@@ -13,24 +13,34 @@ expandCustomTag.prototype.setPreProcessor = function(preProcessor) {
 };
 
 expandCustomTag.prototype.needsExpansion = function(view) {
-	var needs = false;
+	let needs = false;
 	for (var i = 0; i < view.length; i++) {
 		var tag = view[i];
 
 		if (Array.isArray(tag)) {
-			needs = this.needsExpansion(view);
-			break;
+			if (this.needsExpansion(view)) {
+				needs = true;
+			}
 		}
 
 		if (typeof(tag) === 'object' && tag !== null) {
+			//loop props
+			Object.keys(tag).forEach((prop) => {
+				if (Array.isArray(tag[prop])) {
+					if(this.needsExpansion(tag[prop])) {
+						console.log("returning true");
+						needs = true;
+					}
+				}
+			});
+
 			if (tag.tag && this.tags[tag.tag]) {
 				needs = true;
-				break;
 			}
 		}
 	}
 
-	return needs;
+	return false || needs;
 };
 
 expandCustomTag.prototype.expand = function(view) {
@@ -70,9 +80,15 @@ expandCustomTag.prototype.expand = function(view) {
 };
 
 expandCustomTag.prototype.apply = function(definition) {
+	let count = 0;
 	while (this.needsExpansion(definition.view)) {
+		count++;
+		console.log("Needs expansion");
 		definition.view = this.expand(definition.view);
+		console.log("Expansion done", count);
 	}
+
+	console.log("Expansion complete!");
 
 	return Promise.resolve(definition);
 };

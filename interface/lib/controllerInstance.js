@@ -36,9 +36,33 @@ controllerInstance.prototype.handler = function(req, res, next) {
 
 	//ensure our state engine triggers on load
 	stateEngine.triggerEvent('load', req).then(() => {
-		//do we have an event to trigger?
-		if (req.query.event) {
-			return stateEngine.triggerEvent(req.query.event);
+		if (req.method === 'POST') {
+			//generate our post event!
+			var event = {};
+			Object.keys(req.body).forEach((valName) => {
+				//get the path version
+				var parts = valName.split('$$_$$');
+				let current = event;
+				for (var i = 0; i < parts.length; i++) {
+					if (i === parts.length - 1) {
+						current[parts[i]] = req.body[valName];
+					} else {
+						if (!current[parts[i]]) {
+							current[parts[i]] = {};
+						}
+
+						current = current[parts[i]];
+					}
+				}
+			});
+			return stateEngine.triggerEvent('postback', event);
+		}
+
+		if (req.method === 'GET') {
+			//do we have an event to trigger?
+			if (req.query.event) {
+				return stateEngine.triggerEvent(req.query.event);
+			}
 		}
 
 		return Promise.resolve();
