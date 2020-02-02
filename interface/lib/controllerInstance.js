@@ -36,7 +36,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	stateEngine.setContext(req, res);
 
 	//ensure our state engine triggers on load
-	stateEngine.triggerEvent('load', req).then(() => {
+	stateEngine.triggerEvent('load', Object.assign(req.query, req.params)).then(() => {
 		if (req.method === 'POST') {
 			//generate our post event!
 			var event = {};

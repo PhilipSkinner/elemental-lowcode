@@ -56,10 +56,13 @@ expandCustomTag.prototype.expand = function(view) {
 			//generate our replacement
 			var replacement = JSON.parse(JSON.stringify(this.tags[tag.tag].definition));
 
-			//set our data scope on the replacement
-			//replacement._scope = replacement._scope || {};
-			//replacement._scope.data = replacement._scope.data || {};
-			//replacement._scope.data = Object.assign(replacement._scope.data, tag);
+			//carry over our if and repeat properties
+			if (tag.repeat) {
+				replacement.repeat = tag.repeat;
+			}
+			if (tag.if) {
+				replacement.if = tag.if;
+			}
 
 			tag = this.replaceValues.applySync({
 				view : [replacement],
@@ -84,6 +87,8 @@ expandCustomTag.prototype.apply = function(definition) {
 		count++;
 		definition.view = this.expand(definition.view);
 	}
+
+	console.log(JSON.stringify(definition.view, null, 4));
 
 	return Promise.resolve(definition);
 };
