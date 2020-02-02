@@ -1,6 +1,18 @@
-const controllerState = function(controllerDefinition, storageService) {
+const controllerState = function(controllerDefinition, storageService, sessionState) {
 	this.controllerDefinition = controllerDefinition;
 	this.controllerDefinition.storageService = storageService;
+	this.controllerDefinition.sessionState = sessionState;
+};
+
+controllerState.prototype.setContext = function(request, response) {
+	this.request = request;
+	this.response = response;
+
+	this.controllerDefinition.sessionState.setContext(this.request, this.response);
+};
+
+controllerState.prototype.generateResponseHeaders = function() {
+	this.controllerDefinition.sessionState.generateResponseHeaders();
 };
 
 controllerState.prototype.getBag = function() {
@@ -23,10 +35,14 @@ controllerState.prototype.triggerEvent = function(name, details) {
 	});
 };
 
-module.exports = function(controllerDefinition, storageService) {
+module.exports = function(controllerDefinition, storageService, sessionState) {
 	if (!storageService) {
 		storageService = require('../../shared/storageService')();
 	}
 
-	return new controllerState(controllerDefinition, storageService);
+	if (!sessionState) {
+		sessionState = require('./sessionState')(controllerDefinition.sessionName);
+	}
+
+	return new controllerState(controllerDefinition, storageService, sessionState);
 };

@@ -33,6 +33,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	let module = this.path.join(process.cwd(), process.env.DIR, this.routeDefinition.controller);
 	delete require.cache[require.resolve(module)]
 	let stateEngine = this.controllerState(require(module));
+	stateEngine.setContext(req, res);
 
 	//ensure our state engine triggers on load
 	stateEngine.triggerEvent('load', req).then(() => {
@@ -71,6 +72,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 		this.loadView().then((view) => {
 			return this.templateRenderer.renderView(view, stateEngine.getBag());
 		}).then((html) => {
+			stateEngine.generateResponseHeaders();
 			res.send(html);
 			next();
 		}).catch((err) => {
