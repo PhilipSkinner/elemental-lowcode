@@ -28,7 +28,6 @@ expandCustomTag.prototype.needsExpansion = function(view) {
 			Object.keys(tag).forEach((prop) => {
 				if (Array.isArray(tag[prop])) {
 					if(this.needsExpansion(tag[prop])) {
-						console.log("returning true");
 						needs = true;
 					}
 				}
@@ -83,12 +82,8 @@ expandCustomTag.prototype.apply = function(definition) {
 	let count = 0;
 	while (this.needsExpansion(definition.view)) {
 		count++;
-		console.log("Needs expansion");
 		definition.view = this.expand(definition.view);
-		console.log("Expansion done", count);
 	}
-
-	console.log("Expansion complete!");
 
 	return Promise.resolve(definition);
 };

@@ -56,8 +56,6 @@ render.prototype.loadView = function(name) {
 
 render.prototype.registerCustomTag = function(customTag) {
 	this.loadView(customTag.view).then((definition) => {
-		console.log(customTag);
-
 		customTag.definition = definition;
 		this.customTags[customTag.name] = customTag;
 	});
@@ -95,6 +93,10 @@ render.prototype.handleTag = function(c, data) {
 			return this.handleTag(cc, data);
 		});
 	};
+
+	if (typeof(c.__display) !== 'undefined' && c.__display === false) {
+		return '';
+	}
 
 	if (c.children || c.text) {
 		var text = c.text;

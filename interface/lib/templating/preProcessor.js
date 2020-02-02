@@ -1,4 +1,4 @@
-const preProcessor = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues) {
+const preProcessor = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals) {
 	this.visitors = {
 		arrayWrapper 		: arrayWrapper,
 		expandCustomTags 	: expandCustomTags,
@@ -6,6 +6,7 @@ const preProcessor = function(arrayWrapper, expandCustomTags, handleLoops, repla
 		replaceValues 		: replaceValues,
 		defineScope			: defineScope,
 		bindValues 			: bindValues,
+		conditionals 		: conditionals,
 	}
 };
 
@@ -28,12 +29,13 @@ preProcessor.prototype.process = function(definition, data, customTags) {
 		.then(this.visitors.handleLoops.apply.bind(this.visitors.handleLoops))
 		.then(this.visitors.bindValues.apply.bind(this.visitors.bindValues))
 		.then(this.visitors.replaceValues.apply.bind(this.visitors.replaceValues))
+		.then(this.visitors.conditionals.apply.bind(this.visitors.conditionals))
 		.then((obj) => {
 			return Promise.resolve(obj);
 		});
 };
 
-module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues) {
+module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals) {
 	if (!arrayWrapper) {
 		arrayWrapper = require('./visitors/arrayWrapper')();
 	}
@@ -58,5 +60,9 @@ module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceVa
 		bindValues = require('./visitors/bindValues')();
 	}
 
-	return new preProcessor(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues);
+	if (!conditionals) {
+		conditionals = require('./visitors/conditionals')();
+	}
+
+	return new preProcessor(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals);
 };
