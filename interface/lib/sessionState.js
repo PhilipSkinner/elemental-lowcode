@@ -28,7 +28,9 @@ sessionState.prototype.generateResponseHeaders = function() {
 		this.sessionData = this.retrieveSession();
 	}
 
-	this.response.cookie(this.sessionName, Buffer.from(JSON.stringify(this.sessionData)).toString('base64'));
+	if (this.sessionData) {
+		this.response.cookie(this.sessionName, Buffer.from(JSON.stringify(this.sessionData)).toString('base64'));
+	}
 };
 
 module.exports = function(sessionName) {
