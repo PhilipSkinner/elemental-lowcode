@@ -11029,3 +11029,8 @@ body.sidebar-toggled footer.sticky-footer {
   text-align: center;
   font-size: 11px;
 }
+
+.documentationWrapper {
+  padding: 20px;
+  color: #000;
+}
