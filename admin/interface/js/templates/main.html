@@ -460,50 +460,6 @@
 	</div>
 </template>
 
-<template id="template-documentation">
-	<div class="documentation">
-		<!-- Begin Page Content -->
-		<div class="container-fluid">
-
-			<div class="row">
-				<div class="col-md-3">
-					<div class="card shadow">
-						<div class="card-header py-3">
-							<h6 class="m-0 font-weight-bold text-primary">Topics</h6>
-						</div>
-						<div class="card-body">
-							<div>
-								<router-link to="/documentation">
-									Index
-								</router-link>
-							</div>
-							<div>
-								<router-link to="/documentation/websites.md">
-									Websites
-								</router-link>
-							</div>
-							<div>
-								<router-link to="/documentation/integrations.md">
-									Integrations
-								</router-link>
-							</div>
-							<div>
-								<router-link to="/documentation/data.md">
-									Data
-								</router-link>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-md-9">
-					<div class="card shadow documentationWrapper" id="documentationContent" v-html="html"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-</template>
-
 <template id="template-home">
 	<div class="home">
 		<div class="container-fluid">
