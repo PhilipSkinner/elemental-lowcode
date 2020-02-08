@@ -11,11 +11,9 @@
 
 # Todo
 
-* Basic rules engine
 * Basic process modeller
 * Need to be able to format variables
 * Need to be able to better tell the system that a variable is being used - arrays of strings?
-* Server side validation
 * Homepage information screen
 * Tutorial
 * Finish documentation

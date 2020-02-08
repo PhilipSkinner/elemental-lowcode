@@ -15,7 +15,12 @@ conditionals.prototype.evaluate = function(ifStatement) {
 		var statement = ifStatement[i];
 
 		//evaluate the statement
-		var result = eval(statement.statement);
+		var result = false;
+		try {
+			result = eval(statement.statement);
+		} catch(e) {
+			console.log("Error evaluating statement", statement);
+		}
 
 		//now set our validity
 		if (statement.logicalOperator === "and") {

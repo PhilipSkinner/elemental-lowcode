@@ -1,6 +1,7 @@
 const templateProvider = function() {
 	this.templateFiles = [
-		'/js/templates/main.html'
+		'/js/templates/main.html',
+		'/js/templates/rules.html'
 	];
 
 	this.initWrapper();

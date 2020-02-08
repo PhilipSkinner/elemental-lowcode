@@ -1,0 +1,67 @@
+<template id="template-rules">
+	<div class="rules">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">Rulesets</h1>
+			<p class="mb-4">Rules are a simple form of decision table. You can define multiple rules within a ruleset, which can match against zero or more values within the given facts collection. Each ruleset has a JSON schema definition for its input facts.</p>
+
+			<!-- DataTales Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Current Rulesets</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-for="item in rules">
+									<td>
+										<router-link :to="{ name : 'rulesetDetails', params : { name : item.name } }">{{item.name}}</router-link>
+									</td>
+									<td>
+										<router-link class="btn btn-sm btn-primary" :to="{ name : 'rulesetEditor', params : { name : item.name } }">Modify</router-link>
+										<router-link class="btn btn-sm btn-danger" :to="{ name : 'rulesetRemote', params : { name : item.name } }">Remove</router-link>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="actionButtons">
+			<router-link to="/rulesets/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+		</div>
+	</div>
+</template>
+
+<template id="template-rulesEditor">
+	<div class="rulesEditor">
+		<div class="entityWrapper">
+			<div id="ruleEditor" class="editorWindow"></div>
+		</div>
+		<div class="actionButtons">
+			<router-link to="/rulesets" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_rulesEditorInstance.saveRule();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+			{{error.description}}
+		</modal-error>
+		<alert text="Ruleset type saved!" v-bind:visible="showAlert"></alert>
+	</div>
+</template>

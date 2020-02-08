@@ -8,6 +8,8 @@ templates.fetchTemplates().then(() => {
 		'/js/pages/websites.js',
 		'/js/pages/websitesEditor.js',
 		'/js/pages/documentation.js',
+		'/js/pages/rules.js',
+		'/js/pages/rulesEditor.js',
 	];
 
 	const loadPage = (file) => {
@@ -89,6 +91,15 @@ templates.fetchTemplates().then(() => {
 			{
 				path 		: '/documentation/:page',
 				component	: Documentation,
+			},
+			{
+				path 		: '/rulesets',
+				component 	: Rules
+			},
+			{
+				name 		: 'rulesetEditor',
+				path 		: '/rulesets/editor/:name',
+				component 	: RulesEditor
 			}
 		];
 

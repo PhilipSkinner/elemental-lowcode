@@ -16,6 +16,10 @@
         "/page3": {
             "controller": "./controllers/tbokm.js",
             "view": "./view/tbokm.json"
+        },
+        "/validation": {
+            "controller": "./controllers/troay.js",
+            "view": "./view/troay.json"
         }
     },
     "tags": [

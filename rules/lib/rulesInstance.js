@@ -18,15 +18,21 @@ rulesInstance.prototype.executeRules = function(req, res, next) {
 		return;
 	}
 
+	let done = false;
 	//run through our executors
 	this.definition.rules.forEach((rule) => {
-		if (this.comparitorService.evaluate(req.body, rule.comparitors)) {
+		if (!done && this.comparitorService.evaluate(req.body, rule.comparitors)) {
+			done = true;
 			//return the output
 			res.json(rule.output);
 			res.end();
 			return;
 		}
 	});
+
+	if (done) {
+		return;
+	}
 
 	res.status(400);
 	res.json(null);

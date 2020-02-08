@@ -5,6 +5,7 @@ const
 	serviceRunner 			= require('./lib/serviceRunner')(),
 	integrationsController 	= require('./controllers/integrationsController'),
 	dataController 			= require('./controllers/dataController'),
+	rulesController 		= require('./controllers/rulesController'),
 	websitesController 		= require('./controllers/websitesController');
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended : false }));
 dataController(app);
 integrationsController(app);
 websitesController(app);
+rulesController(app);
 
 app.listen(8001);
 

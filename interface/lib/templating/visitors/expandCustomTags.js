@@ -88,8 +88,6 @@ expandCustomTag.prototype.apply = function(definition) {
 		definition.view = this.expand(definition.view);
 	}
 
-	console.log(JSON.stringify(definition.view, null, 4));
-
 	return Promise.resolve(definition);
 };
 

@@ -1,8 +1,9 @@
-const controllerState = function(controllerDefinition, storageService, sessionState, integrationService) {
+const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService) {
 	this.controllerDefinition = controllerDefinition;
 	this.controllerDefinition.storageService = storageService;
 	this.controllerDefinition.sessionState = sessionState;
 	this.controllerDefinition.integrationService = integrationService;
+	this.controllerDefinition.rulesetService = rulesetService;
 };
 
 controllerState.prototype.setContext = function(request, response) {
@@ -36,7 +37,7 @@ controllerState.prototype.triggerEvent = function(name, details) {
 	});
 };
 
-module.exports = function(controllerDefinition, storageService, sessionState, integrationService) {
+module.exports = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService) {
 	if (!storageService) {
 		storageService = require('../../shared/storageService')();
 	}
@@ -49,5 +50,9 @@ module.exports = function(controllerDefinition, storageService, sessionState, in
 		integrationService = require('../../shared/integrationService')();
 	}
 
-	return new controllerState(controllerDefinition, storageService, sessionState, integrationService);
+	if (!rulesetService) {
+		rulesetService = require('../../shared/ruleService')();
+	}
+
+	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService);
 };
