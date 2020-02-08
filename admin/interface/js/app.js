@@ -38,8 +38,7 @@ templates.fetchTemplates().then(() => {
 	};
 
 	loadPages().then(() => {
-		console.log("pages loaded");
-		const Home = { template : '<p>Home</p>'};
+		const Home = { template : '#template-home'};
 		const Apis = { template : '<p>APIs</p>' };
 
 		const routes = [

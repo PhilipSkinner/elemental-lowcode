@@ -503,3 +503,82 @@
 		</div>
 	</div>
 </template>
+
+<template id="template-home">
+	<div class="home">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<h1>Welcome to Elemental</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Getting started</h6>
+						</div>
+						<div class="card-body">
+							<p>
+								If you are just getting started with Elemental <router-link to="/documentation/tutorial.md">check out the tutorial</router-link> which shows you how to build a basic Blogging application.
+							</p>
+							<p>
+								Alternatively, jump directly into the <router-link to="/documentation/index.md">documentation</router-link>.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">System Status</h6>
+						</div>
+						<div class="card-body">
+							<div class="status">
+								<h5 class="font-weight-bold">Integrations</h5>
+								<p>
+									Total: <router-link to="/integrations">0</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">APIs</h5>
+								<p>
+									Total: <router-link to="/apis">0</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">Databases</h5>
+								<p>
+									Total: <router-link to="/data">0</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">Websites</h5>
+								<p>
+									Total: <router-link to="/websites">0</router-link>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-9">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Information</h6>
+						</div>
+						<div class="card-body">
+							<p>
+								Version: 0.0.1
+							</p>
+							<p>
+								Uptime: 0 hours 0 minutes 0 seconds
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>

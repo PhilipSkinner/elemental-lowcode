@@ -6,10 +6,16 @@
 * Interface service (web)
 * Storage service (document store)
 * Identity service (IdP, IdM)
+* Rules engine
+* Process modeller
 
 # Todo
 
+* Basic rules engine
+* Basic process modeller
 * Need to be able to format variables
 * Need to be able to better tell the system that a variable is being used - arrays of strings?
 * Server side validation
-* Session state for controllers
+* Homepage information screen
+* Tutorial
+* Finish documentation
