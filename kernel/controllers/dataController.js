@@ -37,6 +37,14 @@ dataController.prototype.updateDataType = function(req, res, next) {
 	});
 };
 
+dataController.prototype.deleteDataType = function(req, res, next) {
+	this.fileLister.deleteFile('.sources/data/', req.params.name + '.json').then(() => {
+		res.status(204);
+		res.send('');
+		next();
+	});
+};
+
 dataController.prototype.createDataType = function(req, res, next) {
 	this.fileLister.writeFile('.sources/data/', req.body.name + '.json', JSON.stringify(req.body)).then(() => {
 		res.status(201);
@@ -49,6 +57,7 @@ dataController.prototype.initEndpoints = function() {
 	this.app.get('/data/types', this.getDataTypes.bind(this));
 	this.app.get('/data/types/:name', this.getDataType.bind(this));
 	this.app.put('/data/types/:name', this.updateDataType.bind(this));
+	this.app.delete('/data/types/:name', this.deleteDataType.bind(this));
 	this.app.post('/data/types', this.createDataType.bind(this));
 };
 

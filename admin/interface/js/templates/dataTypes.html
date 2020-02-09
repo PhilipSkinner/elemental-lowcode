@@ -1,0 +1,162 @@
+<template id="template-dataTypes">
+	<div class="dataTypes">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">Data</h1>
+			<p class="mb-4">The table below allows you to see all data types currently configured within the storage system. Add a new data type by using the + icon in the bottom right hand corner of the screen.</p>
+
+			<!-- DataTales Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Current Datatypes</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Entities</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Entities</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-for="item in dataTypes">
+									<td>
+										<router-link :to="{ name : 'dataTypeDetails', params : { type : item.name } }">{{item.name}}</router-link>
+									</td>
+									<td>
+										<router-link :to="{ name : 'dataTypeEntities', params : { type : item.name } }">{{item.count || '0'}} Items</router-link>
+									</td>
+									<td>
+										<router-link class="btn btn-sm btn-primary" :to="{ name : 'dataTypeEditor', params : { type : item.name } }">Modify</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_dataControllerInstance.deleteType(item.name);">Remove</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="actionButtons">
+			<router-link to="/data/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+		</div>
+	</div>
+</template>
+
+<template id="template-dataTypeDetails">
+	<div class="dataTypeDetails">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">{{dataType.name}}</h1>
+			<p class="mb-4">The following HTTP endpoints can be used to communicate with the storage engine hosting this data type.</p>
+
+			<!-- get request -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">GET http://localhost:8006/{{dataType.name}}</h6>
+				</div>
+				<div class="card-body">
+					<p>
+						This endpoint allows you to fetch a paginated list of all objects held within this data type collection.
+					</p>
+
+					<p>
+						<b>Query parameter: <code>start : Integer</code></b>
+						<br/>
+						This parameter can be used to specify the starting object index that records should be pulled for. This index starts at <b>1</b>. The default for this value is 1.
+					</p>
+
+					<p>
+						<b>Query parameter: <code>count: Integer</code></b>
+						<br/>
+						This parameter can be used to specify the number of objects to be returned. The default for this value is 5.
+					</p>
+
+					<p>
+						<b>Example request:</b>
+					</p>
+
+					<p>
+						<code>
+ 							curl -X GET http://localhost:8006/{{dataType.name}}
+						</code>
+					</p>
+
+					<p>
+						<b>Example response:</b>
+					</p>
+
+					<p>
+						<pre>{{exampleGetResponse}}</pre>
+					</p>
+				</div>
+			</div>
+
+			<!-- get singular request -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">GET http://localhost:8006/{{dataType.name}}/{{exampleId}}</h6>
+				</div>
+				<div class="card-body">
+					<p>
+						This endpoint allows you to fetch a paginated list of all objects held within this data type collection.
+					</p>
+
+					<p>
+						<b>Path parameter: <code>id : Guid</code></b>
+						<br/>
+						This parameter must be set within the request path to fetch the resource requested.
+					</p>
+
+					<p>
+						<b>Example request:</b>
+					</p>
+
+					<p>
+						<code>
+ 							curl -X GET http://localhost:8006/{{dataType.name}}//{{exampleId}}
+						</code>
+					</p>
+
+					<p>
+						<b>Example response:</b>
+					</p>
+
+					<p>
+						<pre>{{exampleSingleResponse}}</pre>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="template-dataTypeEditor">
+	<div class="dataTypeEditor">
+		<div class="entityWrapper">
+			<div id="typeEditor" class="editorWindow"></div>
+		</div>
+		<div class="actionButtons">
+			<router-link to="/data" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_dataTypeEditorInstance.saveType();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+			{{error.description}}
+		</modal-error>
+		<alert text="Data type saved!" v-bind:visible="showAlert"></alert>
+	</div>
+</template>

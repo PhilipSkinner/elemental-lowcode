@@ -4,6 +4,7 @@ const templateProvider = function() {
 		'/js/templates/rules.html',
 		'/js/templates/documentation.html',
 		'/js/templates/integrations.html',
+		'/js/templates/dataTypes.html',
 	];
 
 	this.initWrapper();
