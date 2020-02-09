@@ -30,3 +30,4 @@ serviceRunner.runService('integration', '../integration/main.js', 	8004, '.sourc
 serviceRunner.runService('interface', 	'../interface/main.js', 	8005, '.sources/website');
 serviceRunner.runService('storage', 	'../storage/main.js', 		8006, '.sources/data');
 serviceRunner.runService('rules', 		'../rules/main.js', 		8007, '.sources/rules');
+serviceRunner.runService('identity', 	'../identity/main.js', 		8008, '.sources/identity');

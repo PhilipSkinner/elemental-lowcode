@@ -1,0 +1,7 @@
+{
+	"name": "identity",
+	"version": "0.0.1",
+	"dependencies": {
+		"oidc-provider": "^6.20.1"
+	}
+}
