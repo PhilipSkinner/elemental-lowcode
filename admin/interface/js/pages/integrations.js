@@ -9,23 +9,33 @@ _integrationsController.prototype.getData = function() {
 	};
 };
 
-_integrationsController.prototype.fetchTypes = function(caller) {
+_integrationsController.prototype.fetchIntegrations = function(caller) {
+	this.caller = caller;
+
 	return axios
 		.get('http://localhost:8001/integrations')
-		.then((response) => {			
+		.then((response) => {
 			this.integrations = response.data;
-			caller.integrations = response.data;
-			caller.$forceUpdate();
+			this.caller.integrations = response.data;
+			this.caller.$forceUpdate();
 		});
 };
 
-const Integrations = { 
+_integrationsController.prototype.removeIntegration = function(name) {
+	return axios
+		.delete(`http://localhost:8001/integrations/${name}`)
+		.then((response) => {
+			this.fetchIntegrations(this.caller);
+		});
+};
+
+const Integrations = {
 	template : '#template-integrations',
 	data 	 : () => {
 		return _integrationsControllerInstance.getData();
 	},
 	mounted  : function() {
-		return _integrationsControllerInstance.fetchTypes(this);		
+		return _integrationsControllerInstance.fetchIntegrations(this);
 	}
 };
 

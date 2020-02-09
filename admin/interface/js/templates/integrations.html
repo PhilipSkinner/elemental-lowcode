@@ -7,10 +7,9 @@
 			<h1 class="h3 mb-2 text-gray-800">Integrations</h1>
 			<p class="mb-4">Integrations allow you to wrap an existing API/Service with a RESTful API that follows Elementals standard security model.</p>
 
-			<!-- DataTales Example -->
 			<div class="card shadow mb-4">
 				<div class="card-header py-3">
-					<h6 class="m-0 font-weight-bold text-primary">Current Datatypes</h6>
+					<h6 class="m-0 font-weight-bold text-primary">Current Integrations</h6>
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
@@ -34,7 +33,7 @@
 									</td>
 									<td>
 										<router-link class="btn btn-sm btn-primary" :to="{ name : 'integrationEditor', params : { name : item.name } }">Modify</router-link>
-										<router-link class="btn btn-sm btn-danger" :to="{ name : 'integrationRemove', params : { name : item.name } }">Remove</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_integrationsControllerInstance.removeIntegration(item.name);">Remove</button>
 									</td>
 								</tr>
 							</tbody>

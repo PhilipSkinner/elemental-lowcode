@@ -26,9 +26,9 @@ fileLister.prototype.readFile = function(dir, file) {
 	return new Promise((resolve, reject) => {
 		this.fs.readFile(this.path.join(dir, file), (err, content) => {
 			if (err) {
-				return reject(err);				
+				return reject(err);
 			}
-		
+
 			return resolve(content.toString('utf8'));
 		});
 	});
@@ -38,7 +38,7 @@ fileLister.prototype.readJSONFile = function(dir, file) {
 	return new Promise((resolve, reject) => {
 		this.fs.readFile(this.path.join(dir, file), (err, content) => {
 			if (err) {
-				return reject(err);				
+				return reject(err);
 			}
 
 			let data = null;
@@ -58,6 +58,18 @@ fileLister.prototype.readJSONFile = function(dir, file) {
 fileLister.prototype.writeFile = function(dir, file, contents) {
 	return new Promise((resolve, reject) => {
 		this.fs.writeFile(this.path.join(dir, file), contents, (err) => {
+			if (err) {
+				return reject(err);
+			}
+
+			return resolve();
+		});
+	});
+};
+
+fileLister.prototype.deleteFile = function(dir, file) {
+	return new Promise((resolve, reject) => {
+		this.fs.unlink(this.path.join(dir, file), (err) => {
 			if (err) {
 				return reject(err);
 			}
