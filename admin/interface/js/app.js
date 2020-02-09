@@ -5,6 +5,7 @@ templates.fetchTemplates().then(() => {
 		'/js/pages/dataTypeEditor.js',
 		'/js/pages/integrations.js',
 		'/js/pages/integrationsEditor.js',
+		'/js/pages/integrationDetails.js',
 		'/js/pages/websites.js',
 		'/js/pages/websitesEditor.js',
 		'/js/pages/documentation.js',
@@ -56,6 +57,11 @@ templates.fetchTemplates().then(() => {
 				name 		: 'integrationEditor',
 				path 		: '/integrations/editor/:name',
 				component 	: IntegrationsEditor
+			},
+			{
+				name 		: 'integrationDetails',
+				path 		: '/integrations/details/:name',
+				component	: IntegrationDetails
 			},
 			{
 				path 		: '/apis',

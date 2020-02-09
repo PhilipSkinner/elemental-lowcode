@@ -17,3 +17,8 @@
 * Homepage information screen
 * Tutorial
 * Finish documentation
+* File uploads
+* Import/export packages
+* Version control support (git on sources)
+* Deploy as docker images
+* Progressive enhancement of events etc
