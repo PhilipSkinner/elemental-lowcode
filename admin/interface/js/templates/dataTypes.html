@@ -128,7 +128,7 @@
 
 					<p>
 						<code>
- 							curl -X GET http://localhost:8006/{{dataType.name}}//{{exampleId}}
+ 							curl -X GET http://localhost:8006/{{dataType.name}}/{{exampleId}}
 						</code>
 					</p>
 
@@ -138,6 +138,78 @@
 
 					<p>
 						<pre>{{exampleSingleResponse}}</pre>
+					</p>
+				</div>
+			</div>
+
+			<!-- create request -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">POST http://localhost:8006/{{dataType.name}}</h6>
+				</div>
+				<div class="card-body">
+					<p>
+						This endpoint allows you to create a new item in the {{dataType.name}} collection.
+					</p>
+
+					<p>
+						<b>Body:</b>
+						<code><pre>{{exampleObject}}</pre></code>
+					</p>
+
+					<p>
+						<b>Example request:</b>
+					</p>
+
+					<p>
+						<code>
+ 							curl -X POST -H 'Content-Type: application/json' -d '{{exampleObject}}' http://localhost:8006/{{dataType.name}}
+						</code>
+					</p>
+				</div>
+			</div>
+
+			<!-- update request -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">PUT http://localhost:8006/{{dataType.name}}/{{exampleId}}</h6>
+				</div>
+				<div class="card-body">
+					<p>
+						This endpoint allows you to update an existing item in the {{dataType.name}} collection.
+					</p>
+
+					<p>
+						<b>Body:</b>
+						<code><pre>{{exampleObject}}</pre></code>
+					</p>
+
+					<p>
+						<b>Example request:</b>
+					</p>
+
+					<p>
+						<code>
+ 							curl -X PUT -H 'Content-Type: application/json' -d '{{exampleObject}}' http://localhost:8006/{{dataType.name}}/{{exampleId}}
+						</code>
+					</p>
+				</div>
+			</div>
+
+			<!-- delete request -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">DELETE http://localhost:8006/{{dataType.name}}/{{exampleId}}</h6>
+				</div>
+				<div class="card-body">
+					<p>
+						This endpoint allows you to delete an item in the {{dataType.name}} collection.
+					</p>
+
+					<p>
+						<code>
+ 							curl -X DELETE http://localhost:8006/{{dataType.name}}/{{exampleId}}
+						</code>
 					</p>
 				</div>
 			</div>

@@ -8,6 +8,7 @@ const _dataTypeDetailsController = function(page) {
 		exampleGetResponse 		: null,
 		exampleId 				: null,
 		exampleSingleResponse 	: null,
+		exampleObject 			: null,
 	};
 };
 
@@ -24,9 +25,11 @@ _dataTypeDetailsController.prototype.fetchType = function(name) {
 	return axios
 		.get('http://localhost:8001/data/types/' + name)
 		.then((response) => {
-			this.dataTypes = response.data;
+			this.dataType = response.data;
 			this.caller.dataType = response.data;
 			this.caller.$forceUpdate();
+
+			this.generateExampleObject();
 		});
 };
 
@@ -45,6 +48,12 @@ _dataTypeDetailsController.prototype.fetchGetResponse = function(name) {
 
 			this.fetchSingleResponse(this.name, this.exampleId);
 		});
+};
+
+_dataTypeDetailsController.prototype.generateExampleObject = function() {
+	this.exampleObject = JSON.stringify(JSONSchemaFaker.generate(this.dataType.schema), null, 4);
+	this.caller.exampleObject = this.exampleObject;
+	this.caller.$forceUpdate();
 };
 
 _dataTypeDetailsController.prototype.fetchSingleResponse = function(name, id) {
