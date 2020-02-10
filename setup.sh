@@ -16,4 +16,6 @@ cd ./rules && npm i
 cd ..
 cd ./processes && npm i
 cd ..
+cd ./identity && npm i
+cd ..
 cd ./shared && npm i
