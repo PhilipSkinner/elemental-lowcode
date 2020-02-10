@@ -23,7 +23,11 @@ _dataTypeDetailsController.prototype.getData = function() {
 _dataTypeDetailsController.prototype.fetchType = function(name) {
 	this.name = name;
 	return axios
-		.get('http://localhost:8001/data/types/' + name)
+		.get('http://localhost:8001/data/types/' + name, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.dataType = response.data;
 			this.caller.dataType = response.data;
@@ -36,7 +40,11 @@ _dataTypeDetailsController.prototype.fetchType = function(name) {
 _dataTypeDetailsController.prototype.fetchGetResponse = function(name) {
 	this.name = name;
 	return axios
-		.get(`http://localhost:8006/${name}`)
+		.get(`http://localhost:8006/${name}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			if (response.data.length > 0) {
 				this.exampleId = response.data[0].id;
@@ -59,7 +67,11 @@ _dataTypeDetailsController.prototype.generateExampleObject = function() {
 _dataTypeDetailsController.prototype.fetchSingleResponse = function(name, id) {
 	this.name = name;
 	return axios
-		.get(`http://localhost:8006/${name}/${id}`)
+		.get(`http://localhost:8006/${name}/${id}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.exampleSingleResponse = JSON.stringify(response.data, null, 4);
 			this.caller.exampleSingleResponse = this.exampleSingleResponse;

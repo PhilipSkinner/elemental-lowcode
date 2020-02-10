@@ -14,7 +14,11 @@ _dataController.prototype.fetchTypes = function(caller) {
 	this.caller = caller;
 
 	return axios
-		.get('http://localhost:8001/data/types')
+		.get('http://localhost:8001/data/types', {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.dataTypes = response.data;
 			this.caller.dataTypes = response.data;
@@ -24,7 +28,11 @@ _dataController.prototype.fetchTypes = function(caller) {
 
 _dataController.prototype.deleteType = function(name) {
 	return axios
-		.delete(`http://localhost:8001/data/types/${name}`)
+		.delete(`http://localhost:8001/data/types/${name}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.fetchTypes(this.caller);
 		});

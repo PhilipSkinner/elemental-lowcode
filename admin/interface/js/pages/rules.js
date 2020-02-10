@@ -11,7 +11,11 @@ _rulesController.prototype.getRules = function() {
 
 _rulesController.prototype.fetchRules = function(caller) {
 	return axios
-		.get('http://localhost:8001/rules')
+		.get('http://localhost:8001/rules', {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			response.data = response.data.map((w) => {
 				w.url = `http://localhost:8007/${w.name}/`;

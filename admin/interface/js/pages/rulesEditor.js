@@ -72,7 +72,11 @@ _rulesEditorController.prototype.getData = function() {
 _rulesEditorController.prototype.fetchType = function(name) {
 	this.name = name;
 	return axios
-		.get('http://localhost:8001/rules/' + name)
+		.get('http://localhost:8001/rules/' + name, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.rule = response.data;
 			this.caller.rule = response.data;
@@ -87,7 +91,12 @@ _rulesEditorController.prototype.saveRule = function() {
 
 	if (this.name) {
 		return axios
-			.put('http://localhost:8001/rules/' + this.name, this.editor.getValue(), {headers: {"Content-Type": "application/json"}})
+			.put('http://localhost:8001/rules/' + this.name, this.editor.getValue(), {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization : `Bearer ${window.getToken()}`
+				}
+			})
 			.then((response) => {
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
@@ -107,7 +116,12 @@ _rulesEditorController.prototype.saveRule = function() {
 			});
 	} else {
 		return axios
-			.post('http://localhost:8001/rules', this.editor.getValue(), {headers: {"Content-Type": "application/json"}})
+			.post('http://localhost:8001/rules', this.editor.getValue(), {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization : `Bearer ${window.getToken()}`
+				}
+			})
 			.then((response) => {
 				//set our name
 				this.name = parsed.name;

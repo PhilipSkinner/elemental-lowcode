@@ -13,7 +13,11 @@ _integrationsController.prototype.fetchIntegrations = function(caller) {
 	this.caller = caller;
 
 	return axios
-		.get('http://localhost:8001/integrations')
+		.get('http://localhost:8001/integrations', {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.integrations = response.data;
 			this.caller.integrations = response.data;
@@ -23,7 +27,11 @@ _integrationsController.prototype.fetchIntegrations = function(caller) {
 
 _integrationsController.prototype.removeIntegration = function(name) {
 	return axios
-		.delete(`http://localhost:8001/integrations/${name}`)
+		.delete(`http://localhost:8001/integrations/${name}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.fetchIntegrations(this.caller);
 		});

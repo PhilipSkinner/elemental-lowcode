@@ -91,7 +91,11 @@ _integrationsEditorController.prototype.getData = function() {
 _integrationsEditorController.prototype.fetchType = function(name) {
 	this.name = name;
 	return axios
-		.get('http://localhost:8001/integrations/' + name)
+		.get('http://localhost:8001/integrations/' + name, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.integration = response.data;
 			this.caller.integration = response.data;
@@ -106,7 +110,12 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 
 	if (this.name) {
 		return axios
-			.put('http://localhost:8001/integrations/' + this.name, this.editor.getValue(), {headers: {"Content-Type": "application/json"}})
+			.put('http://localhost:8001/integrations/' + this.name, this.editor.getValue(), {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization : `Bearer ${window.getToken()}`
+				}
+			})
 			.then((response) => {
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
@@ -126,7 +135,12 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 			});
 	} else {
 		return axios
-			.post('http://localhost:8001/integrations', this.editor.getValue(), {headers: {"Content-Type": "application/json"}})
+			.post('http://localhost:8001/integrations', this.editor.getValue(), {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization : `Bearer ${window.getToken()}`
+				}
+			})
 			.then((response) => {
 				//set our name
 				this.name = parsed.name;

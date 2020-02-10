@@ -48,6 +48,10 @@ _websitesEditorController.prototype.saveResource = function(path, value) {
 		return axios
 			.post(`http://localhost:8001/websites/${this.website.name}/resource?path=${path}`, {
 				resource : value
+			}, {
+				headers : {
+					Authorization : `Bearer ${window.getToken()}`
+				}
 			})
 			.then((response) => {
 				return resolve();
@@ -69,7 +73,11 @@ _websitesEditorController.prototype.saveWebsite = function() {
 		this.website.tags = this.tags;
 
 		return axios
-			.put(`http://localhost:8001/websites/${this.website.name}`, this.website)
+			.put(`http://localhost:8001/websites/${this.website.name}`, this.website, {
+				headers : {
+					Authorization : `Bearer ${window.getToken()}`
+				}
+			})
 			.then((response) => {
 				return resolve();
 			});
@@ -107,7 +115,11 @@ _websitesEditorController.prototype.loadResource = function(path) {
 
 	return new Promise((resolve, reject) => {
 		axios
-			.get(`http://localhost:8001/websites/${this.website.name}/resource?path=${path}`)
+			.get(`http://localhost:8001/websites/${this.website.name}/resource?path=${path}`, {
+				headers : {
+					Authorization : `Bearer ${window.getToken()}`
+				}
+			})
 			.then((response) => {
 				this.resources[path] = response.data;
 
@@ -190,7 +202,11 @@ _websitesEditorController.prototype.removeTag = function(num) {
 _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 	this.caller = caller;
 	return axios
-		.get(`http://localhost:8001/websites/${name}`)
+		.get(`http://localhost:8001/websites/${name}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.website = response.data;
 

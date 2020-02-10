@@ -3,6 +3,7 @@
 	"version": "0.0.1",
 	"dependencies": {
 		"chokidar": "^3.3.1",
+		"jsonwebtoken": "^8.5.1",
 		"request": "^2.88.0"
 	}
 }

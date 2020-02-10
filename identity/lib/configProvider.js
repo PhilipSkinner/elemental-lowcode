@@ -1,7 +1,8 @@
-const configProvider = function(glob, path, fs) {
+const configProvider = function(glob, path, fs, jose) {
 	this.glob = glob;
 	this.path = path;
 	this.fs = fs;
+	this.jose = jose;
 };
 
 configProvider.prototype.getClients = function(dir) {
@@ -58,6 +59,26 @@ configProvider.prototype.generateAdminClient = function(secret) {
 	});
 };
 
+configProvider.prototype.addJwks = function() {
+	return new Promise((resolve, reject) => {
+		//const keystore = this.jose.JWK.createKeyStore();
+
+		//keystore.add(process.env.SIG, "pem").then(function(result) {
+	    //	return resolve(result.toJSON(true));
+		//});
+
+		const keystore = new this.jose.JWKS.KeyStore();
+
+		keystore.add(this.jose.JWK.asKey({
+			key : process.env.SIG,
+			format : 'pem',
+			type : 'pkcs8'
+		}));
+
+		return resolve(keystore.toJWKS(true));
+	});
+};
+
 configProvider.prototype.fetchConfig = function(dir, secret) {
 	const config = {
 		formats: {
@@ -71,13 +92,15 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
 		return this.generateAdminClient(secret);
 	}).then((adminClient) => {
 		config.clients.push(adminClient);
-
-		console.log(config.clients);
+		return this.addJwks();
+	}).then((jwks) => {
+		console.log(jwks);
+		config.jwks = jwks;
 		return Promise.resolve(config);
 	});
 };
 
-module.exports = function(glob, path, fs) {
+module.exports = function(glob, path, fs, jose) {
 	if (!glob) {
 		glob = require('glob');
 	}
@@ -90,5 +113,9 @@ module.exports = function(glob, path, fs) {
 		fs = require('fs');
 	}
 
-	return new configProvider(glob, path, fs);
+	if (!jose) {
+		jose = require('jose');
+	}
+
+	return new configProvider(glob, path, fs, jose);
 };

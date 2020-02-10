@@ -22,3 +22,18 @@
 * Version control support (git on sources)
 * Deploy as docker images
 * Progressive enhancement of events etc
+
+# Identity
+
+* Need user database
+* Need roles for users
+* Need to define client id/secrets for client/client comms:
+** Interfaces
+** APIs
+* Need to define client id/secrets for user/client comms:
+** Interfaces
+* Auto-defined roles on data entities
+* Auto-defined roles on integrations
+* Roles defined on API endpoints
+* Roles defined for requiring access on routes on websites
+* Bearer token validation on all APIs

@@ -1,3 +1,15 @@
+window.getToken = function() {	
+	let token = null;
+	document.cookie.split(';').forEach((c) => {
+		let p = c.split('=');
+		if (p[0] === 'token') {
+			token = p[1];
+		}
+	});
+
+	return token;
+};
+
 templates.fetchTemplates().then(() => {
 	const pages = [
 		'/js/pages/data.js',

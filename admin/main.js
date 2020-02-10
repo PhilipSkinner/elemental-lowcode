@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 	if (req.cookies.token && req.cookies.token !== 'undefined') {
 		//write the contents of our index.html file
 		res.write(fs.readFileSync(path.join(process.env.DIR, 'interface/index.html')));
+		res.end();
 		return;
 	}
 
@@ -46,7 +47,7 @@ app.get('/auth', (req, res) => {
  
 	oauth2.authorizationCode.getToken(tokenConfig).then((result) => {
 		const accessToken = oauth2.accessToken.create(result);
-		
+
 		//set the access token as a cookie
 		res.cookie('token', accessToken.token.access_token, {
 			expires : accessToken.token.expires_at,

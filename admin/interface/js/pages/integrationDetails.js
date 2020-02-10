@@ -17,7 +17,11 @@ _integrationDetailController.prototype.getData = function() {
 _integrationDetailController.prototype.fetchType = function(name) {
 	this.name = name;
 	return axios
-		.get('http://localhost:8001/integrations/' + name)
+		.get('http://localhost:8001/integrations/' + name, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			this.integration = response.data;
 			this.caller.integration = response.data;

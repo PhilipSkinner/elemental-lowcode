@@ -11,7 +11,11 @@ _websitesController.prototype.getWebsites = function() {
 
 _websitesController.prototype.fetchWebsites = function(caller) {
 	return axios
-		.get('http://localhost:8001/websites')
+		.get('http://localhost:8001/websites', {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
 		.then((response) => {
 			response.data = response.data.map((w) => {
 				w.url = `http://localhost:8005/${w.name}/`;
