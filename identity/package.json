@@ -2,6 +2,7 @@
 	"name": "identity",
 	"version": "0.0.1",
 	"dependencies": {
+		"glob": "^7.1.6",
 		"oidc-provider": "^6.20.1"
 	}
 }

@@ -8,15 +8,15 @@ const serviceRunner = function(childProcess) {
 	}
 };
 
-serviceRunner.prototype.runService = function(name, script, port, dir) {	
+serviceRunner.prototype.runService = function(name, script, port, dir, other) {	
 	const proc = this.childProcess.spawn(this.nodeProcess, [
 		script
 	], {
 		cwd 	: process.cwd(),
-		env 	: Object.assign(process.env, {
+		env 	: Object.assign(Object.assign(process.env, {
 			PORT 	: port,
 			DIR 	: dir
-		})
+		}), other || {})
 	});
 
 	proc.on('error', (data) => {

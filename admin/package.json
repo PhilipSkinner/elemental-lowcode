@@ -2,6 +2,8 @@
 	"name": "admin",
 	"version": "0.0.1",
 	"dependencies": {
-		"express": "^4.17.1"
+		"cookie-parser": "^1.4.4",
+		"express": "^4.17.1",
+		"simple-oauth2": "^3.3.0"
 	}
 }
