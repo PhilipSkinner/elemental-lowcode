@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 
 	const authorizationUri = oauth2.authorizationCode.authorizeURL({
     	redirect_uri 	: 'http://localhost:8002/auth',
-    	scope 			: 'openid'
+    	scope 			: 'openid roles'
   	});
 
   	res.redirect(authorizationUri);
@@ -42,7 +42,7 @@ app.get('/auth', (req, res) => {
 	const tokenConfig = {
     	code: req.query.code,
     	redirect_uri: 'http://localhost:8002/auth',
-    	scope: 'openid',
+    	scope: 'openid roles',
   	};
  
 	oauth2.authorizationCode.getToken(tokenConfig).then((result) => {
@@ -53,6 +53,9 @@ app.get('/auth', (req, res) => {
 			expires : accessToken.token.expires_at,
 		});
 		res.redirect('/');
+	}).catch((err) => {		
+		res.write('Error');
+		res.end();
 	});
 });
 

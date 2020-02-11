@@ -3,3 +3,4 @@ storage/.store
 */package-lock.json
 kernel/.sources
 kernel/.store
+*.key

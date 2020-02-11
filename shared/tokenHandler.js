@@ -10,8 +10,6 @@ tokenHandler.prototype.tokenCheck = function(req, res, next) {
 	}
 
 	if (token) {
-		console.log(token, this.pubKey);
-
 		this.jwt.verify(token, this.pubKey, { algorithms: ['RS256'] }, (err, decoded) => {
 			if (err) {
 				res.status(401);

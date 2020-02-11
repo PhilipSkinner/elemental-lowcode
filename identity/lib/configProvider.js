@@ -1,8 +1,10 @@
-const configProvider = function(glob, path, fs, jose) {
+const configProvider = function(glob, path, fs, jose, userDB, db) {
 	this.glob = glob;
 	this.path = path;
 	this.fs = fs;
 	this.jose = jose;
+	this.userDB = userDB;
+	this.db = db;
 };
 
 configProvider.prototype.getClients = function(dir) {
@@ -53,6 +55,7 @@ configProvider.prototype.generateAdminClient = function(secret) {
 	return Promise.resolve({
 		client_id : 'elemental_admin',
 		client_secret : secret,
+		scope : 'openid roles',
 		redirect_uris : [
 			'http://localhost:8002/auth'
 		]
@@ -61,12 +64,6 @@ configProvider.prototype.generateAdminClient = function(secret) {
 
 configProvider.prototype.addJwks = function() {
 	return new Promise((resolve, reject) => {
-		//const keystore = this.jose.JWK.createKeyStore();
-
-		//keystore.add(process.env.SIG, "pem").then(function(result) {
-	    //	return resolve(result.toJSON(true));
-		//});
-
 		const keystore = new this.jose.JWKS.KeyStore();
 
 		keystore.add(this.jose.JWK.asKey({
@@ -79,12 +76,56 @@ configProvider.prototype.addJwks = function() {
 	});
 };
 
+configProvider.prototype.addCookies = function() {
+	return new Promise((resolve, reject) => {
+		let secretOne = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join('').replace(/[^a-z]+/g, '');
+		let secretTwo = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join('').replace(/[^a-z]+/g, '');
+
+		return resolve({
+			keys : [secretOne]
+		});
+	});
+};
+
+configProvider.prototype.addAdapter = function() {
+	return new Promise((resolve, reject) => {
+		this.db.connect().then(() => {
+			return resolve(this.db);
+		});
+	});
+};
+
 configProvider.prototype.fetchConfig = function(dir, secret) {
 	const config = {
 		formats: {
     		AccessToken		: 'jwt',
     		IdentityToken 	: 'jwt'
-  		}
+  		},
+  		conformIdTokenClaims : false,
+  		features : {
+			devInteractions : {
+  				enabled : false
+  			}
+  		},
+  		scopes : [
+  			'openid',
+  			'offline_access',
+  			'roles'
+  		],
+  		claims : {
+		  acr: null,
+		  auth_time: null,
+		  iss: null,
+		  openid: [
+		    'sub',
+		    'email'
+		  ],
+		  roles : [
+		  	'role',
+		  	'roles'
+		  ],
+		  sid: null
+		}
 	};
 
 	return this.getClients(dir).then((clients) => {
@@ -94,13 +135,22 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
 		config.clients.push(adminClient);
 		return this.addJwks();
 	}).then((jwks) => {
-		console.log(jwks);
 		config.jwks = jwks;
+		return this.addCookies();
+	}).then((cookies) => {
+		config.cookies = cookies;
+		return this.addAdapter();
+	}).then((adapter) => {
+		config.adapter = adapter;
+
+		//add our account options
+		config.findAccount = this.userDB.findAccount;		
+		config.extraAccessTokenClaims = this.userDB.extraAccessTokenClaims;
 		return Promise.resolve(config);
 	});
 };
 
-module.exports = function(glob, path, fs, jose) {
+module.exports = function(glob, path, fs, jose, keygrip, userDB, db) {
 	if (!glob) {
 		glob = require('glob');
 	}
@@ -117,5 +167,13 @@ module.exports = function(glob, path, fs, jose) {
 		jose = require('jose');
 	}
 
-	return new configProvider(glob, path, fs, jose);
+	if (!userDB) {
+		userDB = require('./account')();
+	}
+
+	if (!db) {
+		db = require('./db')();
+	}
+
+	return new configProvider(glob, path, fs, jose, userDB, db);
 };

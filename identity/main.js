@@ -1,10 +1,24 @@
 const 
 	Provider 		= require('oidc-provider'),
-	clientProvider 	= require('./lib/configProvider')();
+	clientProvider 	= require('./lib/configProvider')(),
+	path = require('path'),
+	set = require('lodash/set'),
+	express = require('express'),
+	routes = require('./lib/routes');
+
+const { PORT = 3000, ISSUER = `http://localhost:${PORT}` } = process.env;
+const app = express();
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+let server;
 
 clientProvider.fetchConfig(process.env.DIR, process.env.SECRET).then((config) => {
-	const oidc = new Provider(`http://localhost:${process.env.PORT}`, config);
-	const server = oidc.listen(process.env.PORT, () => {
-  		console.log(`oidc-provider listening on port ${process.env.PORT}, check http://localhost:${process.env.PORT}/.well-known/openid-configuration`);
-	});
+  const provider = new Provider(ISSUER, config);
+
+  routes(app, provider);
+  app.use(provider.callback);
+  server = app.listen(PORT, () => {
+    console.log(`application is listening on port ${PORT}, check its /.well-known/openid-configuration`);
+  });
 });

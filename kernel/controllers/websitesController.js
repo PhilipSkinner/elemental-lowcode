@@ -1,6 +1,7 @@
-const websitesController = function(app, fileLister) {
+const websitesController = function(app, fileLister, roleCheckHandler) {
 	this.app = app;
 	this.fileLister = fileLister;
+	this.roleCheckHandler = roleCheckHandler;
 
 	this.initEndpoints();
 };
@@ -46,17 +47,21 @@ websitesController.prototype.createOrUpdateResource = function(req, res, next) {
 };
 
 websitesController.prototype.initEndpoints = function() {
-	this.app.get('/websites', this.get.bind(this));
-	this.app.get('/websites/:name', this.getWebsite.bind(this));
-	this.app.put('/websites/:name', this.updateWebsite.bind(this));
-	this.app.get('/websites/:name/resource', this.getResource.bind(this));
-	this.app.post('/websites/:name/resource', this.createOrUpdateResource.bind(this));
+	this.app.get('/websites', 					this.roleCheckHandler.enforceRoles(this.get.bind(this), 					['website_reader', 'website_admin', 'system_reader', 'system_admin']));
+	this.app.get('/websites/:name', 			this.roleCheckHandler.enforceRoles(this.getWebsite.bind(this), 				['website_reader', 'website_admin', 'system_reader', 'system_admin']));
+	this.app.put('/websites/:name', 			this.roleCheckHandler.enforceRoles(this.updateWebsite.bind(this), 			['website_writer', 'website_admin', 'system_writer', 'system_admin']));
+	this.app.get('/websites/:name/resource', 	this.roleCheckHandler.enforceRoles(this.getResource.bind(this), 			['website_writer', 'website_admin', 'system_writer', 'system_admin']));
+	this.app.post('/websites/:name/resource', 	this.roleCheckHandler.enforceRoles(this.createOrUpdateResource.bind(this), 	['website_writer', 'website_admin', 'system_writer', 'system_admin']));
 };
 
-module.exports = function(app, fileLister) {
+module.exports = function(app, fileLister, roleCheckHandler) {
 	if (!fileLister) {
 		fileLister = require('../lib/fileLister')();
 	}
 
-	return new websitesController(app, fileLister);
+	if (!roleCheckHandler) {
+		roleCheckHandler = require('../../shared/roleCheckHandler')();
+	}
+
+	return new websitesController(app, fileLister, roleCheckHandler);
 };

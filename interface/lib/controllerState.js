@@ -17,6 +17,13 @@ controllerState.prototype.generateResponseHeaders = function() {
 	this.controllerDefinition.sessionState.generateResponseHeaders();
 };
 
+controllerState.prototype.deallocate = function() {
+	this.controllerDefinition.sessionState.deallocate();
+	this.controllerDefinition = null;
+	this.request = null;
+	this.response = null;
+};
+
 controllerState.prototype.getBag = function() {
 	return this.controllerDefinition.bag;
 };

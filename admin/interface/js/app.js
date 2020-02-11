@@ -10,6 +10,11 @@ window.getToken = function() {
 	return token;
 };
 
+window.logout = function() {
+	document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+	location.href = '/';
+};
+
 templates.fetchTemplates().then(() => {
 	const pages = [
 		'/js/pages/data.js',

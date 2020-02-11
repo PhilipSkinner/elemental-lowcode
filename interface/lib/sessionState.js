@@ -23,6 +23,12 @@ sessionState.prototype.setContext = function(request, response) {
 	this.response = response;
 };
 
+sessionState.prototype.deallocate = function() {
+	this.request = null;
+	this.response = null;
+	this.sessionData = null;
+};
+
 sessionState.prototype.generateResponseHeaders = function() {
 	if (!this.sessionData) {
 		this.sessionData = this.retrieveSession();

@@ -1,6 +1,7 @@
-const rulesController = function(app, fileLister, path) {
+const rulesController = function(app, fileLister, roleCheckHandler) {
 	this.app = app;
 	this.fileLister = fileLister;
+	this.roleCheckHandler = roleCheckHandler;
 
 	this.initEndpoints();
 };
@@ -38,16 +39,20 @@ rulesController.prototype.create = function(req, res, next) {
 };
 
 rulesController.prototype.initEndpoints = function() {
-	this.app.get('/rules', this.get.bind(this));
-	this.app.get('/rules/:name', this.getSingular.bind(this));
-	this.app.put('/rules/:name', this.update.bind(this));
-	this.app.post('/rules', this.create.bind(this));
+	this.app.get('/rules', 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		['rule_reader', 'rule_admin', 'system_reader', 'system_admin']));
+	this.app.get('/rules/:name', 	this.roleCheckHandler.enforceRoles(this.getSingular.bind(this), ['rule_reader', 'rule_admin', 'system_reader', 'system_admin']));
+	this.app.put('/rules/:name', 	this.roleCheckHandler.enforceRoles(this.update.bind(this), 		['rule_writer', 'rule_admin', 'system_writer', 'system_admin']));
+	this.app.post('/rules', 		this.roleCheckHandler.enforceRoles(this.create.bind(this), 		['rule_writer', 'rule_admin', 'system_writer', 'system_admin']));
 };
 
-module.exports = function(app, fileLister, path) {
+module.exports = function(app, fileLister, path, roleCheckHandler) {
 	if (!fileLister) {
 		fileLister = require('../lib/fileLister')();
 	}
 
-	return new rulesController(app, fileLister);
+	if (!roleCheckHandler) {
+		roleCheckHandler = require('../../shared/roleCheckHandler')();
+	}
+
+	return new rulesController(app, fileLister, roleCheckHandler);
 };

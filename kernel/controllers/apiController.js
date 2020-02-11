@@ -1,6 +1,7 @@
-const apiController = function(app, fileLister, path) {
+const apiController = function(app, fileLister, path, roleCheckHandler) {
 	this.app = app;
 	this.fileLister = fileLister;
+	this.roleCheckHandler = roleCheckHandler;
 
 	this.initEndpoints();
 };
@@ -53,26 +54,30 @@ apiController.prototype.createService = function(req, res, next) {
 };
 
 apiController.prototype.initEndpoints = function() {
-	this.app.get('/apis', this.getApis.bind(this));	
-	this.app.get('/apis/:name', this.getApi.bind(this));	
-	this.app.get('/apis/:name/services/:service', this.getService.bind(this));	
-	this.app.get('/apis/:name/controllers/:controller', this.getController.bind(this));
+	this.app.get('/apis', 								this.roleCheckHandler.enforceRoles(this.getApis.bind(this), 			['api_reader', 'api_admin', 'system_reader', 'system_admin']));	
+	this.app.get('/apis/:name', 						this.roleCheckHandler.enforceRoles(this.getApi.bind(this), 				['api_reader', 'api_admin', 'system_reader', 'system_admin']));	
+	this.app.get('/apis/:name/services/:service', 		this.roleCheckHandler.enforceRoles(this.getService.bind(this), 			['api_reader', 'api_admin', 'system_reader', 'system_admin']));	
+	this.app.get('/apis/:name/controllers/:controller', this.roleCheckHandler.enforceRoles(this.getController.bind(this), 		['api_reader', 'api_admin', 'system_reader', 'system_admin']));
 
 	//create
-	this.app.post('/apis', this.createApi.bind(this));
-	this.app.post('/apis/:name/services', this.createService.bind(this));
-	this.app.post('/apis/:name/controllers', this.createController.bind(this));
+	this.app.post('/apis', 								this.roleCheckHandler.enforceRoles(this.createApi.bind(this), 			['api_writer', 'api_admin', 'system_writer', 'system_admin']));
+	this.app.post('/apis/:name/services', 				this.roleCheckHandler.enforceRoles(this.createService.bind(this), 		['api_writer', 'api_admin', 'system_writer', 'system_admin']));
+	this.app.post('/apis/:name/controllers', 			this.roleCheckHandler.enforceRoles(this.createController.bind(this), 	['api_writer', 'api_admin', 'system_writer', 'system_admin']));
 
 	//update
-	this.app.put('/apis/:name', this.updateApi.bind(this));
-	this.app.put('/apis/:name/services/:service', this.updateService.bind(this));
-	this.app.put('/apis/:name/controllers/:controller', this.updateController.bind(this));	
+	this.app.put('/apis/:name', 						this.roleCheckHandler.enforceRoles(this.updateApi.bind(this), 			['api_writer', 'api_admin', 'system_writer', 'system_admin']));
+	this.app.put('/apis/:name/services/:service', 		this.roleCheckHandler.enforceRoles(this.updateService.bind(this), 		['api_writer', 'api_admin', 'system_writer', 'system_admin']));
+	this.app.put('/apis/:name/controllers/:controller', this.roleCheckHandler.enforceRoles(this.updateController.bind(this), 	['api_writer', 'api_admin', 'system_writer', 'system_admin']));	
 };
 
-module.exports = function(app, fileLister, path) {
+module.exports = function(app, fileLister, path, roleCheckHandler) {
 	if (!fileLister) {
 		fileLister = require('../lib/fileLister')();
 	}	
 
-	return new apiController(app, fileLister);
+	if (!roleCheckHandler) {
+		roleCheckHandler = require('../../shared/roleCheckHandler')();
+	}
+
+	return new apiController(app, fileLister, roleCheckHandler);
 };
