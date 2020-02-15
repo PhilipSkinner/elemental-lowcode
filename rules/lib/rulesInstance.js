@@ -1,8 +1,9 @@
-const rulesInstance = function(app, definition, ajv, comparitorService) {
+const rulesInstance = function(app, definition, ajv, comparitorService, roleCheckHandler) {
 	this.app = app;
 	this.definition = definition;
 	this.ajv = ajv;
 	this.comparitorService = comparitorService;
+	this.roleCheckHandler = roleCheckHandler;
 };
 
 rulesInstance.prototype.executeRules = function(req, res, next) {
@@ -42,13 +43,20 @@ rulesInstance.prototype.executeRules = function(req, res, next) {
 
 rulesInstance.prototype.init = function() {
 	return new Promise((resolve, reject) => {
+		const execRoles = [
+			'system_admin',
+			'system_exec',
+			'roles_exec',
+			`${this.definition.name}_exec`
+		];
+
 		console.log(`Hosting ${this.definition.name} on /${this.definition.name}`);
-		this.app.post(`/${this.definition.name}`, this.executeRules.bind(this));
+		this.app.post(`/${this.definition.name}`, this.roleCheckHandler.enforceRoles(this.executeRules.bind(this), execRoles));
 		return resolve();
 	});
 };
 
-module.exports = function(app, definition, ajv, comparitorService) {
+module.exports = function(app, definition, ajv, comparitorService, roleCheckHandler) {
 	if (!ajv) {
 		ajv = require('ajv')({
 			allErrors : true
@@ -59,5 +67,9 @@ module.exports = function(app, definition, ajv, comparitorService) {
 		comparitorService = require('./comparitorService')();
 	}
 
-	return new rulesInstance(app, definition, ajv, comparitorService);
+	if (!roleCheckHandler) {
+		roleCheckHandler = require('../../shared/roleCheckHandler')();
+	}
+
+	return new rulesInstance(app, definition, ajv, comparitorService, roleCheckHandler);
 };
