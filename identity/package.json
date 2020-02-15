@@ -2,6 +2,7 @@
 	"name": "identity",
 	"version": "0.0.1",
 	"dependencies": {
+		"bcrypt": "^3.0.8",
 		"express": "^4.17.1",
 		"glob": "^7.1.6",
 		"jose": "^1.22.2",

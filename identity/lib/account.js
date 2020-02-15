@@ -1,6 +1,10 @@
-module.exports = function(db) {
+module.exports = function(db, bcrypt) {
   if (!db) {
     db = require('./db')();
+  }
+
+  if (!bcrypt) {
+    bcrypt = require('bcrypt');
   }
 
   const userDB = new db("User");
@@ -24,7 +28,8 @@ module.exports = function(db) {
         return null;
       }      
 
-      if (user.password !== password) {
+      const isMatch = await Account.checkPassword(user.password, password);
+      if (!isMatch) {
         return null;
       }      
 
@@ -48,9 +53,35 @@ module.exports = function(db) {
       };        
     }
 
+    static async checkPassword(hashed, plain) {
+      return new Promise((resolve, reject) => {
+        bcrypt.compare(plain, hashed, (err, result) => {
+          if (err) {
+            return reject(err);
+          }
+
+          return resolve(result);
+        });
+      });
+    }
+
+    static async generatePassword(plain) {
+      return new Promise((resolve, reject) => {
+        bcrypt.hash(plain, 10, (err, hash) => {
+          if (err) {
+            return reject(err);
+          }
+
+          return resolve(hash);
+        })
+      });
+    }
+
     static async registerUser(username, password) {
+      const hashed = await Account.generatePassword(password);
+
       await userDB.upsert(username, {
-        password : password,
+        password : hashed,
         claims : {
           roles : [
             "system_admin"
