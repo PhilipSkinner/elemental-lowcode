@@ -5,6 +5,7 @@ const tokenHandler = function(pubKey, jwt) {
 
 tokenHandler.prototype.tokenCheck = function(req, res, next) {
 	let token = req.headers['x-access-token'] || req.headers['authorization'] || '';
+
 	if (token.startsWith('Bearer ')) {
 		token = token.slice(7, token.length);
 	}
@@ -12,6 +13,7 @@ tokenHandler.prototype.tokenCheck = function(req, res, next) {
 	if (token) {
 		this.jwt.verify(token, this.pubKey, { algorithms: ['RS256'] }, (err, decoded) => {
 			if (err) {
+				console.log("Invalid bearer token received on", req.path);
 				res.status(401);
 				res.end();
 				return;

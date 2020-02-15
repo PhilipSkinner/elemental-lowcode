@@ -2,11 +2,13 @@ const
 	express 		= require('express'),
 	cors 			= require('cors'),
 	bodyParser 		= require('body-parser'),
+	tokenHandler 	= require('../shared/tokenHandler'),
 	hotreload 		= require('../shared/hotReload')();
 
 let app = null;
 let server = null;
 let restarting = false;
+let tHandler = tokenHandler(process.env.SIG);
 
 const startup = () => {
 	app = express();
@@ -21,6 +23,7 @@ const startup = () => {
 		console.log("Request on", res.path);
 		next();
 	});
+	app.use(tHandler.tokenCheck.bind(tHandler));
 
 	storageEngine.init(process.env.DIR).then(() => {
 		console.log("Hotreload complete");

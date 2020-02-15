@@ -25,8 +25,6 @@
 
 # Identity
 
-* Need user database
-* Need roles for users
 * Need to define client id/secrets for client/client comms:
 ** Interfaces
 ** APIs

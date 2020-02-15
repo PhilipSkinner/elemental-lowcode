@@ -8,10 +8,9 @@ const dataController = function(app, fileLister, storageService, roleCheckHandle
 };
 
 dataController.prototype.getDataTypes = function(req, res, next) {
-	this.fileLister.executeGlob('.sources/data/**/*.json').then((results) => {
-		//for each, fetch the total number of entities currently in the store
+	this.fileLister.executeGlob('.sources/data/**/*.json').then((results) => {		
 		Promise.all(results.map((r) => {
-			return this.storageService.detailCollection(r.name);
+			return this.storageService.detailCollection(r.name, req.headers.authorization.replace('Bearer ', ''));
 		})).then((details) => {
 			//map into our results
 			for (var i = 0; i < results.length; i++) {

@@ -40,11 +40,21 @@ serviceRunner.runService('admin', 		'../admin/main.js', 		8002, '../admin', {
 	SECRET 	: secret,
 	SIG 	: keys.public
 });
-serviceRunner.runService('api', 		'../api/main.js', 			8003, '.sources/api');
-serviceRunner.runService('integration', '../integration/main.js', 	8004, '.sources/integration');
-serviceRunner.runService('interface', 	'../interface/main.js', 	8005, '.sources/website');
-serviceRunner.runService('storage', 	'../storage/main.js', 		8006, '.sources/data');
-serviceRunner.runService('rules', 		'../rules/main.js', 		8007, '.sources/rules');
+serviceRunner.runService('api', 		'../api/main.js', 			8003, '.sources/api', {
+	SIG 	: keys.public
+});
+serviceRunner.runService('integration', '../integration/main.js', 	8004, '.sources/integration', {
+	SIG 	: keys.public
+});
+serviceRunner.runService('interface', 	'../interface/main.js', 	8005, '.sources/website', {
+	SIG 	: keys.public
+});
+serviceRunner.runService('storage', 	'../storage/main.js', 		8006, '.sources/data', {
+	SIG 	: keys.public
+});
+serviceRunner.runService('rules', 		'../rules/main.js', 		8007, '.sources/rules', {
+	SIG 	: keys.public
+});
 serviceRunner.runService('identity', 	'../identity/main.js', 		8008, '.sources/identity', {
 	SECRET 	: secret,
 	SIG		: keys.private

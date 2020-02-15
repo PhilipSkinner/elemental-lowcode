@@ -1,9 +1,10 @@
-const typeInstance = function(store, app, definition, uuid, ajv) {
-	this.store 		= store;
-	this.app 		= app;
-	this.definition = definition;
-	this.uuid 		= uuid;
-	this.ajv 		= ajv;
+const typeInstance = function(store, app, definition, uuid, ajv, roleCheckHandler) {
+	this.store 				= store;
+	this.app 				= app;
+	this.definition 		= definition;
+	this.uuid 				= uuid;
+	this.ajv 				= ajv;
+	this.roleCheckHandler 	= roleCheckHandler;
 
 	//setup the _id property
 	this.definition.schema.properties["_id"] = {
@@ -208,34 +209,47 @@ typeInstance.prototype.patchHandler = function(req, res) {
 
 typeInstance.prototype.init = function() {
 	return new Promise((resolve, reject) => {
+		const readerRoles = [
+			'system_admin',
+			'system_reader',
+			'data_reader',
+			this.definition.name + '_reader'
+		];
+		const writerRoles = [
+			'system_admin',
+			'system_writer',
+			'data_writer',
+			this.definition.name + '_writer'
+		];
+
 		console.log(`Initializing type ${this.definition.name}`);
 
 		console.log(`Hosting GET /${this.definition.name}`);
-		this.app.get(`/${this.definition.name}`, 			this.getHandler.bind(this));
+		this.app.get(`/${this.definition.name}`, 			this.roleCheckHandler.enforceRoles(this.getHandler.bind(this), 			readerRoles));
 
 		console.log(`Hosting GET /${this.definition.name}/.details`);
-		this.app.get(`/${this.definition.name}/.details`, 	this.getDetailsHandler.bind(this));
+		this.app.get(`/${this.definition.name}/.details`, 	this.roleCheckHandler.enforceRoles(this.getDetailsHandler.bind(this), 	readerRoles));
 
 		console.log(`Hosting POST /${this.definition.name}`);
-		this.app.post(`/${this.definition.name}`, 			this.createHandler.bind(this));
+		this.app.post(`/${this.definition.name}`, 			this.roleCheckHandler.enforceRoles(this.createHandler.bind(this), 		writerRoles));
 
 		console.log(`Hosting GET /${this.definition.name}/:id`);
-		this.app.get(`/${this.definition.name}/:id`, 		this.getSingleHandler.bind(this));
+		this.app.get(`/${this.definition.name}/:id`, 		this.roleCheckHandler.enforceRoles(this.getSingleHandler.bind(this), 	readerRoles));
 
 		console.log(`Hosting PUT /${this.definition.name}/:id`);
-		this.app.put(`/${this.definition.name}/:id`, 		this.updateHandler.bind(this));
+		this.app.put(`/${this.definition.name}/:id`, 		this.roleCheckHandler.enforceRoles(this.updateHandler.bind(this), 		writerRoles));
 
 		console.log(`Hosting DELETE /${this.definition.name}/:id`);
-		this.app.delete(`/${this.definition.name}/:id`, 	this.deleteHandler.bind(this));
+		this.app.delete(`/${this.definition.name}/:id`, 	this.roleCheckHandler.enforceRoles(this.deleteHandler.bind(this), 		writerRoles));
 
 		console.log(`Hosting PATCH /${this.definition.name}/:id`);
-		this.app.patch(`/${this.definition.name}/:id`, 		this.patchHandler.bind(this));
+		this.app.patch(`/${this.definition.name}/:id`, 		this.roleCheckHandler.enforceRoles(this.patchHandler.bind(this), 		writerRoles));
 
 		return resolve();
 	});
 }
 
-module.exports = function(store, app, definition, uuid, ajv) {
+module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler) {
 	if (!uuid) {
 		uuid = require('uuid/v4');
 	}
@@ -246,5 +260,9 @@ module.exports = function(store, app, definition, uuid, ajv) {
 		});
 	}
 
-	return new typeInstance(store, app, definition, uuid, ajv);
+	if (!roleCheckHandler) {
+		roleCheckHandler = require('../../shared/roleCheckHandler')();
+	}
+
+	return new typeInstance(store, app, definition, uuid, ajv, roleCheckHandler);
 };
