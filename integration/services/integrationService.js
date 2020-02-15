@@ -1,15 +1,23 @@
-const integrationService = function(app, configReader, integrationInstance) {
+const integrationService = function(app, configReader, integrationInstance, roleCheckHandler) {
 	this.app = app;
 	this.configReader = configReader;
 	this.integrationInstance = integrationInstance;
+	this.roleCheckHandler = roleCheckHandler;
 	this.hostedEndpoints = [];
 };
 
 integrationService.prototype.constructInstance = function(name, config) {
 	let instance = this.integrationInstance(name, config);	
+	const readerRoles = [
+		'system_admin',
+		'system_reader',
+		'integration_reader',
+		`${name}_reader`
+	];
+
 	if (config.method === "get") {
-		console.log("Starting", name, "on", `/${name}`);
-		this.app.get(`/${name}`, instance.handler.bind(instance));
+		console.log("Starting", name, "on", `/${name}`);		
+		this.app.get(`/${name}`, this.roleCheckHandler.enforceRoles(instance.handler.bind(instance), readerRoles));
 		this.hostedEndpoints.push(`/${name}`);
 	}
 };
@@ -22,18 +30,23 @@ integrationService.prototype.init = function(dir) {
 		});
 
 		console.log("Discovery endpoint hosted");
+		const discoveryRoles = [
+			'system_admin',
+			'system_reader',
+			'integration_reader'
+		];
 		//and add our discovery endpoint
-		this.app.get('/', (req, res, next) => {
+		this.app.get('/', this.roleCheckHandler.enforceRoles((req, res, next) => {
 			res.json({
 				endpoints : this.hostedEndpoints
 			});
 			next();
 			return;
-		});
+		}, discoveryRoles));
 	});
 }
 
-module.exports = function(app, configReader, integrationInstance) {
+module.exports = function(app, configReader, integrationInstance, roleCheckHandler) {
 	if (!configReader) {
 		configReader = require('./configReader')();
 	}
@@ -43,5 +56,9 @@ module.exports = function(app, configReader, integrationInstance) {
 		integrationInstance = require('./integrationInstance');
 	}
 
-	return new integrationService(app, configReader, integrationInstance);
+	if (!roleCheckHandler) {
+		roleCheckHandler = require('../../shared/roleCheckHandler')();
+	}
+
+	return new integrationService(app, configReader, integrationInstance, roleCheckHandler);
 }

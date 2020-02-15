@@ -1,13 +1,16 @@
 const
-	express 	= require('express'),
-	hotreload 	= require('../shared/hotReload')();
+	express 		= require('express'),
+	tokenHandler 	= require('../shared/tokenHandler'),
+	hotreload 		= require('../shared/hotReload')();
 
 let app = null;
 let server = null;
 let restarting = false;
+let tHandler = tokenHandler(process.env.SIG);
 
 const startup = () => {
 	app = express();
+	app.use(tHandler.tokenCheck.bind(tHandler));
 	let integrationService = require('./services/integrationService')(app);
 
 	//now init our integrations
