@@ -1,8 +1,9 @@
-const apiInstance = function(app, definition) {
+const apiInstance = function(app, definition, roleCheckHandler) {
 	this.app = app;
 	this.definition = definition;
 	this.singletons = {};
 	this.transatives = {};
+	this.roleCheckHandler = roleCheckHandler;
 };
 
 apiInstance.prototype.generateContainer = function() {
@@ -121,6 +122,18 @@ apiInstance.prototype.setupEndpoints = function() {
 	return new Promise((resolve, reject) => {
 		console.log(`Setting up API endpoints...`);
 
+		const readerRoles = [
+			'system_admin',
+			'system_reader',
+			'api_reader'
+		];
+
+		const writerRoles = [
+			'system_admin',
+			'system_writer',
+			'api_writer'
+		];
+
 		Object.keys(this.definition.routing).forEach((route) => {
 			let routeConfig = this.definition.routing[route];
 			let routePath = `/${this.definition.name}${route}`;
@@ -128,16 +141,16 @@ apiInstance.prototype.setupEndpoints = function() {
 
 			if (routeConfig.get) {
 				console.log(`Setting up GET on ${routePath}`);
-				this.app.get(routePath, (req, res, next) => {
+				this.app.get(routePath, this.roleCheckHandler.enforceRoles((req, res, next) => {
 					this.resolveController(routeConfig.get.controller)(req, res, next);
-				});
+				}, readerRoles));
 			}
 
 			if (routeConfig.post) {
 				console.log(`Setting up POST on ${routePath}`);
-				this.app.post(routePath, (req, res, next) => {
+				this.app.post(routePath, this.roleCheckHandler.enforceRoles((req, res, next) => {
 					this.resolveController(routeConfig.post.controller)(req, res, next);
-				});	
+				}, writerRoles));	
 			}
 		});
 
@@ -155,6 +168,10 @@ apiInstance.prototype.init = function() {
 	});
 };
 
-module.exports = function(app, definition) {
-	return new apiInstance(app, definition);
+module.exports = function(app, definition, roleCheckHandler) {
+	if (!roleCheckHandler) {
+		roleCheckHandler = require('../../shared/roleCheckHandler')();
+	}
+
+	return new apiInstance(app, definition, roleCheckHandler);
 };
