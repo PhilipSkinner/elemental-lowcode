@@ -1,6 +1,6 @@
 module.exports = function(db, bcrypt) {
   if (!db) {
-    db = require('./db')();
+    db = require('../../shared/db')();
   }
 
   if (!bcrypt) {
@@ -81,8 +81,9 @@ module.exports = function(db, bcrypt) {
       const hashed = await Account.generatePassword(password);
 
       await userDB.upsert(username, {
-        password : hashed,
-        claims : {
+        password    : hashed,
+        registered  : new Date(),
+        claims      : {
           roles : [
             "system_admin"
           ]

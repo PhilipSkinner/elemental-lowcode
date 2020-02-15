@@ -172,7 +172,7 @@ module.exports = function(glob, path, fs, jose, keygrip, userDB, db) {
 	}
 
 	if (!db) {
-		db = require('./db')();
+		db = require('../../shared/db')();
 	}
 
 	return new configProvider(glob, path, fs, jose, userDB, db);

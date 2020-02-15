@@ -8,7 +8,8 @@ const
 	rulesController 		= require('./controllers/rulesController'),
 	tokenHandler 			= require('../shared/tokenHandler'),
 	certProvider 			= require('../shared/certProvider')(),
-	websitesController 		= require('./controllers/websitesController');
+	websitesController 		= require('./controllers/websitesController'),
+	securityController 		= require('./controllers/securityController');
 
 const app = express();
 
@@ -25,11 +26,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
 app.use(tHandler.tokenCheck.bind(tHandler));
 
+//set our process dir for the identity db
+process.env.DIR = '.sources/identity';
+
 //init our controllers
 dataController(app);
 integrationsController(app);
 websitesController(app);
 rulesController(app);
+securityController(app);
 
 app.listen(8001);
 

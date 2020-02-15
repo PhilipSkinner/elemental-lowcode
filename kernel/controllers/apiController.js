@@ -1,4 +1,4 @@
-const apiController = function(app, fileLister, path, roleCheckHandler) {
+const apiController = function(app, fileLister, roleCheckHandler) {
 	this.app = app;
 	this.fileLister = fileLister;
 	this.roleCheckHandler = roleCheckHandler;
@@ -70,7 +70,7 @@ apiController.prototype.initEndpoints = function() {
 	this.app.put('/apis/:name/controllers/:controller', this.roleCheckHandler.enforceRoles(this.updateController.bind(this), 	['api_writer', 'api_admin', 'system_writer', 'system_admin']));	
 };
 
-module.exports = function(app, fileLister, path, roleCheckHandler) {
+module.exports = function(app, fileLister, roleCheckHandler) {
 	if (!fileLister) {
 		fileLister = require('../lib/fileLister')();
 	}	

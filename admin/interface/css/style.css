@@ -2812,6 +2812,13 @@ fieldset:disabled a.btn {
   border-radius: 0.2rem;
 }
 
+.btn-xs, .btn-group-xs > .btn {
+  padding: 0.15rem 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  border-radius: 0.2rem;
+}
+
 .btn-block {
   display: block;
   width: 100%;
@@ -11034,4 +11041,10 @@ body.sidebar-toggled footer.sticky-footer {
 .documentationWrapper {
   padding: 20px;
   color: #000;
+}
+
+.noResults {
+  text-align: center;
+  padding: 50px 0px;
+  font-style: italic;
 }

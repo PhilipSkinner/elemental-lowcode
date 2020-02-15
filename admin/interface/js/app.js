@@ -28,6 +28,10 @@ templates.fetchTemplates().then(() => {
 		'/js/pages/documentation.js',
 		'/js/pages/rules.js',
 		'/js/pages/rulesEditor.js',
+		'/js/pages/security.js',
+		'/js/pages/securityClientEditor.js',
+		'/js/pages/securityScopeEditor.js',
+		'/js/pages/securityUserEditor.js',
 	];
 
 	const loadPage = (file) => {
@@ -66,6 +70,7 @@ templates.fetchTemplates().then(() => {
 				path 		: '/',
 				component 	: Home
 			},
+			/* integrations endpoints */
 			{
 				path 		: '/integrations',
 				component 	: Integrations
@@ -80,10 +85,12 @@ templates.fetchTemplates().then(() => {
 				path 		: '/integrations/details/:name',
 				component	: IntegrationDetails
 			},
+			/* api endpoints */
 			{
 				path 		: '/apis',
 				component 	: Apis
 			},
+			/* data type endpoints */
 			{
 				path 		: '/data',
 				component 	: Data
@@ -98,6 +105,7 @@ templates.fetchTemplates().then(() => {
 				path 		: '/data/details/:type',
 				component 	: DataTypeDetails,
 			},
+			/* website/interface endpoints */
 			{
 				path 		: '/websites',
 				component 	: Websites
@@ -107,6 +115,7 @@ templates.fetchTemplates().then(() => {
 				path 		: '/websites/editor/:name',
 				component 	: WebsiteEditor
 			},
+			/* documentation endpoints */
 			{
 				path 		: '/documentation',
 				component	: Documentation,
@@ -115,6 +124,7 @@ templates.fetchTemplates().then(() => {
 				path 		: '/documentation/:page',
 				component	: Documentation,
 			},
+			/* ruleset endpoints */
 			{
 				path 		: '/rulesets',
 				component 	: Rules
@@ -123,6 +133,27 @@ templates.fetchTemplates().then(() => {
 				name 		: 'rulesetEditor',
 				path 		: '/rulesets/editor/:name',
 				component 	: RulesEditor
+			},
+			/* security endpoints */
+			{
+				name 		: 'security',
+				path 		: '/security',
+				component	: Security
+			},
+			{
+				name 		: 'securityScopeEditor',
+				path 		: '/security/scope/:name',
+				component 	: SecurityScopeEditor
+			},
+			{
+				name 		: 'securityClientEditor',
+				path 		: '/security/client/:id',
+				component 	: SecurityClientEditor
+			},
+			{
+				name 		: 'securityUserEditor',
+				path 		: '/security/user/:id',
+				component	: SecurityUserEditor
 			}
 		];
 

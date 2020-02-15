@@ -52,4 +52,3 @@
 ** Scope to claims
 ** Add/update users & user claims
 * Need command line tool to setup an initial administrative account
-* Password encryption

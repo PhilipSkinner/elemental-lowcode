@@ -65,6 +65,10 @@ module.exports = function(sequelize, path) {
       });
     }
 
+    async fetch() {
+      return await this.model.findAll();
+    }
+
     async find(id) {
       const found = await this.model.findByPk(id);
       if (!found) return undefined;

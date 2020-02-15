@@ -1,0 +1,248 @@
+<template id="template-security">
+	<div class="security">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<h1>Security</h1>
+				</div>				
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Configuration</h6>
+						</div>
+						<div class="card-body">
+							<p>
+								The following configuration options can be set on the Identity Provider.
+							</p>
+
+							<div class="float-right">
+								<router-link class="btn btn-sm btn-primary" :to="{ name : 'securityScopeEditor', params : { name : '.new' }}">
+									Add Scope
+								</router-link>
+							</div>
+
+							<p>
+								<b>Scopes</b>
+							</p>
+
+							<div class="table-responsive">
+								<table class="table table-bordered" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Options</th>
+										</tr>										
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Name</th>
+											<th>Options</th>
+										</tr>										
+									</tfoot>
+									<tbody>
+										<tr v-if="config.scopes.length === 0">
+											<td colspan="2">
+												<div class="noResults">
+													No scopes are currently configured.
+												</div>
+											</td>
+										</tr>
+										<tr v-for="scope in config.scopes">
+											<td>{{scope.name}}</td>
+											<td>
+												<a class="btn btn-success">
+													Modify
+												</a>
+												<a class="btn btn-danger">
+													Remove
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Clients</h6>
+						</div>
+						<div class="card-body">
+							<div class="float-right">
+								<router-link class="btn btn-sm btn-primary" :to="{ name : 'securityClientEditor', params : { id : '.new' }}">
+									Add Client
+								</router-link>
+							</div>
+
+							<p>
+								The following clients have been registered with the Identity Provider - this includes auto-generated clients for your applications.
+							</p>
+
+							<div class="table-responsive">
+								<table class="table table-bordered" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Client Id</th>
+											<th>Options</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Client Id</th>											
+											<th>Options</th>
+										</tr>
+									</tfoot>
+									<tbody>
+										<tr v-if="clients.length === 0">
+											<td colspan="2">
+												<div class="noResults">
+													There are no clients configured.
+												</div>
+											</td>
+										</tr>
+										<tr v-for="client in clients">
+											<td>
+												{{client.client_id}}
+											</td>
+											<td>
+												<router-link class="btn btn-sm btn-success" :to="{ name : 'securityClientEditor', params : { id : client.client_id }}">
+													Modify
+												</router-link>
+												<a class="btn btn-sm btn-danger" href="#">
+													Remove
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Users</h6>
+						</div>
+						<div class="card-body">
+							<div class="float-right">
+								<router-link class="btn btn-sm btn-primary" :to="{ name : 'securityUserEditor', params : { id : '.new' }}">
+									Add User
+								</router-link>
+							</div>
+
+							<p>
+								These are all the users currently registered within the Identity Provider.
+							</p>
+
+							<div class="table-responsive">
+								<table class="table table-bordered" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Username</th>
+											<th>Registered date</th>
+											<th>Roles</th>
+											<th>Options</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Username</th>
+											<th>Registered date</th>
+											<th>Roles</th>
+											<th>Options</th>
+										</tr>
+									</tfoot>
+									<tbody>
+										<tr v-if="users.length === 0">
+											<td colspan="4">
+												<div class="noResults">
+													No uses exist in the system, how are you seeing this?
+												</div>
+											</td>
+										</tr>
+										<tr v-for="user in users">
+											<td>
+												{{user.id}}
+											</td>
+											<td>
+												{{user.data.registered}}
+											</td>
+											<td>
+												<span v-for="role in user.data.claims.roles" class="btn btn-xs btn-primary">
+													{{role}}
+												</span>
+											</td>
+											<td>
+												<router-link class="btn btn-sm btn-success" :to="{ name : 'securityUserEditor', params : { id : user.id } }">
+													Modify
+												</router-link>
+												<a class="btn btn-sm btn-danger" href="#">
+													Remove
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="template-securityClientEditor">
+	<div class="securityClientEditor">
+		<div class="entityWrapper">
+			<div id="clientEditor" class="editorWindow"></div>
+		</div>
+		<div class="actionButtons">
+			<router-link to="/security" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_securityClientEditorControllerInstance.save();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+			{{error.description}}
+		</modal-error>
+		<alert text="Client saved!" v-bind:visible="showAlert"></alert>		
+	</div>
+</template>
+
+<template id="template-securityScopeEditor">
+	<div class="securityClientEditor">
+		<div class="entityWrapper">
+			<div id="scopeEditor" class="editorWindow"></div>
+		</div>
+		<div class="actionButtons">
+			<router-link to="/security" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_securityScopeEditorControllerInstance.save();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+			{{error.description}}
+		</modal-error>
+		<alert text="Scope saved!" v-bind:visible="showAlert"></alert>		
+	</div>
+</template>
+
+<template id="template-securityUserEditor">
+	<div class="securityClientEditor">
+		<div class="entityWrapper">
+			<div id="userEditor" class="editorWindow"></div>
+		</div>
+		<div class="actionButtons">
+			<router-link to="/security" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_securityUserEditorControllerInstance.save();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+			{{error.description}}
+		</modal-error>
+		<alert text="User saved!" v-bind:visible="showAlert"></alert>	
+	</div>
+</template>
