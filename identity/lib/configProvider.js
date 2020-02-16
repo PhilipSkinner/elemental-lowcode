@@ -9,7 +9,7 @@ const configProvider = function(glob, path, fs, jose, userDB, db) {
 
 configProvider.prototype.getClients = function(dir) {
 	return new Promise((resolve, reject) => {
-		this.glob(this.path.join(dir, '**/*.client.json'), (files) => {
+		this.glob(this.path.join(process.cwd(), dir, '**/*.client.json'), (err, files) => {
 			const allConfig = [];
 
 			const doNext = () => {
@@ -37,6 +37,10 @@ configProvider.prototype.getClients = function(dir) {
 						return res(config);
 					});
 				}).then((config) => {
+					if (!config) {
+						return Promise.resolve();
+					}
+
 					allConfig.push(config);
 					return doNext();
 				});
@@ -46,7 +50,61 @@ configProvider.prototype.getClients = function(dir) {
 				return resolve(allConfig);
 			}
 
-			return doNext().then(resolve).catch(reject);
+			return doNext().then(() => {
+				return resolve(allConfig);
+			}).catch(reject);
+		});
+	});
+};
+
+configProvider.prototype.getScopes = function(dir) {
+	console.log(this.path.join(process.cwd(), dir, '**/*.scope.json'));
+
+	return new Promise((resolve, reject) => {
+		this.glob(this.path.join(process.cwd(), dir, '**/*.scope.json'), (err, files) => {
+			const allConfig = [];
+
+			const doNext = () => {
+				return new Promise((res, rej) => {
+					if (files.length === 0) {
+						return res();
+					}
+
+					const scopeFile = files.pop();
+
+					this.fs.readFile(scopeFile, (err, data) => {
+						if (err) {
+							return rej(err);
+						}
+
+						let config = null;
+						try {
+							config = JSON.parse(data.toString('utf8'));
+						} catch(e) {}
+
+						if (config === null) {
+							return rej(new Error(`Cannot read scope config ${scopeFile}`));
+						}
+
+						return res(config);
+					});
+				}).then((config) => {
+					if (!config) {
+						return Promise.resolve();
+					}
+
+					allConfig.push(config);
+					return doNext();
+				});
+			};
+
+			if (typeof(files) === 'undefined' || files === null) {
+				return resolve(allConfig);
+			}
+
+			return doNext().then(() => {
+				return resolve(allConfig);
+			}).catch(reject);
 		});
 	});
 };
@@ -130,6 +188,13 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
 
 	return this.getClients(dir).then((clients) => {
 		config.clients = clients;
+		return this.getScopes(dir);
+	}).then((scopes) => {
+		//mix those scopes in
+		scopes.forEach((scope) => {
+			config.scopes.push(scope.name);
+			config.claims[scope.name] = scope.claims;
+		});
 		return this.generateAdminClient(secret);
 	}).then((adminClient) => {
 		config.clients.push(adminClient);
@@ -144,7 +209,7 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
 		config.adapter = adapter;
 
 		//add our account options
-		config.findAccount = this.userDB.findAccount;		
+		config.findAccount = this.userDB.findAccount;
 		config.extraAccessTokenClaims = this.userDB.extraAccessTokenClaims;
 		return Promise.resolve(config);
 	});

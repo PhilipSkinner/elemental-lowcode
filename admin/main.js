@@ -1,4 +1,4 @@
-const 
+const
 	express 		= require('express'),
 	path			= require('path'),
 	fs 				= require('fs'),
@@ -16,7 +16,7 @@ const credentials = {
 		authorizePath: '/auth',
 	}
 };
- 
+
 const oauth2 = auth.create(credentials);
 const app = express();
 app.use(cookieParser());
@@ -44,7 +44,7 @@ app.get('/auth', (req, res) => {
     	redirect_uri: 'http://localhost:8002/auth',
     	scope: 'openid roles',
   	};
- 
+
 	oauth2.authorizationCode.getToken(tokenConfig).then((result) => {
 		const accessToken = oauth2.accessToken.create(result);
 
@@ -53,7 +53,7 @@ app.get('/auth', (req, res) => {
 			expires : accessToken.token.expires_at,
 		});
 		res.redirect('/');
-	}).catch((err) => {		
+	}).catch((err) => {
 		res.write('Error');
 		res.end();
 	});

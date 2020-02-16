@@ -46,9 +46,4 @@
 ** Interfaces
 * Roles defined on API endpoints
 * Roles defined for requiring access on routes on websites
-* Need to be able to configure:
-** Scopes
-** Claims
-** Scope to claims
-** Add/update users & user claims
 * Need command line tool to setup an initial administrative account
