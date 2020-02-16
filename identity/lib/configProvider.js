@@ -111,10 +111,10 @@ configProvider.prototype.getScopes = function(dir) {
 
 configProvider.prototype.generateAdminClient = function(secret) {
 	return Promise.resolve({
-		client_id : 'elemental_admin',
-		client_secret : secret,
-		scope : 'openid roles',
-		redirect_uris : [
+		client_id 		: 'elemental_admin',
+		client_secret 	: secret,
+		scope 			: 'openid roles',
+		redirect_uris 	: [
 			'http://localhost:8002/auth'
 		]
 	});
@@ -156,13 +156,17 @@ configProvider.prototype.addAdapter = function() {
 configProvider.prototype.fetchConfig = function(dir, secret) {
 	const config = {
 		formats: {
-    		AccessToken		: 'jwt',
-    		IdentityToken 	: 'jwt'
+    		AccessToken			: 'jwt',
+    		IdentityToken 		: 'jwt',
+    		ClientCredentials 	: 'jwt'
   		},
   		conformIdTokenClaims : false,
   		features : {
 			devInteractions : {
   				enabled : false
+  			},
+  			clientCredentials : {
+  				enabled : true
   			}
   		},
   		scopes : [
@@ -210,7 +214,7 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
 
 		//add our account options
 		config.findAccount = this.userDB.findAccount;
-		config.extraAccessTokenClaims = this.userDB.extraAccessTokenClaims;
+		config.extraAccessTokenClaims = this.userDB.extraAccessTokenClaims(config.clients);
 		return Promise.resolve(config);
 	});
 };

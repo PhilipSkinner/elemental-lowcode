@@ -73,10 +73,10 @@ module.exports = (app, provider) => {
             details : details.prompt.details,
             params  : details.params,
             title   : 'Sign-in',
-            session : setails.session ? debug(details.session) : undefined            
+            session : setails.session ? debug(details.session) : undefined
           });
         }
-        case 'login': {          
+        case 'login': {
           return res.render('login', {
             authError : details.lastSubmission && details.lastSubmission.login && details.lastSubmission.login.account === null ? true : false,
             client    : client,
@@ -84,7 +84,7 @@ module.exports = (app, provider) => {
             details   : details.prompt.details,
             params    : details.params,
             title     : 'Sign-in',
-            session   : details.session ? debug(details.session) : undefined            
+            session   : details.session ? debug(details.session) : undefined
           });
         }
         case 'register': {
@@ -94,7 +94,7 @@ module.exports = (app, provider) => {
             details   : details.prompt.details,
             params    : details.params,
             title     : 'Register',
-            session   : details.session ? debug(details.session) : undefined            
+            session   : details.session ? debug(details.session) : undefined
           });
         }
         case 'consent': {
@@ -104,7 +104,7 @@ module.exports = (app, provider) => {
             details : details.prompt.details,
             params  : details.params,
             title   : 'Authorize',
-            session : details.session ? debug(details.session) : undefined            
+            session : details.session ? debug(details.session) : undefined
           });
         }
         default:
@@ -125,15 +125,18 @@ module.exports = (app, provider) => {
         },
       };
 
+      console.log("LOGIN", result);
+
       await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
     } catch (err) {
+      console.log(err);
       next(err);
     }
   });
 
   app.post('/interaction/:uid/register', setNoCache, body, async (req, res, next) => {
     try {
-      const details = await provider.interactionDetails(req, res);      
+      const details = await provider.interactionDetails(req, res);
       let account = await Account.findByLogin(req.body.login, req.body.password);
 
       const result = {
@@ -200,8 +203,12 @@ module.exports = (app, provider) => {
       consent.replace = false;
 
       const result = { consent };
+
+      console.log(result);
+
       await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true });
     } catch (err) {
+      console.log(err);
       next(err);
     }
   });

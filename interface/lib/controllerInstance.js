@@ -1,6 +1,7 @@
-const controllerInstance = function(routeDefinition, path, templateRenderer, fs, controllerState) {
+const controllerInstance = function(routeDefinition, path, passport, templateRenderer, fs, controllerState) {
 	this.routeDefinition = routeDefinition;
 	this.path = path;
+	this.passport = passport;
 	this.templateRenderer = templateRenderer;
 	this.fs = fs;
 	this.controllerState = controllerState;
@@ -28,6 +29,12 @@ controllerInstance.prototype.loadView = function() {
 };
 
 controllerInstance.prototype.handler = function(req, res, next) {
+	if (this.routeDefinition.roles) {
+		if (!(req.session && req.session.passport && req.session.passport.user && req.session.passport.user.accessToken)) {
+			return this.passport.authenticate('oauth2')(req, res, next);
+		}
+	}
+
 	//load our controller into its state machine
 	let module = this.path.join(process.cwd(), process.env.DIR, this.routeDefinition.controller);
 	delete require.cache[require.resolve(module)]
@@ -86,7 +93,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	});
 };
 
-module.exports = function(routeDefinition, templateRenderer, path, fs, controllerState) {
+module.exports = function(routeDefinition, templateRenderer, passport, path, fs, controllerState) {
 	if (!path) {
 		path = require('path');
 	}
@@ -99,5 +106,5 @@ module.exports = function(routeDefinition, templateRenderer, path, fs, controlle
 		controllerState = require('./controllerState');
 	}
 
-	return new controllerInstance(routeDefinition, path, templateRenderer, fs, controllerState);
+	return new controllerInstance(routeDefinition, path, passport, templateRenderer, fs, controllerState);
 };

@@ -13,6 +13,7 @@ const startup = () => {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended : false }));
 	app.use(cookieParser());
+
 	let websiteService 	= require('./lib/websiteService')(app);
 
 	websiteService.init(process.env.DIR).then(() => {

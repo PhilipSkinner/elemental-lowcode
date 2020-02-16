@@ -5,7 +5,8 @@ const templateProvider = function() {
 		'/js/templates/documentation.html',
 		'/js/templates/integrations.html',
 		'/js/templates/dataTypes.html',
-		'/js/templates/security.html'
+		'/js/templates/security.html',
+		'/js/templates/websites.html',
 	];
 
 	this.initWrapper();

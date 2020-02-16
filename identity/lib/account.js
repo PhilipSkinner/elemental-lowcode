@@ -41,15 +41,31 @@ module.exports = function(db, bcrypt) {
       return new Account(id, user);
     }
 
-    static async extraAccessTokenClaims(ctx, token) {
-      const user = await userDB.find(token.accountId);
+    static extraAccessTokenClaims(clients) {
+      return async (ctx, token) => {
+        if (token.accountId) {
+          const user = await userDB.find(token.accountId);
 
-      if (!user) {
+          if (!user) {
+            return {};
+          }
+
+          return {
+            roles : user.claims.roles
+          };
+        }
+
+        if (token.clientId && token.kind === "ClientCredentials") {
+          //get the claims from the client
+          return clients.reduce((claims, client) => {
+            if (client.client_id === token.clientId) {
+              claims.roles = client.roles;
+            }
+            return claims;
+          }, {});
+        }
+
         return {};
-      }
-
-      return {
-        roles : user.claims.roles
       };
     }
 

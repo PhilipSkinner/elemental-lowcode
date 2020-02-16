@@ -1,6 +1,7 @@
 const _websitesEditorController = function(page) {
 	this._page = page;
 	this.website = {};
+	this.clients = [];
 	this.routes = [];
 	this.tags = [];
 	this.mainVisible = true;
@@ -15,6 +16,7 @@ _websitesEditorController.prototype.getData = function() {
 	return {
 		website 				: this.website,
 		routes 					: this.routes,
+		clients 				: this.clients,
 		tags 					: this.tags,
 		mainVisible 			: this.mainVisible,
 		viewEditorVisible 		: this.viewEditorVisible,
@@ -65,8 +67,9 @@ _websitesEditorController.prototype.saveWebsite = function() {
 		//update our website object
 		this.website.routes = this.routes.reduce((s, a) => {
 			s[a.route] = {
-				controller : a.controller,
-				view : a.view
+				controller 	: a.controller,
+				view 		: a.view,
+				roles 		: a.roles,
 			};
 			return s;
 		}, {});
@@ -100,6 +103,7 @@ _websitesEditorController.prototype.saveAll = function() {
 
 _websitesEditorController.prototype.refreshState = function() {
 	this.caller.website = this.website;
+	this.caller.clients = this.clients;
 	this.caller.routes = this.routes;
 	this.caller.mainVisible = this.mainVisible;
 	this.caller.viewEditorVisible = this.viewEditorVisible;
@@ -223,6 +227,20 @@ _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 		});
 };
 
+_websitesEditorController.prototype.fetchClients = function(caller) {
+	this.caller = caller;
+	return axios
+		.get(`http://localhost:8001/security/clients`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			this.clients = response.data;
+			this.refreshState();
+		});
+};
+
 _websitesEditorController.prototype.showSaveMessage = function() {
 	this.caller.showAlert = true;
 	this.caller.$forceUpdate();
@@ -295,7 +313,9 @@ const WebsiteEditor = {
 		return _websitesEditorControllerInstance.getData();
 	},
 	mounted  : function() {
-		return _websitesEditorControllerInstance.fetchWebsite(this, this.$route.params.name);
+		return _websitesEditorControllerInstance.fetchWebsite(this, this.$route.params.name).then(() => {
+			return _websitesEditorControllerInstance.fetchClients(this);
+		});
 	}
 };
 

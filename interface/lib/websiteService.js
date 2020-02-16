@@ -28,13 +28,13 @@ websiteService.prototype.init = function(dir) {
 			const next = definitions.pop();
 
 			return this.configReader.readDefinition(next).then((definition) => {
-				let instance = this.websiteInstance(this.app, definition);
+				let instance = this.websiteInstance(this.app, definition, this.passport);
 				return instance.init();
 			}).then(doNext);
 		};
 
 		return doNext();
-	});	
+	});
 };
 
 module.exports = function(app, configReader, websiteInstance, glob, path) {
