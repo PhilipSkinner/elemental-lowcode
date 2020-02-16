@@ -42,20 +42,20 @@
 										</tr>										
 									</tfoot>
 									<tbody>
-										<tr v-if="config.scopes.length === 0">
+										<tr v-if="scopes.length === 0">
 											<td colspan="2">
 												<div class="noResults">
 													No scopes are currently configured.
 												</div>
 											</td>
 										</tr>
-										<tr v-for="scope in config.scopes">
+										<tr v-for="scope in scopes">
 											<td>{{scope.name}}</td>
 											<td>
-												<a class="btn btn-success">
+												<router-link class="btn btn-sm btn-success" :to="{ name : 'securityScopeEditor', params : { name : scope.name }}">
 													Modify
-												</a>
-												<a class="btn btn-danger">
+												</router-link>
+												<a class="btn btn-sm btn-danger" href="#">
 													Remove
 												</a>
 											</td>

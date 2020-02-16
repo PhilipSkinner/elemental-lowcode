@@ -44,21 +44,37 @@ securityController.prototype.updateClient = function(req, res, next) {
 	});	
 };
 
-securityController.prototype.getConfig = function(req, res, next) {
-	this.fileLister.readJSONFile('.sources/identity/config.json').then((result) => {
-		res.json(result);
+securityController.prototype.getScopes = function(req, res, next) {
+	this.fileLister.executeGlob('.sources/identity/**/*.scope.json').then((results) => {
+		res.json(results.map((r) => {
+			return Object.assign(r, {
+				name : r.name.slice(0, -6)
+			});
+		}));
 		next();
-	}).catch((err) => {
-		//return defaults
-		const defaults = {
-			scopes : [],			
-		};
+	});
+};
 
-		//save it first
-		this.fileLister.writeFile('.sources/identity', 'config.json', JSON.stringify(defaults, null, 4)).then(() => {
-			res.json(defaults);
-			next();
-		});
+securityController.prototype.getScope = function(req, res, next) {
+	this.fileLister.readJSONFile('.sources/identity/', req.params.name + '.scope.json').then((content) => {
+		res.json(content);
+		next();
+	});
+};
+
+securityController.prototype.createScope = function(req, res, next) {
+	this.fileLister.writeFile('.sources/identity/', `${req.body.name}.scope.json`, JSON.stringify(req.body, null, 4)).then(() => {
+		res.status(201);
+		res.send('');
+		next();
+	});	
+};
+
+securityController.prototype.updateScope = function(req, res, next) {
+	this.fileLister.writeFile('.sources/identity/', `${req.body.name}.scope.json`, JSON.stringify(req.body, null, 4)).then(() => {
+		res.status(204);
+		res.send('');
+		next();
 	});	
 };
 
@@ -87,10 +103,13 @@ securityController.prototype.getUsers = function(req, res, next) {
 securityController.prototype.initEndpoints = function() {
 	this.app.get('/security/clients', 		this.roleCheckHandler.enforceRoles(this.getClients.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));		
 	this.app.get('/security/clients/:id', 	this.roleCheckHandler.enforceRoles(this.getClient.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));		
-	this.app.post('/security/clients', 		this.roleCheckHandler.enforceRoles(this.createClient.bind(this), 	['security_writer', 'security_admin', 'system_reader', 'system_admin']));		
-	this.app.put('/security/clients/:id', 	this.roleCheckHandler.enforceRoles(this.updateClient.bind(this), 	['security_writer', 'security_admin', 'system_reader', 'system_admin']));		
+	this.app.post('/security/clients', 		this.roleCheckHandler.enforceRoles(this.createClient.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));		
+	this.app.put('/security/clients/:id', 	this.roleCheckHandler.enforceRoles(this.updateClient.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));		
 
-	this.app.get('/security/config', 		this.roleCheckHandler.enforceRoles(this.getConfig.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));		
+	this.app.get('/security/scopes', 		this.roleCheckHandler.enforceRoles(this.getScopes.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));
+	this.app.get('/security/scopes/:name', 	this.roleCheckHandler.enforceRoles(this.getScope.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));
+	this.app.post('/security/scopes', 		this.roleCheckHandler.enforceRoles(this.createScope.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));
+	this.app.put('/security/scopes/:name', 	this.roleCheckHandler.enforceRoles(this.updateScope.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));
 
 	this.app.get('/security/users', 		this.roleCheckHandler.enforceRoles(this.getUsers.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));		
 };

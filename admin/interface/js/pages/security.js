@@ -1,9 +1,7 @@
 const _securityController = function(page) {
 	this._page = page;
 	this.clients = [];
-	this.config = {
-		scopes : []
-	};
+	this.scopes = [];
 	this.users = [];
 };
 
@@ -11,7 +9,7 @@ _securityController.prototype.getData = function() {
 	return {
 		clients : this.clients,
 		users 	: this.users,
-		config 	: this.config
+		scopes 	: this.scopes,
 	};
 };
 
@@ -29,16 +27,16 @@ _securityController.prototype.fetchClients = function(caller) {
 		});
 };
 
-_securityController.prototype.fetchConfig = function(caller) {
+_securityController.prototype.fetchScopes = function(caller) {
 	return axios
-		.get('http://localhost:8001/security/config', {
+		.get('http://localhost:8001/security/scopes', {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
 		})
 		.then((response) => {			
-			this.config = response.data;
-			caller.config = response.data;
+			this.scopes = response.data;
+			caller.scopes = response.data;
 			caller.$forceUpdate();
 		});
 };
@@ -64,7 +62,7 @@ const Security = {
 	},
 	mounted  : function() {
 		return _securityControllerInstance.fetchClients(this).then(() => {
-			return _securityControllerInstance.fetchConfig(this);
+			return _securityControllerInstance.fetchScopes(this);
 		}).then(() => {
 			return _securityControllerInstance.fetchUsers(this);
 		})
