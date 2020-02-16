@@ -81,7 +81,7 @@ fsStore.prototype.getResource = function(type, id) {
 				}
 
 				let object = JSON.parse(content.toString('utf8'));
-				object._id = id;
+				object.id = id;
 				return resolve(object);
 			});
 		});

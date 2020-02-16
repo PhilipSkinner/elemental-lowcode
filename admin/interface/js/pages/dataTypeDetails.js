@@ -9,6 +9,7 @@ const _dataTypeDetailsController = function(page) {
 		exampleId 				: null,
 		exampleSingleResponse 	: null,
 		exampleObject 			: null,
+		token 					: window.getToken()
 	};
 };
 
@@ -29,54 +30,26 @@ _dataTypeDetailsController.prototype.fetchType = function(name) {
 			}
 		})
 		.then((response) => {
-			this.dataType = response.data;
-			this.caller.dataType = response.data;
-			this.caller.$forceUpdate();
-
+			this.data.dataType = response.data;
 			this.generateExampleObject();
 		});
 };
 
-_dataTypeDetailsController.prototype.fetchGetResponse = function(name) {
-	this.name = name;
-	return axios
-		.get(`http://localhost:8006/${name}`, {
-			headers : {
-				Authorization : `Bearer ${window.getToken()}`
-			}
-		})
-		.then((response) => {
-			if (response.data.length > 0) {
-				this.exampleId = response.data[0].id;
-			}
-			this.exampleGetResponse = JSON.stringify(response.data, null, 4);
-			this.caller.exampleGetResponse = this.exampleGetResponse;
-			this.caller.exampleId = this.exampleId;
-			this.caller.$forceUpdate();
-
-			this.fetchSingleResponse(this.name, this.exampleId);
-		});
-};
-
 _dataTypeDetailsController.prototype.generateExampleObject = function() {
-	this.exampleObject = JSON.stringify(JSONSchemaFaker.generate(this.dataType.schema), null, 4);
-	this.caller.exampleObject = this.exampleObject;
-	this.caller.$forceUpdate();
-};
-
-_dataTypeDetailsController.prototype.fetchSingleResponse = function(name, id) {
-	this.name = name;
-	return axios
-		.get(`http://localhost:8006/${name}/${id}`, {
-			headers : {
-				Authorization : `Bearer ${window.getToken()}`
-			}
+	var obj = JSONSchemaFaker.generate(this.data.dataType.schema);
+	this.data.exampleObject = JSON.stringify(obj, null, 4);
+	this.data.exampleId = 'bda231fd-10c1-4a2c-9c70-f99ee9c237ec';
+	this.data.exampleSingleResponse = JSON.stringify(Object.assign(obj, {
+		id : this.data.exampleId
+	}), null, 4);
+	this.data.exampleGetResponse = JSON.stringify([
+		Object.assign(obj, {
+			id : this.data.exampleId
 		})
-		.then((response) => {
-			this.exampleSingleResponse = JSON.stringify(response.data, null, 4);
-			this.caller.exampleSingleResponse = this.exampleSingleResponse;
-			this.caller.$forceUpdate();
-		});
+	], null, 4);
+
+	Object.assign(this.caller, this.data);
+	this.caller.$forceUpdate();
 };
 
 const DataTypeDetails = {
@@ -87,7 +60,6 @@ const DataTypeDetails = {
 	mounted  : function() {
 		_dataTypeDetailsInstance.setCaller(this);
 		_dataTypeDetailsInstance.fetchType(this.$route.params.type);
-		_dataTypeDetailsInstance.fetchGetResponse(this.$route.params.type);
 	}
 };
 

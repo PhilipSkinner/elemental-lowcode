@@ -1,1 +1,1 @@
-{"name":"owners","keys":[],"schema":{"type":"object","properties":{"hello":{"type":"string"}}}}
+{"name":"owners","keys":[],"schema":{"type":"object","properties":{"hello":{"type":"string"}},"required":["hello"]}}

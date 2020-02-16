@@ -24,7 +24,6 @@
 * Progressive enhancement of events etc
 * API management
 * System information endpoints & dashboard display
-* Security admin section
 * Rulesets information screen
 * Add bearer token information on existing info screens
 * Add default roles onto existing info screens
