@@ -25,8 +25,6 @@
 * API management
 * System information endpoints & dashboard display
 * Rulesets information screen
-* Add bearer token information on existing info screens
-* Add default roles onto existing info screens
 * Allow data types to define reader & writer roles independant of the built in ones
 * Allow rulesets to define execution roles independant of built in ones
 * Allow APIs to define roles independant of the built in ones

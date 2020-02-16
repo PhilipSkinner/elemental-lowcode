@@ -38,6 +38,7 @@ _integrationsEditorController.prototype.initBlankType = function() {
 	//set the example
 	this.editor.setValue(JSON.stringify({
 		"name" : "exampleGetRequest",
+		"description" : "Get a single post from our example third party system. ",
     	"method": "get",
     	"variables": [
         	{

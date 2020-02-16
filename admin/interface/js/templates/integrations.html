@@ -64,16 +64,53 @@
 					</h6>
 				</div>
 				<div class="card-body">
+					<p>
+						{{integration.description}}
+					</p>
+
+					<div class="block">
+						<b>Header: <code class="inline">Authorization : Bearer [token]</code></b>
+						<p>
+							A bearer token issued by the Identity Provider.
+						</p>
+						<p>
+							Atleast one of these roles must be present to access required to access:
+						</p>
+						<ul class="mb-0">
+							<li><code class="inline">system_admin</code></li>
+							<!-- system roles -->
+							<li v-if="integration.method.toUpperCase() === 'GET'"><code class="inline">system_reader</code></li>
+							<li v-if="integration.method.toUpperCase() === 'POST'"><code class="inline">system_writer</code></li>
+							<li v-if="integration.method.toUpperCase() === 'PUT'"><code class="inline">system_writer</code></li>
+							<li v-if="integration.method.toUpperCase() === 'PATCH'"><code class="inline">system_writer</code></li>
+							<li v-if="integration.method.toUpperCase() === 'DELETE'"><code class="inline">system_writer</code></li>
+
+							<!-- integrations roles -->
+							<li v-if="integration.method.toUpperCase() === 'GET'"><code class="inline">integration_reader</code></li>
+							<li v-if="integration.method.toUpperCase() === 'POST'"><code class="inline">integration_writer</code></li>
+							<li v-if="integration.method.toUpperCase() === 'PUT'"><code class="inline">integration_writer</code></li>
+							<li v-if="integration.method.toUpperCase() === 'PATCH'"><code class="inline">integration_writer</code></li>
+							<li v-if="integration.method.toUpperCase() === 'DELETE'"><code class="inline">integration_writer</code></li>
+
+							<!-- specific roles -->
+							<li v-if="integration.method.toUpperCase() === 'GET'"><code class="inline">{{integration.name}}_reader</code></li>
+							<li v-if="integration.method.toUpperCase() === 'POST'"><code class="inline">{{integration.name}}_writer</code></li>
+							<li v-if="integration.method.toUpperCase() === 'PUT'"><code class="inline">{{integration.name}}_writer</code></li>
+							<li v-if="integration.method.toUpperCase() === 'PATCH'"><code class="inline">{{integration.name}}_writer</code></li>
+							<li v-if="integration.method.toUpperCase() === 'DELETE'"><code class="inline">{{integration.name}}_writer</code></li>
+						</ul>
+					</div>
+
 					<p v-if="integration.variables.length === 0">
 						This integration can be called with no parameters.
 					</p>
-					<p v-for="variable in integration.variables">
-						<b>Parameter:</b> <code>{{variable.name}}</code>
+					<div class="block" v-for="variable in integration.variables">
+						<b>Parameter:</b> <code class="inline">{{variable.name}}</code>
 						<br/>
-						<b>Type:</b> <code>{{variable.type}}</code>
+						<b>Type:</b> <code class="inline">{{variable.type}}</code>
 						<br/>
-						<b>Description:</b> <code>{{variable.description}}</code>
-					</p>
+						<b>Description:</b> {{variable.description}}
+					</div>
 				</div>
 			</div>
 		</div>
