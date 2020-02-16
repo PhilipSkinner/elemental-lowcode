@@ -1,9 +1,10 @@
-const securityController = function(app, fileLister, roleCheckHandler, db) {
+const securityController = function(app, fileLister, roleCheckHandler, db, bcrypt) {
 	this.app = app;
 	this.fileLister = fileLister;
 	this.roleCheckHandler = roleCheckHandler;
 	this.db = db;
 	this.userDB = new this.db('User');
+	this.bcrypt = bcrypt;
 
 	this.connected = false;
 
@@ -33,7 +34,7 @@ securityController.prototype.createClient = function(req, res, next) {
 		res.status(201);
 		res.send('');
 		next();
-	});	
+	});
 };
 
 securityController.prototype.updateClient = function(req, res, next) {
@@ -41,7 +42,7 @@ securityController.prototype.updateClient = function(req, res, next) {
 		res.status(204);
 		res.send('');
 		next();
-	});	
+	});
 };
 
 securityController.prototype.getScopes = function(req, res, next) {
@@ -67,7 +68,7 @@ securityController.prototype.createScope = function(req, res, next) {
 		res.status(201);
 		res.send('');
 		next();
-	});	
+	});
 };
 
 securityController.prototype.updateScope = function(req, res, next) {
@@ -75,7 +76,7 @@ securityController.prototype.updateScope = function(req, res, next) {
 		res.status(204);
 		res.send('');
 		next();
-	});	
+	});
 };
 
 securityController.prototype._connect = function() {
@@ -88,7 +89,7 @@ securityController.prototype._connect = function() {
 			this.connected = true;
 			return resolve();
 		});
-	});	
+	});
 }
 
 securityController.prototype.getUsers = function(req, res, next) {
@@ -96,28 +97,88 @@ securityController.prototype.getUsers = function(req, res, next) {
 		return this.userDB.fetch();
 	}).then((users) => {
 		res.json(users);
-		next();		
+		next();
+	});
+};
+
+securityController.prototype.getUser = function(req, res, next) {
+	this._connect().then(() => {
+		return this.userDB.find(req.params.id);
+	}).then((user) => {
+		res.json(user);
+		next();
+	});
+};
+
+securityController.prototype.createUser = function(req, res, next) {
+	this._connect().then(() => {
+		//generate the password
+		return new Promise((resolve, reject) => {
+			this.bcrypt.hash(req.body.password, 10, (err, hash) => {
+				if (err) {
+					return reject(err);
+				}
+
+				return resolve(hash);
+			});
+		});
+	}).then((password) => {
+		req.body.password = password;
+		return this.userDB.upsert(req.body.username, req.body, null);
+	}).then(() => {
+		res.status(201);
+		res.send('');
+		next();
+	});
+};
+
+securityController.prototype.updateUser = function(req, res, next) {
+	this._connect().then(() => {
+		//do we need to generate a password?
+		if (/^\$\d.\$\d{1,2}.*?\..*?$/gm.test(req.body.password) === false) {
+			return new Promise((resolve, reject) => {
+				this.bcrypt.hash(req.body.password, 10, (err, hash) => {
+					if (err) {
+						return reject(err);
+					}
+
+					return resolve(hash);
+				});
+			});
+		}
+
+		return Promise.resolve(req.body.password);
+	}).then((password) => {
+		req.body.password = password;
+		return this.userDB.upsert(req.params.id, req.body, null);
+	}).then(() => {
+		res.status(204);
+		res.send('');
+		next();
 	});
 };
 
 securityController.prototype.initEndpoints = function() {
-	this.app.get('/security/clients', 		this.roleCheckHandler.enforceRoles(this.getClients.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));		
-	this.app.get('/security/clients/:id', 	this.roleCheckHandler.enforceRoles(this.getClient.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));		
-	this.app.post('/security/clients', 		this.roleCheckHandler.enforceRoles(this.createClient.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));		
-	this.app.put('/security/clients/:id', 	this.roleCheckHandler.enforceRoles(this.updateClient.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));		
+	this.app.get('/security/clients', 		this.roleCheckHandler.enforceRoles(this.getClients.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));
+	this.app.get('/security/clients/:id', 	this.roleCheckHandler.enforceRoles(this.getClient.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));
+	this.app.post('/security/clients', 		this.roleCheckHandler.enforceRoles(this.createClient.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));
+	this.app.put('/security/clients/:id', 	this.roleCheckHandler.enforceRoles(this.updateClient.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));
 
 	this.app.get('/security/scopes', 		this.roleCheckHandler.enforceRoles(this.getScopes.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));
 	this.app.get('/security/scopes/:name', 	this.roleCheckHandler.enforceRoles(this.getScope.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));
 	this.app.post('/security/scopes', 		this.roleCheckHandler.enforceRoles(this.createScope.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));
 	this.app.put('/security/scopes/:name', 	this.roleCheckHandler.enforceRoles(this.updateScope.bind(this), 	['security_writer', 'security_admin', 'system_writer', 'system_admin']));
 
-	this.app.get('/security/users', 		this.roleCheckHandler.enforceRoles(this.getUsers.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));		
+	this.app.get('/security/users', 		this.roleCheckHandler.enforceRoles(this.getUsers.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));
+	this.app.get('/security/users/:id', 	this.roleCheckHandler.enforceRoles(this.getUser.bind(this), 		['security_reader', 'security_admin', 'system_reader', 'system_admin']));
+	this.app.post('/security/users', 		this.roleCheckHandler.enforceRoles(this.createUser.bind(this), 		['security_writer', 'security_admin', 'system_writer', 'system_admin']));
+	this.app.put('/security/users/:id', 	this.roleCheckHandler.enforceRoles(this.updateUser.bind(this), 		['security_writer', 'security_admin', 'system_writer', 'system_admin']));
 };
 
-module.exports = function(app, fileLister, roleCheckHandler, db) {
+module.exports = function(app, fileLister, roleCheckHandler, db, bcrypt) {
 	if (!fileLister) {
 		fileLister = require('../lib/fileLister')();
-	}	
+	}
 
 	if (!roleCheckHandler) {
 		roleCheckHandler = require('../../shared/roleCheckHandler')();
@@ -127,5 +188,9 @@ module.exports = function(app, fileLister, roleCheckHandler, db) {
 		db = require('../../shared/db')();
 	}
 
-	return new securityController(app, fileLister, roleCheckHandler, db);
+	if (!bcrypt) {
+		bcrypt = require('bcrypt');
+	}
+
+	return new securityController(app, fileLister, roleCheckHandler, db, bcrypt);
 };

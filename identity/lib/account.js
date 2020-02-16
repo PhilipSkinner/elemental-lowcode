@@ -12,13 +12,13 @@ module.exports = function(db, bcrypt) {
   class Account {
     constructor(id, profile) {
       this.accountId = id;
-      this.profile = profile;      
-    }    
+      this.profile = profile;
+    }
 
     async claims(use, scope) {
       return Object.assign(this.profile.claims, {
         sub : this.accountId
-      });      
+      });
     }
 
     static async findByLogin(login, password) {
@@ -26,22 +26,22 @@ module.exports = function(db, bcrypt) {
 
       if (typeof(user) === 'undefined' || user === null) {
         return null;
-      }      
+      }
 
       const isMatch = await Account.checkPassword(user.password, password);
       if (!isMatch) {
         return null;
-      }      
+      }
 
       return new Account(login, user);
     }
 
-    static async findAccount(ctx, id, token) {       
+    static async findAccount(ctx, id, token) {
       const user = await userDB.find(id);
       return new Account(id, user);
     }
 
-    static async extraAccessTokenClaims(ctx, token) {      
+    static async extraAccessTokenClaims(ctx, token) {
       const user = await userDB.find(token.accountId);
 
       if (!user) {
@@ -50,7 +50,7 @@ module.exports = function(db, bcrypt) {
 
       return {
         roles : user.claims.roles
-      };        
+      };
     }
 
     static async checkPassword(hashed, plain) {
@@ -81,6 +81,7 @@ module.exports = function(db, bcrypt) {
       const hashed = await Account.generatePassword(password);
 
       await userDB.upsert(username, {
+        username    : username,
         password    : hashed,
         registered  : new Date(),
         claims      : {

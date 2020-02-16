@@ -4,7 +4,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<h1>Security</h1>
-				</div>				
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-6">
@@ -33,13 +33,13 @@
 										<tr>
 											<th>Name</th>
 											<th>Options</th>
-										</tr>										
+										</tr>
 									</thead>
 									<tfoot>
 										<tr>
 											<th>Name</th>
 											<th>Options</th>
-										</tr>										
+										</tr>
 									</tfoot>
 									<tbody>
 										<tr v-if="scopes.length === 0">
@@ -92,7 +92,7 @@
 									</thead>
 									<tfoot>
 										<tr>
-											<th>Client Id</th>											
+											<th>Client Id</th>
 											<th>Options</th>
 										</tr>
 									</tfoot>
@@ -175,7 +175,7 @@
 												{{user.data.registered}}
 											</td>
 											<td>
-												<span v-for="role in user.data.claims.roles" class="btn btn-xs btn-primary">
+												<span v-for="role in user.data.claims.roles" class="btn btn-xs btn-primary ml-1">
 													{{role}}
 												</span>
 											</td>
@@ -211,7 +211,7 @@
 		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
 			{{error.description}}
 		</modal-error>
-		<alert text="Client saved!" v-bind:visible="showAlert"></alert>		
+		<alert text="Client saved!" v-bind:visible="showAlert"></alert>
 	</div>
 </template>
 
@@ -227,7 +227,7 @@
 		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
 			{{error.description}}
 		</modal-error>
-		<alert text="Scope saved!" v-bind:visible="showAlert"></alert>		
+		<alert text="Scope saved!" v-bind:visible="showAlert"></alert>
 	</div>
 </template>
 
@@ -243,6 +243,6 @@
 		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
 			{{error.description}}
 		</modal-error>
-		<alert text="User saved!" v-bind:visible="showAlert"></alert>	
+		<alert text="User saved!" v-bind:visible="showAlert"></alert>
 	</div>
 </template>
