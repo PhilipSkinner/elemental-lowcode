@@ -5,7 +5,7 @@ const conditionals = function() {
 };
 
 conditionals.prototype.evaluate = function(ifStatement) {
-	var valid = true;
+	var valid = null;
 
 	if (!Array.isArray(ifStatement)) {
 		ifStatement = [ifStatement];
@@ -24,8 +24,16 @@ conditionals.prototype.evaluate = function(ifStatement) {
 
 		//now set our validity
 		if (statement.logicalOperator === "and") {
+			if (valid === null) {
+				valid = true;
+			}
+
 			valid = valid && result;
 		} else if (statement.logicalOperator === "or") {
+			if (valid === null) {
+				valid = false;
+			}
+
 			valid = valid || result;
 		}
 
