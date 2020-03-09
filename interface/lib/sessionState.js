@@ -18,6 +18,10 @@ sessionState.prototype.retrieveSession = function() {
 	return this.sessionData;
 };
 
+sessionState.prototype.getAccessToken = function() {
+	return this.request.session.passport.user.accessToken;
+};
+
 sessionState.prototype.setContext = function(request, response) {
 	this.request = request;
 	this.response = response;

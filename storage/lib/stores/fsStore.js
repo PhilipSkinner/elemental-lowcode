@@ -62,11 +62,9 @@ fsStore.prototype.getResources = function(type, start, count) {
 
 				let selection = dir.slice(start - 1, count);
 
-				return resolve(selection.map((s) => {
-					return {
-						id : s
-					};
-				}));
+				return resolve(Promise.all(selection.map((s) => {
+					return this.getResource(type, s);
+				})));
 			});
 		});
 	});

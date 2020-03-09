@@ -30,7 +30,7 @@ websiteInstance.prototype.init = function() {
 			authorizationURL 	: 'http://localhost:8008/auth',
 			tokenURL 			: 'http://localhost:8008/token',
 			clientID			: 'my-client',
-			clientSecret 		: 'my really secret secret is very secret',
+			clientSecret 		: 'my really secret secret',
 			callbackURL 		: `http://localhost:8005/${this.definition.name}/_auth`,
 			scope 				: 'openid',
 			passReqToCallback	: true,

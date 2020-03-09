@@ -125,8 +125,6 @@ module.exports = (app, provider) => {
         },
       };
 
-      console.log("LOGIN", result);
-
       await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
     } catch (err) {
       console.log(err);
@@ -203,8 +201,6 @@ module.exports = (app, provider) => {
       consent.replace = false;
 
       const result = { consent };
-
-      console.log(result);
 
       await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true });
     } catch (err) {

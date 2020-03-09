@@ -9,7 +9,18 @@ storageService.prototype.detailCollection = function(name, token) {
 				Authorization : `Bearer ${token}`
 			}
 		}, (err, res, body) => {
-			return resolve(JSON.parse(body));
+			if (err) {
+				return reject(err);
+			}
+
+			let result = null;
+			try {
+				result = JSON.parse(body);
+			} catch(e) {
+				return reject(new Error('Invalid response received from collection details'));
+			}
+
+			return resolve(result);
 		});
 	});
 };
@@ -21,7 +32,18 @@ storageService.prototype.getList = function(name, start, count, token) {
 				Authorization : `Bearer ${token}`
 			}
 		}, (err, res, body) => {
-			return resolve(JSON.parse(body));
+			if (err) {
+				return reject(err);
+			}
+
+			let result = null;
+			try {
+				result = JSON.parse(body);
+			} catch(e) {
+				return reject(new Error('Invalid response received from getting list of results'));
+			}
+
+			return resolve(result);
 		});
 	});
 };
@@ -33,9 +55,19 @@ storageService.prototype.getEntity = function(name, id, token) {
 				Authorization : `Bearer ${token}`
 			}
 		}, (err, res, body) => {
-			var data = JSON.parse(body);
-			data.id = id;
-			return resolve(data);
+			if (err) {
+				return reject(err);
+			}
+
+			let result = null;
+			try {
+				result = JSON.parse(body);
+			} catch(e) {
+				return reject(new Error('Invalid response received when fetching entity'));
+			}
+
+			result.id = id;
+			return resolve(result);
 		});
 	});
 };
@@ -49,8 +81,15 @@ storageService.prototype.createEntity = function(name, entity, token) {
 				Authorization : `Bearer ${token}`
 			}
 		}, (err, res, body) => {
-			console.log(body);
-			return resolve();
+			if (err) {
+				return reject(err);
+			}
+
+			if (res.statusCode === 201) {
+				return resolve();
+			}
+
+			return reject(body);
 		});
 	});
 };
@@ -64,6 +103,10 @@ storageService.prototype.updateEntity = function(name, id, entity, token) {
 				Authorization : `Bearer ${token}`	
 			}
 		}, (err, res, body) => {
+			if (err) {
+				return reject(err);
+			}
+
 			return resolve();
 		});
 	});
