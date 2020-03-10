@@ -79,8 +79,39 @@ module.exports = {
 }
 ```
 
-## Injectable Services
+Events can either be synchronous, or if they are async they must return a promise. Once this promise has been resolved successfully the website will render the result:
 
-TBC once security is completed across the system, this doesn't work correctly until that is completed.
+```
+module.exports = {
+	events : {
+		load : (event) => {
+			return new Promise((resolve, reject) => {
+				return resolve();
+			});
+		}
+	}
+}
+```
+
+## Services
+
+The following services are automatically added into each controller:
+
+* [storageService](#/documentation/websites--storageService.md)
+* [sessionState](#/documentation/websites--sessionState.md)
+* [integrationService](#/documentation/websites--integrationService.md)
+* [rulesetService](#/documentation/websites--rulesetService.md)
+
+Each of these are defined upon the controller instance as a property that can be access, for example:
+
+```
+module.exports = {
+	events : {
+		load : (event) => {
+			let sessionData = this.sessionState.retrieveSession();
+		}
+	}
+}
+```
 
 [Continue to Tags](#/documentation/websites--tags.md)
