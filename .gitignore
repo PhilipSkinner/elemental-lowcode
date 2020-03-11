@@ -4,3 +4,4 @@ storage/.store
 kernel/.sources
 kernel/.store
 *.key
+**/coverage

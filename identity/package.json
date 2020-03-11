@@ -7,5 +7,13 @@
 		"glob": "^7.1.6",
 		"jose": "^1.22.2",
 		"oidc-provider": "^6.20.1"
+	},
+	"devDependencies": {
+		"istanbul": "^0.4.5",
+		"jasmine": "^3.5.0",
+		"sinon": "^9.0.1"
+	},
+	"scripts" : {
+		"test" : "./node_modules/.bin/istanbul cover --include-all-sources ./node_modules/.bin/jasmine"
 	}
 }
