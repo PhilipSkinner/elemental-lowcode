@@ -12,14 +12,27 @@ sessionState.prototype.retrieveSession = function() {
 	}
 
 	if (this.request.cookies[this.sessionName]) {
-		this.sessionData = JSON.parse(Buffer.from(this.request.cookies.__session, 'base64').toString('utf8'));
+		try {
+			this.sessionData = JSON.parse(Buffer.from(this.request.cookies.__session, 'base64').toString('utf8'));	
+		} catch(e) {
+			this.sessionData = null;
+		}
 	}
 
 	return this.sessionData;
 };
 
 sessionState.prototype.getAccessToken = function() {
-	return this.request.session.passport.user.accessToken;
+	if (
+		this.request.session 
+		&& this.request.session.passport 
+		&& this.request.session.passport.user 
+		&& this.request.session.passport.user.accessToken
+	) {
+		return this.request.session.passport.user.accessToken;
+	}
+
+	return null;
 };
 
 sessionState.prototype.setContext = function(request, response) {
