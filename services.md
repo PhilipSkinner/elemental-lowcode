@@ -11,11 +11,7 @@
 
 # Todo
 
-* Basic process modeller
-* Need to be able to format variables
 * Need to be able to better tell the system that a variable is being used - arrays of strings?
-* Assign a website a number of auth clients
-* Allow passing of client name into shares services
 
 # Identity
 
