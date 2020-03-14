@@ -6,13 +6,5 @@
 		"express": "^4.17.1",
 		"glob": "^7.1.6",
 		"request": "^2.88.0"
-	},
-	"devDependencies": {
-		"istanbul": "^0.4.5",
-		"jasmine": "^3.5.0",
-		"sinon": "^9.0.1"
-	},
-	"scripts" : {
-		"test" : "./node_modules/.bin/istanbul cover --include-all-sources ./node_modules/.bin/jasmine"
 	}
 }

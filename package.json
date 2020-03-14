@@ -1,0 +1,14 @@
+{
+	"name": "elemental",
+	"version": "0.0.1",
+	"devDependencies": {
+		"coveralls": "^3.0.9",
+		"istanbul": "^0.4.5",
+		"jasmine": "^3.5.0",
+		"nyc": "^15.0.0",
+		"sinon": "^9.0.1"
+	},
+	"scripts": {
+		"test": "./node_modules/.bin/nyc ./node_modules/.bin/jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+	}
+}

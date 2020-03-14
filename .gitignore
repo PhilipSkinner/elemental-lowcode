@@ -5,3 +5,4 @@ kernel/.sources
 kernel/.store
 *.key
 **/coverage
+.nyc_output

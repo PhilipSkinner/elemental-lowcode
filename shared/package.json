@@ -7,13 +7,5 @@
 		"request": "^2.88.0",
 		"sequelize": "^5.21.4",
 		"sqlite3": "^4.1.1"
-	},
-	"devDependencies": {
-		"istanbul": "^0.4.5",
-		"jasmine": "^3.5.0",
-		"sinon": "^9.0.1"
-	},
-	"scripts": {
-		"test": "./node_modules/.bin/istanbul cover --include-all-sources ./node_modules/.bin/jasmine"
 	}
 }

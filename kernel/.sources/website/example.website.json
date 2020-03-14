@@ -3,8 +3,7 @@
     "routes": {
         "/": {
             "controller": "./controllers/oqdgd.js",
-            "view": "./view/oqdgd.json",
-            "roles": "system_admin"
+            "view": "./view/oqdgd.json"
         }
     },
     "tags": [],
