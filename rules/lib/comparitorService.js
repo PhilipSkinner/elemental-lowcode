@@ -11,7 +11,7 @@ comparitorService.prototype.resolveValue = function(path, data) {
 		}
 	});
 
-	if (!current) {
+	if (typeof(current) === "undefined") {
 		return path;
 	}
 
