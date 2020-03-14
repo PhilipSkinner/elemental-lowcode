@@ -1,0 +1,45 @@
+language: node_js
+node_js:
+  - 12
+jobs:
+  include:
+    - stage: shared
+      script: 
+        - cd ./shared && npm i && cd ..
+        - cd ./shared && npm run test && cd ..
+    - stage: admin
+      script: 
+        - cd ./admin && npm i && cd ..
+        - cd ./admin && npm run test && cd ..
+    - stage: api
+      script: 
+        - cd ./api && npm i && cd ..
+        - cd ./api && npm run test && cd ..
+    - stage: integration
+      script: 
+        - cd ./integration && npm i && cd ..
+        - cd ./integration && npm run test && cd ..
+    - stage: interface
+      script: 
+        - cd ./interface && npm i && cd ..
+        - cd ./interface && npm run test && cd ..
+    - stage: kernel
+      script: 
+        - cd ./kernel && npm i && cd ..
+        - cd ./kernel && npm run test && cd ..
+    - stage: storage
+      script: 
+        - cd ./storage && npm i && cd ..
+        - cd ./storage && npm run test && cd ..
+    - stage: rules
+      script: 
+        - cd ./rules && npm i && cd ..
+        - cd ./rules && npm run test && cd ..
+    - stage: processes
+      script: 
+        - cd ./processes && npm i && cd ..
+        - cd ./processes && npm run test && cd ..
+    - stage: identity
+      script: 
+        - cd ./identity && npm i && cd ..
+        - cd ./identity && npm run test && cd ..
