@@ -8,7 +8,7 @@ const websiteService = function(app, configReader, websiteInstance, glob, path) 
 
 websiteService.prototype.findDefinitions = function(dir) {
 	return new Promise((resolve, reject) => {
-		this.glob(this.path.join(dir, '**/*.website.json'), (err, definitions) => {
+		this.glob(this.path.join(dir, "**/*.website.json"), (err, definitions) => {
 			if (err) {
 				return reject(err);
 			}
@@ -39,20 +39,20 @@ websiteService.prototype.init = function(dir) {
 
 module.exports = function(app, configReader, websiteInstance, glob, path) {
 	if (!configReader) {
-		configReader = require('./configReader')();
+		configReader = require("./configReader")();
 	}
 
 	if (!websiteInstance) {
-		//can't be a singleton
-		websiteInstance = require('./websiteInstance');
+		//can"t be a singleton
+		websiteInstance = require("./websiteInstance");
 	}
 
 	if (!glob) {
-		glob = require('glob');
+		glob = require("glob");
 	}
 
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	return new websiteService(app, configReader, websiteInstance, glob, path);

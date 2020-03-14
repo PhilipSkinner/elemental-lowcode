@@ -1,9 +1,9 @@
 const
-	express 		= require('express'),
-	cors 			= require('cors'),
-	bodyParser 		= require('body-parser'),
-	tokenHandler 	= require('../shared/tokenHandler'),
-	hotreload 		= require('../shared/hotReload')();
+	express 		= require("express"),
+	cors 			= require("cors"),
+	bodyParser 		= require("body-parser"),
+	tokenHandler 	= require("../shared/tokenHandler"),
+	hotreload 		= require("../shared/hotReload")();
 
 let app = null;
 let server = null;
@@ -13,8 +13,8 @@ let tHandler = tokenHandler(process.env.SIG);
 const startup = () => {
 	app = express();
 
-	const backingStore = require('./lib/stores/fsStore')();
-	const storageEngine = require('./lib/storageEngine')(backingStore, app);
+	const backingStore = require("./lib/stores/fsStore")();
+	const storageEngine = require("./lib/storageEngine")(backingStore, app);
 
 	app.use(cors());
 	app.use(bodyParser.json());
@@ -30,7 +30,7 @@ const startup = () => {
 		server = app.listen(process.env.PORT);
 		restarting = false;
 	});
-}
+};
 
 const reload = () => {
 	if (!restarting) {

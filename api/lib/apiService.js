@@ -19,7 +19,7 @@ apiService.prototype.compileDefinition = function(definitionFile) {
 
 apiService.prototype.findApiDefinitions = function(dir) {
 	return new Promise((resolve, reject) => {		
-		this.glob(this.path.join(process.cwd(), dir, '**/*.api.json'), (err, definitions) => {
+		this.glob(this.path.join(process.cwd(), dir, "**/*.api.json"), (err, definitions) => {
 			if (err) {
 				return reject(err);
 			}
@@ -49,20 +49,20 @@ apiService.prototype.init = function(dir) {
 
 module.exports = function(app, definitionProvider, apiInstance, glob, path) {
 	if (!definitionProvider) {
-		definitionProvider = require('./definitionProvider')();
+		definitionProvider = require("./definitionProvider")();
 	}
 
 	if (!apiInstance) {
-		//no exec, can't be a singleton
-		apiInstance = require('./apiInstance');
+		//no exec, can"t be a singleton
+		apiInstance = require("./apiInstance");
 	}
 
 	if (!glob) {
-		glob = require('glob');
+		glob = require("glob");
 	}
 
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	return new apiService(app, definitionProvider, apiInstance, glob, path);

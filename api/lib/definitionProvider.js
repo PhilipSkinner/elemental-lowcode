@@ -85,11 +85,11 @@ definitionProvider.prototype.fetchDefinition = function(file) {
 
 module.exports = function(fs, path) {
 	if (!fs) {
-		fs = require('fs');
+		fs = require("fs");
 	}
 
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	return new definitionProvider(fs, path);

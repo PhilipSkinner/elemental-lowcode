@@ -15,7 +15,7 @@ fileLister.prototype.executeGlob = function(lookup) {
 				return {
 					path 		: f,
 					basename 	: this.path.basename(f),
-					name 		: this.path.basename(f).split('.').slice(0, -1).join('.')
+					name 		: this.path.basename(f).split(".").slice(0, -1).join(".")
 				}
 			}));
 		});
@@ -29,7 +29,7 @@ fileLister.prototype.readFile = function(dir, file) {
 				return reject(err);
 			}
 
-			return resolve(content.toString('utf8'));
+			return resolve(content.toString("utf8"));
 		});
 	});
 };
@@ -81,15 +81,15 @@ fileLister.prototype.deleteFile = function(dir, file) {
 
 module.exports = function(path, fs, glob) {
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	if (!fs) {
-		fs = require('fs');
+		fs = require("fs");
 	}
 
 	if (!glob) {
-		glob = require('glob');
+		glob = require("glob");
 	}
 
 	return new fileLister(path, fs, glob);

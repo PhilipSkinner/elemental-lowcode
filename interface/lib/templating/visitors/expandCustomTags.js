@@ -23,7 +23,7 @@ expandCustomTag.prototype.needsExpansion = function(view) {
 			}
 		}
 
-		if (typeof(tag) === 'object' && tag !== null) {
+		if (typeof(tag) === "object" && tag !== null) {
 			//loop props
 			Object.keys(tag).forEach((prop) => {
 				if (Array.isArray(tag[prop])) {
@@ -44,7 +44,7 @@ expandCustomTag.prototype.needsExpansion = function(view) {
 
 expandCustomTag.prototype.expand = function(view) {
 	return view.map((tag) => {
-		if (typeof(tag) !== 'object' || tag === null) {
+		if (typeof(tag) !== "object" || tag === null) {
 			return tag;
 		}
 
@@ -93,7 +93,7 @@ expandCustomTag.prototype.apply = function(definition) {
 
 module.exports = function(replaceValues) {
 	if (!replaceValues) {
-		replaceValues = require('./replaceValues')();
+		replaceValues = require("./replaceValues")();
 	}
 
 	return new expandCustomTag(replaceValues);

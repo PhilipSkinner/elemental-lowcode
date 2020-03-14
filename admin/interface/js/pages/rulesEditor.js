@@ -15,12 +15,12 @@ const _rulesEditorController = function(page) {
 
 _rulesEditorController.prototype.initEditor = function() {
 	//set our editor up
-	this.editor = ace.edit(document.getElementById('ruleEditor'), {
-		mode : 'ace/mode/json',
-		selectionStyle : 'text'
+	this.editor = window.ace.edit(document.getElementById("ruleEditor"), {
+		mode : "ace/mode/json",
+		selectionStyle : "text"
 	});
 	this.editor.commands.addCommand({
-		name : 'save',
+		name : "save",
 		bindKey : {
 			win: "Ctrl-S",
 			mac: "Cmd-S"
@@ -29,7 +29,7 @@ _rulesEditorController.prototype.initEditor = function() {
 			this.saveRule();
 		}
 	});
-	this.editor.setTheme('ace/theme/twilight');
+	this.editor.setTheme("ace/theme/twilight");
 };
 
 _rulesEditorController.prototype.initBlankType = function() {
@@ -71,8 +71,8 @@ _rulesEditorController.prototype.getData = function() {
 
 _rulesEditorController.prototype.fetchType = function(name) {
 	this.name = name;
-	return axios
-		.get('http://localhost:8001/rules/' + name, {
+	return window.axios
+		.get("http://localhost:8001/rules/" + name, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -90,8 +90,8 @@ _rulesEditorController.prototype.saveRule = function() {
 	var parsed = JSON.parse(this.editor.getValue());
 
 	if (this.name) {
-		return axios
-			.put('http://localhost:8001/rules/' + this.name, this.editor.getValue(), {
+		return window.axios
+			.put("http://localhost:8001/rules/" + this.name, this.editor.getValue(), {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -115,8 +115,8 @@ _rulesEditorController.prototype.saveRule = function() {
 				this.caller.$forceUpdate();
 			});
 	} else {
-		return axios
-			.post('http://localhost:8001/rules', this.editor.getValue(), {
+		return window.axios
+			.post("http://localhost:8001/rules", this.editor.getValue(), {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -148,21 +148,21 @@ _rulesEditorController.prototype.saveRule = function() {
 
 };
 
-const RulesEditor = {
-	template : '#template-rulesEditor',
+window.RulesEditor = {
+	template : "#template-rulesEditor",
 	data 	 : () => {
 		return _rulesEditorInstance.getData();
 	},
 	mounted  : function() {
-		_rulesEditorInstance.setCaller(this);
-		_rulesEditorInstance.initEditor();
+		window._rulesEditorInstance.setCaller(this);
+		window._rulesEditorInstance.initEditor();
 		if (this.$route.params.name === ".new") {
-			_rulesEditorInstance.initBlankType();
-			return;
+			window._rulesEditorInstance.initBlankType();
+			return null;
 		}
 
-		return _rulesEditorInstance.fetchType(this.$route.params.name);
+		return window._rulesEditorInstance.fetchType(this.$route.params.name);
 	}
 };
 
-const _rulesEditorInstance = new _rulesEditorController(RulesEditor);
+window._rulesEditorInstance = new _rulesEditorController(window.RulesEditor);

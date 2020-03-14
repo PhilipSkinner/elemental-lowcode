@@ -1,10 +1,10 @@
 const serviceRunner = function(childProcess) {
 	this.childProcess = childProcess;
 
-	this.nodeProcess = 'node';
+	this.nodeProcess = "node";
 
 	if (process.platform === "win32") {
-		this.nodeProcess = 'node.exe';
+		this.nodeProcess = "node.exe";
 	}
 };
 
@@ -19,12 +19,12 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
 		}), other || {})
 	});
 
-	proc.on('error', (data) => {
+	proc.on("error", (data) => {
 		console.log(data);
 	});
 
-	proc.stdout.on('data', (data) => {
-		const lines = data.toString('utf8').split('\n');
+	proc.stdout.on("data", (data) => {
+		const lines = data.toString("utf8").split("\n");
 
 		lines.forEach((l) => {
 			if (l !== "") {
@@ -33,8 +33,8 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
 		});
 	});
 
-	proc.stderr.on('data', (data) => {
-		const lines = data.toString('utf8').split('\n');
+	proc.stderr.on("data", (data) => {
+		const lines = data.toString("utf8").split("\n");
 
 		lines.forEach((l) => {
 			if (l !== "") {
@@ -43,14 +43,14 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
 		});
 	});
 
-	proc.on('close', (code) => {
+	proc.on("close", (code) => {
 		console.error(name, "CLOSE", "SERVICE HAS CLOSED!");
 	});
 };
 
 module.exports = function(childProcess) {
 	if (!childProcess) {
-		childProcess = require('child_process');
+		childProcess = require("child_process");
 	}
 
 	return new serviceRunner(childProcess);

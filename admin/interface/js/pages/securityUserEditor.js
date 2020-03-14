@@ -10,12 +10,12 @@ const _securityUserEditorController = function(page) {
 
 _securityUserEditorController.prototype.initEditor = function() {
 	//set our editor up
-	this.editor = ace.edit(document.getElementById('userEditor'), {
-		mode : 'ace/mode/json',
-		selectionStyle : 'text'
+	this.editor = window.ace.edit(document.getElementById("userEditor"), {
+		mode : "ace/mode/json",
+		selectionStyle : "text"
 	});
 	this.editor.commands.addCommand({
-		name : 'save',
+		name : "save",
 		bindKey : {
 			win: "Ctrl-S",
 			mac: "Cmd-S"
@@ -24,7 +24,7 @@ _securityUserEditorController.prototype.initEditor = function() {
 			this.save();
 		}
 	});
-	this.editor.setTheme('ace/theme/twilight');
+	this.editor.setTheme("ace/theme/twilight");
 };
 
 _securityUserEditorController.prototype.initBlankType = function() {
@@ -32,15 +32,15 @@ _securityUserEditorController.prototype.initBlankType = function() {
 
 	//set the example
 	this.editor.setValue(JSON.stringify({
-	    username 	: "username",
-	    password 	: "password",
-	    registered 	: new Date(),
-	    claims 		: {
-	    	name  : "User Name",
-	        roles : [
+		username 	: "username",
+		password 	: "password",
+		registered 	: new Date(),
+		claims 		: {
+			name  : "User Name",
+			roles : [
 
-	        ]
-	    }
+			]
+		}
 	}, null, 4));
 };
 
@@ -54,7 +54,7 @@ _securityUserEditorController.prototype.getData = function() {
 
 _securityUserEditorController.prototype.fetchUser = function(id) {
 	this.id = id;
-	return axios
+	return window.axios
 		.get(`http://localhost:8001/security/users/${id}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
@@ -73,10 +73,10 @@ _securityUserEditorController.prototype.save = function() {
 	var parsed = JSON.parse(this.editor.getValue());
 
 	if (this.id) {
-		return axios
+		return window.axios
 			.put(`http://localhost:8001/security/users/${this.id}`, this.editor.getValue(), {
 				headers : {
-					'Content-Type' : 'application/json',
+					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`
 				}
 			})
@@ -90,17 +90,17 @@ _securityUserEditorController.prototype.save = function() {
 				}, 1500);
 			}).catch((err) => {
 				this.data.error.visible = true;
-				this.data.error.title = 'Error saving user';
+				this.data.error.title = "Error saving user";
 				this.data.error.description = err.toString();
 
 				this.caller.error = this.getData().error;
 				this.caller.$forceUpdate();
 			});
 	} else {
-		return axios
-			.post(`http://localhost:8001/security/users`, this.editor.getValue(), {
+		return window.axios
+			.post("http://localhost:8001/security/users", this.editor.getValue(), {
 				headers : {
-					'Content-Type' : 'application/json',
+					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`
 				}
 			})
@@ -116,7 +116,7 @@ _securityUserEditorController.prototype.save = function() {
 				}, 1500);
 			}).catch((err) => {
 				this.data.error.visible = true;
-				this.data.error.title = 'Error saving user';
+				this.data.error.title = "Error saving user";
 				this.data.error.description = err.toString();
 
 				this.caller.error = this.getData().error;
@@ -125,21 +125,21 @@ _securityUserEditorController.prototype.save = function() {
 	}
 };
 
-const SecurityUserEditor = {
-	template : '#template-securityUserEditor',
+window.SecurityUserEditor = {
+	template : "#template-securityUserEditor",
 	data 	 : () => {
-		return _securityUserEditorControllerInstance.getData();
+		return window._securityUserEditorControllerInstance.getData();
 	},
-	mounted  : function() {
-		_securityUserEditorControllerInstance.setCaller(this);
-		_securityUserEditorControllerInstance.initEditor();
-		if (this.$route.params.id === '.new') {
-			_securityUserEditorControllerInstance.initBlankType();
-			return;
+	mounted  : () => {
+		window._securityUserEditorControllerInstance.setCaller(this);
+		window._securityUserEditorControllerInstance.initEditor();
+		if (this.$route.params.id === ".new") {
+			window._securityUserEditorControllerInstance.initBlankType();
+			return null;
 		}
 
-		return _securityUserEditorControllerInstance.fetchUser(this.$route.params.id);
+		return window._securityUserEditorControllerInstance.fetchUser(this.$route.params.id);
 	}
 };
 
-const _securityUserEditorControllerInstance = new _securityUserEditorController(SecurityUserEditor);
+window._securityUserEditorControllerInstance = new _securityUserEditorController(window.SecurityUserEditor);

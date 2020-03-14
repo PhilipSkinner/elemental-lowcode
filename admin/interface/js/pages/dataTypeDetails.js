@@ -23,8 +23,8 @@ _dataTypeDetailsController.prototype.getData = function() {
 
 _dataTypeDetailsController.prototype.fetchType = function(name) {
 	this.name = name;
-	return axios
-		.get('http://localhost:8001/data/types/' + name, {
+	return window.axios
+		.get("http://localhost:8001/data/types/" + name, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -38,7 +38,7 @@ _dataTypeDetailsController.prototype.fetchType = function(name) {
 _dataTypeDetailsController.prototype.generateExampleObject = function() {
 	var obj = JSONSchemaFaker.generate(this.data.dataType.schema);
 	this.data.exampleObject = JSON.stringify(obj, null, 4);
-	this.data.exampleId = 'bda231fd-10c1-4a2c-9c70-f99ee9c237ec';
+	this.data.exampleId = "bda231fd-10c1-4a2c-9c70-f99ee9c237ec";
 	this.data.exampleSingleResponse = JSON.stringify(Object.assign(obj, {
 		id : this.data.exampleId
 	}), null, 4);
@@ -52,15 +52,15 @@ _dataTypeDetailsController.prototype.generateExampleObject = function() {
 	this.caller.$forceUpdate();
 };
 
-const DataTypeDetails = {
-	template : '#template-dataTypeDetails',
+window.DataTypeDetails = {
+	template : "#template-dataTypeDetails",
 	data 	 : () => {
-		return _dataTypeDetailsInstance.getData();
+		return window._dataTypeDetailsInstance.getData();
 	},
 	mounted  : function() {
-		_dataTypeDetailsInstance.setCaller(this);
-		_dataTypeDetailsInstance.fetchType(this.$route.params.type);
+		window._dataTypeDetailsInstance.setCaller(this);
+		window._dataTypeDetailsInstance.fetchType(this.$route.params.type);
 	}
 };
 
-const _dataTypeDetailsInstance = new _dataTypeDetailsController(DataTypeDetails);
+window._dataTypeDetailsInstance = new _dataTypeDetailsController(window.DataTypeDetails);

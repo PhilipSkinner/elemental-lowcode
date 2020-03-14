@@ -4,7 +4,7 @@ const stringParser = function() {
 
 stringParser.prototype._determineReplacementValue = function(name, variables) {
 	//get its parts
-	var parts = name.replace('$(', '').replace(')', '').replace('[', '.').replace(']', '').split('.');
+	var parts = name.replace("$(", "").replace(")", "").replace("[", ".").replace("]", "").split(".");
 
 	var currentLevel = variables;
 	//lookup time
@@ -25,25 +25,26 @@ stringParser.prototype.parseString = function(string, variables) {
 	var regex = /\$\([\w\.\]\[\d+\]]*\)/g;
 	var needsReplacement = false;
 	var replacements = [];
+	var m = null;
 
 	while ((m = regex.exec(string)) !== null) {
-	    if (m.index === regex.lastIndex) {
-	        regex.lastIndex++;
-	    }
+		if (m.index === regex.lastIndex) {
+			regex.lastIndex++;
+		}
 
-	    // The result can be accessed through the `m`-variable.
-	    m.forEach((match, groupIndex) => {
-	        //find our substitutions
-	        var replacementValue = this._determineReplacementValue(match, variables);
+		// The result can be accessed through the `m`-variable.
+		m.forEach((match, groupIndex) => {
+			//find our substitutions
+			var replacementValue = this._determineReplacementValue(match, variables);
 
-	        if (!replacementValue) {
-	        	console.log(`Could not find a variable for ${match} in ${string}`);
-	        } else {
-	        	console.log(`Replacing ${match} in ${string}`);
-	        	replacements.push([match, replacementValue]);
-	        	needsReplacement = true;
-	        }
-	    });
+			if (!replacementValue) {
+				console.info(`Could not find a variable for ${match} in ${string}`);
+			} else {
+				console.info(`Replacing ${match} in ${string}`);
+				replacements.push([match, replacementValue]);
+				needsReplacement = true;
+			}
+		});
 	}
 
 	if (needsReplacement) {

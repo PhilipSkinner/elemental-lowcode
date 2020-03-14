@@ -15,12 +15,12 @@ const _integrationsEditorController = function(page) {
 
 _integrationsEditorController.prototype.initEditor = function() {
 	//set our editor up
-	this.editor = ace.edit(document.getElementById('integrationEditor'), {
-		mode : 'ace/mode/json',
-		selectionStyle : 'text'
+	this.editor = window.ace.edit(document.getElementById("integrationEditor"), {
+		mode : "ace/mode/json",
+		selectionStyle : "text"
 	});
 	this.editor.commands.addCommand({
-		name : 'save',
+		name : "save",
 		bindKey : {
 			win: "Ctrl-S",
 			mac: "Cmd-S"
@@ -29,7 +29,7 @@ _integrationsEditorController.prototype.initEditor = function() {
 			this.saveIntegration();
 		}
 	});
-	this.editor.setTheme('ace/theme/twilight');
+	this.editor.setTheme("ace/theme/twilight");
 };
 
 _integrationsEditorController.prototype.initBlankType = function() {
@@ -39,45 +39,45 @@ _integrationsEditorController.prototype.initBlankType = function() {
 	this.editor.setValue(JSON.stringify({
 		"name" : "exampleGetRequest",
 		"description" : "Get a single post from our example third party system. ",
-    	"method": "get",
-    	"variables": [
-        	{
-            	"name": "id",
-            	"type": "queryParam",
-            	"description": "The ID of the post to fetch"
-        	}
-    	],
-	    "request": {
-	        "uri": "https://jsonplaceholder.typicode.com/posts/$(id)",
-	        "method": "get",
-	        "schema": {
-	            "type": "JSON",
-	            "value": {
-	                "type": "object",
-	                "properties": {
-	                    "userId": {
-	                        "type": "integer"
-	                    },
-	                    "id": {
-	                        "type": "integer"
-	                    },
-	                    "title": {
-	                        "type": "string"
-	                    },
-	                    "body": {
-	                        "type": "string"
-	                    }
-	                },
-	                "required": [
-	                    "userId",
-	                    "id",
-	                    "title",
-	                    "body"
-	                ]
-	            }
-	        }
-	    },
-	    "transformer": "(input) => { return input; }"
+		"method": "get",
+		"variables": [
+			{
+				"name": "id",
+				"type": "queryParam",
+				"description": "The ID of the post to fetch"
+			}
+		],
+		"request": {
+			"uri": "https://jsonplaceholder.typicode.com/posts/$(id)",
+			"method": "get",
+			"schema": {
+				"type": "JSON",
+				"value": {
+					"type": "object",
+					"properties": {
+						"userId": {
+							"type": "integer"
+						},
+						"id": {
+							"type": "integer"
+						},
+						"title": {
+							"type": "string"
+						},
+						"body": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"userId",
+						"id",
+						"title",
+						"body"
+					]
+				}
+			}
+		},
+		"transformer": "(input) => { return input; }"
 	}, null, 4));
 };
 
@@ -91,8 +91,8 @@ _integrationsEditorController.prototype.getData = function() {
 
 _integrationsEditorController.prototype.fetchType = function(name) {
 	this.name = name;
-	return axios
-		.get('http://localhost:8001/integrations/' + name, {
+	return window.axios
+		.get("http://localhost:8001/integrations/" + name, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -110,8 +110,8 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 	var parsed = JSON.parse(this.editor.getValue());
 
 	if (this.name) {
-		return axios
-			.put('http://localhost:8001/integrations/' + this.name, this.editor.getValue(), {
+		return window.axios
+			.put("http://localhost:8001/integrations/" + this.name, this.editor.getValue(), {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -126,7 +126,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 					this.caller.$forceUpdate();
 				}, 1500);
 			}).catch((err) => {
-				console.log(err);
+				console.error(err);
 				this.data.error.visible = true;
 				this.data.error.title = "Error saving integration";
 				this.data.error.description = err.toString();
@@ -135,8 +135,8 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 				this.caller.$forceUpdate();
 			});
 	} else {
-		return axios
-			.post('http://localhost:8001/integrations', this.editor.getValue(), {
+		return window.axios
+			.post("http://localhost:8001/integrations", this.editor.getValue(), {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -145,7 +145,6 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 			.then((response) => {
 				//set our name
 				this.name = parsed.name;
-				console.log(parsed.name, location.path);
 				location.href = "/#/integrations/editor/" + this.name;
 
 				this.caller.showAlert = true;
@@ -156,7 +155,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 					this.caller.$forceUpdate();
 				}, 1500);
 			}).catch((err) => {
-				console.log(err);
+				console.error(err);
 				this.data.error.visible = true;
 				this.data.error.title = "Error saving integration";
 				this.data.error.description = err.toString();
@@ -168,21 +167,21 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 
 };
 
-const IntegrationsEditor = {
-	template : '#template-integrationsEditor',
+window.IntegrationsEditor = {
+	template : "#template-integrationsEditor",
 	data 	 : () => {
-		return _integrationsEditorInstance.getData();
+		return window._integrationsEditorInstance.getData();
 	},
 	mounted  : function() {
-		_integrationsEditorInstance.setCaller(this);
-		_integrationsEditorInstance.initEditor();
+		window._integrationsEditorInstance.setCaller(this);
+		window._integrationsEditorInstance.initEditor();
 		if (this.$route.params.name === ".new") {
-			_integrationsEditorInstance.initBlankType();
-			return;
+			window._integrationsEditorInstance.initBlankType();
+			return null;
 		}
 
-		return _integrationsEditorInstance.fetchType(this.$route.params.name);
+		return window._integrationsEditorInstance.fetchType(this.$route.params.name);
 	}
 };
 
-const _integrationsEditorInstance = new _integrationsEditorController(IntegrationsEditor);
+window._integrationsEditorInstance = new _integrationsEditorController(window.IntegrationsEditor);

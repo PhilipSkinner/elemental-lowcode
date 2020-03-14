@@ -10,12 +10,12 @@ const _securityScopeEditorController = function(page) {
 
 _securityScopeEditorController.prototype.initEditor = function() {
 	//set our editor up
-	this.editor = ace.edit(document.getElementById('scopeEditor'), {
-		mode : 'ace/mode/json',
-		selectionStyle : 'text'
+	this.editor = window.ace.edit(document.getElementById("scopeEditor"), {
+		mode : "ace/mode/json",
+		selectionStyle : "text"
 	});
 	this.editor.commands.addCommand({
-		name : 'save',
+		name : "save",
 		bindKey : {
 			win: "Ctrl-S",
 			mac: "Cmd-S"
@@ -24,7 +24,7 @@ _securityScopeEditorController.prototype.initEditor = function() {
 			this.save();
 		}
 	});
-	this.editor.setTheme('ace/theme/twilight');
+	this.editor.setTheme("ace/theme/twilight");
 };
 
 _securityScopeEditorController.prototype.initBlankType = function() {
@@ -50,7 +50,7 @@ _securityScopeEditorController.prototype.getData = function() {
 
 _securityScopeEditorController.prototype.fetchScope = function(name) {
 	this.name = name;
-	return axios
+	return window.axios
 		.get(`http://localhost:8001/security/scopes/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
@@ -69,10 +69,10 @@ _securityScopeEditorController.prototype.save = function() {
 	var parsed = JSON.parse(this.editor.getValue());
 
 	if (this.name) {
-		return axios
+		return window.axios
 			.put(`http://localhost:8001/security/scopes/${this.name}`, this.editor.getValue(), {
 				headers : {
-					'Content-Type' : 'application/json',
+					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`
 				}
 			})
@@ -86,17 +86,17 @@ _securityScopeEditorController.prototype.save = function() {
 				}, 1500);
 			}).catch((err) => {
 				this.data.error.visible = true;
-				this.data.error.title = 'Error saving scope';
+				this.data.error.title = "Error saving scope";
 				this.data.error.description = err.toString();
 
 				this.caller.error = this.getData().error;
 				this.caller.$forceUpdate();
 			});
 	} else {
-		return axios
+		return window.axios
 			.post(`http://localhost:8001/security/scopes`, this.editor.getValue(), {
 				headers : {
-					'Content-Type' : 'application/json',
+					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`
 				}
 			})
@@ -112,7 +112,7 @@ _securityScopeEditorController.prototype.save = function() {
 				}, 1500);
 			}).catch((err) => {
 				this.data.error.visible = true;
-				this.data.error.title = 'Error saving scope';
+				this.data.error.title = "Error saving scope";
 				this.data.error.description = err.toString();
 
 				this.caller.error = this.getData().error;
@@ -121,21 +121,21 @@ _securityScopeEditorController.prototype.save = function() {
 	}
 };
 
-const SecurityScopeEditor = {
-	template : '#template-securityScopeEditor',
+window.SecurityScopeEditor = {
+	template : "#template-securityScopeEditor",
 	data 	 : () => {
-		return _securityScopeEditorControllerInstance.getData();
+		return window._securityScopeEditorControllerInstance.getData();
 	},
 	mounted  : function() {
-		_securityScopeEditorControllerInstance.setCaller(this);
-		_securityScopeEditorControllerInstance.initEditor();
-		if (this.$route.params.name === '.new') {
-			_securityScopeEditorControllerInstance.initBlankType();
-			return;
+		window._securityScopeEditorControllerInstance.setCaller(this);
+		window._securityScopeEditorControllerInstance.initEditor();
+		if (this.$route.params.name === ".new") {
+			window._securityScopeEditorControllerInstance.initBlankType();
+			return null;
 		}	
 
-		return _securityScopeEditorControllerInstance.fetchScope(this.$route.params.name);
+		return window._securityScopeEditorControllerInstance.fetchScope(this.$route.params.name);
 	}
 };
 
-const _securityScopeEditorControllerInstance = new _securityScopeEditorController(SecurityScopeEditor);
+window._securityScopeEditorControllerInstance = new _securityScopeEditorController(window.SecurityScopeEditor);

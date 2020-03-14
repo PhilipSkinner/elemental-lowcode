@@ -1,7 +1,7 @@
 const
-	express 		= require('express'),
-	tokenHandler 	= require('../shared/tokenHandler'),
-	hotreload 		= require('../shared/hotReload')();
+	express 		= require("express"),
+	tokenHandler 	= require("../shared/tokenHandler"),
+	hotreload 		= require("../shared/hotReload")();
 
 let app = null;
 let server = null;
@@ -11,7 +11,7 @@ let tHandler = tokenHandler(process.env.SIG);
 const startup = () => {
 	app = express();
 	app.use(tHandler.tokenCheck.bind(tHandler));
-	let integrationService = require('./services/integrationService')(app);
+	let integrationService = require("./services/integrationService")(app);
 
 	//now init our integrations
 	integrationService.init(process.env.DIR).then(() => {
@@ -36,4 +36,4 @@ const reload = () => {
 };
 
 hotreload.watch(process.env.DIR, reload);
-hotreload.watch('./lib', reload);
+hotreload.watch("./lib", reload);

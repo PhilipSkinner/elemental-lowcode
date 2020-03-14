@@ -46,19 +46,19 @@ controllerState.prototype.triggerEvent = function(name, details) {
 
 module.exports = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService) {
 	if (!storageService) {
-		storageService = require('../../shared/storageService')();
+		storageService = require("../../shared/storageService")();
 	}
 
 	if (!sessionState) {
-		sessionState = require('./sessionState')(controllerDefinition.sessionName);
+		sessionState = require("./sessionState")(controllerDefinition.sessionName);
 	}
 
 	if (!integrationService) {
-		integrationService = require('../../shared/integrationService')();
+		integrationService = require("../../shared/integrationService")();
 	}
 
 	if (!rulesetService) {
-		rulesetService = require('../../shared/ruleService')();
+		rulesetService = require("../../shared/ruleService")();
 	}
 
 	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService);

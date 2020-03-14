@@ -78,7 +78,7 @@ fsStore.prototype.getResource = function(type, id) {
 					return resolve(null);
 				}
 
-				let object = JSON.parse(content.toString('utf8'));
+				let object = JSON.parse(content.toString("utf8"));
 				object.id = id;
 				return resolve(object);
 			});
@@ -89,7 +89,7 @@ fsStore.prototype.getResource = function(type, id) {
 fsStore.prototype.createResource = function(type, id, data) {
 	return this.getResource(type, id).then((resource) => {
 		if (resource) {
-			return Promise.reject(new Error('Resource already exists'));
+			return Promise.reject(new Error("Resource already exists"));
 		}
 
 		return new Promise((resolve, reject) => {
@@ -107,7 +107,7 @@ fsStore.prototype.createResource = function(type, id, data) {
 fsStore.prototype.updateResource = function(type, id, data) {
 	return this.getResource(type, id).then((resource) => {
 		if (!resource) {
-			return Promise.reject(new Error('Resource does not exist'));
+			return Promise.reject(new Error("Resource does not exist"));
 		}
 
 		return new Promise((resolve, reject) => {
@@ -125,7 +125,7 @@ fsStore.prototype.updateResource = function(type, id, data) {
 fsStore.prototype.deleteResource = function(type, id) {
 	return this.getResource(type, id).then((resource) => {
 		if (!resource) {
-			return Promise.reject(new Error('Resource does not exist'));
+			return Promise.reject(new Error("Resource does not exist"));
 		}
 
 		return new Promise((resolve, reject) => {
@@ -142,15 +142,15 @@ fsStore.prototype.deleteResource = function(type, id) {
 
 module.exports = function(dir, fs, path) {
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	if (!dir) {
-		dir = path.join(process.cwd(), '.store');
+		dir = path.join(process.cwd(), ".store");
 	}
 
 	if (!fs) {
-		fs = require('fs');
+		fs = require("fs");
 	}
 
 	return new fsStore(dir, fs, path);

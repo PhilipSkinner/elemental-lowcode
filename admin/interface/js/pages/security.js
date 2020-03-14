@@ -14,8 +14,8 @@ _securityController.prototype.getData = function() {
 };
 
 _securityController.prototype.fetchClients = function(caller) {
-	return axios
-		.get('http://localhost:8001/security/clients', {
+	return window.axios
+		.get("http://localhost:8001/security/clients", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -28,8 +28,8 @@ _securityController.prototype.fetchClients = function(caller) {
 };
 
 _securityController.prototype.fetchScopes = function(caller) {
-	return axios
-		.get('http://localhost:8001/security/scopes', {
+	return window.axios
+		.get("http://localhost:8001/security/scopes", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -42,8 +42,8 @@ _securityController.prototype.fetchScopes = function(caller) {
 };
 
 _securityController.prototype.fetchUsers = function(caller) {
-	return axios
-		.get('http://localhost:8001/security/users', {
+	return window.axios
+		.get("http://localhost:8001/security/users", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -55,18 +55,18 @@ _securityController.prototype.fetchUsers = function(caller) {
 		});
 };
 
-const Security = {
-	template : '#template-security',
+window.Security = {
+	template : "#template-security",
 	data 	 : () => {
-		return _securityControllerInstance.getData();
+		return window._securityControllerInstance.getData();
 	},
 	mounted  : function() {
-		return _securityControllerInstance.fetchClients(this).then(() => {
-			return _securityControllerInstance.fetchScopes(this);
+		return window._securityControllerInstance.fetchClients(this).then(() => {
+			return window._securityControllerInstance.fetchScopes(this);
 		}).then(() => {
-			return _securityControllerInstance.fetchUsers(this);
+			return window._securityControllerInstance.fetchUsers(this);
 		})
 	}
 };
 
-const _securityControllerInstance = new _securityController(Security);
+window._securityControllerInstance = new _securityController(window.Security);

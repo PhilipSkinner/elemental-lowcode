@@ -27,12 +27,12 @@ _websitesEditorController.prototype.getData = function() {
 
 _websitesEditorController.prototype.initEditor = function(elem, type, value) {
 	//set our editor up
-	this.editor = ace.edit(document.getElementById(elem), {
-		mode : 'ace/mode/' + type,
-		selectionStyle : 'text'
+	this.editor = window.ace.edit(document.getElementById(elem), {
+		mode : "ace/mode/" + type,
+		selectionStyle : "text"
 	});
 	this.editor.commands.addCommand({
-		name : 'save',
+		name : "save",
 		bindKey : {
 			win: "Ctrl-S",
 			mac: "Cmd-S"
@@ -41,13 +41,13 @@ _websitesEditorController.prototype.initEditor = function(elem, type, value) {
 			this.saveAll();
 		}
 	});
-	this.editor.setTheme('ace/theme/twilight');
+	this.editor.setTheme("ace/theme/twilight");
 	this.editor.setValue(value);
 };
 
 _websitesEditorController.prototype.saveResource = function(path, value) {
 	return new Promise((resolve, reject) => {
-		return axios
+		return window.axios
 			.post(`http://localhost:8001/websites/${this.website.name}/resource?path=${path}`, {
 				resource : value
 			}, {
@@ -75,7 +75,7 @@ _websitesEditorController.prototype.saveWebsite = function() {
 		}, {});
 		this.website.tags = this.tags;
 
-		return axios
+		return window.axios
 			.put(`http://localhost:8001/websites/${this.website.name}`, this.website, {
 				headers : {
 					Authorization : `Bearer ${window.getToken()}`
@@ -118,7 +118,7 @@ _websitesEditorController.prototype.loadResource = function(path) {
 	}
 
 	return new Promise((resolve, reject) => {
-		axios
+		window.axios
 			.get(`http://localhost:8001/websites/${this.website.name}/resource?path=${path}`, {
 				headers : {
 					Authorization : `Bearer ${window.getToken()}`
@@ -141,12 +141,12 @@ _websitesEditorController.prototype.editView = function(path) {
 		this.refreshState();
 		var rawResource = resource;
 
-		if (typeof(resource) === 'object') {
+		if (typeof(resource) === "object") {
 			rawResource = JSON.stringify(resource, null, 4);
 		}
 
 		setTimeout(() => {
-			this.initEditor('viewEditor', 'json', rawResource);
+			this.initEditor("viewEditor", "json", rawResource);
 		}, 10);
 	});
 };
@@ -159,7 +159,7 @@ _websitesEditorController.prototype.editController = function(path) {
 		this.controllerEditorVisible = true;
 		this.refreshState();
 		setTimeout(() => {
-			this.initEditor('controllerEditor', 'javascript', resource);
+			this.initEditor("controllerEditor", "javascript", resource);
 		}, 10);
 	});
 };
@@ -205,7 +205,7 @@ _websitesEditorController.prototype.removeTag = function(num) {
 
 _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 	this.caller = caller;
-	return axios
+	return window.axios
 		.get(`http://localhost:8001/websites/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
@@ -229,7 +229,7 @@ _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 
 _websitesEditorController.prototype.fetchClients = function(caller) {
 	this.caller = caller;
-	return axios
+	return window.axios
 		.get(`http://localhost:8001/security/clients`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
@@ -252,7 +252,7 @@ _websitesEditorController.prototype.showSaveMessage = function() {
 };
 
 _websitesEditorController.prototype.newRoute = function() {
-	var name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+	var name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
 
 	this.routes.push({
 		route 		: `/${name}`,
@@ -284,7 +284,7 @@ _websitesEditorController.prototype.newRoute = function() {
 };
 
 _websitesEditorController.prototype.newTag = function() {
-	var name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+	var name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
 
 	this.tags.push({
 		name 		: name,
@@ -307,16 +307,16 @@ _websitesEditorController.prototype.newTag = function() {
 	].join("\n");
 }
 
-const WebsiteEditor = {
-	template : '#template-websiteEditor',
+window.WebsiteEditor = {
+	template : "#template-websiteEditor",
 	data 	 : () => {
-		return _websitesEditorControllerInstance.getData();
+		return window._websitesEditorControllerInstance.getData();
 	},
 	mounted  : function() {
-		return _websitesEditorControllerInstance.fetchWebsite(this, this.$route.params.name).then(() => {
-			return _websitesEditorControllerInstance.fetchClients(this);
+		return window._websitesEditorControllerInstance.fetchWebsite(this, this.$route.params.name).then(() => {
+			return window._websitesEditorControllerInstance.fetchClients(this);
 		});
 	}
 };
 
-const _websitesEditorControllerInstance = new _websitesEditorController(WebsiteEditor);
+window._websitesEditorControllerInstance = new _websitesEditorController(window.WebsiteEditor);

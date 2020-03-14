@@ -85,11 +85,11 @@ integrationInstance.prototype.handler = function(req, res, next) {
 
 module.exports = function(name, config, requestService, jsonSchemaVerifier) {	
 	if (!requestService) {
-		requestService = require('./requestService')();
+		requestService = require("./requestService")();
 	}
 
 	if (!jsonSchemaVerifier) {
-		jsonSchemaVerifier = require('./jsonSchemaVerifier')();
+		jsonSchemaVerifier = require("./jsonSchemaVerifier")();
 	}
 
 	return new integrationInstance(name, config, requestService, jsonSchemaVerifier);

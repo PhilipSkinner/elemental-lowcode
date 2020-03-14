@@ -67,9 +67,9 @@ typeInstance.prototype.createHandler = function(req, res) {
 			return;
 		}
 
-		res.header('Location', `/${this.definition.name}/${newId}`);
+		res.header("Location", `/${this.definition.name}/${newId}`);
 		res.status(201);
-		res.send('');
+		res.send("");
 		res.end();
 		return;
 	}).catch((err) => {
@@ -86,7 +86,7 @@ typeInstance.prototype.getSingleHandler = function(req, res) {
 	this.store.getResource(this.definition.name, req.params.id).then((data) => {
 		if (!data) {
 			res.status(404);
-			res.send('');
+			res.send("");
 			res.end();
 			return;
 		}
@@ -120,9 +120,9 @@ typeInstance.prototype.updateHandler = function(req, res) {
 			return;
 		}
 
-		res.header('Location', `/${this.definition.name}/${req.params.id}`);
+		res.header("Location", `/${this.definition.name}/${req.params.id}`);
 		res.status(204);
-		res.send('');
+		res.send("");
 		res.end();
 		return;
 	}).catch((err) => {
@@ -149,7 +149,7 @@ typeInstance.prototype.deleteHandler = function(req, res) {
 		}
 
 		res.status(204);
-		res.send('');
+		res.send("");
 		res.end();
 		return;
 	}).catch((err) => {
@@ -167,7 +167,7 @@ typeInstance.prototype.patchHandler = function(req, res) {
 	this.store.getResource(this.definition.name, req.params.id).then((resource) => {
 		if (resource == null) {
 			res.status(404);
-			res.send('');
+			res.send("");
 			res.end();
 			return;
 		}
@@ -198,9 +198,9 @@ typeInstance.prototype.patchHandler = function(req, res) {
 				return;
 			}
 
-			res.header('Location', `/${this.definition.name}/${req.params.id}`);
+			res.header("Location", `/${this.definition.name}/${req.params.id}`);
 			res.status(204);
-			res.send('');
+			res.send("");
 			res.end();
 			return;
 		});
@@ -210,16 +210,16 @@ typeInstance.prototype.patchHandler = function(req, res) {
 typeInstance.prototype.init = function() {
 	return new Promise((resolve, reject) => {
 		const readerRoles = [
-			'system_admin',
-			'system_reader',
-			'data_reader',
-			this.definition.name + '_reader'
+			"system_admin",
+			"system_reader",
+			"data_reader",
+			this.definition.name + "_reader"
 		];
 		const writerRoles = [
-			'system_admin',
-			'system_writer',
-			'data_writer',
-			this.definition.name + '_writer'
+			"system_admin",
+			"system_writer",
+			"data_writer",
+			this.definition.name + "_writer"
 		];
 
 		console.log(`Initializing type ${this.definition.name}`);
@@ -251,17 +251,17 @@ typeInstance.prototype.init = function() {
 
 module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler) {
 	if (!uuid) {
-		uuid = require('uuid/v4');
+		uuid = require("uuid/v4");
 	}
 
 	if (!ajv) {
-		ajv = require('ajv')({
+		ajv = require("ajv")({
 			allErrors : true
 		});
 	}
 
 	if (!roleCheckHandler) {
-		roleCheckHandler = require('../../shared/roleCheckHandler')();
+		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
 
 	return new typeInstance(store, app, definition, uuid, ajv, roleCheckHandler);

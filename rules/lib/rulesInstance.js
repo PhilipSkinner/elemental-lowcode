@@ -44,9 +44,9 @@ rulesInstance.prototype.executeRules = function(req, res, next) {
 rulesInstance.prototype.init = function() {
 	return new Promise((resolve, reject) => {
 		const execRoles = [
-			'system_admin',
-			'system_exec',
-			'roles_exec',
+			"system_admin",
+			"system_exec",
+			"roles_exec",
 			`${this.definition.name}_exec`
 		];
 
@@ -58,17 +58,17 @@ rulesInstance.prototype.init = function() {
 
 module.exports = function(app, definition, ajv, comparitorService, roleCheckHandler) {
 	if (!ajv) {
-		ajv = require('ajv')({
+		ajv = require("ajv")({
 			allErrors : true
 		});
 	}
 
 	if (!comparitorService) {
-		comparitorService = require('./comparitorService')();
+		comparitorService = require("./comparitorService")();
 	}
 
 	if (!roleCheckHandler) {
-		roleCheckHandler = require('../../shared/roleCheckHandler')();
+		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
 
 	return new rulesInstance(app, definition, ajv, comparitorService, roleCheckHandler);

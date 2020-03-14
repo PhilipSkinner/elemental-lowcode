@@ -31,7 +31,7 @@ controllerInstance.prototype.loadView = function() {
 controllerInstance.prototype.handler = function(req, res, next) {
 	if (this.routeDefinition.roles) {
 		if (!(req.session && req.session.passport && req.session.passport.user && req.session.passport.user.accessToken)) {
-			return this.passport.authenticate('oauth2')(req, res, next);
+			return this.passport.authenticate("oauth2")(req, res, next);
 		}
 	}
 
@@ -42,13 +42,13 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	stateEngine.setContext(req, res);
 
 	//ensure our state engine triggers on load
-	stateEngine.triggerEvent('load', Object.assign(req.query, req.params)).then(() => {
-		if (req.method === 'POST') {
+	stateEngine.triggerEvent("load", Object.assign(req.query, req.params)).then(() => {
+		if (req.method === "POST") {
 			//generate our post event!
 			var event = {};
 			Object.keys(req.body).forEach((valName) => {
 				//get the path version
-				var parts = valName.split('$$_$$');
+				var parts = valName.split("$$_$$");
 				let current = event;
 				for (var i = 0; i < parts.length; i++) {
 					if (i === parts.length - 1) {
@@ -62,10 +62,10 @@ controllerInstance.prototype.handler = function(req, res, next) {
 					}
 				}
 			});
-			return stateEngine.triggerEvent('postback', event);
+			return stateEngine.triggerEvent("postback", event);
 		}
 
-		if (req.method === 'GET') {
+		if (req.method === "GET") {
 			//do we have an event to trigger?
 			if (req.query.event) {
 				return stateEngine.triggerEvent(req.query.event);
@@ -95,15 +95,15 @@ controllerInstance.prototype.handler = function(req, res, next) {
 
 module.exports = function(routeDefinition, templateRenderer, passport, path, fs, controllerState) {
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	if (!fs) {
-		fs = require('fs');
+		fs = require("fs");
 	}
 
 	if (!controllerState) {
-		controllerState = require('./controllerState');
+		controllerState = require("./controllerState");
 	}
 
 	return new controllerInstance(routeDefinition, path, passport, templateRenderer, fs, controllerState);

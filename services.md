@@ -20,6 +20,4 @@
 ** APIs
 * Need to define client id/secrets for user/client comms:
 ** Interfaces
-* Roles defined on API endpoints
 * Roles defined for requiring access on routes on websites
-* Need command line tool to setup an initial administrative account

@@ -17,7 +17,7 @@ storageService.prototype.detailCollection = function(name, token) {
 			try {
 				result = JSON.parse(body);
 			} catch(e) {
-				return reject(new Error('Invalid response received from collection details'));
+				return reject(new Error("Invalid response received from collection details"));
 			}
 
 			return resolve(result);
@@ -40,7 +40,7 @@ storageService.prototype.getList = function(name, start, count, token) {
 			try {
 				result = JSON.parse(body);
 			} catch(e) {
-				return reject(new Error('Invalid response received from getting list of results'));
+				return reject(new Error("Invalid response received from getting list of results"));
 			}
 
 			return resolve(result);
@@ -63,7 +63,7 @@ storageService.prototype.getEntity = function(name, id, token) {
 			try {
 				result = JSON.parse(body);
 			} catch(e) {
-				return reject(new Error('Invalid response received when fetching entity'));
+				return reject(new Error("Invalid response received when fetching entity"));
 			}
 
 			result.id = id;
@@ -77,7 +77,7 @@ storageService.prototype.createEntity = function(name, entity, token) {
 		this.request.post(`http://localhost:8006/${name}`, {
 			body : JSON.stringify(entity),
 			headers : {
-				'content-type' : 'application/json',
+				"content-type" : "application/json",
 				Authorization : `Bearer ${token}`
 			}
 		}, (err, res, body) => {
@@ -99,7 +99,7 @@ storageService.prototype.updateEntity = function(name, id, entity, token) {
 		this.request.put(`http://localhost:8006/${name}/${id}`, {
 			body : JSON.stringify(entity), 
 			headers : {
-				'content-type' : 'application/json',
+				"content-type" : "application/json",
 				Authorization : `Bearer ${token}`	
 			}
 		}, (err, res, body) => {
@@ -114,7 +114,7 @@ storageService.prototype.updateEntity = function(name, id, entity, token) {
 
 module.exports = function(request) {
 	if (!request) {
-		request = require('request');
+		request = require("request");
 	}
 
 	return new storageService(request);

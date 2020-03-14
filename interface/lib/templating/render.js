@@ -5,14 +5,14 @@ const render = function(fs, path, preProcessor) {
 	this.tabLevel = -1;
 
 	this.invalidProperties = [
-		'text',
-		'tag',
-		'onclick',
-		'children',
-		'repeat',
-		'submit',
-		'bind',
-		'_scope'
+		"text",
+		"tag",
+		"onclick",
+		"children",
+		"repeat",
+		"submit",
+		"bind",
+		"_scope"
 	];
 	this.customTags = {};
 };
@@ -26,7 +26,7 @@ render.prototype.clickHandler = function(eventProps, toWrap) {
 };
 
 render.prototype.endClickHandler = function(val) {
-	if (val.trim().indexOf('<!-- @clickHandler -->') === 0) {
+	if (val.trim().indexOf("<!-- @clickHandler -->") === 0) {
 		return `${val}</a><!-- /@clickHandler -->`;
 	}
 
@@ -69,17 +69,17 @@ render.prototype.renderTagWithProperties = function(tag, properties, data) {
 
 		if (this.invalidProperties.indexOf(p) === -1 && properties[p] !== null) {
 			if (Array.isArray(properties[p])) {
-				propValue = properties[p].join(' ');
+				propValue = properties[p].join(" ");
 			}
 
 			render += ` ${p}="${propValue}" `;
 		}
 
-		if (p === 'onclick') {
+		if (p === "onclick") {
 			render = this.clickHandler(propValue, render);
 		}
 
-		if (p === 'submit') {
+		if (p === "submit") {
 			render = this.submitHandler(propValue, render);
 		}
 	});
@@ -94,44 +94,44 @@ render.prototype.handleTag = function(c, data) {
 		});
 	};
 
-	if (typeof(c.__display) !== 'undefined' && c.__display === false) {
-		return '';
+	if (typeof(c.__display) !== "undefined" && c.__display === false) {
+		return "";
 	}
 
 	if (c.children || c.text) {
 		var text = c.text;
 
 		if (Array.isArray(text)) {
-			text = text.join(' ');
+			text = text.join(" ");
 		}
 
-		var content = ((typeof(text) === 'undefined' || text === null ? '' : '\n' + this.generateTabs() + '\t' + text + '\n') + this.renderChildren(c.children, data));
+		var content = ((typeof(text) === "undefined" || text === null ? "" : "\n" + this.generateTabs() + "\t" + text + "\n") + this.renderChildren(c.children, data));
 
 		return {
-			start 	: this.renderTagWithProperties(c.tag, c, data) + '>',
+			start 	: this.renderTagWithProperties(c.tag, c, data) + ">",
 			content : content,
 			end 	: this.generateTabs() + `</${c.tag}>`
 		};
 	} else {
 		return {
 			start : this.renderTagWithProperties(c.tag, c, data),
-			content : '',
-			end : ' />',
+			content : "",
+			end : " />",
 		};
 	}
 };
 
 render.prototype.generateTabs = function() {
-	var ret = '';
+	var ret = "";
 	for (var i = 0; i < this.tabLevel; i++) {
-		ret += '\t';
+		ret += "\t";
 	}
 	return ret;
 };
 
 render.prototype.renderChildren = function(children, data) {
 	if (!children) {
-		return '';
+		return "";
 	}
 
 	this.tabLevel++;
@@ -142,15 +142,15 @@ render.prototype.renderChildren = function(children, data) {
 		if (a) {
 			if (Array.isArray(a)) {
 				a.forEach((aa) => {
-					s += this.endClickHandler(this.generateTabs() + aa.start + aa.content + aa.end) + '\n';
+					s += this.endClickHandler(this.generateTabs() + aa.start + aa.content + aa.end) + "\n";
 				});
 			} else {
 				s += this.endClickHandler(this.generateTabs() + a.start + a.content + a.end);
 			}
 		}
 
-		return s + '\n';
-	}, '\n');
+		return s + "\n";
+	}, "\n");
 
 	this.tabLevel--;
 
@@ -163,21 +163,21 @@ render.prototype.renderView = function(view, bag) {
 	return this.preProcessor.process(view, {
 		bag : bag
 	}, this.customTags).then((processed) => {
-		return Promise.resolve('<!DOCTYPE HTML>' + this.renderChildren(processed.view, processed.data));
+		return Promise.resolve("<!DOCTYPE HTML>" + this.renderChildren(processed.view, processed.data));
 	});
 };
 
 module.exports = function(fs, path, preProcessor) {
 	if (!fs) {
-		fs = require('fs');
+		fs = require("fs");
 	}
 
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	if (!preProcessor) {
-		preProcessor = require('./preProcessor')();
+		preProcessor = require("./preProcessor")();
 	}
 
 	return new render(fs, path, preProcessor);

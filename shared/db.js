@@ -1,45 +1,45 @@
 module.exports = function(sequelize, path) {  
   if (!sequelize) {
-    sequelize = require('sequelize');
+    sequelize = require("sequelize");
   }
 
   if (!path) {
-    path = require('path');
+    path = require("path");
   }
     
   const db = new sequelize({
-    dialect: 'sqlite',
-    storage: path.join(process.env.DIR, 'db.sqlite'),
+    dialect: "sqlite",
+    storage: path.join(process.env.DIR, "db.sqlite"),
     logging: false
   });
 
   const grantable = new Set([
-    'AccessToken',
-    'AuthorizationCode',
-    'RefreshToken',
-    'DeviceCode',
+    "AccessToken",
+    "AuthorizationCode",
+    "RefreshToken",
+    "DeviceCode",
   ]);
 
   const models = [
-    'Session',
-    'AccessToken',
-    'AuthorizationCode',
-    'RefreshToken',
-    'DeviceCode',
-    'ClientCredentials',
-    'Client',
-    'InitialAccessToken',
-    'RegistrationAccessToken',
-    'Interaction',
-    'ReplayDetection',
-    'PushedAuthorizationRequest',
-    'User'
+    "Session",
+    "AccessToken",
+    "AuthorizationCode",
+    "RefreshToken",
+    "DeviceCode",
+    "ClientCredentials",
+    "Client",
+    "InitialAccessToken",
+    "RegistrationAccessToken",
+    "Interaction",
+    "ReplayDetection",
+    "PushedAuthorizationRequest",
+    "User"
   ].reduce((map, name) => {
     map.set(name, db.define(name, {
       id: { type: sequelize.STRING, primaryKey: true },
       ...(grantable.has(name) ? { grantId: { type: sequelize.STRING } } : undefined),
-      ...(name === 'DeviceCode' ? { userCode: { type: sequelize.STRING } } : undefined),
-      ...(name === 'Session' ? { uid: { type: sequelize.STRING } } : undefined),
+      ...(name === "DeviceCode" ? { userCode: { type: sequelize.STRING } } : undefined),
+      ...(name === "Session" ? { uid: { type: sequelize.STRING } } : undefined),
       data: { type: sequelize.JSONB },
       expiresAt: { type: sequelize.DATE },
       consumedAt: { type: sequelize.DATE },

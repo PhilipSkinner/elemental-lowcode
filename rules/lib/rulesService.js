@@ -9,7 +9,7 @@ const rulesService = function(app, fs, path, glob, configReader, rulesInstance) 
 
 rulesService.prototype.findDefinitions = function(dir) {
 	return new Promise((resolve, reject) => {
-		this.glob(this.path.join(dir, '**/*.json'), (err, definitions) => {
+		this.glob(this.path.join(dir, "**/*.json"), (err, definitions) => {
 			if (err) {
 				return reject(err);
 			}
@@ -40,23 +40,23 @@ rulesService.prototype.init = function(dir) {
 
 module.exports = function(app, fs, path, glob, configReader, rulesInstance) {
 	if (!fs) {
-		fs = require('fs');
+		fs = require("fs");
 	}
 
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	if (!glob) {
-		glob = require('glob');
+		glob = require("glob");
 	}
 
 	if (!configReader) {
-		configReader = require('./configReader')();
+		configReader = require("./configReader")();
 	}
 
 	if (!rulesInstance) {
-		rulesInstance = require('./rulesInstance');
+		rulesInstance = require("./rulesInstance");
 	}
 
 	return new rulesService(app, fs, path, glob, configReader, rulesInstance);

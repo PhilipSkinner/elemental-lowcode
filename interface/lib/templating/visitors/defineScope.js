@@ -10,7 +10,7 @@ defineScope.prototype.traverse = function(tags) {
 				return;
 			}
 
-			if (typeof(tag[prop]) === 'object' && tag[prop] !== null) {
+			if (typeof(tag[prop]) === "object" && tag[prop] !== null) {
 				tag[prop] = this.traverse([tag[prop]])[0];
 				return;
 			}

@@ -15,12 +15,12 @@ const _dataTypeEditorController = function(page) {
 
 _dataTypeEditorController.prototype.initEditor = function() {
 	//set our editor up
-	this.editor = ace.edit(document.getElementById('typeEditor'), {
-		mode : 'ace/mode/json',
-		selectionStyle : 'text'
+	this.editor = window.ace.edit(document.getElementById("typeEditor"), {
+		mode : "ace/mode/json",
+		selectionStyle : "text"
 	});
 	this.editor.commands.addCommand({
-		name : 'save',
+		name : "save",
 		bindKey : {
 			win: "Ctrl-S",
 			mac: "Cmd-S"
@@ -29,7 +29,7 @@ _dataTypeEditorController.prototype.initEditor = function() {
 			this.saveType();
 		}
 	});
-	this.editor.setTheme('ace/theme/twilight');
+	this.editor.setTheme("ace/theme/twilight");
 };
 
 _dataTypeEditorController.prototype.initBlankType = function() {
@@ -60,8 +60,8 @@ _dataTypeEditorController.prototype.getData = function() {
 
 _dataTypeEditorController.prototype.fetchType = function(name) {
 	this.name = name;
-	return axios
-		.get('http://localhost:8001/data/types/' + name, {
+	return window.axios
+		.get("http://localhost:8001/data/types/" + name, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -79,8 +79,8 @@ _dataTypeEditorController.prototype.saveType = function() {
 	var parsed = JSON.parse(this.editor.getValue());
 
 	if (this.name) {
-		return axios
-			.put('http://localhost:8001/data/types/' + this.name, this.editor.getValue(), {
+		return window.axios
+			.put("http://localhost:8001/data/types/" + this.name, this.editor.getValue(), {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -104,8 +104,8 @@ _dataTypeEditorController.prototype.saveType = function() {
 				this.caller.$forceUpdate();
 			});
 	} else {
-		return axios
-			.post('http://localhost:8001/data/types', this.editor.getValue(), {
+		return window.axios
+			.post("http://localhost:8001/data/types", this.editor.getValue(), {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -137,21 +137,21 @@ _dataTypeEditorController.prototype.saveType = function() {
 
 };
 
-const DataTypeEditor = {
-	template : '#template-dataTypeEditor',
+window.DataTypeEditor = {
+	template : "#template-dataTypeEditor",
 	data 	 : () => {
-		return _dataTypeEditorInstance.getData();
+		return window._dataTypeEditorInstance.getData();
 	},
 	mounted  : function() {
-		_dataTypeEditorInstance.setCaller(this);
-		_dataTypeEditorInstance.initEditor();
+		window._dataTypeEditorInstance.setCaller(this);
+		window._dataTypeEditorInstance.initEditor();
 		if (this.$route.params.type === ".new") {
-			_dataTypeEditorInstance.initBlankType();
-			return;
+			window._dataTypeEditorInstance.initBlankType();
+			return null;
 		}
 
-		return _dataTypeEditorInstance.fetchType(this.$route.params.type);
+		return window._dataTypeEditorInstance.fetchType(this.$route.params.type);
 	}
 };
 
-const _dataTypeEditorInstance = new _dataTypeEditorController(DataTypeEditor);
+window._dataTypeEditorInstance = new _dataTypeEditorController(window.DataTypeEditor);

@@ -16,8 +16,8 @@ _integrationDetailController.prototype.getData = function() {
 
 _integrationDetailController.prototype.fetchType = function(name) {
 	this.name = name;
-	return axios
-		.get('http://localhost:8001/integrations/' + name, {
+	return window.axios
+		.get("http://localhost:8001/integrations/" + name, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -29,15 +29,15 @@ _integrationDetailController.prototype.fetchType = function(name) {
 		});
 };
 
-const IntegrationDetails = {
-	template : '#template-integrationDetails',
+window.IntegrationDetails = {
+	template : "#template-integrationDetails",
 	data 	 : () => {
-		return _integrationDetailInstance.getData();
+		return window._integrationDetailInstance.getData();
 	},
 	mounted  : function() {
-		_integrationDetailInstance.setCaller(this);
-		return _integrationDetailInstance.fetchType(this.$route.params.name);
+		window._integrationDetailInstance.setCaller(this);
+		return window._integrationDetailInstance.fetchType(this.$route.params.name);
 	}
 };
 
-const _integrationDetailInstance = new _integrationDetailController(IntegrationDetails);
+window._integrationDetailInstance = new _integrationDetailController(window.IntegrationDetails);

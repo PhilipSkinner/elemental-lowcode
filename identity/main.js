@@ -1,15 +1,15 @@
 const 
-	Provider 		= require('oidc-provider'),
-	clientProvider 	= require('./lib/configProvider')(),
-	path = require('path'),
-	set = require('lodash/set'),
-	express = require('express'),
-	routes = require('./lib/routes');
+	Provider 		= require("oidc-provider"),
+	clientProvider 	= require("./lib/configProvider")(),
+	path 			= require("path"),
+	set 			= require("lodash/set"),
+	express 		= require("express"),
+	routes 			= require("./lib/routes");
 
 const { PORT = 3000, ISSUER = `http://localhost:${PORT}` } = process.env;
 const app = express();
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
 let server;
 

@@ -6,7 +6,7 @@ const configReader = function(fs, path, glob) {
 
 configReader.prototype._findConfigInDir = function(dir) {
 	return new Promise((resolve, reject) => {
-		this.glob(this.path.join(process.cwd(), dir, '**/*.json'), (err, files) => {
+		this.glob(this.path.join(process.cwd(), dir, "**/*.json"), (err, files) => {
 			if (err) {
 				return reject(err);
 			}
@@ -25,7 +25,7 @@ configReader.prototype._readIntegrationConfig = function(file) {
 
 			let config = null;
 			try {
-				config = JSON.parse(content.toString('utf8'));
+				config = JSON.parse(content.toString("utf8"));
 			} catch(e) {}
 
 			if (config == null) {
@@ -49,7 +49,7 @@ configReader.prototype.readConfigFromDir = function(dir) {
 			const fileName = files.pop();
 
 			return this._readIntegrationConfig(fileName).then((config) => {
-				integrations[this.path.basename(fileName).split('.').slice(0, -1).join('.')] = config;
+				integrations[this.path.basename(fileName).split(".").slice(0, -1).join(".")] = config;
 
 				return doNext();
 			});
@@ -63,15 +63,15 @@ configReader.prototype.readConfigFromDir = function(dir) {
 
 module.exports = function(fs, path, glob) {
 	if (!fs) {
-		fs = require('fs');
+		fs = require("fs");
 	}
 
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	if (!glob) {
-		glob = require('glob');
+		glob = require("glob");
 	}
 
 	return new configReader(fs, path, glob);

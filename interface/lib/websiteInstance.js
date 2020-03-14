@@ -24,15 +24,15 @@ websiteInstance.prototype.init = function() {
 			this.configureTag(t);
 		});
 
-		const oidc = require('passport-oauth2');
-		const passport = require('passport');
+		const oidc = require("passport-oauth2");
+		const passport = require("passport");
 		passport.use(new oidc({
-			authorizationURL 	: 'http://localhost:8008/auth',
-			tokenURL 			: 'http://localhost:8008/token',
-			clientID			: 'my-client',
-			clientSecret 		: 'my really secret secret',
+			authorizationURL 	: "http://localhost:8008/auth",
+			tokenURL 			: "http://localhost:8008/token",
+			clientID			: "my-client",
+			clientSecret 		: "my really secret secret",
 			callbackURL 		: `http://localhost:8005/${this.definition.name}/_auth`,
-			scope 				: 'openid',
+			scope 				: "openid",
 			passReqToCallback	: true,
 		}, (req, accessToken, refreshToken, params, profile, done) => {
 			done(null, {
@@ -51,7 +51,7 @@ websiteInstance.prototype.init = function() {
 		});
 
 		//setup our authentication
-		this.app.use(require('express-session')({
+		this.app.use(require("express-session")({
 			name 				: `session.${this.definition.name}`,
 			path 				: `/${this.definition.name}`,
   			secret 				: this.definition.name,
@@ -60,7 +60,7 @@ websiteInstance.prototype.init = function() {
 		}));
 		this.app.use(`/${this.definition.name}`, passport.initialize());
 		this.app.use(`/${this.definition.name}`, passport.session());
-		this.app.use(`/${this.definition.name}/_auth`, passport.authenticate('oauth2', {
+		this.app.use(`/${this.definition.name}/_auth`, passport.authenticate("oauth2", {
 			failureRedirect : `/${this.definition.name}`,
 			successRedirect : `/${this.definition.name}`
 		}));
@@ -76,11 +76,11 @@ websiteInstance.prototype.init = function() {
 
 module.exports = function(app, definition, controllerInstance, templateRenderer) {
 	if (!controllerInstance) {
-		controllerInstance = require('./controllerInstance');
+		controllerInstance = require("./controllerInstance");
 	}
 
 	if (!templateRenderer) {
-		templateRenderer = require('./templating/render')();
+		templateRenderer = require("./templating/render")();
 	}
 
 	return new websiteInstance(app, definition, controllerInstance, templateRenderer);

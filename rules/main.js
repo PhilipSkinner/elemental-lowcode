@@ -1,8 +1,8 @@
 const
-	express 		= require('express'),
-	bodyParser 		= require('body-parser'),
-	tokenHandler 	= require('../shared/tokenHandler'),
-	hotreload 		= require('../shared/hotReload')();
+	express 		= require("express"),
+	bodyParser 		= require("body-parser"),
+	tokenHandler 	= require("../shared/tokenHandler"),
+	hotreload 		= require("../shared/hotReload")();
 
 let app = null;
 let server = null;
@@ -13,7 +13,7 @@ const startup = () => {
 	app = express();
 	app.use(bodyParser.json());
 	app.use(tHandler.tokenCheck.bind(tHandler));
-	let service = require('./lib/rulesService')(app);
+	let service = require("./lib/rulesService")(app);
 
 	service.init(process.env.DIR).then(() => {
 		server = app.listen(process.env.PORT, () => {

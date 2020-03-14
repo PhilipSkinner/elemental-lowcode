@@ -4,14 +4,14 @@ const tokenHandler = function(pubKey, jwt) {
 };
 
 tokenHandler.prototype.tokenCheck = function(req, res, next) {
-	let token = req.headers['x-access-token'] || req.headers['authorization'] || '';
+	let token = req.headers["x-access-token"] || req.headers["authorization"] || "";
 
-	if (token.startsWith('Bearer ')) {
+	if (token.startsWith("Bearer ")) {
 		token = token.slice(7, token.length);
 	}
 
 	if (token) {
-		this.jwt.verify(token, this.pubKey, { algorithms: ['RS256'] }, (err, decoded) => {
+		this.jwt.verify(token, this.pubKey, { algorithms: ["RS256"] }, (err, decoded) => {
 			if (err) {
 				console.log("Invalid bearer token received on", req.path);
 				res.status(401);
@@ -31,7 +31,7 @@ tokenHandler.prototype.tokenCheck = function(req, res, next) {
 
 module.exports = function(pubKey, jwt) {
 	if (!jwt) {
-		jwt = require('jsonwebtoken');
+		jwt = require("jsonwebtoken");
 	}
 
 	return new tokenHandler(pubKey, jwt);

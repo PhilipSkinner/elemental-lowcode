@@ -13,7 +13,7 @@ sessionState.prototype.retrieveSession = function() {
 
 	if (this.request.cookies[this.sessionName]) {
 		try {
-			this.sessionData = JSON.parse(Buffer.from(this.request.cookies.__session, 'base64').toString('utf8'));	
+			this.sessionData = JSON.parse(Buffer.from(this.request.cookies.__session, "base64").toString("utf8"));	
 		} catch(e) {
 			this.sessionData = null;
 		}
@@ -52,7 +52,7 @@ sessionState.prototype.generateResponseHeaders = function() {
 	}
 
 	if (this.sessionData) {
-		this.response.cookie(this.sessionName, Buffer.from(JSON.stringify(this.sessionData)).toString('base64'));
+		this.response.cookie(this.sessionName, Buffer.from(JSON.stringify(this.sessionData)).toString("base64"));
 	}
 };
 

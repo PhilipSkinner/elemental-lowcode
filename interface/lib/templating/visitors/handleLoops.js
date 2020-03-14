@@ -6,7 +6,7 @@ const handleLoops = function(dataResolver) {
 handleLoops.prototype.expandNext = function(view, data) {
 	this.modified = false;
 	view = view.map((tag) => {
-		if (typeof(tag) !== 'object' || tag === null) {
+		if (typeof(tag) !== "object" || tag === null) {
 			return tag;
 		}
 
@@ -16,9 +16,9 @@ handleLoops.prototype.expandNext = function(view, data) {
 
 		if (tag.repeat) {
 			//we are going to repeat this tag, get our enumeration
-			var parts = tag.repeat.split(' ');
+			var parts = tag.repeat.split(" ");
 			var arr = this.dataResolver.resolveValue(parts[2], data, tag._scope.data);
-			var dataPropName = parts[0].replace('$.', '');
+			var dataPropName = parts[0].replace("$.", "");
 
 			//ok, for each child decorate it with our new scoped data and then copy
 			var base = JSON.stringify(tag);
@@ -74,7 +74,7 @@ handleLoops.prototype.apply = function(definition) {
 
 module.exports = function(dataResolver) {
 	if (!dataResolver) {
-		dataResolver = require('../dataResolver')();
+		dataResolver = require("../dataResolver")();
 	}
 
 	return new handleLoops(dataResolver);

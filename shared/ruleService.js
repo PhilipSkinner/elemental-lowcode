@@ -7,7 +7,7 @@ ruleService.prototype.callRuleset = function(name, facts, token) {
 		this.request.post(`http://localhost:8007/${name}`, {
 			body : JSON.stringify(facts),
 			headers : {
-				'content-type' : 'application/json',
+				"content-type" : "application/json",
 				Authorization : `Bearer ${token}`
 			}
 		}, (err, res, body) => {
@@ -19,7 +19,7 @@ ruleService.prototype.callRuleset = function(name, facts, token) {
 			try {
 				result = JSON.parse(body);
 			} catch(e) {
-				return reject(new Error('Invalid response received from ruleset call'));
+				return reject(new Error("Invalid response received from ruleset call"));
 			}
 
 			return resolve(result);
@@ -29,7 +29,7 @@ ruleService.prototype.callRuleset = function(name, facts, token) {
 
 module.exports = function(request) {
 	if (!request) {
-		request = require('request');
+		request = require("request");
 	}
 
 	return new ruleService(request);

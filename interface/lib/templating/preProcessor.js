@@ -37,31 +37,31 @@ preProcessor.prototype.process = function(definition, data, customTags) {
 
 module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals) {
 	if (!arrayWrapper) {
-		arrayWrapper = require('./visitors/arrayWrapper')();
+		arrayWrapper = require("./visitors/arrayWrapper")();
 	}
 
 	if (!expandCustomTags) {
-		expandCustomTags = require('./visitors/expandCustomTags')();
+		expandCustomTags = require("./visitors/expandCustomTags")();
 	}
 
 	if (!handleLoops) {
-		handleLoops = require('./visitors/handleLoops')();
+		handleLoops = require("./visitors/handleLoops")();
 	}
 
 	if (!replaceValues) {
-		replaceValues = require('./visitors/replaceValues')();
+		replaceValues = require("./visitors/replaceValues")();
 	}
 
 	if (!defineScope) {
-		defineScope = require('./visitors/defineScope')();
+		defineScope = require("./visitors/defineScope")();
 	}
 
 	if (!bindValues) {
-		bindValues = require('./visitors/bindValues')();
+		bindValues = require("./visitors/bindValues")();
 	}
 
 	if (!conditionals) {
-		conditionals = require('./visitors/conditionals')();
+		conditionals = require("./visitors/conditionals")();
 	}
 
 	return new preProcessor(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals);

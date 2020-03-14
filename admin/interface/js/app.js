@@ -1,8 +1,8 @@
 window.getToken = function() {	
 	let token = null;
-	document.cookie.split(';').forEach((c) => {
-		let p = c.split('=');
-		if (p[0] === 'token') {
+	document.cookie.split(";").forEach((c) => {
+		let p = c.split("=");
+		if (p[0] === "token") {
 			token = p[1];
 		}
 	});
@@ -11,33 +11,33 @@ window.getToken = function() {
 };
 
 window.logout = function() {
-	document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-	location.href = '/';
+	document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+	location.href = "/";
 };
 
-templates.fetchTemplates().then(() => {
+window.templates.fetchTemplates().then(() => {
 	const pages = [
-		'/js/pages/data.js',
-		'/js/pages/dataTypeDetails.js',
-		'/js/pages/dataTypeEditor.js',
-		'/js/pages/integrations.js',
-		'/js/pages/integrationsEditor.js',
-		'/js/pages/integrationDetails.js',
-		'/js/pages/websites.js',
-		'/js/pages/websitesEditor.js',
-		'/js/pages/documentation.js',
-		'/js/pages/rules.js',
-		'/js/pages/rulesEditor.js',
-		'/js/pages/security.js',
-		'/js/pages/securityClientEditor.js',
-		'/js/pages/securityScopeEditor.js',
-		'/js/pages/securityUserEditor.js',
+		"/js/pages/data.js",
+		"/js/pages/dataTypeDetails.js",
+		"/js/pages/dataTypeEditor.js",
+		"/js/pages/integrations.js",
+		"/js/pages/integrationsEditor.js",
+		"/js/pages/integrationDetails.js",
+		"/js/pages/websites.js",
+		"/js/pages/websitesEditor.js",
+		"/js/pages/documentation.js",
+		"/js/pages/rules.js",
+		"/js/pages/rulesEditor.js",
+		"/js/pages/security.js",
+		"/js/pages/securityClientEditor.js",
+		"/js/pages/securityScopeEditor.js",
+		"/js/pages/securityUserEditor.js",
 	];
 
 	const loadPage = (file) => {
-		console.log("Loading", file);
+		console.info("Loading", file);
 		return new Promise((resolve, reject) => {
-			var elem = document.createElement('script');
+			var elem = document.createElement("script");
 			elem.src = file;
 			elem.onload = () => {
 				resolve();
@@ -56,120 +56,120 @@ templates.fetchTemplates().then(() => {
 			}
 
 			return loadPage(pages.pop()).then(doNext);
-		}
+		};
 
 		return doNext();
 	};
 
 	loadPages().then(() => {
-		const Home = { template : '#template-home'};
-		const Apis = { template : '<p>APIs</p>' };
+		window.Home = { template : "#template-home"};
+		window.Apis = { template : "<p>APIs</p>" };
 
 		const routes = [
 			{
-				path 		: '/',
-				component 	: Home
+				path 		: "/",
+				component 	: window.Home
 			},
 			/* integrations endpoints */
 			{
-				path 		: '/integrations',
-				component 	: Integrations
+				path 		: "/integrations",
+				component 	: window.Integrations
 			},
 			{
-				name 		: 'integrationEditor',
-				path 		: '/integrations/editor/:name',
-				component 	: IntegrationsEditor
+				name 		: "integrationEditor",
+				path 		: "/integrations/editor/:name",
+				component 	: window.IntegrationsEditor
 			},
 			{
-				name 		: 'integrationDetails',
-				path 		: '/integrations/details/:name',
-				component	: IntegrationDetails
+				name 		: "integrationDetails",
+				path 		: "/integrations/details/:name",
+				component	: window.IntegrationDetails
 			},
 			/* api endpoints */
 			{
-				path 		: '/apis',
-				component 	: Apis
+				path 		: "/apis",
+				component 	: window.Apis
 			},
 			/* data type endpoints */
 			{
-				path 		: '/data',
-				component 	: Data
+				path 		: "/data",
+				component 	: window.Data
 			},
 			{
-				name 		: 'dataTypeEditor',
-				path 		: '/data/editor/:type',
-				component 	: DataTypeEditor
+				name 		: "dataTypeEditor",
+				path 		: "/data/editor/:type",
+				component 	: window.DataTypeEditor
 			},
 			{
-				name 		: 'dataTypeDetails',
-				path 		: '/data/details/:type',
-				component 	: DataTypeDetails,
+				name 		: "dataTypeDetails",
+				path 		: "/data/details/:type",
+				component 	: window.DataTypeDetails,
 			},
 			/* website/interface endpoints */
 			{
-				path 		: '/websites',
-				component 	: Websites
+				path 		: "/websites",
+				component 	: window.Websites
 			},
 			{
-				name		: 'websiteEditor',
-				path 		: '/websites/editor/:name',
-				component 	: WebsiteEditor
+				name		: "websiteEditor",
+				path 		: "/websites/editor/:name",
+				component 	: window.WebsiteEditor
 			},
 			/* documentation endpoints */
 			{
-				path 		: '/documentation',
-				component	: Documentation,
+				path 		: "/documentation",
+				component	: window.Documentation,
 			},
 			{
-				path 		: '/documentation/:page',
-				component	: Documentation,
+				path 		: "/documentation/:page",
+				component	: window.Documentation,
 			},
 			/* ruleset endpoints */
 			{
-				path 		: '/rulesets',
-				component 	: Rules
+				path 		: "/rulesets",
+				component 	: window.Rules
 			},
 			{
-				name 		: 'rulesetEditor',
-				path 		: '/rulesets/editor/:name',
-				component 	: RulesEditor
+				name 		: "rulesetEditor",
+				path 		: "/rulesets/editor/:name",
+				component 	: window.RulesEditor
 			},
 			/* security endpoints */
 			{
-				name 		: 'security',
-				path 		: '/security',
-				component	: Security
+				name 		: "security",
+				path 		: "/security",
+				component	: window.Security
 			},
 			{
-				name 		: 'securityScopeEditor',
-				path 		: '/security/scope/:name',
-				component 	: SecurityScopeEditor
+				name 		: "securityScopeEditor",
+				path 		: "/security/scope/:name",
+				component 	: window.SecurityScopeEditor
 			},
 			{
-				name 		: 'securityClientEditor',
-				path 		: '/security/client/:id',
-				component 	: SecurityClientEditor
+				name 		: "securityClientEditor",
+				path 		: "/security/client/:id",
+				component 	: window.SecurityClientEditor
 			},
 			{
-				name 		: 'securityUserEditor',
-				path 		: '/security/user/:id',
-				component	: SecurityUserEditor
+				name 		: "securityUserEditor",
+				path 		: "/security/user/:id",
+				component	: window.SecurityUserEditor
 			}
 		];
 
-		Vue.component('modal-error', {
-			template : '#template-modal-error',
+		window.Vue.component("modal-error", {
+			template : "#template-modal-error",
 			props : [
-				'title',
-				'visible'
+				"title",
+				"visible"
 			]
 		});
 
-		Vue.component('alert', {
-			template : '#template-alert',
+		window.Vue.component("alert", {
+			template : "#template-alert",
 			props : [
-				'text',
-				'visible'
+				"text",
+				"visible"
 			]
 		});
 
@@ -179,6 +179,6 @@ templates.fetchTemplates().then(() => {
 
 		const app = new Vue({
 			router
-		}).$mount('#app');
+		}).$mount("#app");
 	});
 });

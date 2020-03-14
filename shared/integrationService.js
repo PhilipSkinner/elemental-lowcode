@@ -14,7 +14,7 @@ integrationService.prototype.callIntegration = function(name, method, params) {
 
 module.exports = function(request) {
 	if (!request) {
-		request = require('request');
+		request = require("request");
 	}
 
 	return new integrationService(request);

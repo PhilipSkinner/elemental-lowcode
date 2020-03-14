@@ -12,8 +12,8 @@ _integrationsController.prototype.getData = function() {
 _integrationsController.prototype.fetchIntegrations = function(caller) {
 	this.caller = caller;
 
-	return axios
-		.get('http://localhost:8001/integrations', {
+	return window.axios
+		.get("http://localhost:8001/integrations", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -26,7 +26,7 @@ _integrationsController.prototype.fetchIntegrations = function(caller) {
 };
 
 _integrationsController.prototype.removeIntegration = function(name) {
-	return axios
+	return window.axios
 		.delete(`http://localhost:8001/integrations/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
@@ -37,14 +37,14 @@ _integrationsController.prototype.removeIntegration = function(name) {
 		});
 };
 
-const Integrations = {
-	template : '#template-integrations',
+window.Integrations = {
+	template : "#template-integrations",
 	data 	 : () => {
-		return _integrationsControllerInstance.getData();
+		return window._integrationsControllerInstance.getData();
 	},
 	mounted  : function() {
-		return _integrationsControllerInstance.fetchIntegrations(this);
+		return window._integrationsControllerInstance.fetchIntegrations(this);
 	}
 };
 
-const _integrationsControllerInstance = new _integrationsController(Data);
+window._integrationsControllerInstance = new _integrationsController(window.Integrations);

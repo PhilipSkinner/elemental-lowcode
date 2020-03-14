@@ -9,9 +9,9 @@ const integrationService = function(app, configReader, integrationInstance, role
 integrationService.prototype.constructInstance = function(name, config) {
 	let instance = this.integrationInstance(name, config);	
 	const readerRoles = [
-		'system_admin',
-		'system_reader',
-		'integration_reader',
+		"system_admin",
+		"system_reader",
+		"integration_reader",
 		`${name}_reader`
 	];
 
@@ -31,12 +31,12 @@ integrationService.prototype.init = function(dir) {
 
 		console.log("Discovery endpoint hosted");
 		const discoveryRoles = [
-			'system_admin',
-			'system_reader',
-			'integration_reader'
+			"system_admin",
+			"system_reader",
+			"integration_reader"
 		];
 		//and add our discovery endpoint
-		this.app.get('/', this.roleCheckHandler.enforceRoles((req, res, next) => {
+		this.app.get("/", this.roleCheckHandler.enforceRoles((req, res, next) => {
 			res.json({
 				endpoints : this.hostedEndpoints
 			});
@@ -48,16 +48,16 @@ integrationService.prototype.init = function(dir) {
 
 module.exports = function(app, configReader, integrationInstance, roleCheckHandler) {
 	if (!configReader) {
-		configReader = require('./configReader')();
+		configReader = require("./configReader")();
 	}
 
 	if (!integrationInstance) {
-		//don't exec as we don't want this to be a singleton!
-		integrationInstance = require('./integrationInstance');
+		//don"t exec as we don"t want this to be a singleton!
+		integrationInstance = require("./integrationInstance");
 	}
 
 	if (!roleCheckHandler) {
-		roleCheckHandler = require('../../shared/roleCheckHandler')();
+		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
 
 	return new integrationService(app, configReader, integrationInstance, roleCheckHandler);

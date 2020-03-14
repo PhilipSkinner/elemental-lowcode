@@ -1,8 +1,8 @@
 const
-	express 		= require('express'),
-	bodyParser 		= require('body-parser'),
-	cookieParser 	= require('cookie-parser'),
-	hotreload 		= require('../shared/hotReload')();
+	express 		= require("express"),
+	bodyParser 		= require("body-parser"),
+	cookieParser 	= require("cookie-parser"),
+	hotreload 		= require("../shared/hotReload")();
 
 let app = null;
 let server = null;
@@ -14,7 +14,7 @@ const startup = () => {
 	app.use(bodyParser.urlencoded({ extended : false }));
 	app.use(cookieParser());
 
-	let websiteService 	= require('./lib/websiteService')(app);
+	let websiteService 	= require("./lib/websiteService")(app);
 
 	websiteService.init(process.env.DIR).then(() => {
 		server = app.listen(process.env.PORT, () => {

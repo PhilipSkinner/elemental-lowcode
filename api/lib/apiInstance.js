@@ -8,18 +8,18 @@ const apiInstance = function(app, definition, roleCheckHandler) {
 
 apiInstance.prototype.generateContainer = function() {
 	return new Promise((resolve, reject) => {
-		console.log(`Generating IOC container...`);
+		console.info("Generating IOC container...");
 
 		Object.keys(this.definition.services).forEach((s) => {
 			var service = this.definition.services[s];
-			if (service.type === 'singleton') {
-				console.log(`Registering singleton service ${s}`);
+			if (service.type === "singleton") {
+				console.info(`Registering singleton service ${s}`);
 				this.singletons[s] = {
 					code 	: service._code,
 					params 	: this._getRequires(service._code.toString())
 				};
 			} else {
-				console.log(`Registering transative service ${s}`);
+				console.info(`Registering transative service ${s}`);
 				this.transatives[s] = {
 					code 	: service._code,
 					params 	: this._getRequires(service._code.toString())
@@ -30,7 +30,7 @@ apiInstance.prototype.generateContainer = function() {
 		//now attempt to resolve all of the singletons
 		this.resolveSingletons();
 
-		console.log(`IOC container setup complete`);
+		console.info("IOC container setup complete");
 
 		return resolve();
 	});
@@ -48,11 +48,11 @@ apiInstance.prototype.resolveRequirements = function(params, code, isTransative)
 		if (this.singletons[p]) {
 			var singleton = this.singletons[p];
 			if (singleton.instance) {
-				console.log(`Resolved include ${p}`);
+				console.info(`Resolved include ${p}`);
 				resolvedRequirement = singleton.instance;
 			} else {
 				//attempt to resolve it				
-				console.log(`Attempting to resolve ${p}`);
+				console.info(`Attempting to resolve ${p}`);
 				resolvedRequirement = this.resolveRequirements(singleton.params, singleton.code, false);
 			}
 		} else {
@@ -62,7 +62,7 @@ apiInstance.prototype.resolveRequirements = function(params, code, isTransative)
 				let transative = this.transatives[p];				
 				
 				//attempt to resolve the transative
-				console.log(`Attempting to resolve ${p}`);
+				console.info(`Attempting to resolve ${p}`);
 				resolvedRequirement = this.resolveRequirements(transative.params, transative.code, true);				
 			}
 		}
@@ -78,7 +78,7 @@ apiInstance.prototype.resolveRequirements = function(params, code, isTransative)
 };
 
 apiInstance.prototype.resolveSingletons = function() {
-	console.log(`Resolving singletons...`);
+	console.info("Resolving singletons...");
 
 	Object.keys(this.singletons).forEach((s) => {
 		//get our params
@@ -89,21 +89,21 @@ apiInstance.prototype.resolveSingletons = function() {
 		}
 
 		if (single.params.length > 0) {
-			console.log(`Resolving singleton ${s}`);
+			console.info(`Resolving singleton ${s}`);
 			this.singletons[s].instance = this.resolveRequirements(single.params, single.code, false);
 		} else {
-			console.log(`Resolved parameterless singleton ${s}`);
+			console.info(`Resolved parameterless singleton ${s}`);
 			this.singletons[s].instance = this.resolveRequirements(single.params, single.code, false);
 		}
 	});
 
-	console.log(`Resolution successful!`);
+	console.info("Resolution successful!");
 };
 
 apiInstance.prototype._getRequires = function(fnString) {	
 	var regex = /^\((.*?)\).?=>/;
 
-	if (fnString.indexOf('function') === 0) {
+	if (fnString.indexOf("function") === 0) {
 		regex = /^function.*?\((.*?)\)/;
 	}
 
@@ -111,7 +111,7 @@ apiInstance.prototype._getRequires = function(fnString) {
 		.match(regex)[ 1 ].split( /\s*,\s*/ )
 		.map( function( parameterName ) { return parameterName.trim(); } )
 		.filter( function( parameterName ) { return parameterName.length > 0; } );		
-}
+};
 
 apiInstance.prototype.resolveController = function(name) {		
 	let params = this._getRequires(this.definition.controllers[name].toString());
@@ -120,48 +120,48 @@ apiInstance.prototype.resolveController = function(name) {
 
 apiInstance.prototype.setupEndpoints = function() {
 	return new Promise((resolve, reject) => {
-		console.log(`Setting up API endpoints...`);
+		console.info("Setting up API endpoints...");
 
 		const readerRoles = [
-			'system_admin',
-			'system_reader',
-			'api_reader'
+			"system_admin",
+			"system_reader",
+			"api_reader"
 		];
 
 		const writerRoles = [
-			'system_admin',
-			'system_writer',
-			'api_writer'
+			"system_admin",
+			"system_writer",
+			"api_writer"
 		];
 
 		Object.keys(this.definition.routing).forEach((route) => {
 			let routeConfig = this.definition.routing[route];
 			let routePath = `/${this.definition.name}${route}`;
-			console.log(`Setting up routes for ${routePath}`);
+			console.info(`Setting up routes for ${routePath}`);
 
 			if (routeConfig.get) {
-				console.log(`Setting up GET on ${routePath}`);
+				console.info(`Setting up GET on ${routePath}`);
 				this.app.get(routePath, this.roleCheckHandler.enforceRoles((req, res, next) => {
 					this.resolveController(routeConfig.get.controller)(req, res, next);
 				}, readerRoles));
 			}
 
 			if (routeConfig.post) {
-				console.log(`Setting up POST on ${routePath}`);
+				console.info(`Setting up POST on ${routePath}`);
 				this.app.post(routePath, this.roleCheckHandler.enforceRoles((req, res, next) => {
 					this.resolveController(routeConfig.post.controller)(req, res, next);
 				}, writerRoles));	
 			}
 		});
 
-		console.log(`Endpoint setup complete`);
+		console.info("Endpoint setup complete");
 
 		return resolve();
 	});
 };
 
 apiInstance.prototype.init = function() {	
-	console.log(`Initializing ${this.definition.name} API instance...`);		
+	console.info(`Initializing ${this.definition.name} API instance...`);		
 	
 	return this.generateContainer().then(() => {
 		return this.setupEndpoints();
@@ -170,7 +170,7 @@ apiInstance.prototype.init = function() {
 
 module.exports = function(app, definition, roleCheckHandler) {
 	if (!roleCheckHandler) {
-		roleCheckHandler = require('../../shared/roleCheckHandler')();
+		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
 
 	return new apiInstance(app, definition, roleCheckHandler);

@@ -24,12 +24,12 @@ storageEngine.prototype.init = function(dir) {
 
 module.exports = function(store, app, typesReader, typeInstance) {
 	if (!typesReader) {
-		typesReader = require('./typesReader')();
+		typesReader = require("./typesReader")();
 	}
 
 	if (!typeInstance) {
-		//no exec, can't be a singleton
-		typeInstance = require('./typeInstance');
+		//no exec, can"t be a singleton
+		typeInstance = require("./typeInstance");
 	}
 
 	return new storageEngine(store, app, typesReader, typeInstance);

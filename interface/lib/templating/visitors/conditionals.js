@@ -1,6 +1,6 @@
 const conditionals = function() {
 	this.ignoredProps = [
-		'_scope'
+		"_scope"
 	];
 };
 
@@ -67,7 +67,7 @@ conditionals.prototype.restrict = function(view) {
 				return;
 			}
 
-			if (typeof(tag[prop]) === 'object' && tag[prop] !== null) {
+			if (typeof(tag[prop]) === "object" && tag[prop] !== null) {
 				tag[prop] = this.restrict([tag[prop]])[0];
 				return;
 			}

@@ -9,7 +9,7 @@ const configProvider = function(glob, path, fs, jose, userDB, db) {
 
 configProvider.prototype.getClients = function(dir) {
 	return new Promise((resolve, reject) => {
-		this.glob(this.path.join(process.cwd(), dir, '**/*.client.json'), (err, files) => {
+		this.glob(this.path.join(process.cwd(), dir, "**/*.client.json"), (err, files) => {
 			const allConfig = [];
 
 			const doNext = () => {
@@ -27,10 +27,8 @@ configProvider.prototype.getClients = function(dir) {
 
 						let config = null;
 						try {
-							config = JSON.parse(data.toString('utf8'));
-						} catch(e) {}
-
-						if (config === null) {
+							config = JSON.parse(data.toString("utf8"));
+						} catch(e) {
 							return rej(new Error(`Cannot read client config ${clientFile}`));
 						}
 
@@ -46,7 +44,7 @@ configProvider.prototype.getClients = function(dir) {
 				});
 			};
 
-			if (typeof(files) === 'undefined' || files === null) {
+			if (typeof(files) === "undefined" || files === null) {
 				return resolve(allConfig);
 			}
 
@@ -59,7 +57,7 @@ configProvider.prototype.getClients = function(dir) {
 
 configProvider.prototype.getScopes = function(dir) {
 	return new Promise((resolve, reject) => {
-		this.glob(this.path.join(process.cwd(), dir, '**/*.scope.json'), (err, files) => {
+		this.glob(this.path.join(process.cwd(), dir, "**/*.scope.json"), (err, files) => {
 			const allConfig = [];
 
 			const doNext = () => {
@@ -77,7 +75,7 @@ configProvider.prototype.getScopes = function(dir) {
 
 						let config = null;
 						try {
-							config = JSON.parse(data.toString('utf8'));
+							config = JSON.parse(data.toString("utf8"));
 						} catch(e) {}
 
 						if (config === null) {
@@ -96,7 +94,7 @@ configProvider.prototype.getScopes = function(dir) {
 				});
 			};
 
-			if (typeof(files) === 'undefined' || files === null) {
+			if (typeof(files) === "undefined" || files === null) {
 				return resolve(allConfig);
 			}
 
@@ -109,11 +107,11 @@ configProvider.prototype.getScopes = function(dir) {
 
 configProvider.prototype.generateAdminClient = function(secret) {
 	return Promise.resolve({
-		client_id 		: 'elemental_admin',
-		client_secret 	: secret,
-		scope 			: 'openid roles',
-		redirect_uris 	: [
-			'http://localhost:8002/auth'
+		client_id		: "elemental_admin",
+		client_secret	: secret,
+		scope 			: "openid roles",
+		redirect_uris	: [
+			"http://localhost:8002/auth"
 		]
 	});
 };
@@ -124,8 +122,8 @@ configProvider.prototype.addJwks = function() {
 
 		keystore.add(this.jose.JWK.asKey({
 			key : process.env.SIG,
-			format : 'pem',
-			type : 'pkcs8'
+			format : "pem",
+			type : "pkcs8"
 		}));
 
 		return resolve(keystore.toJWKS(true));
@@ -134,8 +132,8 @@ configProvider.prototype.addJwks = function() {
 
 configProvider.prototype.addCookies = function() {
 	return new Promise((resolve, reject) => {
-		let secretOne = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join('').replace(/[^a-z]+/g, '');
-		let secretTwo = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join('').replace(/[^a-z]+/g, '');
+		let secretOne = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join("").replace(/[^a-z]+/g, "");
+		let secretTwo = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join("").replace(/[^a-z]+/g, "");
 
 		return resolve({
 			keys : [secretOne]
@@ -154,37 +152,37 @@ configProvider.prototype.addAdapter = function() {
 configProvider.prototype.fetchConfig = function(dir, secret) {
 	const config = {
 		formats: {
-    		AccessToken			: 'jwt',
-    		IdentityToken 		: 'jwt',
-    		ClientCredentials 	: 'jwt'
-  		},
-  		conformIdTokenClaims : false,
-  		features : {
+			AccessToken			: "jwt",
+			IdentityToken 		: "jwt",
+			ClientCredentials 	: "jwt"
+		},
+		conformIdTokenClaims : false,
+		features : {
 			devInteractions : {
-  				enabled : false
-  			},
-  			clientCredentials : {
-  				enabled : true
-  			}
-  		},
-  		scopes : [
-  			'openid',
-  			'offline_access',
-  			'roles'
-  		],
-  		claims : {
-		  acr: null,
-		  auth_time: null,
-		  iss: null,
-		  openid: [
-		    'sub',
-		    'email'
-		  ],
-		  roles : [
-		  	'role',
-		  	'roles'
-		  ],
-		  sid: null
+				enabled : false
+			},
+			clientCredentials : {
+				enabled : true
+			}
+		},
+		scopes : [
+			"openid",
+			"offline_access",
+			"roles"
+		],
+		claims : {
+			acr: null,
+			auth_time: null,
+			iss: null,
+			openid: [
+				"sub",
+				"email"
+			],
+			roles : [
+				"role",
+				"roles"
+			],
+			sid: null
 		}
 	};
 
@@ -219,27 +217,27 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
 
 module.exports = function(glob, path, fs, jose, keygrip, userDB, db) {
 	if (!glob) {
-		glob = require('glob');
+		glob = require("glob");
 	}
 
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	if (!fs) {
-		fs = require('fs');
+		fs = require("fs");
 	}
 
 	if (!jose) {
-		jose = require('jose');
+		jose = require("jose");
 	}
 
 	if (!userDB) {
-		userDB = require('./account')();
+		userDB = require("./account")();
 	}
 
 	if (!db) {
-		db = require('../../shared/db')();
+		db = require("../../shared/db")();
 	}
 
 	return new configProvider(glob, path, fs, jose, userDB, db);

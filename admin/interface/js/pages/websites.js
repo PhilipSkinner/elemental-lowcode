@@ -10,8 +10,8 @@ _websitesController.prototype.getWebsites = function() {
 };
 
 _websitesController.prototype.fetchWebsites = function(caller) {
-	return axios
-		.get('http://localhost:8001/websites', {
+	return window.axios
+		.get("http://localhost:8001/websites", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -28,14 +28,14 @@ _websitesController.prototype.fetchWebsites = function(caller) {
 		});
 };
 
-const Websites = {
-	template : '#template-websites',
+window.Websites = {
+	template : "#template-websites",
 	data 	 : () => {
-		return _websitesControllerInstance.getWebsites();
+		return window._websitesControllerInstance.getWebsites();
 	},
 	mounted  : function() {
-		return _websitesControllerInstance.fetchWebsites(this);
+		return window._websitesControllerInstance.fetchWebsites(this);
 	}
 };
 
-const _websitesControllerInstance = new _websitesController(Websites);
+window._websitesControllerInstance = new _websitesController(window.Websites);

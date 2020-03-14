@@ -10,8 +10,8 @@ _rulesController.prototype.getRules = function() {
 };
 
 _rulesController.prototype.fetchRules = function(caller) {
-	return axios
-		.get('http://localhost:8001/rules', {
+	return window.axios
+		.get("http://localhost:8001/rules", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -28,14 +28,14 @@ _rulesController.prototype.fetchRules = function(caller) {
 		});
 };
 
-const Rules = {
-	template : '#template-rules',
+window.Rules = {
+	template : "#template-rules",
 	data 	 : () => {
-		return _rulesControllerInstance.getRules();
+		return window._rulesControllerInstance.getRules();
 	},
 	mounted  : function() {
-		return _rulesControllerInstance.fetchRules(this);
+		return window._rulesControllerInstance.fetchRules(this);
 	}
 };
 
-const _rulesControllerInstance = new _rulesController(Rules);
+window._rulesControllerInstance = new _rulesController(window.Rules);

@@ -13,8 +13,8 @@ _dataController.prototype.getData = function() {
 _dataController.prototype.fetchTypes = function(caller) {
 	this.caller = caller;
 
-	return axios
-		.get('http://localhost:8001/data/types', {
+	return window.axios
+		.get("http://localhost:8001/data/types", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -27,7 +27,7 @@ _dataController.prototype.fetchTypes = function(caller) {
 };
 
 _dataController.prototype.deleteType = function(name) {
-	return axios
+	return window.axios
 		.delete(`http://localhost:8001/data/types/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
@@ -38,16 +38,14 @@ _dataController.prototype.deleteType = function(name) {
 		});
 };
 
-const Data = {
-	template : '#template-dataTypes',
+window.Data = {
+	template : "#template-dataTypes",
 	data 	 : () => {
-		return _dataControllerInstance.getData();
+		return window._dataControllerInstance.getData();
 	},
 	mounted  : function() {
-		console.log("mounting it");
-
-		return _dataControllerInstance.fetchTypes(this);
+		return window._dataControllerInstance.fetchTypes(this);
 	}
 };
 
-const _dataControllerInstance = new _dataController(Data);
+window._dataControllerInstance = new _dataController(window.Data);
