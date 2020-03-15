@@ -24,46 +24,50 @@ websiteInstance.prototype.init = function() {
 			this.configureTag(t);
 		});
 
-		const oidc = require("passport-oauth2");
-		const passport = require("passport");
-		passport.use(new oidc({
-			authorizationURL 	: "http://localhost:8008/auth",
-			tokenURL 			: "http://localhost:8008/token",
-			clientID			: "my-client",
-			clientSecret 		: "my really secret secret",
-			callbackURL 		: `http://localhost:8005/${this.definition.name}/_auth`,
-			scope 				: "openid",
-			passReqToCallback	: true,
-		}, (req, accessToken, refreshToken, params, profile, done) => {
-			done(null, {
-				idToken 		: params.id_token,
-				accessToken 	: accessToken,
-				refreshToken 	: params.refresh_token
+		let passport = null;
+		//setup our security if we have a client defined
+		if (typeof(this.definition.client) !== 'undefined' && this.definition.client !== null) {
+			const oidc = require("passport-oauth2");
+			passport = require("passport");
+			passport.use(new oidc({
+				authorizationURL 	: "http://localhost:8008/auth",
+				tokenURL 			: "http://localhost:8008/token",
+				clientID			: this.definition.client.client_id,
+				clientSecret 		: this.definition.client.client_secret,
+				callbackURL 		: `http://localhost:8005/${this.definition.name}/_auth`,
+				scope 				: this.definition.client.scope,
+				passReqToCallback	: true,
+			}, (req, accessToken, refreshToken, params, profile, done) => {
+				done(null, {
+					idToken 		: params.id_token,
+					accessToken 	: accessToken,
+					refreshToken 	: params.refresh_token
+				});
+			}));
+
+			passport.serializeUser(function(user, done) {
+	  			done(null, user);
 			});
-		}));
 
-		passport.serializeUser(function(user, done) {
-  			done(null, user);
-		});
+			passport.deserializeUser(function(user, done) {
+	  			done(null, user);
+			});
 
-		passport.deserializeUser(function(user, done) {
-  			done(null, user);
-		});
-
-		//setup our authentication
-		this.app.use(require("express-session")({
-			name 				: `session.${this.definition.name}`,
-			path 				: `/${this.definition.name}`,
-  			secret 				: this.definition.name,
-  			resave 			  	: true,
-  			saveUninitialized 	: true
-		}));
-		this.app.use(`/${this.definition.name}`, passport.initialize());
-		this.app.use(`/${this.definition.name}`, passport.session());
-		this.app.use(`/${this.definition.name}/_auth`, passport.authenticate("oauth2", {
-			failureRedirect : `/${this.definition.name}`,
-			successRedirect : `/${this.definition.name}`
-		}));
+			//setup our authentication
+			this.app.use(require("express-session")({
+				name 				: `session.${this.definition.name}`,
+				path 				: `/${this.definition.name}`,
+	  			secret 				: this.definition.name,
+	  			resave 			  	: true,
+	  			saveUninitialized 	: true
+			}));
+			this.app.use(`/${this.definition.name}`, passport.initialize());
+			this.app.use(`/${this.definition.name}`, passport.session());
+			this.app.use(`/${this.definition.name}/_auth`, passport.authenticate("oauth2", {
+				failureRedirect : `/${this.definition.name}`,
+				successRedirect : `/${this.definition.name}`
+			}));
+		}
 
 		//setup our routes
 		Object.keys(this.definition.routes).forEach((r) => {

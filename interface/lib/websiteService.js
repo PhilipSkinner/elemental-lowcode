@@ -16,7 +16,7 @@ websiteService.prototype.findDefinitions = function(dir) {
 			return resolve(definitions);
 		});
 	});
-}
+};
 
 websiteService.prototype.init = function(dir) {
 	return this.findDefinitions(dir).then((definitions) => {
@@ -28,6 +28,16 @@ websiteService.prototype.init = function(dir) {
 			const next = definitions.pop();
 
 			return this.configReader.readDefinition(next).then((definition) => {
+				if (typeof(definition.client_id) === 'undefined' || definition.client_id === null) {
+					return Promise.resolve(definition);
+				}
+
+				// read the client config
+				return this.configReader.readDefinition(this.path.join(dir, '../identity', definition.client_id + '.client.json')).then((client) => {
+					definition.client = client;
+					return Promise.resolve(definition);
+				});
+			}).then((definition) => {
 				let instance = this.websiteInstance(this.app, definition, this.passport);
 				return instance.init();
 			}).then(doNext);

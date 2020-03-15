@@ -29,7 +29,7 @@ controllerInstance.prototype.loadView = function() {
 };
 
 controllerInstance.prototype.handler = function(req, res, next) {
-	if (this.routeDefinition.roles) {
+	if (this.routeDefinition.roles && this.passport) {
 		if (!(req.session && req.session.passport && req.session.passport.user && req.session.passport.user.accessToken)) {
 			return this.passport.authenticate("oauth2")(req, res, next);
 		}
