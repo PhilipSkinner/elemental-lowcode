@@ -2,7 +2,8 @@
 	"all" : true,
 	"exclude" : [
 		"admin/**/*.js",
-		"spec/**/*.js"
+		"spec/**/*.js",
+		"**/main.js"
 	],
 	"reporter" : [
 		"lcov",
