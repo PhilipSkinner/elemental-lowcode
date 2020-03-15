@@ -13,19 +13,26 @@ roleCheckHandler.prototype.enforceRoles = function(middleware, roles) {
 		try {
 			let claims = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString("utf8"));
 
-			if (claims.role || claims.roles) {
-				let r = claims.role || claims.roles;
-				if (!Array.isArray(r)) {
-					r = [r];
-				}
-
-				roles.forEach((fr) => {
-					if (r.indexOf(fr) !== -1) {
-						found = true;
+			//null roles means we just allow it through
+			if (roles === null) {
+				found = true;
+			} else {
+				if (claims.role || claims.roles) {
+					let r = claims.role || claims.roles;
+					if (!Array.isArray(r)) {
+						r = [r];
 					}
-				});
+
+					roles.forEach((fr) => {
+						if (r.indexOf(fr) !== -1) {
+							found = true;
+						}
+					});
+				}
 			}
-		} catch(e) {}
+		} catch(e) {
+			console.log(e);
+		}
 
 		if (!found) {
 			res.status(401);

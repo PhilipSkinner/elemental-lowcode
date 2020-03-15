@@ -209,18 +209,65 @@ typeInstance.prototype.patchHandler = function(req, res) {
 
 typeInstance.prototype.init = function() {
 	return new Promise((resolve, reject) => {
-		const readerRoles = [
+		let readerRoles = [
 			"system_admin",
 			"system_reader",
 			"data_reader",
 			this.definition.name + "_reader"
 		];
-		const writerRoles = [
+		let writerRoles = [
 			"system_admin",
 			"system_writer",
 			"data_writer",
 			this.definition.name + "_writer"
 		];
+		let deletionRoles = [
+			"system_admin",
+			"system_writer",
+			"data_writer",
+			this.definition.name + "_writer"
+		];
+
+		if (this.definition.roles) {
+			//clear our roles if we've been told to
+			if (this.definition.roles.replace) {
+				if (this.definition.roles.replace.read === true) {
+					readerRoles = [];
+				}
+				if (this.definition.roles.replace.write === true) {
+					writerRoles = [];
+				}
+				if (this.definition.roles.replace.delete === true) {
+					deletionRoles = [];
+				}
+			}
+
+			//add in our custom roles if we have them
+			if (this.definition.roles.read) {
+				readerRoles = readerRoles.concat(this.definition.roles.read);
+			}
+
+			if (this.definition.roles.write) {
+				writerRoles = writerRoles.concat(this.definition.roles.write);
+			}
+
+			if (this.definition.roles.delete) {
+				deletionRoles = deletionRoles.concat(this.definition.roles.delete);
+			}
+
+			//finally, do we allow access for any roles?
+			if (this.definition.roles.needsRole) {
+				if (this.definition.roles.needsRole.read === false) {
+					readerRoles = null;
+				}
+				if (this.definition.roles.needsRole.write === false) {
+					writerRoles = null;
+				}
+				if (this.definition.roles.needsRole.delete === false) {
+					deletionRoles = null;
+				}
+			}
+		}
 
 		console.log(`Initializing type ${this.definition.name}`);
 
@@ -240,7 +287,7 @@ typeInstance.prototype.init = function() {
 		this.app.put(`/${this.definition.name}/:id`, 		this.roleCheckHandler.enforceRoles(this.updateHandler.bind(this), 		writerRoles));
 
 		console.log(`Hosting DELETE /${this.definition.name}/:id`);
-		this.app.delete(`/${this.definition.name}/:id`, 	this.roleCheckHandler.enforceRoles(this.deleteHandler.bind(this), 		writerRoles));
+		this.app.delete(`/${this.definition.name}/:id`, 	this.roleCheckHandler.enforceRoles(this.deleteHandler.bind(this), 		deletionRoles));
 
 		console.log(`Hosting PATCH /${this.definition.name}/:id`);
 		this.app.patch(`/${this.definition.name}/:id`, 		this.roleCheckHandler.enforceRoles(this.patchHandler.bind(this), 		writerRoles));
