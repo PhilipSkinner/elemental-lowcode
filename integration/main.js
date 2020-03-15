@@ -11,7 +11,7 @@ let tHandler = tokenHandler(process.env.SIG);
 const startup = () => {
 	app = express();
 	app.use(tHandler.tokenCheck.bind(tHandler));
-	let integrationService = require("./services/integrationService")(app);
+	let integrationService = require("./lib/integrationService")(app);
 
 	//now init our integrations
 	integrationService.init(process.env.DIR).then(() => {
