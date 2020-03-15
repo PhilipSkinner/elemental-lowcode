@@ -11047,6 +11047,10 @@ body.sidebar-toggled footer.sticky-footer {
   display: inline;
 }
 
+.documentationWrapper img {
+  width: 100%;
+}
+
 .noResults {
   text-align: center;
   padding: 50px 0px;

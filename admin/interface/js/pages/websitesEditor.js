@@ -90,9 +90,11 @@ _websitesEditorController.prototype.saveWebsite = function() {
 _websitesEditorController.prototype.saveAll = function() {
 	//save the website object
 	return this.saveWebsite().then(() => {
-		//make sure our active resource is set
-		this.resources[this.activeResource] = this.editor.getValue();
-
+		if (this.activeResource) {
+			//make sure our active resource is set
+			this.resources[this.activeResource] = this.editor.getValue();
+		}
+		
 		return Promise.all(Object.keys(this.resources).map((k) => {
 			return this.saveResource(k, this.resources[k]);
 		}));
@@ -218,6 +220,7 @@ _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 			this.routes = Object.keys(response.data.routes).map((r) => {
 				return {
 					route 		: r,
+					roles 		: response.data.routes[r].roles,
 					controller 	: response.data.routes[r].controller,
 					view 		: response.data.routes[r].view,
 				};
@@ -313,6 +316,10 @@ window.WebsiteEditor = {
 		return window._websitesEditorControllerInstance.getData();
 	},
 	mounted  : function() {
+		if (this.$route.params.name === '.new') {
+			return window._websitesEditorControllerInstance.fetchClients(this);
+		}
+
 		return window._websitesEditorControllerInstance.fetchWebsite(this, this.$route.params.name).then(() => {
 			return window._websitesEditorControllerInstance.fetchClients(this);
 		});
