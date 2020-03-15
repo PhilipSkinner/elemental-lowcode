@@ -3,7 +3,8 @@
 	"exclude" : [
 		"admin/**/*.js",
 		"spec/**/*.js",
-		"**/main.js"
+		"**/main.js",
+		"kernel/.sources/**/*.js"
 	],
 	"reporter" : [
 		"lcov",
