@@ -4,7 +4,8 @@
 		"admin/**/*.js",
 		"spec/**/*.js",
 		"**/main.js",
-		"kernel/.sources/**/*.js"
+		"kernel/.sources/**/*.js",
+		"coverage/**/*.js"
 	],
 	"reporter" : [
 		"lcov",
