@@ -46,7 +46,7 @@ rulesInstance.prototype.init = function() {
 		const execRoles = [
 			"system_admin",
 			"system_exec",
-			"roles_exec",
+			"rules_exec",
 			`${this.definition.name}_exec`
 		];
 
