@@ -1,10 +1,11 @@
-const controllerInstance = function(routeDefinition, path, passport, templateRenderer, fs, controllerState) {
+const controllerInstance = function(routeDefinition, path, clientConfig, passport, templateRenderer, fs, controllerState) {
 	this.routeDefinition = routeDefinition;
 	this.path = path;
 	this.passport = passport;
 	this.templateRenderer = templateRenderer;
 	this.fs = fs;
 	this.controllerState = controllerState;
+	this.clientConfig = clientConfig;
 };
 
 controllerInstance.prototype.loadView = function() {
@@ -38,7 +39,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	//load our controller into its state machine
 	let module = this.path.join(process.cwd(), process.env.DIR, this.routeDefinition.controller);
 	delete require.cache[require.resolve(module)]
-	let stateEngine = this.controllerState(require(module));
+	let stateEngine = this.controllerState(require(module), this.clientConfig);
 	stateEngine.setContext(req, res);
 
 	//ensure our state engine triggers on load
@@ -93,7 +94,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	});
 };
 
-module.exports = function(routeDefinition, templateRenderer, passport, path, fs, controllerState) {
+module.exports = function(routeDefinition, templateRenderer, clientConfig, passport, path, fs, controllerState) {
 	if (!path) {
 		path = require("path");
 	}
@@ -106,5 +107,5 @@ module.exports = function(routeDefinition, templateRenderer, passport, path, fs,
 		controllerState = require("./controllerState");
 	}
 
-	return new controllerInstance(routeDefinition, path, passport, templateRenderer, fs, controllerState);
+	return new controllerInstance(routeDefinition, path, clientConfig, passport, templateRenderer, fs, controllerState);
 };

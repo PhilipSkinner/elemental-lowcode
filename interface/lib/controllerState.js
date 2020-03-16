@@ -1,9 +1,10 @@
-const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService) {
-	this.controllerDefinition = controllerDefinition;
-	this.controllerDefinition.storageService = storageService;
-	this.controllerDefinition.sessionState = sessionState;
-	this.controllerDefinition.integrationService = integrationService;
-	this.controllerDefinition.rulesetService = rulesetService;
+const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider) {
+	this.controllerDefinition 						= controllerDefinition;
+	this.controllerDefinition.storageService 		= storageService;
+	this.controllerDefinition.sessionState 			= sessionState;
+	this.controllerDefinition.integrationService 	= integrationService;
+	this.controllerDefinition.rulesetService 		= rulesetService;
+	this.controllerDefinition.authClientProvider 	= authClientProvider;
 };
 
 controllerState.prototype.setContext = function(request, response) {
@@ -11,6 +12,15 @@ controllerState.prototype.setContext = function(request, response) {
 	this.response = response;
 
 	this.controllerDefinition.sessionState.setContext(this.request, this.response);
+	this.controllerDefinition.authClientProvider.setSessionState(this.controllerDefinition.sessionState);
+
+	//set this within all of the services
+	Object.keys(this.controllerDefinition).forEach((prop) => {
+		const service = this.controllerDefinition[prop];
+		if (service && service.setAuthClientProvider) {
+			service.setAuthClientProvider(this.controllerDefinition.authClientProvider);
+		}
+	});
 };
 
 controllerState.prototype.generateResponseHeaders = function() {
@@ -44,7 +54,7 @@ controllerState.prototype.triggerEvent = function(name, details) {
 	});
 };
 
-module.exports = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService) {
+module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider) {
 	if (!storageService) {
 		storageService = require("../../shared/storageService")();
 	}
@@ -61,5 +71,9 @@ module.exports = function(controllerDefinition, storageService, sessionState, in
 		rulesetService = require("../../shared/ruleService")();
 	}
 
-	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService);
+	if (!authClientProvider) {
+		authClientProvider = require('../../shared/authClientProvider')(clientConfig);
+	}
+
+	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider);
 };

@@ -39,6 +39,13 @@ configProvider.prototype.getClients = function(dir) {
 						return Promise.resolve();
 					}
 
+					if (!config.grant_types) {
+						config.grant_types = [
+							'client_credentials',
+							'authorization_code'
+						];
+					}
+
 					allConfig.push(config);
 					return doNext();
 				});

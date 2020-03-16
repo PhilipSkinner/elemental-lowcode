@@ -4,7 +4,6 @@ const _dataController = function(page) {
 };
 
 _dataController.prototype.getData = function() {
-	console.log("getting data");
 	return {
 		dataTypes : this.dataTypes
 	};
@@ -12,7 +11,7 @@ _dataController.prototype.getData = function() {
 
 _dataController.prototype.fetchTypes = function(caller) {
 	this.caller = caller;
-
+	
 	return window.axios
 		.get("http://localhost:8001/data/types", {
 			headers : {

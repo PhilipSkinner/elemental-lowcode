@@ -1,8 +1,8 @@
 const dataController = function(app, fileLister, storageService, roleCheckHandler) {
-	this.app = app;
-	this.fileLister = fileLister;
-	this.storageService = storageService;
-	this.roleCheckHandler = roleCheckHandler;
+	this.app 				= app;
+	this.fileLister 		= fileLister;
+	this.storageService 	= storageService;
+	this.roleCheckHandler 	= roleCheckHandler;
 
 	this.initEndpoints();
 };
