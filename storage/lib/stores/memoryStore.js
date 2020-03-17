@@ -14,10 +14,6 @@ memoryStore.prototype.getResources = function(type, start, count) {
 	return new Promise((resolve, reject) => {
 		let all = Object.keys(this.store[type]);
 
-		if (!all) {
-			return resolve([]);
-		}
-
 		return resolve(all.slice(start, count).map((k) => {
 			return Object.assign(this.store[type][k], { _id : k });
 		}));		
