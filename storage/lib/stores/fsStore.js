@@ -6,7 +6,7 @@ const fsStore = function(dir, fs, path) {
 
 fsStore.prototype.ensureDir = function(dir) {
 	return new Promise((resolve, reject) => {
-		this.fs.stat(dir, (err, stats) => {
+		this.fs.stat(dir, (err) => {
 			if (err) {
 				return this.fs.mkdir(dir, (err) => {
 					if (err) {
