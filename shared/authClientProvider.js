@@ -15,30 +15,30 @@ authClientProvider.prototype.getAccessToken = function() {
 	}
 
 	return new Promise((resolve, reject) => {
-		this.request.post('http://localhost:8008/token', {
+		this.request.post("http://localhost:8008/token", {
 			form : {
-				grant_type 		: 'client_credentials',
+				grant_type 		: "client_credentials",
 				scope 			: this.config.scope,
 				client_id 		: this.config.client_id,
 				client_secret 	: this.config.client_secret
 			}
 		}, (err, response, body) => {
 			if (err) {
-				return reject(new Error('Error fetching client token'));
+				return reject(new Error("Error fetching client token"));
 			}
 
 			let data = null;
 			try {
 				data = JSON.parse(body);
 			} catch(e) {
-				return reject(new Error('Error parsing token response'));
+				return reject(new Error("Error parsing token response"));
 			}
 
 			if (data && data.access_token) {
 				return resolve(data.access_token);
 			}
 
-			return resolve('');
+			return resolve("");
 		});
 	});
 };

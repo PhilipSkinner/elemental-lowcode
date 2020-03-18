@@ -72,7 +72,7 @@ module.exports = function(controllerDefinition, clientConfig, storageService, se
 	}
 
 	if (!authClientProvider) {
-		authClientProvider = require('../../shared/authClientProvider')(clientConfig);
+		authClientProvider = require("../../shared/authClientProvider")(clientConfig);
 	}
 
 	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider);

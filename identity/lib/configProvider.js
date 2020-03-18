@@ -41,8 +41,8 @@ configProvider.prototype.getClients = function(dir) {
 
 					if (!config.grant_types) {
 						config.grant_types = [
-							'client_credentials',
-							'authorization_code'
+							"client_credentials",
+							"authorization_code"
 						];
 					}
 

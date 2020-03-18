@@ -18,7 +18,7 @@ integrationService.prototype.callIntegration = function(name, method, params, au
 			}).catch(reject);
 		}
 
-		return resolve('');
+		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
 			this.request[method](`http://localhost:8004/${name}`, {

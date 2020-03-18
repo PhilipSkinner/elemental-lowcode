@@ -19,7 +19,7 @@ storageService.prototype.detailCollection = function(name, authToken) {
 			}).catch(reject);
 		}
 
-		return resolve('');
+		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
 			this.request.get(`http://localhost:8006/${name}/.details`, {
@@ -56,7 +56,7 @@ storageService.prototype.getList = function(name, start, count, authToken) {
 			}).catch(reject);
 		}
 
-		return resolve('');
+		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
 			this.request.get(`http://localhost:8006/${name}?start=${start}&count=${count}`, {
@@ -93,7 +93,7 @@ storageService.prototype.getEntity = function(name, id, authToken) {
 			}).catch(reject);
 		}
 
-		return resolve('');
+		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
 			this.request.get(`http://localhost:8006/${name}/${id}`, {
@@ -131,7 +131,7 @@ storageService.prototype.createEntity = function(name, entity, authToken) {
 			}).catch(reject);
 		}
 
-		return resolve('');
+		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
 			this.request.post(`http://localhost:8006/${name}`, {
@@ -167,7 +167,7 @@ storageService.prototype.updateEntity = function(name, id, entity, authToken) {
 			}).catch(reject);
 		}
 
-		return resolve('');
+		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
 			this.request.put(`http://localhost:8006/${name}/${id}`, {

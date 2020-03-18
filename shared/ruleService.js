@@ -6,7 +6,7 @@ ruleService.prototype.setAuthClientProvider = function(authClientProvider) {
 	this.authClientProvider = authClientProvider;
 };
 
-ruleService.prototype.callRuleset = function(name, facts, token) {
+ruleService.prototype.callRuleset = function(name, facts, authToken) {
 	return new Promise((resolve, reject) => {
 		if (authToken) {
 			return resolve(authToken);
@@ -18,7 +18,7 @@ ruleService.prototype.callRuleset = function(name, facts, token) {
 			}).catch(reject);
 		}
 
-		return resolve('');
+		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
 			this.request.post(`http://localhost:8007/${name}`, {
