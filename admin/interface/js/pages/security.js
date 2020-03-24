@@ -13,45 +13,84 @@ _securityController.prototype.getData = function() {
 	};
 };
 
+_securityController.prototype.deleteClient = function(clientId) {
+	return window.axios
+		.delete(`http://localhost:8001/security/clients/${clientId}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			return this.fetchClients();
+		});
+};
+
 _securityController.prototype.fetchClients = function(caller) {
+	this.caller = caller ? caller : this.caller;
 	return window.axios
 		.get("http://localhost:8001/security/clients", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
 		})
-		.then((response) => {			
+		.then((response) => {
 			this.clients = response.data;
-			caller.clients = response.data;
-			caller.$forceUpdate();
+			this.caller.clients = response.data;
+			this.caller.$forceUpdate();
+		});
+};
+
+_securityController.prototype.deleteScope = function(scope) {
+	return window.axios
+		.delete(`http://localhost:8001/security/scopes/${scope}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			return this.fetchScopes();
 		});
 };
 
 _securityController.prototype.fetchScopes = function(caller) {
+	this.caller = caller ? caller : this.caller;
 	return window.axios
 		.get("http://localhost:8001/security/scopes", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
 		})
-		.then((response) => {			
+		.then((response) => {
 			this.scopes = response.data;
-			caller.scopes = response.data;
-			caller.$forceUpdate();
+			this.caller.scopes = response.data;
+			this.caller.$forceUpdate();
+		});
+};
+
+_securityController.prototype.deleteUser = function(userId) {
+	return window.axios
+		.delete(`http://localhost:8001/security/users/${userId}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			return this.fetchUsers();
 		});
 };
 
 _securityController.prototype.fetchUsers = function(caller) {
+	this.caller = caller ? caller : this.caller;
 	return window.axios
 		.get("http://localhost:8001/security/users", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
 		})
-		.then((response) => {			
+		.then((response) => {
 			this.users = response.data;
-			caller.users = response.data;
-			caller.$forceUpdate();
+			this.caller.users = response.data;
+			this.caller.$forceUpdate();
 		});
 };
 

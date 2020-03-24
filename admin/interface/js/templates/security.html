@@ -55,9 +55,9 @@
 												<router-link class="btn btn-sm btn-success" :to="{ name : 'securityScopeEditor', params : { name : scope.name }}">
 													Modify
 												</router-link>
-												<a class="btn btn-sm btn-danger" href="#">
+												<button class="btn btn-sm btn-danger" v-on:click="_securityControllerInstance.deleteScope(scope.name);">
 													Remove
-												</a>
+												</button>
 											</td>
 										</tr>
 									</tbody>
@@ -112,9 +112,9 @@
 												<router-link class="btn btn-sm btn-success" :to="{ name : 'securityClientEditor', params : { id : client.client_id }}">
 													Modify
 												</router-link>
-												<a class="btn btn-sm btn-danger" href="#">
+												<button class="btn btn-sm btn-danger" v-on:click="_securityControllerInstance.deleteClient(client.client_id);">
 													Remove
-												</a>
+												</button>
 											</td>
 										</tr>
 									</tbody>
@@ -183,9 +183,9 @@
 												<router-link class="btn btn-sm btn-success" :to="{ name : 'securityUserEditor', params : { id : user.id } }">
 													Modify
 												</router-link>
-												<a class="btn btn-sm btn-danger" href="#">
+												<button class="btn btn-sm btn-danger"  v-on:click="_securityControllerInstance.deleteUser(user.id);">
 													Remove
-												</a>
+												</button>
 											</td>
 										</tr>
 									</tbody>
