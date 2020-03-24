@@ -15,7 +15,7 @@ A view is a template in the form of a JSON document:
 					"tag" : "h1",
 					"text" : "Hello world!"
 				}
-			] 
+			]
 		}
 	]
 }
@@ -132,7 +132,8 @@ Allows for a series of conditionals to be combined to determine if this tag (and
 	"text" : "An error occurred",
 	"if" : [
 		{
-			"statement" : "$.bag.validationError"
+			"statement" : "$.bag.validationError",
+			"logicalOperator" : "and"
 		},
 		{
 			"statement" : "$.bag.insertionError",

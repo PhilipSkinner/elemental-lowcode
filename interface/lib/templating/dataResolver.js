@@ -24,12 +24,10 @@ dataResolver.prototype.detectValues = function(string, data, scope) {
 		m.forEach((match, groupIndex) => {
 			var rep = this.resolveValue(match, scopedData);
 
-			if (rep) {
-				replacements.push({
-					val : match,
-					rep : this.resolveValue(match, scopedData)
-				});
-			}
+			replacements.push({
+				val : match,
+				rep : this.resolveValue(match, scopedData)
+			});
 		});
 	}
 

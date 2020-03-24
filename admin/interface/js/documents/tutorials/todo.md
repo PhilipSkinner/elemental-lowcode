@@ -59,6 +59,21 @@ Enter the definition for the data type, the definition for this data type will b
 {
     "name": "todoList",
     "keys": [],
+    "roles" : {
+        "replace" : {
+            "read" : true,
+            "write" : true,
+            "delete" : true
+        },
+        "read" : [],
+        "write" : [],
+        "delete" : [],
+        "needsRole" : {
+            "read" : false,
+            "write" : false,
+            "delete" : false
+        }
+    },
     "schema": {
         "type": "object",
         "properties": {
@@ -143,7 +158,7 @@ module.exports = {
 	events : {
 		load : function(event) {
 		    return this.storageService.getList(
-                "todoList", 
+                "todoList",
                 1,
                 10,
                 this.sessionState.getAccessToken()
