@@ -99,7 +99,7 @@ render.prototype.handleTag = function(c, data) {
 		return "";
 	}
 
-	if (c.children || c.text) {
+	if (c.children || (typeof(c.text) !== 'undefined' && c.text !== null)) {
 		var text = c.text;
 
 		if (Array.isArray(text)) {
