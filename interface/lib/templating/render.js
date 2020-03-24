@@ -12,7 +12,8 @@ const render = function(fs, path, preProcessor) {
 		"repeat",
 		"submit",
 		"bind",
-		"_scope"
+		"_scope",
+		"if"
 	];
 	this.customTags = {};
 };
