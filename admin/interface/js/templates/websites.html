@@ -37,7 +37,7 @@
 											View
 										</a>
 										<router-link class="btn btn-sm btn-primary" :to="{ name : 'websiteEditor', params : { name : item.name } }">Modify</router-link>
-										<router-link class="btn btn-sm btn-danger" :to="{ name : 'websiteRemove', params : { name : item.name } }">Remove</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_websitesControllerInstance.deleteWebsite(item.name);">Remove</router-link>
 									</td>
 								</tr>
 							</tbody>

@@ -31,6 +31,14 @@ websitesController.prototype.updateWebsite = function(req, res, next) {
 	});
 };
 
+websitesController.prototype.deleteWebsite = function(req, res, next) {
+	this.fileLister.deleteFile(".sources/website", `${req.params.name}.website.json`).then(() => {
+		res.status(204);
+		res.send("");
+		next();
+	});
+};
+
 websitesController.prototype.getResource = function(req, res, next) {
 	this.fileLister.readFile(".sources/website/", req.query.path).then((data) => {
 		res.send(data);
@@ -50,6 +58,7 @@ websitesController.prototype.initEndpoints = function() {
 	this.app.get("/websites", 					this.roleCheckHandler.enforceRoles(this.get.bind(this), 					["website_reader", "website_admin", "system_reader", "system_admin"]));
 	this.app.get("/websites/:name", 			this.roleCheckHandler.enforceRoles(this.getWebsite.bind(this), 				["website_reader", "website_admin", "system_reader", "system_admin"]));
 	this.app.put("/websites/:name", 			this.roleCheckHandler.enforceRoles(this.updateWebsite.bind(this), 			["website_writer", "website_admin", "system_writer", "system_admin"]));
+	this.app.delete("/websites/:name", 			this.roleCheckHandler.enforceRoles(this.deleteWebsite.bind(this), 			["website_writer", "website_admin", "system_writer", "system_admin"]));
 	this.app.get("/websites/:name/resource", 	this.roleCheckHandler.enforceRoles(this.getResource.bind(this), 			["website_writer", "website_admin", "system_writer", "system_admin"]));
 	this.app.post("/websites/:name/resource", 	this.roleCheckHandler.enforceRoles(this.createOrUpdateResource.bind(this), 	["website_writer", "website_admin", "system_writer", "system_admin"]));
 };

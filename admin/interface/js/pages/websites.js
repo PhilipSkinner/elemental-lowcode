@@ -10,6 +10,7 @@ _websitesController.prototype.getWebsites = function() {
 };
 
 _websitesController.prototype.fetchWebsites = function(caller) {
+	this.caller = caller ? caller : this.caller;
 	return window.axios
 		.get("http://localhost:8001/websites", {
 			headers : {
@@ -23,8 +24,20 @@ _websitesController.prototype.fetchWebsites = function(caller) {
 			});
 
 			this.websites = response.data;
-			caller.websites = response.data;
-			caller.$forceUpdate();
+			this.caller.websites = response.data;
+			this.caller.$forceUpdate();
+		});
+};
+
+_websitesController.prototype.deleteWebsite = function(name) {
+	return window.axios
+		.delete(`http://localhost:8001/websites/${name}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			return this.fetchWebsites();
 		});
 };
 

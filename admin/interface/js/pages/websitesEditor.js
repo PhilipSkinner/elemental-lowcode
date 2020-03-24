@@ -94,7 +94,7 @@ _websitesEditorController.prototype.saveAll = function() {
 			//make sure our active resource is set
 			this.resources[this.activeResource] = this.editor.getValue();
 		}
-		
+
 		return Promise.all(Object.keys(this.resources).map((k) => {
 			return this.saveResource(k, this.resources[k]);
 		}));
