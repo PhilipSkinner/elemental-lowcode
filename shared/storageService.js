@@ -44,7 +44,7 @@ storageService.prototype.detailCollection = function(name, authToken) {
 	});
 };
 
-storageService.prototype.getList = function(name, start, count, authToken) {
+storageService.prototype.getList = function(name, start, count, filters, authToken) {
 	return new Promise((resolve, reject) => {
 		if (authToken) {
 			return resolve(authToken);
@@ -58,11 +58,23 @@ storageService.prototype.getList = function(name, start, count, authToken) {
 
 		return resolve("");
 	}).then((token) => {
+		const qs = {
+			start : start,
+			count : count
+		};
+
+		if (typeof(filters) === "object" && filters !== null) {
+			Object.keys(filters).forEach((path) => {
+				qs['filter_' + path] = filters[path];
+			});
+		}
+
 		return new Promise((resolve, reject) => {
-			this.request.get(`http://localhost:8006/${name}?start=${start}&count=${count}`, {
+			this.request.get(`http://localhost:8006/${name}`, {
 				headers : {
 					Authorization : `Bearer ${token}`
-				}
+				},
+				qs : qs
 			}, (err, res, body) => {
 				if (err) {
 					return reject(err);

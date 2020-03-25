@@ -1,7 +1,8 @@
-const fsStore = function(dir, fs, path) {
-	this.dir 	= dir;
-	this.fs 	= fs;
-	this.path 	= path;
+const fsStore = function(dir, fs, path, jsonpath) {
+	this.dir 		= dir;
+	this.fs 		= fs;
+	this.path 		= path;
+	this.jsonpath 	= jsonpath;
 };
 
 fsStore.prototype.ensureDir = function(dir) {
@@ -44,7 +45,36 @@ fsStore.prototype.getDetails = function(type) {
 	});
 };
 
-fsStore.prototype.getResources = function(type, start, count) {
+fsStore.prototype.applyFilters = function(dir, filters, type) {
+	return new Promise((resolve, reject) => {
+		return Promise.all(dir.map((s) => {
+			return this.getResource(type, s).then((resource) => {
+				let found = true;
+				filters.forEach((f) => {
+					let value = this.jsonpath.query(resource, f.path);
+					if (value != f.value) {
+						found = false;
+					}
+				});
+
+				if (found) {
+					return Promise.resolve(resource);
+				}
+
+				return Promise.resolve(null);
+			});
+		})).then((filtered) => {
+			return resolve(filtered.reduce((sum, a) => {
+				if (a !== null) {
+					sum.push(a);
+				}
+				return sum;
+			}, []));
+		});
+	});
+};
+
+fsStore.prototype.getResources = function(type, start, count, filters) {
 	if (!start) {
 		start = 1;
 	}
@@ -60,13 +90,23 @@ fsStore.prototype.getResources = function(type, start, count) {
 					return reject(err);
 				}
 
-				let selection = dir.slice(start - 1, count);
+				//apply our filters
+				if (filters && filters.length > 0) {
+					return this.applyFilters(dir, filters, type).then((dir) => { return resolve(dir) });
+				}
 
-				return resolve(Promise.all(selection.map((s) => {
-					return this.getResource(type, s);
-				})));
+				return resolve(dir);
 			});
 		});
+	}).then((dir) => {
+		let selection = dir.slice(start - 1, count);
+
+		return Promise.all(selection.map((s) => {
+			if (typeof(s) === "object") {
+				return Promise.resolve(s);
+			}
+			return this.getResource(type, s);
+		}));
 	});
 };
 
@@ -140,7 +180,7 @@ fsStore.prototype.deleteResource = function(type, id) {
 	});
 };
 
-module.exports = function(dir, fs, path) {
+module.exports = function(dir, fs, path, jsonpath) {
 	if (!path) {
 		path = require("path");
 	}
@@ -153,5 +193,9 @@ module.exports = function(dir, fs, path) {
 		fs = require("fs");
 	}
 
-	return new fsStore(dir, fs, path);
+	if (!jsonpath) {
+		jsonpath = require('jsonpath');
+	}
+
+	return new fsStore(dir, fs, path, jsonpath);
 };

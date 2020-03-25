@@ -13,7 +13,18 @@ const typeInstance = function(store, app, definition, uuid, ajv, roleCheckHandle
 };
 
 typeInstance.prototype.getHandler = function(req, res) {
-	this.store.getResources(this.definition.name, req.query.start, req.query.count).then((data) => {
+	const filters = [];
+	Object.keys(req.query).forEach((param) => {
+		//filter_$.path.to.variable
+		if (param.indexOf("filter_") === 0) {
+			filters.push({
+				path 	: param.slice(7),
+				value 	: req.query[param]
+			});
+		}
+	});
+
+	this.store.getResources(this.definition.name, req.query.start, req.query.count, filters).then((data) => {
 		res.json(data);
 		res.end();
 	}).catch((err) => {
