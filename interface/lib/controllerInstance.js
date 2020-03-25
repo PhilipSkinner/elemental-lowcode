@@ -69,7 +69,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 		if (req.method === "GET") {
 			//do we have an event to trigger?
 			if (req.query.event) {
-				return stateEngine.triggerEvent(req.query.event);
+				return stateEngine.triggerEvent(req.query.event, req.query);
 			}
 		}
 

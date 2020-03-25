@@ -23,7 +23,14 @@ render.prototype.submitHandler = function(eventProps, toWrap) {
 };
 
 render.prototype.clickHandler = function(eventProps, toWrap) {
-	return `<!-- @clickHandler --><a href="?event=${eventProps.eventName}">${toWrap}`;
+	let extraParams = Object.keys(eventProps.params || {}).map((key) => {
+		if (typeof(eventProps.params[key]) === "object") {
+			return "";
+		};
+		return `${encodeURIComponent(key)}=${encodeURIComponent(eventProps.params[key])}`;
+	}).join('&').replace(/&&/g, '&');
+
+	return `<!-- @clickHandler --><a href="?event=${eventProps.eventName}&${extraParams}">${toWrap}`;
 };
 
 render.prototype.endClickHandler = function(val) {

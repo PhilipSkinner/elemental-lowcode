@@ -154,7 +154,10 @@ Configures an event which is fired and handled by the relevant controller:
 	"tag" : "span",
 	"text" : "Increment value : $.bag.value",
 	"onclick" : {
-		"eventName" : "increment"
+		"eventName" : "increment",
+		"params" : {
+			"currentValue" : "$.bag.value"
+		}
 	}
 }
 ```
@@ -162,7 +165,7 @@ Configures an event which is fired and handled by the relevant controller:
 ; would output:
 
 ```
-<a href="?event=increment"><span>Increment value</span></a>
+<a href="?event=increment&currentValue=1"><span>Increment value</span></a>
 ```
 
 ; which can then be handled within the controller:
@@ -181,13 +184,15 @@ module.exports = {
 			}
 		},
 		increment : function(event) {
-			this.bag.value++;
+			this.bag.value = event.currentValue + 1;
 
 			this.sessionState.saveSession(this.bag);
 		}
 	}
 };
 ```
+
+The parameters collection within the event can contain hard coded values or values passed into the template from repeating groups, template includes or bag values.
 
 **submit**
 
