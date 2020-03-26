@@ -46,7 +46,12 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	stateEngine.triggerEvent("load", Object.assign(req.query, req.params)).then(() => {
 		if (req.method === "POST") {
 			//generate our post event!
-			var event = {};
+			let eventName = "postback";
+			if (req.query && req.query._event) {
+				eventName = req.query._event;
+			}
+
+			let event = {};
 			Object.keys(req.body).forEach((valName) => {
 				//get the path version
 				var parts = valName.split("$$_$$");
@@ -63,7 +68,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 					}
 				}
 			});
-			return stateEngine.triggerEvent("postback", event);
+			return stateEngine.triggerEvent(eventName, event);
 		}
 
 		if (req.method === "GET") {

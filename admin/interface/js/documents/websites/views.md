@@ -260,7 +260,7 @@ module.exports = {
 			    this.bag.value = 0;
 			}
 		},
-		postback : function(event) {
+		submit : function(event) {
 		    Object.assign(this.bag, event.bag);
 		    this.sessionState.saveSession(this.bag);
 		},

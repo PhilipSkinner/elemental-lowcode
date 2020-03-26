@@ -49,11 +49,37 @@ module.exports = {
 There are a number of standard events that can be listened to:
 
 * `load`
-* `postback`
 
 The `load` event is triggered whenever an instance of your controller is loaded and should be used to bootstrap your pages initial state. If you want your page to maintain a persistent state then the `sessionState` injectable should be used.
 
-The `postback` event is triggered whenever a form submission is sent. At the moment, named form submission events are not supported.
+**Form submissions**
+
+Form submission events are named within your views, and you create an event of that name in your controller:
+
+```
+{
+	"tag" : "form",
+	"submit" : {
+		"eventName" : "addPet"
+	}
+}
+```
+
+; would trigger an event named `addPet` on your controller:
+
+```
+module.exports = {
+	events : {
+		addPet : (event) => {
+			console.log("Form submission fired!");
+		}
+	}
+};
+```
+
+If a submission does not specify an event name, the a default event named `postback` will be fired.
+
+**Click events**
 
 Click based events are named within your views and so you simply need to create an event with the same name:
 

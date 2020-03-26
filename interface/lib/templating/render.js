@@ -19,7 +19,13 @@ const render = function(fs, path, preProcessor) {
 };
 
 render.prototype.submitHandler = function(eventProps, toWrap) {
-	return `${toWrap} method="POST" action="" `;
+	let action = "";
+
+	if (eventProps && eventProps.eventName) {
+		action = `?_event=${eventProps.eventName}`;
+	}
+
+	return `${toWrap} method="POST" action="${action}" `;
 };
 
 render.prototype.clickHandler = function(eventProps, toWrap) {
