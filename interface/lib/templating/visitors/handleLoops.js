@@ -22,20 +22,23 @@ handleLoops.prototype.expandNext = function(view, data) {
 
 			//ok, for each child decorate it with our new scoped data and then copy
 			var base = JSON.stringify(tag);
-			var generated = arr.map((item) => {
-				var copy = JSON.parse(base);
+			var generated = [];
+			if (Array.isArray(arr)) {
+				generated = arr.map((item) => {
+					var copy = JSON.parse(base);
 
-				//delete the repeat
-				delete(copy.repeat);
+					//delete the repeat
+					delete(copy.repeat);
 
-				//set our scoped data
-				copy._scope.data = copy._scope.data || {};
-				var itemData = {};
-				itemData[dataPropName] = item;
-				copy._scope.data = Object.assign(copy._scope.data, itemData);
+					//set our scoped data
+					copy._scope.data = copy._scope.data || {};
+					var itemData = {};
+					itemData[dataPropName] = item;
+					copy._scope.data = Object.assign(copy._scope.data, itemData);
 
-				return copy;
-			});
+					return copy;
+				});
+			}
 
 			//return our generated items
 			this.modified = true;
