@@ -39,7 +39,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 		stateEngine.setContext(req, res);
 
 		//ensure our state engine triggers on load
-		stateEngine.triggerEvent("load", Object.assign(req.query, req.params)).then(() => {
+		Promise.resolve().then(() => {
 			if (req.method === "POST") {
 				//generate our post event!
 				let eventName = "postback";
@@ -75,6 +75,8 @@ controllerInstance.prototype.handler = function(req, res, next) {
 			}
 
 			return Promise.resolve();
+		}).then(() => {
+			return stateEngine.triggerEvent("load", Object.assign(req.query, req.params));
 		}).then(() => {
 			//load the view
 			this.loadView().then((view) => {
