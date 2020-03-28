@@ -228,6 +228,7 @@ _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 				return {
 					route 		: r,
 					roles 		: response.data.routes[r].roles,
+					secure 		: response.data.routes[r].secure,
 					controller 	: response.data.routes[r].controller,
 					view 		: response.data.routes[r].view,
 				};
