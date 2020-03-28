@@ -199,6 +199,36 @@ storageService.prototype.updateEntity = function(name, id, entity, authToken) {
 	});
 };
 
+storageService.prototype.deleteEntity = function(name, id, authToken) {
+	return new Promise((resolve, reject) => {
+		if (authToken) {
+			return resolve(authToken);
+		}
+
+		if (this.authClientProvider) {
+			return this.authClientProvider.getAccessToken().then((token) => {
+				return resolve(token);
+			}).catch(reject);
+		}
+
+		return resolve("");
+	}).then((token) => {
+		return new Promise((resolve, reject) => {
+			this.request.delete(`http://localhost:8006/${name}/${id}`, {
+				headers : {
+					Authorization : `Bearer ${token}`	
+				}
+			}, (err, res, body) => {
+				if (err) {
+					return reject(err);
+				}
+
+				return resolve();
+			});
+		});
+	});
+};
+
 module.exports = function(request) {
 	if (!request) {
 		request = require("request");

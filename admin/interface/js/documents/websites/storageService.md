@@ -9,6 +9,7 @@ The storage service allows you to access data types defined within the storage s
 * getEntity
 * createEntity
 * updateEntity
+* deleteEntity
 
 Each of these methods is covered in more detail below.
 
@@ -172,6 +173,37 @@ module.exports = {
 				{
 					hello : "world"
 				}
+			).then((result) => {
+
+			}).catch((err) => {
+
+			});
+		}
+	}
+};
+```
+
+### deleteEntity
+
+Parameters:
+
+* `name` - string, the name of the collection to delete from
+* `id` - guid (string), the id of the entity to delete
+* `token` - string, the access token to use to access the API *optional*
+
+Deletes an entity from the named collection. More details on this response payload can be found within the [storage system documentation](#/documentation/data.md).
+
+This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly.
+
+This can be called from within a controller like so:
+
+```
+module.exports = {
+	events : {
+		load : (event) => {
+			return this.storageService.deleteEntity(
+				"books",
+				"16aeb990-4f40-4060-892c-bebe9456de3f"
 			).then((result) => {
 
 			}).catch((err) => {
