@@ -24,7 +24,7 @@ handleLoops.prototype.expandNext = function(view, data) {
 			var base = JSON.stringify(tag);
 			var generated = [];
 			if (Array.isArray(arr)) {
-				generated = arr.map((item) => {
+				generated = arr.map((item, index) => {
 					var copy = JSON.parse(base);
 
 					//delete the repeat
@@ -35,7 +35,8 @@ handleLoops.prototype.expandNext = function(view, data) {
 					var itemData = {};
 					itemData[dataPropName] = item;
 					copy._scope.data = Object.assign(copy._scope.data, itemData);
-
+					copy._scope.data._index = index;
+					
 					return copy;
 				});
 			}

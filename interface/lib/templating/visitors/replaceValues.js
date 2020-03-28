@@ -22,7 +22,7 @@ replaceValues.prototype.replace = function(view, data) {
 				return;
 			}
 
-			let scopedData = Object.assign(tag._scope && tag._scope.data ? tag._scope.data : {}, data);
+			let scopedData = Object.assign(data, tag._scope && tag._scope.data ? tag._scope.data : {});
 			if (Array.isArray(tag[prop])) {
 				tag[prop] = this.replace(tag[prop], scopedData);
 				return;
