@@ -83,7 +83,7 @@ _integrationsEditorController.prototype.initBlankType = function() {
 
 _integrationsEditorController.prototype.setCaller = function(caller) {
 	this.caller = caller;
-}
+};
 
 _integrationsEditorController.prototype.getData = function() {
 	return this.data;

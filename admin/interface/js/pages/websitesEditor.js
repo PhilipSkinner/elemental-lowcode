@@ -241,7 +241,7 @@ _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 _websitesEditorController.prototype.fetchClients = function(caller) {
 	this.caller = caller;
 	return window.axios
-		.get(`http://localhost:8001/security/clients`, {
+		.get("http://localhost:8001/security/clients", {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -325,13 +325,13 @@ _websitesEditorController.prototype.newStaticFile = function() {
 
 _websitesEditorController.prototype.uploadResource = function() {
 	var formData = new FormData();
-	var imagefile = document.querySelector('#file');
+	var imagefile = document.querySelector("#file");
 	formData.append("resource", imagefile.files[0]);
 	return window.axios.post(`http://localhost:8001/websites/${this.website.name}/staticfiles`, formData, {
-    	headers: {
-      		'Content-Type' : 'multipart/form-data',
-      		Authorization  : `Bearer ${window.getToken()}`
-    	}
+		headers: {
+	  		"Content-Type" : "multipart/form-data",
+	  		Authorization  : `Bearer ${window.getToken()}`
+		}
 	}).then(() => {
 		this.newResourceVisible = false;
 		return this.fetchStaticFiles(this.caller, this.website.name);
@@ -366,7 +366,7 @@ window.WebsiteEditor = {
 		return window._websitesEditorControllerInstance.getData();
 	},
 	mounted  : function() {
-		if (this.$route.params.name === '.new') {
+		if (this.$route.params.name === ".new") {
 			return window._websitesEditorControllerInstance.fetchClients(this);
 		}
 

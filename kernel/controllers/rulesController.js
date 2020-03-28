@@ -53,7 +53,7 @@ module.exports = function(app, dir, fileLister, path, roleCheckHandler) {
 	}
 
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	if (!roleCheckHandler) {

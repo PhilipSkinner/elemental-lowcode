@@ -92,7 +92,10 @@ module.exports = function(sequelize, path) {
 
     async findByUid(uid) {
       const found = await this.model.findOne({ where: { uid } });
-      if (!found) return undefined;
+      if (!found) {
+        return undefined;
+      }
+      
       return {
         ...found.data,
         ...(found.consumedAt ? { consumed: true } : undefined),

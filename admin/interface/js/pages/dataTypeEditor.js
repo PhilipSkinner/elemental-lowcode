@@ -40,20 +40,20 @@ _dataTypeEditorController.prototype.initBlankType = function() {
 		name : "typeName",
 		keys : [],
 		roles : {
-	        replace : {
-	            read : false,
-	            write : false,
-	            delete : false
-	        },
-	        needsRole : {
-	            read : true,
-	            write : true,
-	            delete : true
-	        },
-	        read : [],
-	        write : [],
-	        delete : []
-	    },
+			replace : {
+				read : false,
+				write : false,
+				delete : false
+			},
+			needsRole : {
+				read : true,
+				write : true,
+				delete : true
+			},
+			read : [],
+			write : [],
+			delete : []
+		},
 		schema : {
 			"type" : "object",
 			"properties" : {
@@ -67,7 +67,7 @@ _dataTypeEditorController.prototype.initBlankType = function() {
 
 _dataTypeEditorController.prototype.setCaller = function(caller) {
 	this.caller = caller;
-}
+};
 
 _dataTypeEditorController.prototype.getData = function() {
 	return this.data;
