@@ -69,6 +69,7 @@ _websitesEditorController.prototype.saveWebsite = function() {
 			s[a.route] = {
 				controller 	: a.controller,
 				view 		: a.view,
+				secure 		: a.secure,
 				roles 		: a.roles,
 			};
 			return s;

@@ -1,4 +1,4 @@
-const controllerInstance = function(routeDefinition, path, clientConfig, passport, templateRenderer, fs, controllerState) {
+const controllerInstance = function(routeDefinition, path, clientConfig, passport, templateRenderer, fs, controllerState, roleCheckHandler) {
 	this.routeDefinition = routeDefinition;
 	this.path = path;
 	this.passport = passport;
@@ -6,6 +6,7 @@ const controllerInstance = function(routeDefinition, path, clientConfig, passpor
 	this.fs = fs;
 	this.controllerState = controllerState;
 	this.clientConfig = clientConfig;
+	this.roleCheckHandler = roleCheckHandler;
 };
 
 controllerInstance.prototype.loadView = function() {
@@ -30,76 +31,82 @@ controllerInstance.prototype.loadView = function() {
 };
 
 controllerInstance.prototype.handler = function(req, res, next) {
-	if (this.routeDefinition.roles && this.passport) {
+	const handleRequest = (req, res, next) => {
+		//load our controller into its state machine
+		let module = this.path.join(process.cwd(), process.env.DIR, this.routeDefinition.controller);
+		delete require.cache[require.resolve(module)]
+		let stateEngine = this.controllerState(require(module), this.clientConfig);
+		stateEngine.setContext(req, res);
+
+		//ensure our state engine triggers on load
+		stateEngine.triggerEvent("load", Object.assign(req.query, req.params)).then(() => {
+			if (req.method === "POST") {
+				//generate our post event!
+				let eventName = "postback";
+				if (req.query && req.query._event) {
+					eventName = req.query._event;
+				}
+
+				let event = {};
+				Object.keys(req.body).forEach((valName) => {
+					//get the path version
+					var parts = valName.split("$$_$$");
+					let current = event;
+					for (var i = 0; i < parts.length; i++) {
+						if (i === parts.length - 1) {
+							current[parts[i]] = req.body[valName];
+						} else {
+							if (!current[parts[i]]) {
+								current[parts[i]] = {};
+							}
+
+							current = current[parts[i]];
+						}
+					}
+				});
+				return stateEngine.triggerEvent(eventName, event);
+			}
+
+			if (req.method === "GET") {
+				//do we have an event to trigger?
+				if (req.query.event) {
+					return stateEngine.triggerEvent(req.query.event, req.query);
+				}
+			}
+
+			return Promise.resolve();
+		}).then(() => {
+			//load the view
+			this.loadView().then((view) => {
+				return this.templateRenderer.renderView(view, stateEngine.getBag());
+			}).then((html) => {
+				stateEngine.generateResponseHeaders();
+				res.send(html);
+
+				//clear the stateEngine
+				stateEngine = null;
+
+				next();
+			}).catch((err) => {
+				console.error(err);
+				res.send(err.toString());
+				next();
+			});
+		});
+	};
+
+	if (this.routeDefinition.secure && this.passport) {
 		if (!(req.session && req.session.passport && req.session.passport.user && req.session.passport.user.accessToken)) {
 			return this.passport.authenticate("oauth2")(req, res, next);
+		} else if (this.routeDefinition.roles) {
+			return this.roleCheckHandler.enforceRoles(handleRequest.bind(this), this.routeDefinition.roles.split(','))(req, res, next);
 		}
 	}
 
-	//load our controller into its state machine
-	let module = this.path.join(process.cwd(), process.env.DIR, this.routeDefinition.controller);
-	delete require.cache[require.resolve(module)]
-	let stateEngine = this.controllerState(require(module), this.clientConfig);
-	stateEngine.setContext(req, res);
-
-	//ensure our state engine triggers on load
-	stateEngine.triggerEvent("load", Object.assign(req.query, req.params)).then(() => {
-		if (req.method === "POST") {
-			//generate our post event!
-			let eventName = "postback";
-			if (req.query && req.query._event) {
-				eventName = req.query._event;
-			}
-
-			let event = {};
-			Object.keys(req.body).forEach((valName) => {
-				//get the path version
-				var parts = valName.split("$$_$$");
-				let current = event;
-				for (var i = 0; i < parts.length; i++) {
-					if (i === parts.length - 1) {
-						current[parts[i]] = req.body[valName];
-					} else {
-						if (!current[parts[i]]) {
-							current[parts[i]] = {};
-						}
-
-						current = current[parts[i]];
-					}
-				}
-			});
-			return stateEngine.triggerEvent(eventName, event);
-		}
-
-		if (req.method === "GET") {
-			//do we have an event to trigger?
-			if (req.query.event) {
-				return stateEngine.triggerEvent(req.query.event, req.query);
-			}
-		}
-
-		return Promise.resolve();
-	}).then(() => {
-		//load the view
-		this.loadView().then((view) => {
-			return this.templateRenderer.renderView(view, stateEngine.getBag());
-		}).then((html) => {
-			stateEngine.generateResponseHeaders();
-			res.send(html);
-
-			//clear the stateEngine
-			stateEngine = null;
-
-			next();
-		}).catch((err) => {
-			console.error(err);
-			res.send(err.toString());
-			next();
-		});
-	});
+	return handleRequest(req, res, next)
 };
 
-module.exports = function(routeDefinition, templateRenderer, clientConfig, passport, path, fs, controllerState) {
+module.exports = function(routeDefinition, templateRenderer, clientConfig, passport, path, fs, controllerState, roleCheckHandler) {
 	if (!path) {
 		path = require("path");
 	}
@@ -112,5 +119,9 @@ module.exports = function(routeDefinition, templateRenderer, clientConfig, passp
 		controllerState = require("./controllerState");
 	}
 
-	return new controllerInstance(routeDefinition, path, clientConfig, passport, templateRenderer, fs, controllerState);
+	if (!roleCheckHandler) {
+		roleCheckHandler = require("../../shared/roleCheckHandler")();
+	}
+
+	return new controllerInstance(routeDefinition, path, clientConfig, passport, templateRenderer, fs, controllerState, roleCheckHandler);
 };

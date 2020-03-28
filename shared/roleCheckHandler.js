@@ -9,6 +9,12 @@ roleCheckHandler.prototype.enforceRoles = function(middleware, roles) {
 			token = token.slice(7, token.length);
 		}
 
+		if (!token) {
+			if (req.session && req.session.passport && req.session.passport.user && req.session.passport.user.accessToken) {
+				token = req.session.passport.user.accessToken;
+			}
+		}
+
 		let found = false;
 		try {
 			let claims = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString("utf8"));

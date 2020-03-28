@@ -115,8 +115,9 @@
 						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 							<thead>
 								<tr>
-									<th>Route</th>
-									<th>Security</th>
+									<th width="25%">Route</th>
+									<th>Is Secure?</th>
+									<th width="25%">Role</th>
 									<th>View</th>
 									<th>Controller</th>
 									<th>Operations</th>
@@ -125,7 +126,8 @@
 							<tfoot>
 								<tr>
 									<th>Route</th>
-									<th>Security</th>
+									<th>Is Secure?</th>
+									<th>Role</th>
 									<th>View</th>
 									<th>Controller</th>
 									<th>Operations</th>
@@ -137,7 +139,10 @@
 										<input class="form-control" type="text" name="route" v-model="route.route" />
 									</td>
 									<td>
-										<input class="form-control" type="text" name="security" v-model="route.roles" />
+										<input class="form-control form-control-checkbox" type="checkbox" name="isSecure" v-model="route.secure" />
+									</td>
+									<td>
+										<input v-if="route.secure" class="form-control" type="text" name="security" v-model="route.roles" />
 									</td>
 									<td>
 										<button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editView(route.view);">
