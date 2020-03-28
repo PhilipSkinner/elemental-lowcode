@@ -243,13 +243,13 @@ typeInstance.prototype.init = function() {
 			//clear our roles if we've been told to
 			if (this.definition.roles.replace) {
 				if (this.definition.roles.replace.read === true) {
-					readerRoles = [];
+					readerRoles = ["system_admin",];
 				}
 				if (this.definition.roles.replace.write === true) {
-					writerRoles = [];
+					writerRoles = ["system_admin",];
 				}
 				if (this.definition.roles.replace.delete === true) {
-					deletionRoles = [];
+					deletionRoles = ["system_admin",];
 				}
 			}
 

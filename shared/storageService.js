@@ -35,6 +35,7 @@ storageService.prototype.detailCollection = function(name, authToken) {
 				try {
 					result = JSON.parse(body);
 				} catch(e) {
+					console.log(body);
 					return reject(new Error("Invalid response received from collection details"));
 				}
 
