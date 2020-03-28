@@ -6,6 +6,7 @@
 		"body-parser": "^1.19.0",
 		"cors": "^2.8.5",
 		"express": "^4.17.1",
+		"express-fileupload": "^1.1.6",
 		"glob": "^7.1.6",
 		"jose": "^1.22.2",
 		"mkdirp": "^1.0.3",

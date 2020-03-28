@@ -1,12 +1,21 @@
-const websiteInstance = function(app, definition, controllerInstance, templateRenderer) {
+const websiteInstance = function(app, definition, controllerInstance, templateRenderer, express, path) {
 	this.app 					= app;
 	this.definition 			= definition;
 	this.controllerInstance 	= controllerInstance;
 	this.templateRenderer 		= templateRenderer;
+	this.express 				= express;
+	this.path 					= path;
 };
 
 websiteInstance.prototype.configureTag = function(tag) {
 	this.templateRenderer.registerCustomTag(tag);
+};
+
+websiteInstance.prototype.configureStatic = function() {
+	this.app.use(
+		`/${this.definition.name}/static`, 
+		this.express.static(this.path.join(process.cwd(), process.env.DIR, `${this.definition.name}-static`))
+	);
 };
 
 websiteInstance.prototype.configureRoute = function(route, passport) {
@@ -19,6 +28,9 @@ websiteInstance.prototype.configureRoute = function(route, passport) {
 
 websiteInstance.prototype.init = function() {
 	return new Promise((resolve, reject) => {
+		//setup our static hosting
+		this.configureStatic();
+
 		//setup our custom tags
 		this.definition.tags.forEach((t) => {
 			this.configureTag(t);
@@ -78,7 +90,7 @@ websiteInstance.prototype.init = function() {
 	});
 };
 
-module.exports = function(app, definition, controllerInstance, templateRenderer) {
+module.exports = function(app, definition, controllerInstance, templateRenderer, express, path) {
 	if (!controllerInstance) {
 		controllerInstance = require("./controllerInstance");
 	}
@@ -87,5 +99,13 @@ module.exports = function(app, definition, controllerInstance, templateRenderer)
 		templateRenderer = require("./templating/render")();
 	}
 
-	return new websiteInstance(app, definition, controllerInstance, templateRenderer);
+	if (!express) {
+		express = require("express");
+	}
+
+	if (!path) {
+		path = require("path");
+	}
+
+	return new websiteInstance(app, definition, controllerInstance, templateRenderer, express, path);
 };

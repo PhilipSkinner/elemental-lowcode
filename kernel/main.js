@@ -3,6 +3,7 @@ const
 	cors 					= require("cors"),
 	bodyParser 				= require("body-parser"),
 	path 					= require("path"),
+	fileUpload				= require('express-fileupload'),
 	setup 					= require('./lib/setup')(),
 	argParser 				= require('./lib/argParser')(),
 	serviceRunner 			= require("./lib/serviceRunner")(),
@@ -29,6 +30,9 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
 app.use(tHandler.tokenCheck.bind(tHandler));
+app.use(fileUpload({
+    createParentPath: true
+}));
 
 let sourcesDir = args.sources || process.env.SOURCES_DIR || ".sources";
 

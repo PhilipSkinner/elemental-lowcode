@@ -7,7 +7,9 @@ const _websitesEditorController = function(page) {
 	this.mainVisible = true;
 	this.viewEditorVisible = false;
 	this.controllerEditorVisible = false;
+	this.newResourceVisible = false;
 	this.resources = {};
+	this.staticfiles = [];
 
 	this.editor = null;
 };
@@ -21,7 +23,9 @@ _websitesEditorController.prototype.getData = function() {
 		mainVisible 			: this.mainVisible,
 		viewEditorVisible 		: this.viewEditorVisible,
 		controllerEditorVisible : this.controllerEditorVisible,
+		newResourceVisible 		: this.newResourceVisible,
 		showAlert 				: false,
+		staticfiles 			: this.staticfiles,
 	};
 };
 
@@ -112,6 +116,8 @@ _websitesEditorController.prototype.refreshState = function() {
 	this.caller.viewEditorVisible = this.viewEditorVisible;
 	this.caller.controllerEditorVisible = this.controllerEditorVisible;
 	this.caller.tags = this.tags;
+	this.caller.newResourceVisible = this.newResourceVisible;
+	this.caller.staticfiles = this.staticfiles;
 	this.caller.$forceUpdate();
 };
 
@@ -309,7 +315,49 @@ _websitesEditorController.prototype.newTag = function() {
 "	}",
 "}"
 	].join("\n");
-}
+};
+
+_websitesEditorController.prototype.newStaticFile = function() {
+	this.newResourceVisible = true;
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.uploadResource = function() {
+	var formData = new FormData();
+	var imagefile = document.querySelector('#file');
+	formData.append("resource", imagefile.files[0]);
+	return window.axios.post(`http://localhost:8001/websites/${this.website.name}/staticfiles`, formData, {
+    	headers: {
+      		'Content-Type' : 'multipart/form-data',
+      		Authorization  : `Bearer ${window.getToken()}`
+    	}
+	}).then(() => {
+		this.newResourceVisible = false;
+		return this.fetchStaticFiles(this.caller, this.website.name);
+	});
+};
+
+_websitesEditorController.prototype.fetchStaticFiles = function(caller, name) {
+	this.caller = caller;
+	return window.axios.get(`http://localhost:8001/websites/${name}/staticfiles`, {
+		headers : {
+			Authorization : `Bearer ${window.getToken()}`
+		}
+	}).then((response) => {
+		this.staticfiles = response.data;
+		this.refreshState();
+	});
+};
+
+_websitesEditorController.prototype.removeResource = function(filename) {
+	return window.axios.delete(`http://localhost:8001/websites/${this.website.name}/staticfiles/${filename}`, {
+		headers : {
+			Authorization : `Bearer ${window.getToken()}`
+		}
+	}).then(() => {
+		return this.fetchStaticFiles(this.caller, this.website.name);
+	});
+};
 
 window.WebsiteEditor = {
 	template : "#template-websiteEditor",
@@ -323,6 +371,8 @@ window.WebsiteEditor = {
 
 		return window._websitesEditorControllerInstance.fetchWebsite(this, this.$route.params.name).then(() => {
 			return window._websitesEditorControllerInstance.fetchClients(this);
+		}).then(() => {
+			return window._websitesEditorControllerInstance.fetchStaticFiles(this, this.$route.params.name);
 		});
 	}
 };
