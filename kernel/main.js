@@ -2,6 +2,9 @@ const
 	express 				= require("express"),
 	cors 					= require("cors"),
 	bodyParser 				= require("body-parser"),
+	path 					= require("path"),
+	setup 					= require('./lib/setup')(),
+	argParser 				= require('./lib/argParser')(),
 	serviceRunner 			= require("./lib/serviceRunner")(),
 	integrationsController 	= require("./controllers/integrationsController"),
 	dataController 			= require("./controllers/dataController"),
@@ -12,6 +15,7 @@ const
 	securityController 		= require("./controllers/securityController");
 
 const app = express();
+const args = argParser.fetch();
 
 let keys = {
 	public 	: certProvider.fetchPulicSigningKey(),
@@ -26,41 +30,55 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
 app.use(tHandler.tokenCheck.bind(tHandler));
 
-//set our process dir for the identity db
-process.env.DIR = ".sources/identity";
+let sourcesDir = args.sources || process.env.SOURCES_DIR || ".sources";
 
-//init our controllers
-dataController(app);
-integrationsController(app);
-websitesController(app);
-rulesController(app);
-securityController(app);
+//setup all of our source folders
+const directories = {
+	identity 	: path.join(sourcesDir, "identity"),
+	api 		: path.join(sourcesDir, "api"),
+	integration : path.join(sourcesDir, "integration"),
+	website 	: path.join(sourcesDir, "website"),
+	data 		: path.join(sourcesDir, "data"),
+	rules 		: path.join(sourcesDir, "rules"),
+};
 
-app.listen(8001);
+setup.setupEnvironment(directories).then(() => {
+	//set our process dir for the identity db
+	process.env.DIR = directories.identity;
 
-const secret = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join("").replace(/[^a-z]+/g, "");
+	//init our controllers
+	dataController(app, directories.data);
+	integrationsController(app, directories.integration);
+	websitesController(app, directories.website);
+	rulesController(app, directories.rules);
+	securityController(app, directories.identity);
 
-//start up our services
-serviceRunner.runService("admin", 		"../admin/main.js", 		8002, "../admin", {
-	SECRET 	: secret,
-	SIG 	: keys.public
-});
-serviceRunner.runService("api", 		"../api/main.js", 			8003, ".sources/api", {
-	SIG 	: keys.public
-});
-serviceRunner.runService("integration", "../integration/main.js", 	8004, ".sources/integration", {
-	SIG 	: keys.public
-});
-serviceRunner.runService("interface", 	"../interface/main.js", 	8005, ".sources/website", {
-	SIG 	: keys.public
-});
-serviceRunner.runService("storage", 	"../storage/main.js", 		8006, ".sources/data", {
-	SIG 	: keys.public
-});
-serviceRunner.runService("rules", 		"../rules/main.js", 		8007, ".sources/rules", {
-	SIG 	: keys.public
-});
-serviceRunner.runService("identity", 	"../identity/main.js", 		8008, ".sources/identity", {
-	SECRET 	: secret,
-	SIG		: keys.private
+	app.listen(8001);
+
+	const secret = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join("").replace(/[^a-z]+/g, "");
+
+	//start up our services
+	serviceRunner.runService("admin", 		"../admin/main.js", 		8002, "../admin", {
+		SECRET 	: secret,
+		SIG 	: keys.public
+	});
+	serviceRunner.runService("api", 		"../api/main.js", 			8003, directories.api, {
+		SIG 	: keys.public
+	});
+	serviceRunner.runService("integration", "../integration/main.js", 	8004, directories.integration, {
+		SIG 	: keys.public
+	});
+	serviceRunner.runService("interface", 	"../interface/main.js", 	8005, directories.website, {
+		SIG 	: keys.public
+	});
+	serviceRunner.runService("storage", 	"../storage/main.js", 		8006, directories.data, {
+		SIG 	: keys.public
+	});
+	serviceRunner.runService("rules", 		"../rules/main.js", 		8007, directories.rules, {
+		SIG 	: keys.public
+	});
+	serviceRunner.runService("identity", 	"../identity/main.js", 		8008, directories.identity, {
+		SECRET 	: secret,
+		SIG		: keys.private
+	});
 });

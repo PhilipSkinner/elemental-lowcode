@@ -1,5 +1,7 @@
-const websitesController = function(app, fileLister, roleCheckHandler) {
+const websitesController = function(app, dir, path, fileLister, roleCheckHandler) {
 	this.app = app;
+	this.dir = dir;
+	this.path = path;
 	this.fileLister = fileLister;
 	this.roleCheckHandler = roleCheckHandler;
 
@@ -7,7 +9,7 @@ const websitesController = function(app, fileLister, roleCheckHandler) {
 };
 
 websitesController.prototype.get = function(req, res, next) {
-	this.fileLister.executeGlob(".sources/website/*.website.json").then((results) => {
+	this.fileLister.executeGlob(this.path.join(this.dir, "*.website.json")).then((results) => {
 		res.json(results.map((r) => {
 			r.name = r.name.split(".").slice(0, -1).join(".");
 			return r;
@@ -17,14 +19,14 @@ websitesController.prototype.get = function(req, res, next) {
 };
 
 websitesController.prototype.getWebsite = function(req, res, next) {
-	this.fileLister.readJSONFile(".sources/website/", req.params.name + ".website.json").then((data) => {
+	this.fileLister.readJSONFile(this.dir, req.params.name + ".website.json").then((data) => {
 		res.json(data);
 		next();
 	});
 };
 
 websitesController.prototype.updateWebsite = function(req, res, next) {
-	this.fileLister.writeFile(".sources/website/", req.params.name + ".website.json", JSON.stringify(req.body, null, 4)).then(() => {
+	this.fileLister.writeFile(this.dir, req.params.name + ".website.json", JSON.stringify(req.body, null, 4)).then(() => {
 		res.status(204);
 		res.send("");
 		next();
@@ -32,7 +34,7 @@ websitesController.prototype.updateWebsite = function(req, res, next) {
 };
 
 websitesController.prototype.deleteWebsite = function(req, res, next) {
-	this.fileLister.deleteFile(".sources/website", `${req.params.name}.website.json`).then(() => {
+	this.fileLister.deleteFile(this.dir, `${req.params.name}.website.json`).then(() => {
 		res.status(204);
 		res.send("");
 		next();
@@ -40,14 +42,14 @@ websitesController.prototype.deleteWebsite = function(req, res, next) {
 };
 
 websitesController.prototype.getResource = function(req, res, next) {
-	this.fileLister.readFile(".sources/website/", req.query.path).then((data) => {
+	this.fileLister.readFile(this.dir, req.query.path).then((data) => {
 		res.send(data);
 		next();
 	});
 };
 
 websitesController.prototype.createOrUpdateResource = function(req, res, next) {
-	this.fileLister.writeFile(".sources/website/", req.query.path, req.body.resource).then(() => {
+	this.fileLister.writeFile(this.dir, req.query.path, req.body.resource).then(() => {
 		res.status(204);
 		res.send("");
 		next();
@@ -63,7 +65,11 @@ websitesController.prototype.initEndpoints = function() {
 	this.app.post("/websites/:name/resource", 	this.roleCheckHandler.enforceRoles(this.createOrUpdateResource.bind(this), 	["website_writer", "website_admin", "system_writer", "system_admin"]));
 };
 
-module.exports = function(app, fileLister, roleCheckHandler) {
+module.exports = function(app, dir, path, fileLister, roleCheckHandler) {
+	if (!path) {
+		path = require('path');
+	}
+
 	if (!fileLister) {
 		fileLister = require("../lib/fileLister")();
 	}
@@ -72,5 +78,5 @@ module.exports = function(app, fileLister, roleCheckHandler) {
 		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
 
-	return new websitesController(app, fileLister, roleCheckHandler);
+	return new websitesController(app, dir, path, fileLister, roleCheckHandler);
 };

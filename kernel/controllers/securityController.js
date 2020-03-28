@@ -1,5 +1,7 @@
-const securityController = function(app, fileLister, roleCheckHandler, db, bcrypt) {
+const securityController = function(app, dir, fileLister, roleCheckHandler, db, bcrypt, path) {
 	this.app = app;
+	this.dir = dir;
+	this.path = path;
 	this.fileLister = fileLister;
 	this.roleCheckHandler = roleCheckHandler;
 	this.db = db;
@@ -12,7 +14,7 @@ const securityController = function(app, fileLister, roleCheckHandler, db, bcryp
 };
 
 securityController.prototype.getClients = function(req, res, next) {
-	this.fileLister.executeGlob(".sources/identity/**/*.client.json").then((results) => {
+	this.fileLister.executeGlob(this.path.join(this.dir, "**/*.client.json")).then((results) => {
 		res.json(results.map((r) => {
 			return Object.assign(r, {
 				client_id : r.name.slice(0, -7)
@@ -23,14 +25,14 @@ securityController.prototype.getClients = function(req, res, next) {
 };
 
 securityController.prototype.getClient = function(req, res, next) {
-	this.fileLister.readJSONFile(".sources/identity/", `${req.params.id}.client.json`).then((content) => {
+	this.fileLister.readJSONFile(this.dir, `${req.params.id}.client.json`).then((content) => {
 		res.json(content);
 		next();
 	});
 };
 
 securityController.prototype.createClient = function(req, res, next) {
-	this.fileLister.writeFile(".sources/identity/", `${req.body.client_id}.client.json`, JSON.stringify(req.body, null, 4)).then(() => {
+	this.fileLister.writeFile(this.dir, `${req.body.client_id}.client.json`, JSON.stringify(req.body, null, 4)).then(() => {
 		res.status(201);
 		res.send("");
 		next();
@@ -38,7 +40,7 @@ securityController.prototype.createClient = function(req, res, next) {
 };
 
 securityController.prototype.updateClient = function(req, res, next) {
-	this.fileLister.writeFile(".sources/identity/", `${req.body.client_id}.client.json`, JSON.stringify(req.body, null, 4)).then(() => {
+	this.fileLister.writeFile(this.dir, `${req.body.client_id}.client.json`, JSON.stringify(req.body, null, 4)).then(() => {
 		res.status(204);
 		res.send("");
 		next();
@@ -46,7 +48,7 @@ securityController.prototype.updateClient = function(req, res, next) {
 };
 
 securityController.prototype.deleteClient = function(req, res, next) {
-	this.fileLister.deleteFile(".sources/identity/", `${req.params.id}.client.json`).then(() => {
+	this.fileLister.deleteFile(this.dir, `${req.params.id}.client.json`).then(() => {
 		res.status(204);
 		res.send("");
 		next();
@@ -54,7 +56,7 @@ securityController.prototype.deleteClient = function(req, res, next) {
 };
 
 securityController.prototype.getScopes = function(req, res, next) {
-	this.fileLister.executeGlob(".sources/identity/**/*.scope.json").then((results) => {
+	this.fileLister.executeGlob(this.path.join(this.dir, "**/*.scope.json")).then((results) => {
 		res.json(results.map((r) => {
 			return Object.assign(r, {
 				name : r.name.slice(0, -6)
@@ -65,14 +67,14 @@ securityController.prototype.getScopes = function(req, res, next) {
 };
 
 securityController.prototype.getScope = function(req, res, next) {
-	this.fileLister.readJSONFile(".sources/identity/", `${req.params.name}.scope.json`).then((content) => {
+	this.fileLister.readJSONFile(this.dir, `${req.params.name}.scope.json`).then((content) => {
 		res.json(content);
 		next();
 	});
 };
 
 securityController.prototype.createScope = function(req, res, next) {
-	this.fileLister.writeFile(".sources/identity/", `${req.body.name}.scope.json`, JSON.stringify(req.body, null, 4)).then(() => {
+	this.fileLister.writeFile(this.dir, `${req.body.name}.scope.json`, JSON.stringify(req.body, null, 4)).then(() => {
 		res.status(201);
 		res.send("");
 		next();
@@ -80,7 +82,7 @@ securityController.prototype.createScope = function(req, res, next) {
 };
 
 securityController.prototype.updateScope = function(req, res, next) {
-	this.fileLister.writeFile(".sources/identity/", `${req.body.name}.scope.json`, JSON.stringify(req.body, null, 4)).then(() => {
+	this.fileLister.writeFile(this.dir, `${req.body.name}.scope.json`, JSON.stringify(req.body, null, 4)).then(() => {
 		res.status(204);
 		res.send("");
 		next();
@@ -88,7 +90,7 @@ securityController.prototype.updateScope = function(req, res, next) {
 };
 
 securityController.prototype.deleteScope = function(req, res, next) {
-	this.fileLister.deleteFile(".sources/identity/", `${req.params.name}.scope.json`).then(() => {
+	this.fileLister.deleteFile(this.dir, `${req.params.name}.scope.json`).then(() => {
 		res.status(204);
 		res.send("");
 		next();
@@ -204,7 +206,7 @@ securityController.prototype.initEndpoints = function() {
 	this.app.delete("/security/users/:id",		this.roleCheckHandler.enforceRoles(this.deleteUser.bind(this), 		["security_writer", "security_admin", "system_writer", "system_admin"]));
 };
 
-module.exports = function(app, fileLister, roleCheckHandler, db, bcrypt) {
+module.exports = function(app, dir, fileLister, roleCheckHandler, db, bcrypt, path) {
 	if (!fileLister) {
 		fileLister = require("../lib/fileLister")();
 	}
@@ -221,5 +223,9 @@ module.exports = function(app, fileLister, roleCheckHandler, db, bcrypt) {
 		bcrypt = require("bcrypt");
 	}
 
-	return new securityController(app, fileLister, roleCheckHandler, db, bcrypt);
+	if (!path) {
+		path = require('path');
+	}
+
+	return new securityController(app, dir, fileLister, roleCheckHandler, db, bcrypt, path);
 };
