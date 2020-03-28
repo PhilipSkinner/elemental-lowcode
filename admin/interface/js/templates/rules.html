@@ -50,6 +50,69 @@
 	</div>
 </template>
 
+<template id="template-ruleDetails">
+	<div class="ruleDetails">
+		<div class="container-fluid">
+			<h1 class="h3 mb-2 text-gray-800">{{ruleset.name}}</h1>
+			<p class="mb-4">The following HTTP endpoint can be used to execute this ruleset. All facts required to trigger the rules held within the ruleset are documented.</p>
+
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">
+						POST http://localhost:8007/{{ruleset.name}}
+					</h6>
+				</div>
+				<div class="card-body">
+					<div class="block">
+						<p><strong>Request Headers</strong></p>
+
+						<p>
+							<code class="inline">Authorization: Bearer [token]</code>
+						</p>
+						<p>
+							A bearer token issued by the Identity Provider.
+						</p>
+						<p>
+							Atleast one of these roles must be present to access this endpoint:
+						</p>
+						<ul class="mb-0">
+							<li><code class="inline">system_admin</code></li>
+							<li><code class="inline">system_exec</code></li>
+							<li><code class="inline">rules_exec</code></li>
+							<li><code class="inline">{{ruleset.name}}_admin</code></li>
+						</ul>
+
+						<br />
+
+						<p>
+							<code class="inline">Content-Type: application/json</code>
+						</p>
+						<p>
+							Tells the receiving service that you are sending a JSON document in the body.
+						</p>
+					</div>
+
+					<div class="block">
+						<p><strong>Request Body</strong></p>
+
+						<p>
+							This endpoint requires facts to be presented to it that the ruleset will be executed upon. The structure of these facts is defined by the following JSON schema:
+						</p>
+
+						<pre>{{JSON.stringify(ruleset.facts, null, 4)}}</pre>
+
+						<p>
+							These facts are to be posted to the endpoint as the request body, here is an example of some facts for this endpoint:
+						</p>
+
+						<pre>{{examplePostBody}}</pre>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
 <template id="template-rulesEditor">
 	<div class="rulesEditor">
 		<div class="entityWrapper">

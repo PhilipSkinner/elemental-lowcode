@@ -28,6 +28,7 @@ window.templates.fetchTemplates().then(() => {
 		"/js/pages/documentation.js",
 		"/js/pages/rules.js",
 		"/js/pages/rulesEditor.js",
+		"/js/pages/ruleDetails.js",
 		"/js/pages/security.js",
 		"/js/pages/securityClientEditor.js",
 		"/js/pages/securityScopeEditor.js",
@@ -133,6 +134,11 @@ window.templates.fetchTemplates().then(() => {
 				name 		: "rulesetEditor",
 				path 		: "/rulesets/editor/:name",
 				component 	: window.RulesEditor
+			},
+			{
+				name 		: "rulesetDetails",
+				path 		: "/rulesets/:name",
+				component	: window.RuleDetails
 			},
 			/* security endpoints */
 			{
