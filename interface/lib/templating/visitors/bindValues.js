@@ -26,6 +26,11 @@ bindValues.prototype.bindValues = function(view) {
 				tag.value = tag.bind + "";
 			}
 
+			if (tag.tag === "textarea") {
+				//special case, set to text
+				tag.text = tag.value;
+			}
+
 			if (!tag.name) {
 				tag.name = tag.bind.replace("$.", "").split(".").join("$$_$$");
 			}

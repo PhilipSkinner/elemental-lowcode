@@ -15,6 +15,10 @@ const render = function(fs, path, preProcessor) {
 		"_scope",
 		"if"
 	];
+	this.singleProps = [
+		"required",
+		"checked"
+	];
 	this.customTags = {};
 };
 
@@ -86,7 +90,13 @@ render.prototype.renderTagWithProperties = function(tag, properties, data) {
 				propValue = properties[p].join(" ");
 			}
 
-			render += ` ${p}="${propValue}" `;
+			if (this.singleProps.indexOf(p) === -1) {
+				render += ` ${p}="${propValue}" `;
+			} else {
+				if (propValue != "false") {
+					render += ` ${p} `;
+				}
+			}
 		}
 
 		if (p === "onclick") {
@@ -119,12 +129,21 @@ render.prototype.handleTag = function(c, data) {
 			text = text.join(" ");
 		}
 
-		var content = ((typeof(text) === "undefined" || text === null ? "" : "\n" + this.generateTabs() + "\t" + text + "\n") + this.renderChildren(c.children, data));
+		var content = (
+			(
+				typeof(text) === "undefined" || text === null
+					? ""
+					: (
+						c.tag === "textarea" ? "" : "\n" + this.generateTabs() + "\t"
+					) + text + (c.tag === "textarea" ? "" : "\n")
+			)
+			+ this.renderChildren(c.children, data)
+		);
 
 		return {
 			start 	: this.renderTagWithProperties(c.tag, c, data) + ">",
 			content : content,
-			end 	: this.generateTabs() + `</${c.tag}>`
+			end 	: (c.tag === "textarea" ? "" : this.generateTabs()) + `</${c.tag}>`
 		};
 	} else {
 		return {
