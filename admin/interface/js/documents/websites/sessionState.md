@@ -8,6 +8,7 @@ The service has the following methods:
 
 * saveSession
 * retrieveSession
+* getSubject
 * getAccessToken
 
 Each of these methods is described in more detail below.
@@ -45,6 +46,22 @@ module.exports = {
 	events : {
 		load : (event) => {
 			this.bag.data = this.sessionState.retrieveSession();
+		}
+	}
+};
+```
+
+### getSubject
+
+This method retrieves the current users unique identitifer (subject identifier). If the user is not logged in then this method will return null.
+
+This can be called from within your controllers like so:
+
+```
+module.exports = {
+	events : {
+		load : (event) => {
+			this.bag.subject = this.sessionState.getSubject();
 		}
 	}
 };
