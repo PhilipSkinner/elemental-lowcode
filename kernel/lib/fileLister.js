@@ -1,7 +1,8 @@
-const fileLister = function(path, fs, glob) {
+const fileLister = function(path, fs, glob, mkdirp) {
 	this.path = path;
 	this.fs = fs;
 	this.glob = glob;
+	this.mkdirp = mkdirp;
 };
 
 fileLister.prototype.executeGlob = function(lookup) {
@@ -55,6 +56,10 @@ fileLister.prototype.readJSONFile = function(dir, file) {
 	});
 };
 
+fileLister.prototype.ensureDir = function(dir) {
+	return this.mkdirp(dir);
+}
+
 fileLister.prototype.writeFile = function(dir, file, contents) {
 	return new Promise((resolve, reject) => {
 		this.fs.writeFile(this.path.join(dir, file), contents, (err) => {
@@ -79,7 +84,7 @@ fileLister.prototype.deleteFile = function(dir, file) {
 	});
 };
 
-module.exports = function(path, fs, glob) {
+module.exports = function(path, fs, glob, mkdirp) {
 	if (!path) {
 		path = require("path");
 	}
@@ -92,5 +97,9 @@ module.exports = function(path, fs, glob) {
 		glob = require("glob");
 	}
 
-	return new fileLister(path, fs, glob);
+	if (!mkdirp) {
+		mkdirp = require("mkdirp")
+	}
+
+	return new fileLister(path, fs, glob, mkdirp);
 };

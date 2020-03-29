@@ -57,10 +57,12 @@ websitesController.prototype.createOrUpdateResource = function(req, res, next) {
 };
 
 websitesController.prototype.uploadStaticFile = function(req, res, next) {
-	this.fileLister.writeFile(this.dir, this.path.join(`${req.params.name}-static`, req.files.resource.name), req.files.resource.data).then(() => {
-		res.status(204);
-		res.send("");
-		next();
+	this.fileLister.ensureDir(this.path.join(this.dir, `${req.params.name}-static`)).then(() => {
+		this.fileLister.writeFile(this.dir, this.path.join(`${req.params.name}-static`, req.files.resource.name), req.files.resource.data).then(() => {
+			res.status(204);
+			res.send("");
+			next();
+		});
 	});
 };
 
