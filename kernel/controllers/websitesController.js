@@ -49,10 +49,12 @@ websitesController.prototype.getResource = function(req, res, next) {
 };
 
 websitesController.prototype.createOrUpdateResource = function(req, res, next) {
-	this.fileLister.writeFile(this.dir, req.query.path, req.body.resource).then(() => {
-		res.status(204);
-		res.send("");
-		next();
+	this.fileLister.ensureDir(this.path.join(this.dir, this.path.dirname(req.query.path))).then(() => {
+		this.fileLister.writeFile(this.dir, req.query.path, req.body.resource).then(() => {
+			res.status(204);
+			res.send("");
+			next();
+		});
 	});
 };
 
