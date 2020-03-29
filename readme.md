@@ -19,6 +19,10 @@ A simple low(ish) code development platform.
 3. Run start.sh
 4. Open a browser and point it at http://localhost:8002
 
+## Examples
+
+Examples can be found in the [elemental-examples repository](https://github.com/PhilipSkinner/elemental-examples).
+
 ## What does it do
 
 Elemental currently allows you to:
