@@ -76,6 +76,20 @@ The following is an example data type definition:
 }
 ```
 
+## Accessing/modifying data
+
+Each data type is automatically hosted on the storage service with 7 endpoints:
+
+* `GET http://localhost:8006/[typeName]`
+* `POST http://localhost:8006/[typeName]`
+* `GET http://localhost:8006/[typeName]/.details`
+* `GET http://localhost:8006/[typeName]/[entityId]`
+* `PUT http://localhost:8006/[typeName]/[entityId]`
+* `PATCH http://localhost:8006/[typeName]/[entityId]`
+* `DELETE http://localhost:8006/[typeName][entityId]`
+
+Documentation for the requests & responses for each data type can be found by clicking on the data types name within the data section of the administration. This documentation is automatically generated and displays information on the expected payloads, responses, headers and authorization details.
+
 ## Security
 
 The roles section within a data type definition document supports the ability for you to define:
@@ -99,20 +113,20 @@ The roles for each of these can be controlled individually within the configurat
 Each data type comes with a set of default roles that are used to protect its three types of operations:
 
 * Read:
-	- system_admin
-	- system_reader
-	- data_reader
-	- `typeName`_reader
+	- `system_admin`
+	- `system_reader`
+	- `data_reader`
+	- `[typeName]_reader`
 * Write:
-	- system_admin
-	- system_writer
-	- data_writer
-	- `typeName`_writer
+	- `system_admin`
+	- `system_writer`
+	- `data_writer`
+	- `[typeName]_writer`
 * Delete:
-	- system_admin
-	- system_writer
-	- data_writer
-	- `typeName`_writer
+	- `system_admin`
+	- `system_writer`
+	- `data_writer`
+	- `[typeName]_writer`
 
 ; where `typeName` is automatically taken from your data types name. For example, if your data type is called `pets` then your data type will allow read operations if a token containint the `pets_reader` role is present.
 
