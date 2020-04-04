@@ -14,7 +14,9 @@ clickHandler.prototype.handleClick = function(event) {
 
 	//load the response
 	const href = this.elem.attributes["href"];
-	window.axios.get(`${location.pathname}${href.value}`).then((response) => {
+	window.axios.get(`${location.pathname}${href.value}`, {
+		withCredentials : true
+	}).then((response) => {
 		document.open();
         document.write(response.data);
         document.close();
@@ -23,7 +25,7 @@ clickHandler.prototype.handleClick = function(event) {
 	return false;
 };
 
-var enhanceControls = function() {
+var enhanceLinks = function() {
 	var elems = document.querySelectorAll('a[href^="?event"]');
 	var handlers = [];
 	for (var i = 0; i < elems.length; i++) {
@@ -35,5 +37,5 @@ var enhanceControls = function() {
 };
 
 document.addEventListener("DOMContentLoaded", function() {
-	enhanceControls();
+	enhanceLinks();
 });

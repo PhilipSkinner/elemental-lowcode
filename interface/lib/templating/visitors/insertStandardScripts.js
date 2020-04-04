@@ -1,7 +1,8 @@
 const insertStandardScripts = function() {
 	this.standardScripts = [
 		"/_static/js/axios.js",
-		"/_static/js/clickEnhance.js"
+		"/_static/js/clickEnhance.js",
+		"/_static/js/formEnhance.js",
 	];
 };
 
