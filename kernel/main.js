@@ -7,6 +7,7 @@ const
 	setup 					= require('./lib/setup')(),
 	argParser 				= require('./lib/argParser')(),
 	serviceRunner 			= require("./lib/serviceRunner")(),
+	apiController 			= require('./controllers/apiController'),
 	integrationsController 	= require("./controllers/integrationsController"),
 	dataController 			= require("./controllers/dataController"),
 	rulesController 		= require("./controllers/rulesController"),
@@ -56,6 +57,7 @@ setup.setupEnvironment(directories).then(() => {
 	websitesController(app, directories.website);
 	rulesController(app, directories.rules);
 	securityController(app, directories.identity);
+	apiController(app, directories.api);
 
 	app.listen(8001);
 

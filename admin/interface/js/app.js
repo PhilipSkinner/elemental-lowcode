@@ -17,6 +17,7 @@ window.logout = function() {
 
 window.templates.fetchTemplates().then(() => {
 	const pages = [
+		"/js/pages/home.js",
 		"/js/pages/data.js",
 		"/js/pages/dataTypeDetails.js",
 		"/js/pages/dataTypeEditor.js",
@@ -63,7 +64,6 @@ window.templates.fetchTemplates().then(() => {
 	};
 
 	loadPages().then(() => {
-		window.Home = { template : "#template-home"};
 		window.Apis = { template : "<p>APIs</p>" };
 
 		const routes = [

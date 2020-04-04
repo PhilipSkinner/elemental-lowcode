@@ -64,12 +64,12 @@ apiController.prototype.initEndpoints = function() {
 	//create
 	this.app.post("/apis", 								this.roleCheckHandler.enforceRoles(this.createApi.bind(this), 			["api_writer", "api_admin", "system_writer", "system_admin"]));
 	this.app.post("/apis/:name/services", 				this.roleCheckHandler.enforceRoles(this.createService.bind(this), 		["api_writer", "api_admin", "system_writer", "system_admin"]));
-	this.app.post("/apis/:name/controllers", 			this.roleCheckHandler.enforceRoles(this.createController.bind(this), 	["api_writer", "api_admin", "system_writer", "system_admin"]));
+	//this.app.post("/apis/:name/controllers", 			this.roleCheckHandler.enforceRoles(this.createController.bind(this), 	["api_writer", "api_admin", "system_writer", "system_admin"]));
 
 	//update
-	this.app.put("/apis/:name", 						this.roleCheckHandler.enforceRoles(this.updateApi.bind(this), 			["api_writer", "api_admin", "system_writer", "system_admin"]));
-	this.app.put("/apis/:name/services/:service", 		this.roleCheckHandler.enforceRoles(this.updateService.bind(this), 		["api_writer", "api_admin", "system_writer", "system_admin"]));
-	this.app.put("/apis/:name/controllers/:controller", this.roleCheckHandler.enforceRoles(this.updateController.bind(this), 	["api_writer", "api_admin", "system_writer", "system_admin"]));	
+	//this.app.put("/apis/:name", 						this.roleCheckHandler.enforceRoles(this.updateApi.bind(this), 			["api_writer", "api_admin", "system_writer", "system_admin"]));
+	//this.app.put("/apis/:name/services/:service", 		this.roleCheckHandler.enforceRoles(this.updateService.bind(this), 		["api_writer", "api_admin", "system_writer", "system_admin"]));
+	//this.app.put("/apis/:name/controllers/:controller", this.roleCheckHandler.enforceRoles(this.updateController.bind(this), 	["api_writer", "api_admin", "system_writer", "system_admin"]));	
 };
 
 module.exports = function(app, dir, fileLister, roleCheckHandler, path) {

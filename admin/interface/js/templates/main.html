@@ -62,25 +62,37 @@
 							<div class="status">
 								<h5 class="font-weight-bold">Integrations</h5>
 								<p>
-									Total: <router-link to="/integrations">0</router-link>
+									Total: <router-link to="/integrations">{{ integrations.length }}</router-link>
 								</p>
 							</div>
 							<div class="status">
 								<h5 class="font-weight-bold">APIs</h5>
 								<p>
-									Total: <router-link to="/apis">0</router-link>
+									Total: <router-link to="/apis">{{ apis.length }}</router-link>
 								</p>
 							</div>
 							<div class="status">
 								<h5 class="font-weight-bold">Databases</h5>
 								<p>
-									Total: <router-link to="/data">0</router-link>
+									Total: <router-link to="/data">{{ datatypes.length }}</router-link>
 								</p>
 							</div>
 							<div class="status">
 								<h5 class="font-weight-bold">Websites</h5>
 								<p>
-									Total: <router-link to="/websites">0</router-link>
+									Total: <router-link to="/websites">{{ websites.length }}</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">Rulesets</h5>
+								<p>
+									Total: <router-link to="/rulesets">{{ rules.length }}</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">OIDC Clients</h5>
+								<p>
+									Total: <router-link to="/security">{{ clients.length }}</router-link>
 								</p>
 							</div>
 						</div>
