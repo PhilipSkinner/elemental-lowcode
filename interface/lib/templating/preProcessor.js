@@ -1,12 +1,13 @@
-const preProcessor = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals) {
+const preProcessor = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals, insertStandardScripts) {
 	this.visitors = {
-		arrayWrapper 		: arrayWrapper,
-		expandCustomTags 	: expandCustomTags,
-		handleLoops 		: handleLoops,
-		replaceValues 		: replaceValues,
-		defineScope			: defineScope,
-		bindValues 			: bindValues,
-		conditionals 		: conditionals,
+		arrayWrapper 			: arrayWrapper,
+		expandCustomTags 		: expandCustomTags,
+		handleLoops 			: handleLoops,
+		replaceValues 			: replaceValues,
+		defineScope				: defineScope,
+		bindValues 				: bindValues,
+		conditionals 			: conditionals,
+		insertStandardScripts 	: insertStandardScripts 
 	}
 };
 
@@ -30,12 +31,13 @@ preProcessor.prototype.process = function(definition, data, customTags) {
 		.then(this.visitors.bindValues.apply.bind(this.visitors.bindValues))
 		.then(this.visitors.replaceValues.apply.bind(this.visitors.replaceValues))
 		.then(this.visitors.conditionals.apply.bind(this.visitors.conditionals))
+		.then(this.visitors.insertStandardScripts.apply.bind(this.visitors.insertStandardScripts))
 		.then((obj) => {
 			return Promise.resolve(obj);
 		});
 };
 
-module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals) {
+module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals, insertStandardScripts) {
 	if (!arrayWrapper) {
 		arrayWrapper = require("./visitors/arrayWrapper")();
 	}
@@ -64,5 +66,9 @@ module.exports = function(arrayWrapper, expandCustomTags, handleLoops, replaceVa
 		conditionals = require("./visitors/conditionals")();
 	}
 
-	return new preProcessor(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals);
+	if (!insertStandardScripts) {
+		insertStandardScripts = require('./visitors/insertStandardScripts')();
+	}
+
+	return new preProcessor(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals, insertStandardScripts);
 };

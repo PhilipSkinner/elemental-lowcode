@@ -15,6 +15,9 @@ const render = function(fs, path, preProcessor) {
 		"_scope",
 		"if"
 	];
+	this.requireClosing = [
+		"script"
+	];
 	this.singleProps = [
 		"required",
 		"checked"
@@ -149,7 +152,7 @@ render.prototype.handleTag = function(c, data) {
 		return {
 			start : this.renderTagWithProperties(c.tag, c, data),
 			content : "",
-			end : " />",
+			end : this.requireClosing.indexOf(c.tag) === -1 ? " />" : `></${c.tag}>`,
 		};
 	}
 };

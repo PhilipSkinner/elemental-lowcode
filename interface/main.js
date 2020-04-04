@@ -2,6 +2,7 @@ const
 	express 		= require("express"),
 	bodyParser 		= require("body-parser"),
 	cookieParser 	= require("cookie-parser"),
+	path 			= require("path"),
 	hotreload 		= require("../shared/hotReload")();
 
 let app = null;
@@ -13,6 +14,9 @@ const startup = () => {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended : false }));
 	app.use(cookieParser());
+
+	//init our global statics
+	app.use(`/_static`, express.static(path.join(__dirname, "static")));
 
 	let websiteService 	= require("./lib/websiteService")(app);
 
