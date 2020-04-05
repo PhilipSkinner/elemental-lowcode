@@ -19,9 +19,11 @@ controllerInstance.prototype.loadView = function() {
 			let data = null;
 			try {
 				data = JSON.parse(content);
-			} catch(e) {}
+			} catch(e) {
+				console.error(`Could not parse view ${this.routeDefinition.view} - ${e}`);
+			}
 
-			if (data == null) {
+			if (data === null) {
 				return reject(new Error(`Cannot load view ${this.routeDefinition.view}`));
 			}
 
@@ -34,7 +36,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	const handleRequest = (req, res, next) => {
 		//load our controller into its state machine
 		let module = this.path.join(process.cwd(), process.env.DIR, this.routeDefinition.controller);
-		delete require.cache[require.resolve(module)]
+		delete require.cache[require.resolve(module)];
 		let stateEngine = this.controllerState(require(module), this.clientConfig);
 		stateEngine.setContext(req, res);
 
@@ -101,11 +103,11 @@ controllerInstance.prototype.handler = function(req, res, next) {
 		if (!(req.session && req.session.passport && req.session.passport.user && req.session.passport.user.accessToken)) {
 			return this.passport.authenticate("oauth2")(req, res, next);
 		} else if (this.routeDefinition.roles) {
-			return this.roleCheckHandler.enforceRoles(handleRequest.bind(this), this.routeDefinition.roles.split(','))(req, res, next);
+			return this.roleCheckHandler.enforceRoles(handleRequest.bind(this), this.routeDefinition.roles.split(","))(req, res, next);
 		}
 	}
 
-	return handleRequest(req, res, next)
+	return handleRequest(req, res, next);
 };
 
 module.exports = function(routeDefinition, templateRenderer, clientConfig, passport, path, fs, controllerState, roleCheckHandler) {

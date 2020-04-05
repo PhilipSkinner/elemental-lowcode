@@ -34,7 +34,7 @@ templateProvider.prototype.fetchTemplates = function() {
 };
 
 templateProvider.prototype.fetchTemplateFile = function(name) {
-	return axios
+	return window.axios
 		.get(name)
 		.then((response) => {
 			this.elem.innerHTML += response.data;

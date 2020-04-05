@@ -13,7 +13,7 @@ configReader.prototype._findConfigInDir = function(dir) {
 
 			return resolve(files);
 		});
-	})
+	});
 };
 
 configReader.prototype._readIntegrationConfig = function(file) {
@@ -26,14 +26,16 @@ configReader.prototype._readIntegrationConfig = function(file) {
 			let config = null;
 			try {
 				config = JSON.parse(content.toString("utf8"));
-			} catch(e) {}
+			} catch(e) {
+				console.error(`Could not parse integration definition in ${file}`);
+			}
 
-			if (config == null) {
+			if (config === null) {
 				return reject(new Error(`Unable to parse config file ${file}`));
 			}
 
 			return resolve(config);
-		})
+		});
 	});
 };
 
@@ -53,7 +55,7 @@ configReader.prototype.readConfigFromDir = function(dir) {
 
 				return doNext();
 			});
-		}
+		};
 
 		return doNext().then(() => {
 			return Promise.resolve(integrations);
@@ -75,4 +77,4 @@ module.exports = function(fs, path, glob) {
 	}
 
 	return new configReader(fs, path, glob);
-}
+};

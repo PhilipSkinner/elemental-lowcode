@@ -176,7 +176,7 @@ typeInstance.prototype.deleteHandler = function(req, res) {
 typeInstance.prototype.patchHandler = function(req, res) {
 
 	this.store.getResource(this.definition.name, req.params.id).then((resource) => {
-		if (resource == null) {
+		if (resource === null) {
 			res.status(404);
 			res.send("");
 			res.end();
@@ -305,7 +305,7 @@ typeInstance.prototype.init = function() {
 
 		return resolve();
 	});
-}
+};
 
 module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler) {
 	if (!uuid) {

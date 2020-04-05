@@ -43,7 +43,7 @@ conditionals.prototype.evaluate = function(ifStatement) {
 	}
 
 	return true;
-}
+};
 
 conditionals.prototype.restrict = function(view) {
 	return view.map((tag) => {

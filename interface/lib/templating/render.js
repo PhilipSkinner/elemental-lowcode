@@ -41,7 +41,7 @@ render.prototype.clickHandler = function(eventProps, toWrap) {
 			return "";
 		};
 		return `${encodeURIComponent(key)}=${encodeURIComponent(eventProps.params[key])}`;
-	}).join('&').replace(/&&/g, '&');
+	}).join("&").replace(/&&/g, "&");
 
 	return `<!-- @clickHandler --><a href="?event=${eventProps.eventName}&${extraParams}">${toWrap}`;
 };
@@ -64,9 +64,11 @@ render.prototype.loadView = function(name) {
 			let data = null;
 			try {
 				data = JSON.parse(content);
-			} catch(e) {}
+			} catch(e) {
+				console.error(`Could not parse view ${name} - ${e}`);
+			}
 
-			if (data == null) {
+			if (data === null) {
 				return reject(new Error(`Cannot load view ${name}`));
 			}
 
@@ -125,7 +127,7 @@ render.prototype.handleTag = function(c, data) {
 		return "";
 	}
 
-	if (c.children || (typeof(c.text) !== 'undefined' && c.text !== null)) {
+	if (c.children || (typeof(c.text) !== "undefined" && c.text !== null)) {
 		var text = c.text;
 
 		if (Array.isArray(text)) {

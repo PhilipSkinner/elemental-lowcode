@@ -45,9 +45,11 @@ fileLister.prototype.readJSONFile = function(dir, file) {
 			let data = null;
 			try {
 				data = JSON.parse(content);
-			} catch(e) {}
+			} catch(e) {
+				console.error(`Failed to parse file ${file} in ${dir}`);
+			}
 
-			if (data == null) {
+			if (data === null) {
 				return reject(new Error(`Cannot parse file ${file} in ${dir}`));
 			}
 
@@ -58,7 +60,7 @@ fileLister.prototype.readJSONFile = function(dir, file) {
 
 fileLister.prototype.ensureDir = function(dir) {
 	return this.mkdirp(dir);
-}
+};
 
 fileLister.prototype.writeFile = function(dir, file, contents) {
 	return new Promise((resolve, reject) => {
@@ -98,7 +100,7 @@ module.exports = function(path, fs, glob, mkdirp) {
 	}
 
 	if (!mkdirp) {
-		mkdirp = require("mkdirp")
+		mkdirp = require("mkdirp");
 	}
 
 	return new fileLister(path, fs, glob, mkdirp);

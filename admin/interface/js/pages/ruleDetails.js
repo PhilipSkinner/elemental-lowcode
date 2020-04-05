@@ -8,7 +8,7 @@ const _ruleDetailController = function(page) {
 
 _ruleDetailController.prototype.setCaller = function(caller) {
 	this.caller = caller;
-}
+};
 
 _ruleDetailController.prototype.getData = function() {
 	return this.data;
@@ -26,7 +26,7 @@ _ruleDetailController.prototype.fetchRule = function(name) {
 			this.ruleset = response.data;
 			this.caller.ruleset = response.data;
 
-			this.examplePostBody = JSON.stringify(JSONSchemaFaker.generate(this.ruleset.facts), null, 4);
+			this.examplePostBody = JSON.stringify(window.JSONSchemaFaker.generate(this.ruleset.facts), null, 4);
 			this.caller.examplePostBody = this.examplePostBody;
 
 			this.caller.$forceUpdate();

@@ -25,7 +25,7 @@ fsStore.prototype.ensureDir = function(dir) {
 
 fsStore.prototype.initType = function(type) {
 	return this.ensureDir(this.dir).then(() => {
-		return this.ensureDir(this.path.join(this.dir, type))
+		return this.ensureDir(this.path.join(this.dir, type));
 	});
 };
 
@@ -92,7 +92,9 @@ fsStore.prototype.getResources = function(type, start, count, filters) {
 
 				//apply our filters
 				if (filters && filters.length > 0) {
-					return this.applyFilters(dir, filters, type).then((dir) => { return resolve(dir) });
+					return this.applyFilters(dir, filters, type).then((dir) => {
+						return resolve(dir);
+					});
 				}
 
 				return resolve(dir);
@@ -125,7 +127,7 @@ fsStore.prototype.getResource = function(type, id) {
 				} catch(e) {
 					return reject(new Error(`Could not parse resource ${type}:${id}`));
 				}
-				
+
 				return resolve(object);
 			});
 		});
@@ -200,7 +202,7 @@ module.exports = function(dir, fs, path, jsonpath) {
 	}
 
 	if (!jsonpath) {
-		jsonpath = require('jsonpath');
+		jsonpath = require("jsonpath");
 	}
 
 	return new fsStore(dir, fs, path, jsonpath);

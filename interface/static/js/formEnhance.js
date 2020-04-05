@@ -15,7 +15,7 @@ submitHandler.prototype.resetForm = function() {
 	});
 };
 
-submitHandler.prototype.handleSubmit = function(event) {	
+submitHandler.prototype.handleSubmit = function(event) {
 	event.preventDefault();
 	event.stopPropagation();
 	event.cancelBubble = true;
@@ -36,9 +36,9 @@ submitHandler.prototype.handleSubmit = function(event) {
 		}
 	});
 
-	window.axios.post(`${location.pathname}${this.elem.attributes['action'].value}`, JSON.stringify(params), {
+	window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, JSON.stringify(params), {
 		headers : {
-			'Content-Type': 'application/json'
+			"Content-Type": "application/json"
 		},
 		withCredentials : true
 	}).then((response) => {
@@ -51,7 +51,7 @@ submitHandler.prototype.handleSubmit = function(event) {
 };
 
 var enhanceForms = function() {
-	var elems = document.querySelectorAll('form[action^="?_event"]');
+	var elems = document.querySelectorAll("form[action^=\"?_event\"]");
 	var handlers = [];
 	for (var i = 0; i < elems.length; i++) {
 		if (!elems[i].attributes["_submitEnhanced"]) {

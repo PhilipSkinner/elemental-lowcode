@@ -13,7 +13,7 @@ websiteInstance.prototype.configureTag = function(tag) {
 
 websiteInstance.prototype.configureStatic = function() {
 	this.app.use(
-		`/${this.definition.name}/static`, 
+		`/${this.definition.name}/static`,
 		this.express.static(this.path.join(process.cwd(), process.env.DIR, `${this.definition.name}-static`))
 	);
 };
@@ -38,7 +38,7 @@ websiteInstance.prototype.init = function() {
 
 		let passport = null;
 		//setup our security if we have a client defined
-		if (typeof(this.definition.client) !== 'undefined' && this.definition.client !== null) {
+		if (typeof(this.definition.client) !== "undefined" && this.definition.client !== null) {
 			const oidc = require("passport-oauth2");
 			passport = require("passport");
 			passport.use(new oidc({
@@ -58,20 +58,20 @@ websiteInstance.prototype.init = function() {
 			}));
 
 			passport.serializeUser(function(user, done) {
-	  			done(null, user);
+				done(null, user);
 			});
 
 			passport.deserializeUser(function(user, done) {
-	  			done(null, user);
+				done(null, user);
 			});
 
 			//setup our authentication
 			this.app.use(require("express-session")({
 				name 				: `session.${this.definition.name}`,
 				path 				: `/${this.definition.name}`,
-	  			secret 				: this.definition.name,
-	  			resave 			  	: true,
-	  			saveUninitialized 	: true
+				secret 				: this.definition.name,
+				resave 			  	: true,
+				saveUninitialized 	: true
 			}));
 			this.app.use(`/${this.definition.name}`, passport.initialize());
 			this.app.use(`/${this.definition.name}`, passport.session());

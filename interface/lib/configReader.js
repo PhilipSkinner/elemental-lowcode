@@ -13,9 +13,11 @@ configReader.prototype.readDefinition = function(file) {
 			let data = null;
 			try {
 				data = JSON.parse(content);
-			} catch(e) {}
+			} catch(e) {
+				console.error(`Could not parse website definition in ${file}`);
+			}
 
-			if (data == null) {
+			if (data === null) {
 				return reject(new Error(`Cannot read website definition ${file}`));
 			}
 

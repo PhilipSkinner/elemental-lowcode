@@ -184,7 +184,7 @@ securityController.prototype.deleteUser = function(req, res, next) {
 		res.send("");
 		next();
 	});
-}
+};
 
 securityController.prototype.initEndpoints = function() {
 	this.app.get("/security/clients", 			this.roleCheckHandler.enforceRoles(this.getClients.bind(this), 		["security_reader", "security_admin", "system_reader", "system_admin"]));
@@ -224,7 +224,7 @@ module.exports = function(app, dir, fileLister, roleCheckHandler, db, bcrypt, pa
 	}
 
 	if (!path) {
-		path = require('path');
+		path = require("path");
 	}
 
 	return new securityController(app, dir, fileLister, roleCheckHandler, db, bcrypt, path);
