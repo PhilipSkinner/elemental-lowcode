@@ -8,10 +8,6 @@ expandCustomTag.prototype.setTags = function(tags) {
 	this.tags = tags;
 };
 
-expandCustomTag.prototype.setPreProcessor = function(preProcessor) {
-	this.preProcessor = preProcessor;
-};
-
 expandCustomTag.prototype.needsExpansion = function(view) {
 	let needs = false;
 	for (var i = 0; i < view.length; i++) {

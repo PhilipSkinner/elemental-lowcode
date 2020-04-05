@@ -7,7 +7,7 @@ const preProcessor = function(arrayWrapper, expandCustomTags, handleLoops, repla
 		defineScope				: defineScope,
 		bindValues 				: bindValues,
 		conditionals 			: conditionals,
-		insertStandardScripts 	: insertStandardScripts 
+		insertStandardScripts 	: insertStandardScripts
 	}
 };
 
@@ -20,8 +20,6 @@ preProcessor.prototype.process = function(definition, data, customTags) {
 	if (customTags) {
 		this.visitors.expandCustomTags.setTags(customTags);
 	}
-	this.visitors.expandCustomTags.setPreProcessor(this);
-
 
 	return this.visitors.arrayWrapper
 		.apply(obj)
