@@ -81,7 +81,7 @@ By default, each ruleset will only allow execution if an incoming token contains
 * `system_admin`
 * `system_exec`
 * `rules_exec`
-* `[ruleset_nam_exec`
+* `[ruleset_name]_exec`
 
 Each ruleset can have its security configured to:
 

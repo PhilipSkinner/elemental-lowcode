@@ -72,17 +72,18 @@
 						<p>
 							A bearer token issued by the Identity Provider.
 						</p>
-						<p>
+						<p v-if="ruleset.roles.needsRole.exec">
 							Atleast one of these roles must be present to access this endpoint:
 						</p>
-						<ul class="mb-0">
+						<ul class="mb-0" v-if="ruleset.roles.needsRole.exec">
 							<li><code class="inline">system_admin</code></li>
-							<li><code class="inline">system_exec</code></li>
-							<li><code class="inline">rules_exec</code></li>
-							<li><code class="inline">{{ruleset.name}}_admin</code></li>
+							<li v-if="!ruleset.roles.replace.exec"><code class="inline">system_exec</code></li>
+							<li v-if="!ruleset.roles.replace.exec"><code class="inline">rules_exec</code></li>
+							<li v-if="!ruleset.roles.replace.exec"><code class="inline">{{ruleset.name}}_exec</code></li>
+							<li v-for="role in ruleset.roles.exec"><code class="inline">{{role}}</code></li>
 						</ul>
 
-						<br />
+						<br v-if="ruleset.roles.needsRole.exec"/>
 
 						<p>
 							<code class="inline">Content-Type: application/json</code>

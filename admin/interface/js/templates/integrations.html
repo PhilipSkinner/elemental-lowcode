@@ -27,6 +27,11 @@
 								</tr>
 							</tfoot>
 							<tbody>
+								<tr v-if="integrations.length === 0">
+									<td colspan="2" class="no-results">
+										There are no integrations defined.
+									</td>
+								</tr>
 								<tr v-for="item in integrations">
 									<td>
 										<router-link :to="{ name : 'integrationDetails', params : { name : item.name } }">{{item.name}}</router-link>
@@ -70,34 +75,18 @@
 
 					<div class="block">
 						<b>Header: <code class="inline">Authorization : Bearer [token]</code></b>
-						<p>
+						<br/>
 							A bearer token issued by the Identity Provider.
-						</p>
-						<p>
+						<br/>
+						<span v-if="integration.roles.needsRole.exec">
 							Atleast one of these roles must be present to access required to access:
-						</p>
-						<ul class="mb-0">
+						</span>
+						<ul class="mb-0" v-if="integration.roles.needsRole.exec">
 							<li><code class="inline">system_admin</code></li>
-							<!-- system roles -->
-							<li v-if="integration.method.toUpperCase() === 'GET'"><code class="inline">system_reader</code></li>
-							<li v-if="integration.method.toUpperCase() === 'POST'"><code class="inline">system_writer</code></li>
-							<li v-if="integration.method.toUpperCase() === 'PUT'"><code class="inline">system_writer</code></li>
-							<li v-if="integration.method.toUpperCase() === 'PATCH'"><code class="inline">system_writer</code></li>
-							<li v-if="integration.method.toUpperCase() === 'DELETE'"><code class="inline">system_writer</code></li>
-
-							<!-- integrations roles -->
-							<li v-if="integration.method.toUpperCase() === 'GET'"><code class="inline">integration_reader</code></li>
-							<li v-if="integration.method.toUpperCase() === 'POST'"><code class="inline">integration_writer</code></li>
-							<li v-if="integration.method.toUpperCase() === 'PUT'"><code class="inline">integration_writer</code></li>
-							<li v-if="integration.method.toUpperCase() === 'PATCH'"><code class="inline">integration_writer</code></li>
-							<li v-if="integration.method.toUpperCase() === 'DELETE'"><code class="inline">integration_writer</code></li>
-
-							<!-- specific roles -->
-							<li v-if="integration.method.toUpperCase() === 'GET'"><code class="inline">{{integration.name}}_reader</code></li>
-							<li v-if="integration.method.toUpperCase() === 'POST'"><code class="inline">{{integration.name}}_writer</code></li>
-							<li v-if="integration.method.toUpperCase() === 'PUT'"><code class="inline">{{integration.name}}_writer</code></li>
-							<li v-if="integration.method.toUpperCase() === 'PATCH'"><code class="inline">{{integration.name}}_writer</code></li>
-							<li v-if="integration.method.toUpperCase() === 'DELETE'"><code class="inline">{{integration.name}}_writer</code></li>
+							<li v-if="!integration.roles.replace.exec"><code class="inline">system_exec</code></li>
+							<li v-if="!integration.roles.replace.exec"><code class="inline">integration_exec</code></li>
+							<li v-if="!integration.roles.replace.exec"><code class="inline">{{integration.name}}_exec</code></li>
+							<li v-for="role in integration.roles.exec"><code class="inline">{{role}}</code></li>
 						</ul>
 					</div>
 

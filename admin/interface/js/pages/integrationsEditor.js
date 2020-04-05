@@ -47,6 +47,15 @@ _integrationsEditorController.prototype.initBlankType = function() {
 				"description": "The ID of the post to fetch"
 			}
 		],
+		"roles" : {
+			"replace" : {
+				"exec" : false
+			},
+			"exec" : [],
+			"needsRole" : {
+				"exec" : true
+			}
+		},
 		"request": {
 			"uri": "https://jsonplaceholder.typicode.com/posts/$(id)",
 			"method": "get",

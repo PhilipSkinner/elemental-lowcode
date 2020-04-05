@@ -11072,3 +11072,9 @@ div.block {
   padding: 15px;
   margin-bottom: 15px;
 }
+
+.no-results {
+  padding: 2rem 0rem !important;
+  text-align: center;
+  font-style: italic;
+}

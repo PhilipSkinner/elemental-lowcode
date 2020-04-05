@@ -9,6 +9,7 @@ Each integration defines:
 * incoming requests
 * outgoing requests (to the third party system)
 * transformation logic
+* authorization rules
 
 Here is an example integration definition:
 
@@ -24,6 +25,18 @@ Here is an example integration definition:
             "description": "The ID of the post to fetch"
         }
     ],
+    "roles" : {
+        "replace" : {
+            "exec" : false
+        },
+        "exec" : [
+            "custom_role",
+            "another_role"
+        ],
+        "needsRole" : {
+            "exec" : true
+        }
+    },
     "request": {
         "uri": "https://jsonplaceholder.typicode.com/posts/$(id)",
         "method": "get",
@@ -91,5 +104,41 @@ This function is to return a modified version of the response, the simplest tran
 ```
 {
 	"transformer" : "(input) => { return input; }"
+}
+```
+
+### Security
+
+The `roles` section of the integration configuration allows you to define how authorization to execute the integration should be applied to incoming requests.
+
+By default, each integration will only allow execution if an incoming token contains the following role claims:
+
+* `system_admin`
+* `system_exec`
+* `integration_exec`
+* `[integration_name]_exec`
+
+Each integration can have its security configured to:
+
+* Replace the existing roles with a new set of roles
+* Append roles to the default set of roles
+* Remove the need for any roles, accept any valid access token as authorization
+
+Here is an example `roles` section:
+
+```
+{
+    "roles" : {
+        "replace" : {
+            "exec" : true
+        },
+        "exec" : [
+            "custom_role",
+            "another_role"
+        ],
+        "needsRole" : {
+            "exec" : true
+        }
+    }
 }
 ```

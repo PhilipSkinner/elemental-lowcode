@@ -7,17 +7,35 @@ const integrationService = function(app, configReader, integrationInstance, role
 };
 
 integrationService.prototype.constructInstance = function(name, config) {
-	let instance = this.integrationInstance(name, config);	
-	const readerRoles = [
+	let instance = this.integrationInstance(name, config);
+	let execRoles = [
 		"system_admin",
-		"system_reader",
-		"integration_reader",
-		`${name}_reader`
+		"system_exec",
+		"integration_exec",
+		`${name}_exec`
 	];
 
+	if (config.roles) {
+		if (config.roles.replace) {
+			if (config.roles.replace.exec) {
+				execRoles = ["system_admin"];
+			}
+		}
+
+		if (config.roles.exec) {
+			execRoles = execRoles.concat(config.roles.exec);
+		}
+
+		if (config.roles.needsRole) {
+			if (config.roles.needsRole.exec === false) {
+				execRoles = [];
+			}
+		}
+	}
+
 	if (config.method === "get") {
-		console.log("Starting", name, "on", `/${name}`);		
-		this.app.get(`/${name}`, this.roleCheckHandler.enforceRoles(instance.handler.bind(instance), readerRoles));
+		console.log("Starting", name, "on", `/${name}`);
+		this.app.get(`/${name}`, this.roleCheckHandler.enforceRoles(instance.handler.bind(instance), execRoles));
 		this.hostedEndpoints.push(`/${name}`);
 	}
 };
