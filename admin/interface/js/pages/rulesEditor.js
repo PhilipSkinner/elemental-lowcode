@@ -38,6 +38,15 @@ _rulesEditorController.prototype.initBlankType = function() {
 	//set the example
 	this.editor.setValue(JSON.stringify({
 		"name" : "basic",
+		"roles" : {
+			"replace" : {
+				"exec" : false
+			},
+			"exec" : [],
+			"needsRole" : {
+				"exec" : true
+			}
+		},
 		"facts" : {
 			"type" : "object",
 			"properties" : {

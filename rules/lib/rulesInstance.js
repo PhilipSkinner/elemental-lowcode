@@ -43,12 +43,30 @@ rulesInstance.prototype.executeRules = function(req, res, next) {
 
 rulesInstance.prototype.init = function() {
 	return new Promise((resolve, reject) => {
-		const execRoles = [
+		let execRoles = [
 			"system_admin",
 			"system_exec",
 			"rules_exec",
 			`${this.definition.name}_exec`
 		];
+
+		if (this.definition.roles) {
+			if (this.definition.roles.replace) {
+				if (this.definition.roles.replace.exec) {
+					execRoles = ["system_admin"];
+				}
+			}
+
+			if (this.definition.roles.exec) {
+				execRoles = execRoles.concat(this.definition.roles.exec);
+			}
+
+			if (this.definition.roles.needsRole) {
+				if (this.definition.roles.needsRole.exec === false) {
+					execRoles = null;
+				}
+			}
+		}
 
 		console.log(`Hosting ${this.definition.name} on /${this.definition.name}`);
 		this.app.post(`/${this.definition.name}`, this.roleCheckHandler.enforceRoles(this.executeRules.bind(this), execRoles));

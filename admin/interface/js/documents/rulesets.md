@@ -71,3 +71,39 @@ The following comparitor operators are supported.
 * Less than or equal to - lte
 * Is null - is null
 * Is not null - is not null
+
+### Security
+
+The `roles` section of the ruleset configuration allows you to define how authorization to execute the ruleset should be applied to incoming requests.
+
+By default, each ruleset will only allow execution if an incoming token contains the following role claims:
+
+* `system_admin`
+* `system_exec`
+* `rules_exec`
+* `[ruleset_nam_exec`
+
+Each ruleset can have its security configured to:
+
+* Replace the existing roles with a new set of roles
+* Append roles to the default set of roles
+* Remove the need for any roles, accept any valid access token as authorization
+
+Here is an example `roles` section:
+
+```
+{
+    "roles" : {
+        "replace" : {
+            "exec" : true
+        },
+        "exec" : [
+            "custom_role",
+            "another_role"
+        ],
+        "needsRole" : {
+            "exec" : true
+        }
+    }
+}
+```
