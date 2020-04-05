@@ -8,6 +8,8 @@ const insertStandardScripts = function() {
 
 insertStandardScripts.prototype.traverse = function(object) {
 	if (object.tag === 'body') {
+		object.children = object.children || [];
+
 		this.standardScripts.forEach((script) => {
 			object.children.push({
 				tag : "script",

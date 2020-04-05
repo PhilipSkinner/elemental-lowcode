@@ -118,8 +118,14 @@ fsStore.prototype.getResource = function(type, id) {
 					return resolve(null);
 				}
 
-				let object = JSON.parse(content.toString("utf8"));
-				object.id = id;
+				let object = null;
+				try {
+					object = JSON.parse(content.toString("utf8"));
+					object.id = id;
+				} catch(e) {
+					return reject(new Error(`Could not parse resource ${type}:${id}`));
+				}
+				
 				return resolve(object);
 			});
 		});

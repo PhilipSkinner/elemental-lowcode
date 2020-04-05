@@ -36,10 +36,10 @@ conditionals.prototype.evaluate = function(ifStatement) {
 
 			valid = valid || result;
 		}
+	}
 
-		if (!valid) {
-			return false;
-		}
+	if (!valid) {
+		return false;
 	}
 
 	return true;
