@@ -1,4 +1,4 @@
-window.getToken = function() {	
+window.getToken = function() {
 	let token = null;
 	document.cookie.split(";").forEach((c) => {
 		let p = c.split("=");
@@ -18,6 +18,8 @@ window.logout = function() {
 window.templates.fetchTemplates().then(() => {
 	const pages = [
 		"/js/pages/home.js",
+		"/js/pages/apis.js",
+		"/js/pages/apiEditor.js",
 		"/js/pages/data.js",
 		"/js/pages/dataTypeDetails.js",
 		"/js/pages/dataTypeEditor.js",
@@ -64,8 +66,6 @@ window.templates.fetchTemplates().then(() => {
 	};
 
 	loadPages().then(() => {
-		window.Apis = { template : "<p>APIs</p>" };
-
 		const routes = [
 			{
 				path 		: "/",
@@ -90,6 +90,11 @@ window.templates.fetchTemplates().then(() => {
 			{
 				path 		: "/apis",
 				component 	: window.Apis
+			},
+			{
+				name 		: "apiEditor",
+				path 		: "/apis/editor/:name",
+				component 	: window.apiEditor
 			},
 			/* data type endpoints */
 			{

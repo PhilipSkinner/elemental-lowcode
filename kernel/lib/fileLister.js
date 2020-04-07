@@ -25,35 +25,39 @@ fileLister.prototype.executeGlob = function(lookup) {
 
 fileLister.prototype.readFile = function(dir, file) {
 	return new Promise((resolve, reject) => {
-		this.fs.readFile(this.path.join(dir, file), (err, content) => {
-			if (err) {
-				return reject(err);
-			}
+		this.ensureDir(dir).then(() => {
+			this.fs.readFile(this.path.join(dir, file), (err, content) => {
+				if (err) {
+					return reject(err);
+				}
 
-			return resolve(content.toString("utf8"));
+				return resolve(content.toString("utf8"));
+			});
 		});
 	});
 };
 
 fileLister.prototype.readJSONFile = function(dir, file) {
 	return new Promise((resolve, reject) => {
-		this.fs.readFile(this.path.join(dir, file), (err, content) => {
-			if (err) {
-				return reject(err);
-			}
+		this.ensureDir(dir).then(() => {
+			this.fs.readFile(this.path.join(dir, file), (err, content) => {
+				if (err) {
+					return reject(err);
+				}
 
-			let data = null;
-			try {
-				data = JSON.parse(content);
-			} catch(e) {
-				console.error(`Failed to parse file ${file} in ${dir}`);
-			}
+				let data = null;
+				try {
+					data = JSON.parse(content);
+				} catch(e) {
+					console.error(`Failed to parse file ${file} in ${dir}`);
+				}
 
-			if (data === null) {
-				return reject(new Error(`Cannot parse file ${file} in ${dir}`));
-			}
+				if (data === null) {
+					return reject(new Error(`Cannot parse file ${file} in ${dir}`));
+				}
 
-			return resolve(data);
+				return resolve(data);
+			});
 		});
 	});
 };
@@ -64,24 +68,28 @@ fileLister.prototype.ensureDir = function(dir) {
 
 fileLister.prototype.writeFile = function(dir, file, contents) {
 	return new Promise((resolve, reject) => {
-		this.fs.writeFile(this.path.join(dir, file), contents, (err) => {
-			if (err) {
-				return reject(err);
-			}
+		this.ensureDir(dir).then(() => {
+			this.fs.writeFile(this.path.join(dir, file), contents, (err) => {
+				if (err) {
+					return reject(err);
+				}
 
-			return resolve();
+				return resolve();
+			});
 		});
 	});
 };
 
 fileLister.prototype.deleteFile = function(dir, file) {
 	return new Promise((resolve, reject) => {
-		this.fs.unlink(this.path.join(dir, file), (err) => {
-			if (err) {
-				return reject(err);
-			}
+		this.ensureDir(dir).then(() => {
+			this.fs.unlink(this.path.join(dir, file), (err) => {
+				if (err) {
+					return reject(err);
+				}
 
-			return resolve();
+				return resolve();
+			});
 		});
 	});
 };

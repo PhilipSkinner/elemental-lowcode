@@ -1,0 +1,274 @@
+<template id="template-apis">
+	<div class="apis">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">APIss</h1>
+			<p class="mb-4">You can construct complex APIs that contain your business and application logic. To add a new API click the big plus button in the bottom right.</p>
+
+			<!-- DataTales Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Current APIs</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="apis.length === 0">
+									<td colspan="2" class="no-results">
+										There are no APIs defined.
+									</td>
+								</tr>
+								<tr v-for="item in apis">
+									<td>
+										<router-link :to="{ name : 'websiteDetails', params : { name : item.name } }">{{item.name}}</router-link>
+									</td>
+									<td>
+										<router-link class="btn btn-sm btn-primary" :to="{ name : 'apiEditor', params : { name : item.name } }">Modify</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_apisControllerInstance.deleteApi(item.name);">Remove</router-link>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="actionButtons">
+			<router-link to="/apis/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+		</div>
+	</div>
+</template>
+
+<template id="template-api-editor">
+	<div class="api-editor">
+		<alert text="API saved!" v-bind:visible="showAlert"></alert>
+
+		<div class="container-fluid" v-if="serviceEditorVisible">
+			<div class="editorWrapper">
+				<div id="serviceEditor" class="editorWindow"></div>
+			</div>
+		</div>
+
+		<div class="container-fluid" v-if="controllerEditorVisible">
+			<div class="editorWrapper">
+				<div id="controllerEditor" class="editorWindow"></div>
+			</div>
+		</div>
+
+		<div class="container-fluid" v-if="mainVisible">
+			<h1 class="h3 mb-2 text-gray-800">Manage API</h1>
+
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Properties</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Name:</label>
+								<input type="text" class="form-control" name="name" v-model="api.name" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Security</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Client:</label>
+								<select name="client_id" v-model="api.client_id" class="form-control">
+									<option value="">None</option>
+									<option v-for="client in clients" v-bind:value="client.client_id">{{client.client_id}}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Routes</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Route</th>
+									<th>GET</th>
+									<th>POST</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Route</th>
+									<th>GET</th>
+									<th>POST</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="routes.length === 0">
+									<td colspan="4" class="no-results">
+										The API has no routes defined.
+									</td>
+								</tr>
+								<tr v-for="route in routes">
+									<td>
+										<input class="form-control" type="text" name="route" v-model="route.name" />
+									</td>
+									<td>
+										<select class="form-control" v-model="route.get.controller">
+											<option v-for="controller in controllers" option="controller.name">
+												{{ controller.name }}
+											</option>
+										</select>
+									</td>
+									<td>
+										<select class="form-control" v-model="route.post.controller">
+											<option v-for="controller in controllers" option="controller.name">
+												{{ controller.name }}
+											</option>
+										</select>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-danger" v-on:click="_apiEditorControllerInstance.removeRoute(route.name);">
+											Remove
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Controllers</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<td>Name</td>
+									<td>Operations</td>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<td>Name</td>
+									<td>Operations</td>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="controllers.length === 0">
+									<td colspan="2" class="no-results">
+										The API has no controllers defined.
+									</td>
+								</tr>
+								<tr v-for="controller in controllers">
+									<td>
+										<input class="form-control" type="text" name="controller" v-model="controller.name" />
+									</td>
+									<td>
+										<button class="btn btn-sm btn-primary" v-on:click="_apiEditorControllerInstance.editController(controller.name);">
+											Modify
+										</button>
+										<button class="btn btn-sm btn-danger" v-on:click="_apiEditorControllerInstance.removeController(controller.name);">
+											Remove
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Services</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Type</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Type</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="services.length === 0">
+									<td colspan="3" class="no-results">
+										The API has no services defined.
+									</td>
+								</tr>
+								<tr v-for="service in services">
+									<td>
+										<input class="form-control" type="text" name="service" v-model="service.name" />
+									</td>
+									<td>
+										<select class="form-control" v-model="service.type">
+											<option value="singleton">Singleton</option>
+											<option value="transative">Transative</option>
+										</select>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-primary" v-on:click="_apiEditorControllerInstance.editService(service.name);">
+											Modify
+										</button>
+										<button class="btn btn-sm btn-danger" v-on:click="_apiEditorControllerInstance.removeService(service.name);">
+											Remove
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="actionButtons">
+			<button v-if="serviceEditorVisible" class="rounded-circle border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.mainView();"><i class="fas fa-fw fa-arrow-left"></i></button>
+			<button v-if="controllerEditorVisible" class="rounded-circle border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.mainView();"><i class="fas fa-fw fa-arrow-left"></i></button>
+			<button v-if="mainVisible" class="rounded-pill border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.newController();"><i class="fas fa-fw fa-plus"></i> Controller</button>
+			<button v-if="mainVisible" class="rounded-pill border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.newRoute();"><i class="fas fa-fw fa-plus"></i> Route</button>
+			<button v-if="mainVisible" class="rounded-pill border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.newService();"><i class="fas fa-fw fa-plus"></i> Service</button>
+			<button class="rounded-circle border-0 btn btn-success" v-on:click="_apiEditorControllerInstance.saveAll();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+	</div>
+</template>

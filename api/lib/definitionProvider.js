@@ -25,7 +25,7 @@ definitionProvider.prototype._parseConfig = function(file) {
 }
 
 definitionProvider.prototype._readServices = function(config) {
-	const services = Object.keys(config.services);	
+	const services = Object.keys(config.services || {});
 	const doNext = () => {
 		if (services.length === 0) {
 			return Promise.resolve();
@@ -36,7 +36,7 @@ definitionProvider.prototype._readServices = function(config) {
 		//attempt to read in the source
 		return new Promise((resolve, reject) => {
 			try {
-				config.services[next]._code = require(this.path.join(process.cwd(), process.env.DIR, config.services[next].source));
+				config.services[next]._code = require(this.path.join(process.cwd(), process.env.DIR, config.name, config.services[next].source));
 			} catch(e) {
 				return reject(e);
 			}
@@ -44,12 +44,12 @@ definitionProvider.prototype._readServices = function(config) {
 			return resolve();
 		}).then(doNext);
 	}
-	
+
 	return doNext();
 };
 
 definitionProvider.prototype._readControllers = function(config) {
-	const controllers = Object.keys(config.controllers);
+	const controllers = Object.keys(config.controllers || {});
 	const doNext = () => {
 		if (controllers.length === 0) {
 			return Promise.resolve();
@@ -59,7 +59,7 @@ definitionProvider.prototype._readControllers = function(config) {
 
 		return new Promise((resolve, reject) => {
 			try {
-				config.controllers[next] = require(this.path.join(process.cwd(), process.env.DIR, config.controllers[next]));
+				config.controllers[next] = require(this.path.join(process.cwd(), process.env.DIR, config.name, config.controllers[next]));
 			} catch(e) {
 				return reject(e);
 			}
@@ -80,6 +80,8 @@ definitionProvider.prototype.fetchDefinition = function(file) {
 			}).then(() => {
 				return Promise.resolve(config);
 			});
+	}).catch((err) => {
+		console.log("Failed to read definition!");
 	});
 };
 

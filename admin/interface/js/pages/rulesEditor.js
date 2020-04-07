@@ -134,7 +134,6 @@ _rulesEditorController.prototype.saveRule = function() {
 			.then((response) => {
 				//set our name
 				this.name = parsed.name;
-				console.log(parsed.name, location.path);
 				location.href = "/#/rulesets/editor/" + this.name;
 
 				this.caller.showAlert = true;
