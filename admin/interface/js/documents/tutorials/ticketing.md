@@ -1,3 +1,3 @@
-[Back to Tutorials](#/documentation/tutorials.md)
+[Back to Tutorials](#/documentation/tutorial.md)
 
 # Ticketing System

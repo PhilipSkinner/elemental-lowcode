@@ -4,7 +4,7 @@
 		<div class="container-fluid">
 
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">APIss</h1>
+			<h1 class="h3 mb-2 text-gray-800">APIs</h1>
 			<p class="mb-4">You can construct complex APIs that contain your business and application logic. To add a new API click the big plus button in the bottom right.</p>
 
 			<!-- DataTales Example -->
@@ -35,7 +35,7 @@
 								</tr>
 								<tr v-for="item in apis">
 									<td>
-										<router-link :to="{ name : 'websiteDetails', params : { name : item.name } }">{{item.name}}</router-link>
+										<router-link :to="{ name : 'apiDetails', params : { name : item.name } }">{{item.name}}</router-link>
 									</td>
 									<td>
 										<router-link class="btn btn-sm btn-primary" :to="{ name : 'apiEditor', params : { name : item.name } }">Modify</router-link>
@@ -51,6 +51,90 @@
 
 		<div class="actionButtons">
 			<router-link to="/apis/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+		</div>
+	</div>
+</template>
+
+<template id="template-api-details">
+	<div class="api-details">
+		<div class="container-fluid">
+			<h1 class="h3 mb-2 text-gray-800">{{api.name}}</h1>
+			<p class="mb-4">
+				This API supports the following endpoints.
+			</p>
+
+			<div class="api-endpoint" v-for="route in routes">
+				<!-- GET -->
+				<div class="card shadow mb-4" v-if="route.get.controller">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">GET http://localhost:8003/{{api.name}}{{route.name}}</h6>
+					</div>
+
+					<div class="card-body">
+						<p v-if="route.get.description">
+							{{route.get.description}}
+						</p>
+
+						<p v-if="!route.get.description">
+							There is no documentation for this endpoint.
+						</p>
+
+						<div class="block">
+							<b>Header: <code class="inline">Authorization : Bearer [token]</code></b>
+							<br />
+							A bearer token issued by the Identity Provider.
+							<span v-if="route.get.needsRole">
+								Atleast one of these roles must be present to access this endpoint:
+							</span>
+							<ul class="mb-0" v-if="route.get.needsRole">
+								<li><code class="inline">system_admin</code></li>
+								<li v-if="!route.get.replace"><code class="inline">system_reader</code></li>
+								<li v-if="!route.get.replace"><code class="inline">api_reader</code></li>
+								<li v-if="!route.get.replace"><code class="inline">{{api.name}}_reader</code></li>
+								<li v-for="role in route.roles">
+									<code class="inline">{{role}}</code>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<!-- POST -->
+				<div class="card shadow mb-4" v-if="route.post.controller">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">POST http://localhost:8003/{{api.name}}{{route.name}}</h6>
+					</div>
+
+					<div class="card-body">
+						<p v-if="route.post.description">
+							{{route.post.description}}
+						</p>
+
+						<p v-if="!route.post.description">
+							There is no documentation for this endpoint.
+						</p>
+
+						<div class="block">
+							<b>Header: <code class="inline">Authorization : Bearer [token]</code></b>
+							<br />
+							A bearer token issued by the Identity Provider.
+							<span v-if="route.get.needsRole">
+								Atleast one of these roles must be present to access this endpoint:
+							</span>
+							<ul class="mb-0" v-if="route.get.needsRole">
+								<li><code class="inline">system_admin</code></li>
+								<li v-if="!route.get.replace"><code class="inline">system_writer</code></li>
+								<li v-if="!route.get.replace"><code class="inline">api_writer</code></li>
+								<li v-if="!route.get.replace"><code class="inline">{{api.name}}_writer</code></li>
+								<li v-for="role in route.roles">
+									<code class="inline">{{role}}</code>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
 </template>

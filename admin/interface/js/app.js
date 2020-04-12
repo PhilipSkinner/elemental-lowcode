@@ -20,6 +20,7 @@ window.templates.fetchTemplates().then(() => {
 		"/js/pages/home.js",
 		"/js/pages/apis.js",
 		"/js/pages/apiEditor.js",
+		"/js/pages/apiDetails.js",
 		"/js/pages/data.js",
 		"/js/pages/dataTypeDetails.js",
 		"/js/pages/dataTypeEditor.js",
@@ -95,6 +96,11 @@ window.templates.fetchTemplates().then(() => {
 				name 		: "apiEditor",
 				path 		: "/apis/editor/:name",
 				component 	: window.apiEditor
+			},
+			{
+				name 		: "apiDetails",
+				path 		: "/apis/details/:name",
+				component	: window.apiDetails
 			},
 			/* data type endpoints */
 			{

@@ -125,13 +125,15 @@ apiInstance.prototype.setupEndpoints = function() {
 		const readerRoles = [
 			"system_admin",
 			"system_reader",
-			"api_reader"
+			"api_reader",
+			`${this.definition.name}_reader`
 		];
 
 		const writerRoles = [
 			"system_admin",
 			"system_writer",
-			"api_writer"
+			"api_writer",
+			`${this.definition.name}_writer`
 		];
 
 		Object.keys(this.definition.routes || {}).forEach((route) => {

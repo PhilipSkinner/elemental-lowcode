@@ -213,10 +213,16 @@ _apiEditorController.prototype.newRoute = function() {
 
 	this.api.routes[`/${name}`] = {
 		"get" : {
-			"controller" : null
+			"controller" : null,
+			"needsRole" : true,
+			"replace" : false,
+			"roles" : []
 		},
 		"post" : {
-			controller : null
+			"controller" : null,
+			"needsRole" : true,
+			"replace" : false,
+			"roles" : []
 		}
 	};
 
