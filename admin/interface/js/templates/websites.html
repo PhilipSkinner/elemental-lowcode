@@ -30,7 +30,7 @@
 							<tbody>
 								<tr v-for="item in websites">
 									<td>
-										<router-link :to="{ name : 'websiteDetails', params : { name : item.name } }">{{item.name}}</router-link>
+										<a :href="item.url" target="_blank">{{item.name}}</a>
 									</td>
 									<td>
 										<a class="btn btn-sm btn-success" :href="item.url" target="_blank">
@@ -134,6 +134,11 @@
 								</tr>
 							</tfoot>
 							<tbody>
+								<tr v-if="routes.length === 0">
+									<td colspan="6" class="no-results">
+										No routes have been defined.
+									</td>
+								</tr>
 								<tr v-for="(route, index) in routes" :key="index">
 									<td>
 										<input class="form-control" type="text" name="route" v-model="route.route" />
@@ -192,6 +197,11 @@
 								</tr>
 							</tfoot>
 							<tbody>
+								<tr v-if="tags.length === 0">
+									<td colspan="4" class="no-results">
+										No tags have been defined.
+									</td>
+								</tr>
 								<tr v-for="(tag, index) in tags" :key="index">
 									<td>
 										<input class="form-control" type="text" name="route" v-model="tag.name" />
@@ -242,6 +252,11 @@
 								</tr>
 							</tfoot>
 							<tbody>
+								<tr v-if="routes.length === 0">
+									<td colspan="3" class="no-results">
+										No static files have been uploaded.
+									</td>
+								</tr>
 								<tr v-for="(resource, index) in staticfiles" :key="index">
 									<td>
 										{{resource.basename}}

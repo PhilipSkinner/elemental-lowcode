@@ -14,6 +14,14 @@ const _websitesEditorController = function(page) {
 	this.editor = null;
 };
 
+_websitesEditorController.prototype.wipeData = function() {
+	this.website = {};
+	this.routes = [];
+	this.tags = [];
+	this.resources = {};
+	this.staticfiles = [];
+};
+
 _websitesEditorController.prototype.getData = function() {
 	return {
 		website 				: this.website,
@@ -367,6 +375,8 @@ window.WebsiteEditor = {
 	},
 	mounted  : function() {
 		if (this.$route.params.name === ".new") {
+			window._websitesEditorControllerInstance.wipeData();
+
 			return window._websitesEditorControllerInstance.fetchClients(this);
 		}
 
