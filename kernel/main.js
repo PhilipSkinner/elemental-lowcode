@@ -14,7 +14,8 @@ const
 	tokenHandler 			= require("../shared/tokenHandler"),
 	certProvider 			= require("../shared/certProvider")(),
 	websitesController 		= require("./controllers/websitesController"),
-	securityController 		= require("./controllers/securityController");
+	securityController 		= require("./controllers/securityController"),
+	indexController 		= require("./controllers/indexController");
 
 const app = express();
 const args = argParser.fetch();
@@ -58,6 +59,7 @@ setup.setupEnvironment(directories).then(() => {
 	rulesController(app, directories.rules);
 	securityController(app, directories.identity);
 	apiController(app, directories.api);
+	indexController(app, sourcesDir);
 
 	app.listen(8001);
 

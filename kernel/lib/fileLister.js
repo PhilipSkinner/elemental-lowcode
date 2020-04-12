@@ -1,8 +1,46 @@
-const fileLister = function(path, fs, glob, mkdirp) {
+const fileLister = function(path, fs, glob, mkdirp, tar) {
 	this.path = path;
 	this.fs = fs;
 	this.glob = glob;
 	this.mkdirp = mkdirp;
+	this.tar = tar;
+};
+
+fileLister.prototype.extractTar = function(dir, buffer) {
+	let name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
+	return this.writeFile(process.cwd(), `${name}.tar`, buffer).then(() => {
+		return this.ensureDir(dir);
+	}).then(() => {
+		return this.tar.x({
+			file : this.path.join(process.cwd(), `${name}.tar`),
+			cwd : this.path.join(process.cwd(), dir)
+		});
+	}).then(() => {
+		return this.deleteFile(process.cwd(), `${name}.tar`);
+	})
+};
+
+fileLister.prototype.tarDir = function(dir) {
+	let name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
+	let data = null;
+
+	return this.ensureDir(dir).then(() => {
+		return this.tar.c({
+			gzip : false,
+			file : `${name}.tar`,
+			cwd : this.path.join(process.cwd(), dir)
+		}, [
+			"."
+		]);
+	}).then(() => {
+		// read the tarball and return it
+		return this.readFile(process.cwd(), `${name}.tar`, true);
+	}).then((buffer) => {
+		data = buffer;
+		return this.deleteFile(process.cwd(), `${name}.tar`);
+	}).then(() => {
+		return Promise.resolve(data);
+	})
 };
 
 fileLister.prototype.executeGlob = function(lookup) {
@@ -23,12 +61,16 @@ fileLister.prototype.executeGlob = function(lookup) {
 	});
 };
 
-fileLister.prototype.readFile = function(dir, file) {
+fileLister.prototype.readFile = function(dir, file, binary) {
 	return new Promise((resolve, reject) => {
 		this.ensureDir(dir).then(() => {
 			this.fs.readFile(this.path.join(dir, file), (err, content) => {
 				if (err) {
 					return reject(err);
+				}
+
+				if (binary) {
+					return resolve(content);
 				}
 
 				return resolve(content.toString("utf8"));
@@ -94,7 +136,7 @@ fileLister.prototype.deleteFile = function(dir, file) {
 	});
 };
 
-module.exports = function(path, fs, glob, mkdirp) {
+module.exports = function(path, fs, glob, mkdirp, tar) {
 	if (!path) {
 		path = require("path");
 	}
@@ -111,5 +153,9 @@ module.exports = function(path, fs, glob, mkdirp) {
 		mkdirp = require("mkdirp");
 	}
 
-	return new fileLister(path, fs, glob, mkdirp);
+	if (!tar) {
+		tar = require('tar');
+	}
+
+	return new fileLister(path, fs, glob, mkdirp, tar);
 };

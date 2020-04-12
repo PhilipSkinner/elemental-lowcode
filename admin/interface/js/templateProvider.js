@@ -8,6 +8,7 @@ const templateProvider = function() {
 		"/js/templates/dataTypes.html",
 		"/js/templates/security.html",
 		"/js/templates/websites.html",
+		"/js/templates/packager.html",
 	];
 
 	this.initWrapper();

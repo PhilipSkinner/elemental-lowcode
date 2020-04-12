@@ -37,6 +37,7 @@ window.templates.fetchTemplates().then(() => {
 		"/js/pages/securityClientEditor.js",
 		"/js/pages/securityScopeEditor.js",
 		"/js/pages/securityUserEditor.js",
+		"/js/pages/packager.js",
 	];
 
 	const loadPage = (file) => {
@@ -171,6 +172,11 @@ window.templates.fetchTemplates().then(() => {
 				name 		: "securityUserEditor",
 				path 		: "/security/user/:id",
 				component	: window.SecurityUserEditor
+			},
+			/* packager endpoints */
+			{
+				path 		: "/packager",
+				component 	: window.packager
 			}
 		];
 
