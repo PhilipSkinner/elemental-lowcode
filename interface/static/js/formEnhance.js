@@ -10,8 +10,11 @@ submitHandler.prototype.init = function() {
 
 submitHandler.prototype.resetForm = function() {
 	this.elem.querySelectorAll("input, select, textarea").forEach((field) => {
-		console.log(field.getAttribute("value"));
-		field.value = field.getAttribute("value");
+		if (field.type !== "file") {
+			field.value = field.getAttribute("value");	
+		} else {
+			field.value = null;
+		}
 	});
 };
 
@@ -21,31 +24,78 @@ submitHandler.prototype.handleSubmit = function(event) {
 	event.cancelBubble = true;
 
 	const params = {};
+	const files = {};
+	let doMultipart = false;
 	this.elem.querySelectorAll("input, select, textarea").forEach((field) => {
 		let name = field.name;
 		let value = field.value;
 
-		if (!params[name]) {
-			params[name] = value;
-		} else {
-			if (!Array.isArray(params[name])) {
-				params[name] = [params[name]];
+		if (field.type === "file") {
+			doMultipart = true;
+			let fileArray = [];
+			for (let i = 0; i < field.files.length; i++) {
+				fileArray.push(field.files[i]);
 			}
 
-			params[name].push(value);
+			if (!files[name]) {
+				files[name] = fileArray;
+			} else {
+				if (!Array.isArray(files[name])) {
+					files[name] = [files[name]];
+				}
+
+				files[name] = files[name].concat(fileArray);
+			}
+		} else {
+			if (!params[name]) {
+				params[name] = value;
+			} else {
+				if (!Array.isArray(params[name])) {
+					params[name] = [params[name]];
+				}
+
+				params[name].push(value);
+			}
 		}
 	});
 
-	window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, JSON.stringify(params), {
-		headers : {
-			"Content-Type": "application/json"
-		},
-		withCredentials : true
-	}).then((response) => {
-		document.open();
-        document.write(response.data);
-        document.close();
-	});
+	if (doMultipart) {
+		const formData = new FormData();
+    	formData.append('__params', JSON.stringify(params));
+
+    	Object.keys(files).forEach((fileName) => {
+    		if (Array.isArray(files[fileName])) {
+    			let i = 0;
+    			files[fileName].forEach((fileInstance) => {
+    				formData.append(`${fileName}$$_$$${i}`, fileInstance);
+    			});
+    		} else {
+    			formData.append(fileName, files[fileName]);
+    		}
+    	});
+
+		window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, formData, {
+			headers : {
+				"Content-Type": "multipart/form-data"
+			},
+			withCredentials : true
+		}).then((response) => {
+			document.open();
+	        document.write(response.data);
+	        document.close();
+		});		
+	} else {
+		window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, JSON.stringify(params), {
+			headers : {
+				"Content-Type": "application/json"
+			},
+			withCredentials : true
+		}).then((response) => {
+			document.open();
+	        document.write(response.data);
+	        document.close();
+		});		
+	}
 
 	return false;
 };

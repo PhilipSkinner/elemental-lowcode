@@ -3,6 +3,7 @@ const
 	bodyParser 		= require("body-parser"),
 	cookieParser 	= require("cookie-parser"),
 	path 			= require("path"),
+	fileUpload 		= require("express-fileupload"),
 	hotreload 		= require("../shared/hotReload")();
 
 let app = null;
@@ -14,6 +15,11 @@ const startup = () => {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended : false }));
 	app.use(cookieParser());
+	app.use(fileUpload({
+  		limits			: { fileSize: 50 * 1024 * 1024 },
+  		useTempFiles 	: true,
+    	tempFileDir 	: "./.tmp/"
+	}));
 
 	//init our global statics
 	app.use(`/_static`, express.static(path.join(__dirname, "static")));

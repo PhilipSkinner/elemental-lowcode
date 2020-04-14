@@ -6,3 +6,4 @@ kernel/.store
 *.key
 **/coverage
 .nyc_output
+kernel/.tmp

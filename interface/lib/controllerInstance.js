@@ -43,20 +43,44 @@ controllerInstance.prototype.handler = function(req, res, next) {
 		//ensure our state engine triggers on load
 		Promise.resolve().then(() => {
 			if (req.method === "POST") {
+				let body = req.body;
+
+				if (body.__params) {
+					body = JSON.parse(body.__params);
+				}
+
+				let event = {};
+				if (req.files) {
+					Object.keys(req.files).forEach((path) => {
+						let parts = path.split("$$_$$");
+						let current = event;
+						for (var i = 0; i < parts.length; i++) {
+							if (i === parts.length - 1) {
+								current[parts[i]] = req.files[path];
+							} else {
+								if (!current[parts[i]]) {
+									current[parts[i]] = {};									
+								}
+
+								current = current[parts[i]];
+							}
+						}
+					});
+				}
+
 				//generate our post event!
 				let eventName = "postback";
 				if (req.query && req.query._event) {
 					eventName = req.query._event;
 				}
 
-				let event = {};
-				Object.keys(req.body).forEach((valName) => {
+				Object.keys(body).forEach((valName) => {
 					//get the path version
 					var parts = valName.split("$$_$$");
 					let current = event;
 					for (var i = 0; i < parts.length; i++) {
 						if (i === parts.length - 1) {
-							current[parts[i]] = req.body[valName];
+							current[parts[i]] = body[valName];
 						} else {
 							if (!current[parts[i]]) {
 								current[parts[i]] = {};
@@ -66,7 +90,8 @@ controllerInstance.prototype.handler = function(req, res, next) {
 						}
 					}
 				});
-				return stateEngine.triggerEvent(eventName, event);
+
+				return stateEngine.triggerEvent(eventName, this.ensureArrays(event));
 			}
 
 			if (req.method === "GET") {
@@ -108,6 +133,29 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	}
 
 	return handleRequest(req, res, next);
+};
+
+controllerInstance.prototype.ensureArrays = function(obj) {
+	let allNums = true;
+	Object.keys(obj).forEach((k) => {
+		if (parseInt(k) != k) {
+			allNums = false;
+		}
+
+		if (typeof(obj[k]) === 'object') {
+			obj[k] = this.ensureArrays(obj[k]);
+		}
+	});
+
+	if (allNums) {
+		let ret = [];
+		Object.keys(obj).forEach((k) => {
+			ret[parseInt(k)] = obj[k];
+		});
+		return ret;
+	}
+
+	return obj;
 };
 
 module.exports = function(routeDefinition, templateRenderer, clientConfig, passport, path, fs, controllerState, roleCheckHandler) {
