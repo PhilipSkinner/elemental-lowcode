@@ -1,10 +1,11 @@
 const converter = new showdown.Converter();
 
 const loadPage = function(name, obj) {
-	name = name.replace(/\-\-/g, "/");
-
-	window.axios.get("/js/documents/" + name).then((content) => {
+	window.axios.get(`${name}.md`).then((content) => {
 		obj.html = converter.makeHtml(content.data);
+
+		//quickly replace any /documentation links
+		obj.html = obj.html.replace(/"\/documentation/g, "\"#/documentation");
 	});
 }
 
@@ -17,10 +18,14 @@ window.Documentation = {
 	},
 	mounted  : function() {
 		const handlePage = () => {
-			var page = "index.md";
+			var page = "/documentation/index";
 
-			if (this.$route.params.page) {
-				page = this.$route.params.page;
+			if (this.$route.path) {
+				page = this.$route.path;
+			}
+
+			if (page === "/documentation") {
+				page = "/documentation/index";
 			}
 
 			loadPage(page, this);

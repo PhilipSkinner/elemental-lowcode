@@ -1,4 +1,4 @@
-[Back to Index](#/documentation)
+[Back to Index](/documentation)
 
 # Websites
 
@@ -6,10 +6,10 @@ Websites allows you to build simple web applications.
 
 Each website is constructed of:
 
-* [Routes](#/documentation/websites--routes.md)
-* [Views](#/documentation/websites--views.md)
-* [Controllers](#/documentation/websites--controllers.md)
-* [Tags](#/documentation/websites--tags.md)
+* [Routes](/documentation/websites/routes)
+* [Views](/documentation/websites/views)
+* [Controllers](/documentation/websites/controllers)
+* [Tags](/documentation/websites/tags)
 
 The websites (or interface) runtime hosts each website on a path that equals the websites name.
 

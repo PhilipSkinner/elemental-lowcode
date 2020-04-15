@@ -60,6 +60,7 @@ app.get("/auth", (req, res) => {
 });
 
 app.use(express.static(path.join(process.env.DIR, "./interface"), {}));
+app.use("/documentation", express.static(path.join(process.env.DIR, "../documentation"), {}));
 
 console.log("Admin running on", process.env.PORT);
 app.listen(process.env.PORT);

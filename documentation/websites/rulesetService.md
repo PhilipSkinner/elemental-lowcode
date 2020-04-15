@@ -1,4 +1,4 @@
-[Back to Controllers](#/documentation/websites--controllers.md)
+[Back to Controllers](/documentation/websites/controllers)
 
 # Rulesets Service
 

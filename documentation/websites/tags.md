@@ -1,4 +1,4 @@
-[Back to Websites](#/documentation/websites.md)
+[Back to Websites](/documentation/websites)
 
 # Custom Tags
 
@@ -30,7 +30,7 @@ This is the definition for our `menuItem` tag:
 		}
 	]
 }
-``` 
+```
 
 **menu**
 

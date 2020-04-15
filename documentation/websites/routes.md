@@ -1,4 +1,4 @@
-[Back to Websites](#/documentation/websites.md)
+[Back to Websites](/documentation/websites)
 
 # Routes
 
@@ -19,4 +19,4 @@ Paths are used to match incoming HTTP requests and can be used to match dynamic 
 
 If a / path is not defined then your website will not host a page on its default route.
 
-[Continue to Views](#/documentation/websites--views.md)
+[Continue to Views](/documentation/websites/views)

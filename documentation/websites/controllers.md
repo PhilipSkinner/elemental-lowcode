@@ -1,4 +1,4 @@
-[Back to Websites](#/documentation/websites.md)
+[Back to Websites](/documentation/websites)
 
 # Controllers
 
@@ -91,7 +91,7 @@ Click based events are named within your views and so you simply need to create 
 		"eventName" : "mycustomevent"
 	}
 }
-``` 
+```
 
 ; would trigger an event named `mycustomevent` on your controller:
 
@@ -123,10 +123,10 @@ module.exports = {
 
 The following services are automatically added into each controller:
 
-* [storageService](#/documentation/websites--storageService.md)
-* [sessionState](#/documentation/websites--sessionState.md)
-* [integrationService](#/documentation/websites--integrationService.md)
-* [rulesetService](#/documentation/websites--rulesetService.md)
+* [storageService](/documentation/websites/storageService)
+* [sessionState](/documentation/websites/sessionState)
+* [integrationService](/documentation/websites/integrationService)
+* [rulesetService](/documentation/websites/rulesetService)
 
 Each of these are defined upon the controller instance as a property that can be access, for example:
 
@@ -140,4 +140,4 @@ module.exports = {
 }
 ```
 
-[Continue to Tags](#/documentation/websites--tags.md)
+[Continue to Tags](/documentation/websites/tags)

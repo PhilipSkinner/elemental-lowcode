@@ -1,4 +1,4 @@
-[Back to Index](#/documentation)
+[Back to Index](/documentation)
 
 # Rulesets
 

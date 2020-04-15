@@ -1,4 +1,4 @@
-[Back to Controllers](#/documentation/websites--controllers.md)
+[Back to Controllers](/documentation/websites/controllers)
 
 # Storage Service
 
@@ -20,7 +20,7 @@ Parameters:
 * `name` - string, the name of the collection to detail
 * `token` - string, the access token to use to access the API *optional*
 
-Returns the JSON response from the relevant .details endpoint on the storage service. More details on this response payload can be found within the [storage system documentation](#/documentation/data.md).
+Returns the JSON response from the relevant .details endpoint on the storage service. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
 This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly.
 
@@ -52,7 +52,7 @@ Parameters:
 * `filters` - array<filter>, the filters to apply when fetching items
 * `token` - string, the access token to use to access the API *optional*
 
-Returns a paginated list of entities from the named collection. More details on this response payload can be found within the [storage system documentation](#/documentation/data.md).
+Returns a paginated list of entities from the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
 Filters can be applied to the entities to only include items that have certain values. Filters are based upon the JSON path of the value within the entity and match (equality) against a single value.
 
@@ -92,7 +92,7 @@ Parameters:
 * `id` - guid (string), the id of the entity to retrieve
 * `token` - string, the access token to use to access the API *optional*
 
-Returns a single entity from the named collection. More details on this response payload can be found within the [storage system documentation](#/documentation/data.md).
+Returns a single entity from the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
 This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly.
 
@@ -123,7 +123,7 @@ Parameters:
 * `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will be used to create the new entity
 * `token` - string, the access token to use to access the API *optional*
 
-Creates a new entity within the named collection. More details on this response payload can be found within the [storage system documentation](#/documentation/data.md).
+Creates a new entity within the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
 This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly.
 
@@ -157,7 +157,7 @@ Parameters:
 * `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will replace the entity with the given id
 * `token` - string, the access token to use to access the API *optional*
 
-Creates a new entity within the named collection. More details on this response payload can be found within the [storage system documentation](#/documentation/data.md).
+Creates a new entity within the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
 This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly.
 
@@ -191,7 +191,7 @@ Parameters:
 * `id` - guid (string), the id of the entity to delete
 * `token` - string, the access token to use to access the API *optional*
 
-Deletes an entity from the named collection. More details on this response payload can be found within the [storage system documentation](#/documentation/data.md).
+Deletes an entity from the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
 This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly.
 

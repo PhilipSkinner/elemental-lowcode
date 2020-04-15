@@ -1,4 +1,4 @@
-[Back to Websites](#/documentation/websites.md)
+[Back to Websites](/documentation/websites)
 
 # Views
 
@@ -29,7 +29,7 @@ The following properties are special - any other properties are used to render a
 
 **tag** - *required*
 
-This is the tag that is to be used to render the element within the DOM. This can be any valid HTML tag or [custom tag](#/documentation/websites--tags.md).
+This is the tag that is to be used to render the element within the DOM. This can be any valid HTML tag or [custom tag](/documentation/websites/tags).
 
 This property is required.
 
@@ -275,4 +275,4 @@ module.exports = {
 
 ; shows a combination of using both a click based event and a form based submission to modify shared data - aswell as persisting this data within the users session.
 
-[Continue to Controllers](#/documentation/websites--controllers.md)
+[Continue to Controllers](/documentation/websites/controllers)

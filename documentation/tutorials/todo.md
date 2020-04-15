@@ -1,4 +1,4 @@
-[Back to Tutorials](#/documentation/tutorial.md)
+[Back to Tutorials](/documentation/tutorial)
 
 # Todo list
 

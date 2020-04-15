@@ -134,7 +134,7 @@ window.templates.fetchTemplates().then(() => {
 				component	: window.Documentation,
 			},
 			{
-				path 		: "/documentation/:page",
+				path 		: "/documentation/*",
 				component	: window.Documentation,
 			},
 			/* ruleset endpoints */
