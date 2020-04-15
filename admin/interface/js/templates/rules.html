@@ -34,7 +34,7 @@
 									</td>
 									<td>
 										<router-link class="btn btn-sm btn-primary" :to="{ name : 'rulesetEditor', params : { name : item.name } }">Modify</router-link>
-										<router-link class="btn btn-sm btn-danger" :to="{ name : 'rulesetRemote', params : { name : item.name } }">Remove</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_rulesControllerInstance.removeRule(item.name);">Remove</button>
 									</td>
 								</tr>
 							</tbody>

@@ -1,0 +1,122 @@
+{
+	"type" : "object",
+	"properties" : {
+		"name" : {
+			"type" : "string"
+		},
+		"description" : {
+			"type" : "string"
+		},
+		"method" : {
+			"type" : "string",
+			"enum" : ["get", "post", "put", "delete", "patch", "copy"]
+		},
+		"variables" : {
+			"type" : "array",
+			"minItems" : 0,
+			"items" : {
+				"type" : "object",
+				"properties" : {
+					"name" : {
+						"type" : "string"
+					},
+					"type" : {
+						"type" : "string"
+					},
+					"description" : {
+						"type" : "string"
+					}
+				},
+				"required" : [
+					"name",
+					"type",
+					"description"
+				]
+			}
+		},
+		"roles" : {
+			"type" : "object",
+			"properties" : {
+				"replace" : {
+					"type" : "object",
+					"properties" : {
+						"exec" : {
+							"type" : "boolean"
+						}
+					},
+					"required" : [
+						"exec"
+					]
+				},
+				"exec" : {
+					"type" : "array",
+					"minItems" : 0,
+					"items" : {
+						"type" : "string"
+					}
+				},
+				"needsRole" : {
+					"type" : "object",
+					"properties" : {
+						"exec" : {
+							"type" : "boolean"
+						}
+					},
+					"required" : [
+						"exec"
+					]
+				}
+			},
+			"required" : [
+				"replace",
+				"exec",
+				"needsRole"
+			]
+		},
+		"request" : {
+			"type" : "object",
+			"properties" : {
+				"uri" : {
+					"type" : "string"
+				},
+				"method" : {
+					"type" : "string",
+					"enum" : ["get", "post", "put", "delete", "patch", "copy"]
+				},
+				"schema" : {
+					"type" : "object",
+					"properties" : {
+						"type" : {
+							"type" : "string",
+							"enum" : ["JSON"]
+						},
+						"value" : {
+							"type" : "object"
+						}
+					},
+					"required" : [
+						"type",
+						"value"
+					]
+				}
+			},
+			"required" : [
+				"uri",
+				"method",
+				"schema"
+			]
+		},
+		"transformer" : {
+			"type" : "string"
+		}
+	},
+	"required" : [
+		"name",
+		"description",
+		"method",
+		"variables",
+		"roles",
+		"request",
+		"transformer"
+	]
+}

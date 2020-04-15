@@ -107,6 +107,7 @@ _rulesEditorController.prototype.saveRule = function() {
 				}
 			})
 			.then((response) => {
+				this.data.error.visible = false;
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
 
@@ -115,7 +116,6 @@ _rulesEditorController.prototype.saveRule = function() {
 					this.caller.$forceUpdate();
 				}, 1500);
 			}).catch((err) => {
-				console.log(err);
 				this.data.error.visible = true;
 				this.data.error.title = "Error saving ruleset";
 				this.data.error.description = err.toString();
@@ -136,6 +136,7 @@ _rulesEditorController.prototype.saveRule = function() {
 				this.name = parsed.name;
 				location.href = "/#/rulesets/editor/" + this.name;
 
+				this.data.error.visible = false;
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
 
@@ -144,7 +145,6 @@ _rulesEditorController.prototype.saveRule = function() {
 					this.caller.$forceUpdate();
 				}, 1500);
 			}).catch((err) => {
-				console.log(err);
 				this.data.error.visible = true;
 				this.data.error.title = "Error saving ruleset";
 				this.data.error.description = err.toString();

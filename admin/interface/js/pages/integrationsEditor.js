@@ -127,6 +127,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 				}
 			})
 			.then((response) => {
+				this.caller.error.visible = false;
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
 
@@ -156,6 +157,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 				this.name = parsed.name;
 				location.href = "/#/integrations/editor/" + this.name;
 
+				this.caller.error.visible = false;
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
 

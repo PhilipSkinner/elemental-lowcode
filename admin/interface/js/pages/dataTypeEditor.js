@@ -102,6 +102,7 @@ _dataTypeEditorController.prototype.saveType = function() {
 				}
 			})
 			.then((response) => {
+				this.data.error.visible = false;
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
 
@@ -110,7 +111,6 @@ _dataTypeEditorController.prototype.saveType = function() {
 					this.caller.$forceUpdate();
 				}, 1500);
 			}).catch((err) => {
-				console.log(err);
 				this.data.error.visible = true;
 				this.data.error.title = "Error saving datatype";
 				this.data.error.description = err.toString();
@@ -129,9 +129,9 @@ _dataTypeEditorController.prototype.saveType = function() {
 			.then((response) => {
 				//set our name
 				this.name = parsed.name;
-				console.log(parsed.name, location.path);
 				location.href = "/#/data/editor/" + this.name;
 
+				this.data.error.visible = false;
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
 
@@ -140,7 +140,6 @@ _dataTypeEditorController.prototype.saveType = function() {
 					this.caller.$forceUpdate();
 				}, 1500);
 			}).catch((err) => {
-				console.log(err);
 				this.data.error.visible = true;
 				this.data.error.title = "Error saving datatype";
 				this.data.error.description = err.toString();

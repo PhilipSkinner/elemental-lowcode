@@ -2,7 +2,7 @@ const _integrationDetailController = function(page) {
 	this._page = page;
 	this.caller = null;
 	this.data = {
-		integration 	: this.integration
+		integration 	: {}
 	};
 };
 
@@ -11,7 +11,9 @@ _integrationDetailController.prototype.setCaller = function(caller) {
 }
 
 _integrationDetailController.prototype.getData = function() {
-	return this.data;
+	return {
+		integration : this.data.integration
+	};
 };
 
 _integrationDetailController.prototype.fetchType = function(name) {
@@ -23,7 +25,7 @@ _integrationDetailController.prototype.fetchType = function(name) {
 			}
 		})
 		.then((response) => {
-			this.integration = response.data;
+			this.data.integration = response.data;
 			this.caller.integration = response.data;
 			this.caller.$forceUpdate();
 		});

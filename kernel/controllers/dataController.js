@@ -1,16 +1,17 @@
-const dataController = function(app, dir, fileLister, storageService, roleCheckHandler, path) {
+const dataController = function(app, dir, fileLister, storageService, roleCheckHandler, path, typeValidator) {
 	this.app 				= app;
 	this.dir 				= dir;
 	this.fileLister 		= fileLister;
 	this.storageService 	= storageService;
 	this.roleCheckHandler 	= roleCheckHandler;
 	this.path 				= path;
+	this.typeValidator 		= typeValidator;
 
 	this.initEndpoints();
 };
 
 dataController.prototype.getDataTypes = function(req, res, next) {
-	this.fileLister.executeGlob(this.path.join(this.dir, "**/*.json")).then((results) => {		
+	this.fileLister.executeGlob(this.path.join(this.dir, "**/*.json")).then((results) => {
 		Promise.all(results.map((r) => {
 			return this.storageService.detailCollection(r.name, req.headers.authorization.replace("Bearer ", ""));
 		})).then((details) => {
@@ -32,9 +33,17 @@ dataController.prototype.getDataType = function(req, res, next) {
 };
 
 dataController.prototype.updateDataType = function(req, res, next) {
-	this.fileLister.writeFile(this.dir, req.params.name + ".json", JSON.stringify(req.body)).then(() => {
-		res.status(204);
-		res.send("");
+	this.typeValidator.validate("datatype", req.body).then(() => {
+		this.fileLister.writeFile(this.dir, req.params.name + ".json", JSON.stringify(req.body)).then(() => {
+			res.status(204);
+			res.send("");
+			next();
+		});
+	}).catch((err) => {
+		res.status(422);
+		res.json({
+			errors : err
+		});
 		next();
 	});
 };
@@ -48,9 +57,17 @@ dataController.prototype.deleteDataType = function(req, res, next) {
 };
 
 dataController.prototype.createDataType = function(req, res, next) {
-	this.fileLister.writeFile(this.dir, req.body.name + ".json", JSON.stringify(req.body)).then(() => {
-		res.status(201);
-		res.send("");
+	this.typeValidator.validate("datatype", req.body).then(() => {
+		this.fileLister.writeFile(this.dir, req.body.name + ".json", JSON.stringify(req.body)).then(() => {
+			res.status(201);
+			res.send("");
+			next();
+		});
+	}).catch((err) => {
+		res.status(422);
+		res.json({
+			errors : err
+		});
 		next();
 	});
 };
@@ -63,7 +80,7 @@ dataController.prototype.initEndpoints = function() {
 	this.app.post("/data/types", 			this.roleCheckHandler.enforceRoles(this.createDataType.bind(this), 	["datatype_writer", "datatype_admin", "system_writer", "system_admin"]));
 };
 
-module.exports = function(app, dir, fileLister, storageService, roleCheckHandler, path) {
+module.exports = function(app, dir, fileLister, storageService, roleCheckHandler, path, typeValidator) {
 	if (!fileLister) {
 		fileLister = require("../lib/fileLister")();
 	}
@@ -80,5 +97,9 @@ module.exports = function(app, dir, fileLister, storageService, roleCheckHandler
 		path = require("path");
 	}
 
-	return new dataController(app, dir, fileLister, storageService, roleCheckHandler, path);
+	if (!typeValidator) {
+		typeValidator = require("../lib/typeValidator")();
+	}
+
+	return new dataController(app, dir, fileLister, storageService, roleCheckHandler, path, typeValidator);
 };

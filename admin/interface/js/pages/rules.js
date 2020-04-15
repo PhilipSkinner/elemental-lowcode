@@ -9,7 +9,11 @@ _rulesController.prototype.getRules = function() {
 	};
 };
 
-_rulesController.prototype.fetchRules = function(caller) {
+_rulesController.prototype.setCaller = function(caller) {
+	this.caller = caller;
+};
+
+_rulesController.prototype.fetchRules = function() {
 	return window.axios
 		.get("http://localhost:8001/rules", {
 			headers : {
@@ -23,8 +27,20 @@ _rulesController.prototype.fetchRules = function(caller) {
 			});
 
 			this.rules = response.data;
-			caller.rules = response.data;
-			caller.$forceUpdate();
+			this.caller.rules = response.data;
+			this.caller.$forceUpdate();
+		});
+};
+
+_rulesController.prototype.removeRule = function(rule) {
+	return window.axios
+		.delete(`http://localhost:8001/rules/${rule}`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			return this.fetchRules();
 		});
 };
 
@@ -34,7 +50,8 @@ window.Rules = {
 		return window._rulesControllerInstance.getRules();
 	},
 	mounted  : function() {
-		return window._rulesControllerInstance.fetchRules(this);
+		window._rulesControllerInstance.setCaller(this);
+		return window._rulesControllerInstance.fetchRules();
 	}
 };
 

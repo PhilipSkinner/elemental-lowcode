@@ -1,9 +1,10 @@
-const integrationsController = function(app, dir, fileLister, roleCheckHandler, path) {
-	this.app = app;
-	this.dir = dir;
-	this.path = path;
-	this.fileLister = fileLister;
-	this.roleCheckHandler = roleCheckHandler;
+const integrationsController = function(app, dir, fileLister, roleCheckHandler, path, typeValidator) {
+	this.app 				= app;
+	this.dir 				= dir;
+	this.path 				= path;
+	this.fileLister 		= fileLister;
+	this.roleCheckHandler 	= roleCheckHandler;
+	this.typeValidator		= typeValidator;
 
 	this.initEndpoints();
 };
@@ -25,9 +26,18 @@ integrationsController.prototype.getSingular = function(req, res, next) {
 };
 
 integrationsController.prototype.update = function(req, res, next) {
-	this.fileLister.writeFile(this.dir, req.params.name + ".json", JSON.stringify(req.body)).then(() => {
-		res.status(204);
-		res.send("");
+	//validate the JSON
+	this.typeValidator.validate("integration", req.body).then(() => {
+		this.fileLister.writeFile(this.dir, req.params.name + ".json", JSON.stringify(req.body)).then(() => {
+			res.status(204);
+			res.send("");
+			next();
+		});
+	}).catch((err) => {
+		res.status(422);
+		res.json({
+			errors : err
+		});
 		next();
 	});
 };
@@ -41,9 +51,17 @@ integrationsController.prototype.delete = function(req, res, next) {
 };
 
 integrationsController.prototype.create = function(req, res, next) {
-	this.fileLister.writeFile(this.dir, req.body.name + ".json", JSON.stringify(req.body)).then(() => {
-		res.status(201);
-		res.send("");
+	this.typeValidator.validate("integration", req.body).then(() => {
+		this.fileLister.writeFile(this.dir, req.body.name + ".json", JSON.stringify(req.body)).then(() => {
+			res.status(201);
+			res.send("");
+			next();
+		});
+	}).catch((err) => {
+		res.status(422);
+		res.json({
+			errors : err
+		});
 		next();
 	});
 };
@@ -56,7 +74,7 @@ integrationsController.prototype.initEndpoints = function() {
 	this.app.post("/integrations", 			this.roleCheckHandler.enforceRoles(this.create.bind(this), 		["integration_writer", "integration_admin", "system_writer", "system_admin"]));
 };
 
-module.exports = function(app, dir, fileLister, path, roleCheckHandler) {
+module.exports = function(app, dir, fileLister, path, roleCheckHandler, typeValidator) {
 	if (!fileLister) {
 		fileLister = require("../lib/fileLister")();
 	}
@@ -69,5 +87,9 @@ module.exports = function(app, dir, fileLister, path, roleCheckHandler) {
 		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
 
-	return new integrationsController(app, dir, fileLister, roleCheckHandler, path);
+	if (!typeValidator) {
+		typeValidator = require('../lib/typeValidator')();
+	}
+
+	return new integrationsController(app, dir, fileLister, roleCheckHandler, path, typeValidator);
 };

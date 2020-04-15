@@ -1,0 +1,92 @@
+{
+	"type" : "object",
+	"properties" : {
+		"name" : {
+			"type" : "string"
+		},
+		"keys" : {
+			"type" : "array",
+			"minItems" : 0
+		},
+		"roles" : {
+			"type" : "object",
+			"properties" : {
+				"replace" : {
+					"type" : "object",
+					"properties" : {
+						"read" : {
+							"type" : "boolean"
+						},
+						"write" : {
+							"type" : "boolean"
+						},
+						"delete" : {
+							"type" : "boolean"
+						}
+					},
+					"required" : [
+						"read",
+						"write",
+						"delete"
+					]
+				},
+				"needsRole" : {
+					"type" : "object",
+					"properties" : {
+						"read" : {
+							"type" : "boolean"
+						},
+						"write" : {
+							"type" : "boolean"
+						},
+						"delete" : {
+							"type" : "boolean"
+						}
+					},
+					"required" : [
+						"read",
+						"write",
+						"delete"
+					]
+				},
+				"read" : {
+					"type" : "array",
+					"minItems" : 0,
+					"items" : {
+						"type" : "string"
+					}
+				},
+				"write" : {
+					"type" : "array",
+					"minItems" : 0,
+					"items" : {
+						"type" : "string"
+					}
+				},
+				"delete" : {
+					"type" : "array",
+					"minItems" : 0,
+					"items" : {
+						"type" : "string"
+					}
+				}
+			},
+			"required" : [
+				"replace",
+				"needsRole",
+				"read",
+				"write",
+				"delete"
+			]
+		},
+		"schema" : {
+			"type" : "object"
+		}
+	},
+	"required" : [
+		"name",
+		"keys",
+		"roles",
+		"schema"
+	]
+}
