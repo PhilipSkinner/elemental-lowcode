@@ -22,6 +22,14 @@ const render = function(fs, path, preProcessor) {
 		"required",
 		"checked"
 	];
+	this.internalClick = [
+		"td",
+		"th"
+	];
+	this.nativeClickTags = [
+		"a",
+		"area"
+	];
 	this.customTags = {};
 };
 
@@ -35,7 +43,11 @@ render.prototype.submitHandler = function(eventProps, toWrap) {
 	return `${toWrap} method="POST" action="${action}" `;
 };
 
-render.prototype.clickHandler = function(eventProps, toWrap) {
+render.prototype.clickHandler = function(eventProps, toWrap, parentTag) {
+	if (typeof(eventProps.eventName) === 'undefined' || eventProps.eventName === null || eventProps.eventName === "") {
+		return toWrap;
+	}
+
 	let extraParams = Object.keys(eventProps.params || {}).map((key) => {
 		if (typeof(eventProps.params[key]) === "object") {
 			return "";
@@ -43,12 +55,27 @@ render.prototype.clickHandler = function(eventProps, toWrap) {
 		return `${encodeURIComponent(key)}=${encodeURIComponent(eventProps.params[key])}`;
 	}).join("&").replace(/&&/g, "&");
 
+	if (this.nativeClickTags.indexOf(parentTag) !== -1) {
+		//just add the params on
+		return `${toWrap} href="?event=${eventProps.eventName}&${extraParams}" `;
+	}
+
+	if (this.internalClick.indexOf(parentTag) !== -1) {
+		return `<!-- @internalClickHandler -->${toWrap}><a href="?event=${eventProps.eventName}&${extraParams}">`;
+	}
+
 	return `<!-- @clickHandler --><a href="?event=${eventProps.eventName}&${extraParams}">${toWrap}`;
 };
 
 render.prototype.endClickHandler = function(val) {
 	if (val.trim().indexOf("<!-- @clickHandler -->") === 0) {
 		return `${val}</a><!-- /@clickHandler -->`;
+	}
+
+	if (val.trim().indexOf("<!-- @internalClickHandler -->") === 0) {
+		let lastTagPos = val.lastIndexOf('<');
+		val = val.substring(0, lastTagPos) + "</a>" + val.substring(lastTagPos);
+		return `${val}<!-- /@internalClickHandler -->`;
 	}
 
 	return val;
@@ -105,7 +132,7 @@ render.prototype.renderTagWithProperties = function(tag, properties, data) {
 		}
 
 		if (p === "onclick") {
-			render = this.clickHandler(propValue, render);
+			render = this.clickHandler(propValue, render, tag);
 		}
 
 		if (p === "submit") {
@@ -124,7 +151,11 @@ render.prototype.handleTag = function(c, data) {
 	};
 
 	if (typeof(c.__display) !== "undefined" && c.__display === false) {
-		return "";
+		return {
+			start 		: "",
+			content 	: "",
+			end 		: ""
+		};
 	}
 
 	if (c.children || (typeof(c.text) !== "undefined" && c.text !== null)) {
@@ -146,7 +177,7 @@ render.prototype.handleTag = function(c, data) {
 		);
 
 		return {
-			start 	: this.renderTagWithProperties(c.tag, c, data) + ">",
+			start 	: (this.renderTagWithProperties(c.tag, c, data) + ">").replace(">>", ">"),
 			content : content,
 			end 	: (c.tag === "textarea" ? "" : this.generateTabs()) + `</${c.tag}>`
 		};

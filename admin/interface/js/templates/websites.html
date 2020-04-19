@@ -28,6 +28,11 @@
 								</tr>
 							</tfoot>
 							<tbody>
+								<tr v-if="websites.length === 0">
+									<td colspan="2" class="no-results">
+										No websites exist.
+									</td>
+								</tr>
 								<tr v-for="item in websites">
 									<td>
 										<a :href="item.url" target="_blank">{{item.name}}</a>
@@ -53,12 +58,153 @@
 	</div>
 </template>
 
+<template id="template-tagSection">
+	<div class="tagSection" v-bind:class="{ 'droppable' : droppable, 'selected' : selected, 'inline' : definition.inline }" v-on:click="onClick">
+		<div class="tagInfo">
+			<span>Tag: <strong>{{tag.tag}}</strong></span>
+		</div>
+		<div class="tagRender" v-html="renderTag(tag)"></div>
+		<div
+		 	v-if="_websitesEditorControllerInstance.uniqueTags[tag.tag].hasChildren !== false && (Array.isArray(tag.children) || tag.children === null || tag.children === '' || typeof(tag.children) === 'undefined')"
+			class="tagChildren"
+			v-on:dragover="onDragOver"
+			v-on:dragleave="onDragLeave"
+			v-on:dragenter="onDragEnter"
+			v-on:drop="onDrop"
+			@drop.stop.prevent
+		>
+			<tagSection v-for="child in tag.children" :tag="child" />
+		</div>
+		<div class="evaluatedValue" v-if="_websitesEditorControllerInstance.uniqueTags[tag.tag].hasChildren !== false && (!Array.isArray(tag.children) && tag.children !== null && tag.children !== '' && typeof(tag.children) !== 'undefined')">
+			<code class="inline">Children: {{tag.children}}</code>
+		</div>
+	</div>
+</template>
+
 <template id="template-websiteEditor">
 	<div class="websiteEditor">
 		<alert text="Website saved!" v-bind:visible="showAlert"></alert>
+
 		<div class="container-fluid" v-if="viewEditorVisible">
-			<div class="editorWrapper">
-				<div id="viewEditor" class="editorWindow"></div>
+			<div class="editorSelector" v-bind:class="{ 'sourceMode' : sourceMode }">
+				<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item mx-4">
+							<button class="btn" v-bind:class="{ 'btn-primary' : !sourceMode }" v-on:click="_websitesEditorControllerInstance.showEditor();">
+								Editor
+							</button>
+						</li>
+						<li class="nav-item mx-4">
+							<button class="btn" v-bind:class="{ 'btn-primary' : sourceMode }" v-on:click="_websitesEditorControllerInstance.showSource();">
+								Source
+							</button>
+						</li>
+					</ul>
+				</nav>
+				<div class="uiEditor">
+					<div class="uiTags card shadow">
+						<div class="tagGroup" v-for="(group, name) in tagsets">
+							<div class="card-header">
+								<h6 class="m-0 font-weight-bold">{{name}}</h6>
+							</div>
+							<div class="card-body p-0">
+								<div :data-group="name" :data-tag="tag.name" class="tagEntry" v-for="tag in group.tags" draggable="true" v-on:dragstart="_websitesEditorControllerInstance.setDroppableConfig">
+									{{ tag.name }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="uiPreview">
+						<tagSection :tag="activeView" />
+					</div>
+					<div class="uiProperties card shadow">
+						<div class="propGroup" v-if="activeDefinition && activeDefinition.events">
+							<div class="card-header">
+								<h6 class="m-0 font-weight-bold">Events</h6>
+							</div>
+							<div class="card-body">
+								<div class="form-group" v-if="activeDefinition.events.click">
+									<label for="eventName">Event Name</label>
+
+									<input type="text" id="eventName" class="form-control" v-model="activeProperties.onclick.eventName" />
+								</div>
+							</div>
+						</div>
+						<div class="propGroup" v-if="activeDefinition && activeProperties">
+							<div class="card-header">
+								<h6 class="m-0 font-weight-bold">Conditionals</h6>
+							</div>
+							<div class="card-body">
+								<div class="form-group">
+									<div v-for="conditional in activeProperties.if">
+										<label for="statement">Statement</label>
+										<input type="text" id="statement" class="form-control" v-model="conditional.statement" />
+
+										<label for="operator">Operator</label>
+										<select id="operator" class="form-control" v-model="conditional.logicalOperator">
+											<option value="and">and</option>
+											<option value="or">or</option>
+										</select>
+									</div>
+
+									<button v-on:click="(activeProperties.if = activeProperties.if || []) && activeProperties.if.push({}) && _websitesEditorControllerInstance.refreshState();" class="btn btn-xs btn-primary">Add Conditional</button>
+								</div>
+							</div>
+						</div>
+						<div class="propGroup" v-if="activeDefinition && activeProperties">
+							<div class="card-header">
+								<h6 class="m-0 font-weight-bold">Loops</h6>
+							</div>
+							<div class="card-body">
+								<div class="form-group">
+									<label for="repeat">Repeat</label>
+
+									<input type="text" id="repeat" class="form-control" v-model="activeProperties.repeat" />
+								</div>
+							</div>
+						</div>
+						<div class="propGroup" v-for="group in activeDefinition.propertyGroups" v-if="activeDefinition">
+							<div class="card-header">
+								<h6 class="m-0 font-weight-bold">{{group.name}}</h6>
+							</div>
+							<div class="card-body">
+								<div class="form-group" v-for="prop in group.properties">
+									<label :for="'prop_' + prop">{{activeDefinition.properties[prop].name}}:</label>
+									<!-- single string -->
+									<input :id="'prop_' + prop" type="text" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'string' && activeDefinition.properties[prop].multiline !== true"/>
+
+									<!-- integer -->
+									<input :id="'prop_' + prop" type="number" step="1" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'integer'"/>
+
+									<!-- string array -->
+									<div class="array-input" v-if="activeDefinition.properties[prop].type === 'stringArray'">
+										<div class="array-input-item" v-for="(index, val) in activeProperties[prop]">
+											<input :id="'prop_' + prop + (index === 0 ? '' : '_' + index)" type="text" class="form-control" v-model="activeProperties[prop][index]" />
+											<button class="btn btn-xs btn-warning" v-on:click="activeProperties[prop].splice(index, 1) && _websitesEditorControllerInstance.refreshState();">Remove</button>
+										</div>
+										<button v-on:click="(activeProperties[prop] = activeProperties[prop] || []) && activeProperties[prop].push('') && _websitesEditorControllerInstance.refreshState();" class="btn btn-xs btn-primary">Add Entry</button>
+									</div>
+
+									<!-- multiline string -->
+									<textarea :id="'prop_' + prop" type="text" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'string' && activeDefinition.properties[prop].multiline === true"></textarea>
+
+									<!-- enumerations -->
+									<select :id="'prop_' + prop" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'enum'">
+										<option value="">Select a value</option>
+										<option :value="v" v-for="v in activeDefinition.properties[prop].values">{{v}}</option>
+									</select>
+
+									<!-- booleans -->
+									<input :id="'prop_' + prop" type="checkbox" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'boolean'"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="editorWrapper">
+					<div id="viewEditor" class="editorWindow"></div>
+				</div>
 			</div>
 		</div>
 

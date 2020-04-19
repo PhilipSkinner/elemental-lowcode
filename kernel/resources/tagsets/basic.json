@@ -1,0 +1,3941 @@
+[
+	{
+		"name" : "Layout",
+		"tags" : [
+			{
+				"name" : "Section",
+				"tag" : "section",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Noscript",
+				"tag" : "noscript",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Navigation",
+				"tag" : "nav",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Main Section",
+				"tag" : "main",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Header",
+				"tag" : "header",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Horizontal Rule",
+				"tag" : "hr",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Footer",
+				"tag" : "footer",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"name" : "Text",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Body",
+				"tag" : "body",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {},
+				"propertyGroups" : [],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Break",
+				"tag" : "br",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {},
+				"propertyGroups" : [],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Division",
+				"tag" : "div",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Article",
+				"tag" : "article",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Aside",
+				"tag" : "aside",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Details",
+				"tag" : "details",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					},
+					"open" : {
+						"name" : "Is Visible",
+						"type" : "boolean"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"open"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Dialog",
+				"tag" : "dialog",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					},
+					"open" : {
+						"name" : "Is Open",
+						"type" : "boolean"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"open"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			}
+		]
+	},
+	{
+		"name" : "Lists",
+		"tags" : [
+			{
+				"name" : "Unordered List",
+				"tag" : "ul",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Ordered List",
+				"tag" : "ol",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"reversed" : {
+						"type" : "boolean",
+						"name" : "Display in Reverse"
+					},
+					"start" : {
+						"type" : "integer",
+						"name" : "Start Number"
+					},
+					"type" : {
+						"type" : "enum",
+						"values" : [
+							"1",
+							"A",
+							"a",
+							"I",
+							"i"
+						],
+						"name" : "Marker Type"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"start",
+							"type",
+							"reversed"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "List Item",
+				"tag" : "li",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					},
+					"value" : {
+						"type" : "integer",
+						"name" : "Ordered List Num"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"value"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Description Content",
+				"tag" : "dd",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Description List",
+				"tag" : "dl",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Description Term",
+				"tag" : "dt",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			}
+		]
+	},
+	{
+		"name" : "Text",
+		"tags" : [
+			{
+				"name" : "Word Break Opportunity",
+				"tag" : "wbr",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Variable",
+				"tag" : "var",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Underline",
+				"tag" : "u",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Time",
+				"tag" : "time",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					},
+					"datetime" : {
+						"type" : "string",
+						"name" : "Machine readable value"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"datetime"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Superscript",
+				"tag" : "sup",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Summary",
+				"tag" : "summary",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Subscript",
+				"tag" : "sub",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Strong",
+				"tag" : "strong",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Strikethrough",
+				"tag" : "strike",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Small text",
+				"tag" : "small",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Sample Output",
+				"tag" : "samp",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"name" : "Text",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Incorrect text",
+				"tag" : "s",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"name" : "Text",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Ruby Annotation",
+				"tag" : "ruby",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Ruby Annotation Explaination",
+				"tag" : "rt",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Ruby Annotation Parenthesis",
+				"tag" : "rp",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Short Quotation",
+				"tag" : "q",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					},
+					"cite" : {
+						"name" : "Cite URL",
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"cite"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Preformatted text",
+				"tag" : "pre",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"name" : "Text",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Calculation Output",
+				"tag" : "output",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"name" : "Text",
+						"multiline" : true
+					},
+					"for" : {
+						"type" : "string",
+						"name" : "Element IDs"
+					},
+					"form" : {
+						"type" : "string",
+						"name" : "Form ID"
+					},
+					"name" : {
+						"type" : "string",
+						"name" : "Name"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name",
+							"for",
+							"text",
+							"form"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Marked",
+				"tag" : "mark",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Keyboard Input",
+				"tag" : "kbd",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Inserted",
+				"tag" : "ins",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"name" : "Text",
+						"multiline" : true
+					},
+					"cite" : {
+						"type" : "string",
+						"name" : "Cite URL"
+					},
+					"datetime" : {
+						"type" : "string",
+						"name" : "Date and time of insertion"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"cite",
+							"datetime"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Italic",
+				"tag" : "i",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Heading 1",
+				"tag" : "h1",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Heading 2",
+				"tag" : "h2",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Heading 3",
+				"tag" : "h3",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Heading 4",
+				"tag" : "h4",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Heading 5",
+				"tag" : "h5",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Heading 6",
+				"tag" : "h6",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Definition",
+				"tag" : "dfn",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"name" : "Text",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Deleted",
+				"tag" : "del",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"cite" : {
+						"name" : "Cite URL",
+						"type" : "string"
+					},
+					"datetime" : {
+						"name" : "Deletion Date/Time",
+						"type" : "datetime"
+					},
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"cite",
+							"datetime"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Cite",
+				"tag" : "cite",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Code",
+				"tag" : "code",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Paragraph",
+				"events" : {
+					"click" : true
+				},
+				"tag" : "p",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Span",
+				"tag" : "span",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Bold",
+				"tag" : "b",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Emphasis",
+				"tag" : "em",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Abbreviation",
+				"tag" : "abbr",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"title"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Address",
+				"tag" : "address",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"hasChildren" : true
+			},
+			{
+				"name" : "Blockquote",
+				"tag" : "blockquote",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"hasChildren" : true
+			},
+			{
+				"name" : "Bi-Directional Isolated Text",
+				"tag" : "bdi",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"hasChildren" : true
+			},
+			{
+				"name" : "Bi-Directional Override",
+				"tag" : "bdo",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					},
+					"dir" : {
+						"name" : "Direction",
+						"type" : "enum",
+						"values" : [
+							"ltr",
+							"rtl"
+						]
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"dir"
+						]
+					}
+				],
+				"hasChildren" : true
+			},
+			{
+				"name" : "Data",
+				"tag" : "data",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"value" : {
+						"type" : "string",
+						"name" : "Value"
+					},
+					"text" : {
+						"type" : "string",
+						"name" : "Text",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"value"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			}
+		]
+	},
+	{
+		"name" : "Actions",
+		"tags" : [
+			{
+				"name" : "Link Map",
+				"tag" : "map",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"name" : {
+						"name" : "Name",
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Link",
+				"tag" : "a",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"title",
+							"href",
+							"target"
+						]
+					}
+				],
+				"properties": {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					},
+					"href" : {
+						"name" : "Href",
+						"type" : "string"
+					},
+					"target" : {
+						"name" : "Target",
+						"type" : "enum",
+						"values" : [
+							"_blank",
+							"_parent",
+							"_self",
+							"_top"
+						],
+						"canOverride" : true
+					},
+					"download" : {
+						"name" : "Download",
+						"type" : "string"
+					},
+					"hreflang" : {
+						"name" : "Target language",
+						"type" : "string"
+					},
+					"media" : {
+						"name" : "Media",
+						"type" : "string"
+					},
+					"ping" : {
+						"name" : "Ping",
+						"type" : "stringArray"
+					},
+					"referrerpolicy" : {
+						"name" : "Referrer Policy",
+						"type" : "enum",
+						"values" : [
+							"no-referrer",
+							"no-referrer-when-downgrade",
+							"origin",
+							"origin-when-cross-origin",
+							"unsafe-url"
+						]
+					},
+					"rel" : {
+						"name" : "Href Relationship",
+						"type" : "enum",
+						"values" : [
+							"alternate",
+							"author",
+							"bookmark",
+							"external",
+							"help",
+							"license",
+							"next",
+							"nofollow",
+							"noreferrer",
+							"noopener",
+							"prev",
+							"search",
+							"tag"
+						]
+					},
+					"type" : {
+						"name" : "Type",
+						"type" : "string"
+					}
+				},
+				"inline" : true,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Button",
+				"tag" : "button",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string"
+					},
+					"autofocus" : {
+						"name" : "Autofocus",
+						"type" : "boolean"
+					},
+					"disabled" : {
+						"name" : "Disabled",
+						"type" : "boolean"
+					},
+					"form" : {
+						"name" : "ID",
+						"type" : "string"
+					},
+					"formaction" : {
+						"name" : "Action",
+						"type" : "string"
+					},
+					"formenctype" : {
+						"name" : "Encoding Type",
+						"type" : "enum",
+						"values" : [
+							"application/x-www-form-urlencoded",
+							"multipart/form-data",
+							"text/plain"
+						]
+					},
+					"formmethod" : {
+						"name" : "Method",
+						"type" : "enum",
+						"values" : [
+							"get",
+							"post"
+						]
+					},
+					"formnovalidate" : {
+						"name" : "Disable form validation",
+						"type" : "boolean"
+					},
+					"formtarget" : {
+						"name" : "Target",
+						"type" : "enum",
+						"values" : [
+							"_blank",
+							"_parent",
+							"_self",
+							"_top"
+						],
+						"canOverride" : true
+					},
+					"name" : {
+						"name" : "Name",
+						"type" : "string"
+					},
+					"type" : {
+						"name" : "Type",
+						"type" : "enum",
+						"values" : [
+							"button",
+							"reset",
+							"submit"
+						]
+					},
+					"value" : {
+						"name" : "Value",
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"type",
+							"name",
+							"text"
+						]
+					},
+					{
+						"name" : "Form",
+						"properties" : [
+							"form",
+							"formaction",
+							"formenctype",
+							"formmethod",
+							"formnovalidate",
+							"formtarget"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Clickable Area",
+				"tag" : "area",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"alt" : {
+						"name" : "Alternative Text",
+						"type" : "string"
+					},
+					"coords" : {
+						"name" : "Coordinates",
+						"type" : "string"
+					},
+					"download" : {
+						"name" : "Download",
+						"type" : "string"
+					},
+					"href" : {
+						"name" : "Href",
+						"type" : "string"
+					},
+					"hreflang" : {
+						"name" : "Href Lang",
+						"type" : "string"
+					},
+					"media" : {
+						"name" : "Media",
+						"type" : "string"
+					},
+					"rel" : {
+						"name" : "Href Relationship",
+						"type" : "enum",
+						"values" : [
+							"alternate",
+							"author",
+							"bookmark",
+							"help",
+							"license",
+							"next",
+							"nofollow",
+							"noreferrer",
+							"prefetch",
+							"prev",
+							"search",
+							"tag"
+						]
+					},
+					"shape" : {
+						"name" : "Area Shape",
+						"type" : "enum",
+						"values" : [
+							"default",
+							"rect",
+							"circle",
+							"poly"
+						]
+					},
+					"target" : {
+						"name" : "Target",
+						"type" : "enum",
+						"values" : [
+							"_blank",
+							"_parent",
+							"_self",
+							"_top"
+						],
+						"canOverride" : true
+					},
+					"type" : {
+						"name" : "Type",
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"shape",
+							"coords",
+							"href",
+							"alt"
+						]
+					}
+				],
+				"hasChildren" : false
+			}
+		]
+	},
+	{
+		"name" : "Tables",
+		"tags" : [
+			{
+				"name" : "Table Row",
+				"tag" : "tr",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Table Header",
+				"tag" : "thead",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Table Header Cell",
+				"tag" : "th",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"class"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Table Footer",
+				"tag" : "tfoot",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Table Cell",
+				"tag" : "td",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"class"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Table Body",
+				"tag" : "tbody",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Table",
+				"tag" : "table",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Column Group",
+				"tag" : "colgroup",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"span" : {
+						"type" : "number",
+						"name" : "Span"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"span"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Column",
+				"tag" : "col",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"span" : {
+						"type" : "integer",
+						"name" : "Span"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"span",
+							"style"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Caption",
+				"tag" : "caption",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			}
+		]
+	},
+	{
+		"name" : "Forms",
+		"tags" : [
+			{
+				"name" : "Textarea",
+				"tag" : "textarea",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Value"
+					},
+					"autofocus" : {
+						"type" : "boolean",
+						"name" : "Autofocus"
+					},
+					"cols" : {
+						"type" : "integer",
+						"name" : "Number of Columns"
+					},
+					"dirname" : {
+						"type" : "string",
+						"name" : "Submitted text direction"
+					},
+					"disabled" : {
+						"type" : "boolean",
+						"name" : "Disabled"
+					},
+					"form" : {
+						"type" : "string",
+						"name" : "Form ID"
+					},
+					"maxlength" : {
+						"type" : "integer",
+						"name" : "Max Length"
+					},
+					"name" : {
+						"type" : "string",
+						"name" : "Name"
+					},
+					"placeholder" : {
+						"type" : "string",
+						"name" : "Placeholder"
+					},
+					"readonly" : {
+						"type" : "boolean",
+						"name" : "Read Only"
+					},
+					"rows" : {
+						"type" : "integer",
+						"name" : "Rows"
+					},
+					"wrap" : {
+						"type" : "enum",
+						"values" : [
+							"hard",
+							"soft"
+						],
+						"name" : "Text wrap mode"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name",
+							"text",
+							"rows",
+							"cols",
+							"maxlength",
+							"placeholder",
+							"required",
+							"readonlye",
+							"autofocus",
+							"dirname",
+							"form",
+							"wrap"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Dropdown",
+				"tag" : "select",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"autofocus" : {
+						"type" : "boolean",
+						"name" : "Autofocus"
+					},
+					"disabled" : {
+						"type" : "boolean",
+						"name" : "Disabled"
+					},
+					"form" : {
+						"type" : "string",
+						"name" : "Form ID"
+					},
+					"multiple" : {
+						"type" : "boolean",
+						"name" : "Can select multiple"
+					},
+					"name" : {
+						"type" : "string",
+						"name" : "Name"
+					},
+					"required" : {
+						"type" : "boolean",
+						"name" : "Required"
+					},
+					"size" : {
+						"type" : "integer",
+						"name" : "Visible items"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name",
+							"required",
+							"size",
+							"autofocus",
+							"disabled",
+							"form",
+							"multiple"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Progress Bar",
+				"tag" : "progress",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"name" : "Text",
+						"multiline" : true
+					},
+					"max" : {
+						"type" : "integer",
+						"name" : "Completed value"
+					},
+					"value" : {
+						"type" : "integer",
+						"name" : "Current value"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"value",
+							"max",
+							"text"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Option",
+				"tag" : "option",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"disabled" : {
+						"type" : "boolean",
+						"name" : "Disabled"
+					},
+					"text" : {
+						"type" : "string",
+						"name" : "Label"
+					},
+					"selected" : {
+						"type" : "boolean",
+						"name" : "Is Selected"
+					},
+					"value" : {
+						"type" : "string",
+						"name" : "Value"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"value",
+							"disabled",
+							"selected"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Option Group",
+				"tag" : "optgroup",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"disabled" : {
+						"type" : "boolean",
+						"name" : "Disabled"
+					},
+					"label" : {
+						"type" : "string",
+						"name" : "Label"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"label",
+							"disabled"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Meter",
+				"tag" : "meter",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"form" : {
+						"type" : "string",
+						"name" : "Form ID"
+					},
+					"high" : {
+						"type" : "integer",
+						"name" : "High Threshold"
+					},
+					"low" : {
+						"type" : "integer",
+						"name" : "Low Threshold"
+					},
+					"max" : {
+						"type" : "integer",
+						"name" : "Maximum Value"
+					},
+					"min" : {
+						"type" : "integer",
+						"name" : "Minimum Value"
+					},
+					"optimum" : {
+						"type" : "integer",
+						"name" : "Optimum Value"
+					},
+					"value" : {
+						"type" : "integer",
+						"name" : "Value"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"value",
+							"min",
+							"max",
+							"high",
+							"low",
+							"optimum",
+							"form"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Fieldset Legend",
+				"tag" : "leged",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Label",
+				"tag" : "label",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					},
+					"for" : {
+						"name" : "Field ID",
+						"type" : "string"
+					},
+					"form" : {
+						"name" : "Form ID",
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"for",
+							"form"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Input",
+				"tag" : "input",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"accept" : {
+						"type" : "string",
+						"name" : "Acceptable Files"
+					},
+					"alt" : {
+						"name" : "Alternative Text",
+						"type" : "string"
+					},
+					"autocomplete" : {
+						"name" : "Autocomplete",
+						"type" : "enum",
+						"values" : [
+							"on",
+							"off"
+						]
+					},
+					"autofocus" : {
+						"name" : "Autofocus",
+						"type" : "boolean"
+					},
+					"checked" : {
+						"name" : "Checked",
+						"type" : "boolean"
+					},
+					"dirname" : {
+						"name" : "Submitted text direction",
+						"type" : "string"
+					},
+					"disabled" : {
+						"name" : "Disabled",
+						"type" : "boolean"
+					},
+					"form" : {
+						"name" : "Form",
+						"type" : "string"
+					},
+					"formaction" : {
+						"name" : "Action",
+						"type" : "string"
+					},
+					"formenctype" : {
+						"name" : "Encoding Type",
+						"type" : "enum",
+						"values" : [
+							"application/x-www-form-urlencoded",
+							"multipart/form-data",
+							"text/plain"
+						]
+					},
+					"formmethod" : {
+						"name" : "Method",
+						"type" : "enum",
+						"values" : [
+							"get",
+							"post"
+						]
+					},
+					"formnovalidate" : {
+						"name" : "Disable Validation",
+						"type" : "boolean"
+					},
+					"formtarget" : {
+						"name" : "Target",
+						"type" : "enum",
+						"values" : [
+							"_blank",
+							"_self",
+							"_parent",
+							"_top"
+						],
+						"canOverride" : true
+					},
+					"height" : {
+						"type" : "integer",
+						"name" : "Height"
+					},
+					"list" : {
+						"type" : "string",
+						"name" : "Datalist"
+					},
+					"max" : {
+						"type" : "string",
+						"name" : "Maximum Value"
+					},
+					"maxlength" : {
+						"type" : "integer",
+						"name" : "Maximum Length"
+					},
+					"min" : {
+						"type" : "string",
+						"name" : "Minimum Value"
+					},
+					"minlength" : {
+						"type" : "integer",
+						"name" : "Minimum Length"
+					},
+					"multiple" : {
+						"type" : "boolean",
+						"name" : "Multiple Values Supported"
+					},
+					"name" : {
+						"type" : "text",
+						"name" : "Name"
+					},
+					"pattern" : {
+						"name" : "Required Pattern",
+						"type" : "string"
+					},
+					"placeholder" : {
+						"name" : "Placeholder",
+						"type" : "string"
+					},
+					"readonly" : {
+						"name" : "Is Read Only",
+						"type" : "boolean"
+					},
+					"required" : {
+						"name" : "Is Required",
+						"type" : "boolean"
+					},
+					"size" : {
+						"name" : "Size",
+						"type" : "integer"
+					},
+					"src" : {
+						"name" : "Image Source",
+						"type" : "string"
+					},
+					"step" : {
+						"name" : "Step Size",
+						"type" : "integer"
+					},
+					"type" : {
+						"name" : "Field Type",
+						"type" : "enum",
+						"values" : [
+							"button",
+							"checkbox",
+							"color",
+							"date",
+							"datetime-local",
+							"email",
+							"file",
+							"hidden",
+							"image",
+							"month",
+							"number",
+							"password",
+							"radio",
+							"range",
+							"reset",
+							"search",
+							"submit",
+							"tel",
+							"text",
+							"time",
+							"url",
+							"week"
+						]
+					},
+					"value" : {
+						"name" : "Value",
+						"type" : "string"
+					},
+					"width" : {
+						"name" : "Width",
+						"type" : "integer"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name",
+							"value",
+							"type",
+							"required"
+						]
+					},
+					{
+						"name" : "Form",
+						"properties" : [
+							"form",
+							"formaction",
+							"formenctype",
+							"formmethod",
+							"formnovalidate",
+							"formtarget"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Form",
+				"tag" : "form",
+				"events" : {
+					"submit" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"accept-charset" : {
+						"type" : "string",
+						"name" : "Encoding Characterset"
+					},
+					"action" : {
+						"type" : "string",
+						"name" : "Target URL"
+					},
+					"autocomplete" : {
+						"type" : "enum",
+						"values" : [
+							"on",
+							"off"
+						],
+						"name" : "Autocomplete"
+					},
+					"enctype" : {
+						"name" : "Encoding type",
+						"type" : "enum",
+						"values" : [
+						 	"application/x-www-form-urlencoded",
+							"multipart/form-data",
+							"text/plain"
+						]
+					},
+					"method" : {
+						"name" : "Method",
+						"type" : "enum",
+						"values" : [
+							"get",
+							"post"
+						]
+					},
+					"name" : {
+						"name" : "Name",
+						"type" : "string"
+					},
+					"novalidate" : {
+						"name" : "Disable Validation",
+						"type" : "boolean"
+					},
+					"target" : {
+						"name" : "Target",
+						"type" : "enum",
+						"values" : [
+							"_blank",
+							"_self",
+							"_parent",
+							"_top"
+						]
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name",
+							"action",
+							"method",
+							"enctype",
+							"target",
+							"autocomplete",
+							"novalidate",
+							"accept-charset"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Fieldset",
+				"tag" : "fieldset",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"disabled" : {
+						"type" : "boolean",
+						"name" : "Is Disabled"
+					},
+					"form" : {
+						"type" : "string",
+						"name" : "Form ID"
+					},
+					"name" : {
+						"type" : "string",
+						"name" : "Name"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name",
+							"form",
+							"disabled"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Datalist",
+				"tag" : "datalist",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"id"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			}
+		]
+	},
+	{
+		"name" : "Multimedia/Embedding",
+		"tags" : [
+			{
+				"name" : "Video",
+				"tag" : "video",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Unsupported Message"
+					},
+					"autoplay" : {
+						"type" : "boolean",
+						"name" : "Autoplay"
+					},
+					"controls" : {
+						"type" : "boolean",
+						"name" : "Controls Visible"
+					},
+					"height" : {
+						"type" : "integer",
+						"name" : "Height"
+					},
+					"loop" : {
+						"type" : "boolean",
+						"name" : "Loop"
+					},
+					"muted" : {
+						"type" : "boolean",
+						"name" : "Muted"
+					},
+					"poster" : {
+						"type" : "string",
+						"name" : "Poster URL"
+					},
+					"preload" : {
+						"type" : "enum",
+						"values" : [
+							"auto",
+							"metadata",
+							"none"
+						],
+						"name" : "Preload"
+					},
+					"src" : {
+						"type" : "string",
+						"name" : "Video URL"
+					},
+					"width" : {
+						"type" : "integer",
+						"name" : "Width"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text",
+							"src",
+							"width",
+							"height",
+							"autoplay",
+							"controls",
+							"loop",
+							"muted",
+							"poster",
+							"preload"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Subtitles Track",
+				"tag" : "track",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"default" : {
+						"type" : "boolean",
+						"name" : "Is Default"
+					},
+					"kind" : {
+						"type" : "enum",
+						"values" : [
+							"captions",
+							"chapters",
+							"descriptions",
+							"metadata",
+							"subtitles"
+						],
+						"name" : "Track kind"
+					},
+					"label" : {
+						"type" : "string",
+						"name" : "Label"
+					},
+					"src" : {
+						"type" : "string",
+						"name" : "Source URL"
+					},
+					"srclang" : {
+						"type" : "string",
+						"name" : "Language"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"src",
+							"label",
+							"srclang",
+							"kind",
+							"default"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Template",
+				"tag" : "template",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"id",
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Vector Graphic",
+				"tag" : "svg",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"width" : {
+						"type" : "integer",
+						"name" : "Width"
+					},
+					"height" : {
+						"type" : "integer",
+						"name" : "Height"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"width",
+							"height"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Stylesheet",
+				"tag" : "style",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"name" : "Stylesheet",
+						"multiline" : true
+					},
+					"media" : {
+						"type" : "string",
+						"name" : "Media Query"
+					},
+					"type" : {
+						"type" : "enum",
+						"values" : [
+							"text/css"
+						],
+						"name" : "Type"
+					}
+				},
+				"propertyGroups": [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"type",
+							"media",
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Script Include",
+				"tag" : "script",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Text"
+					},
+					"async" : {
+						"type" : "boolean",
+						"name" : "Load Async"
+					},
+					"charset" : {
+						"type" : "string",
+						"name" : "Character Set"
+					},
+					"defer" : {
+						"type" : "boolean",
+						"name" : "Defer Loading"
+					},
+					"src" : {
+						"type" : "string",
+						"name" : "Script URL"
+					},
+					"type" : {
+						"type" : "string",
+						"name" : "Script Type"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"src",
+							"type",
+							"async",
+							"defer",
+							"text",
+							"charset"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Object Param",
+				"tag" : "param",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"name" : {
+						"type" : "string",
+						"name" : "Name"
+					},
+					"value" : {
+						"type" : "string",
+						"name" : "Value"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name",
+							"value"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Object",
+				"tag" : "object",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"data" : {
+						"type" : "string",
+						"name" : "URL"
+					},
+					"form" : {
+						"type" : "string",
+						"name" : "Form ID"
+					},
+					"height" : {
+						"type" : "integer",
+						"name" : "Height"
+					},
+					"name" : {
+						"type" : "string",
+						"name" : "Name"
+					},
+					"type" : {
+						"type" : "string",
+						"name" : "Media Type"
+					},
+					"usemap" : {
+						"type" : "string",
+						"name" : "Map ID"
+					},
+					"width" : {
+						"type" : "integer",
+						"name" : "Width"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"data",
+							"type",
+							"name",
+							"width",
+							"height",
+							"form",
+							"usemap"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "External Resource",
+				"tag" : "link",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"crossorigin" : {
+						"type" : "enum",
+						"values" : [
+						 	"anonymous",
+							"use-credentials"
+						],
+						"name" : "Cross Origin"
+					},
+					"href" : {
+						"type" : "string",
+						"name" : "URI"
+					},
+					"hreflang" : {
+						"type" : "string",
+						"name" : "URI Language"
+					},
+					"media" : {
+						"type" : "string",
+						"name" : "Media Query"
+					},
+					"referrerpolicy" : {
+						"type" : "enum",
+						"values" : [
+							"no-referrer",
+							"no-referrer-when-downgrade",
+							"origin",
+							"origin-when-cross-origin",
+							"unsafe-url"
+						],
+						"name" : "Referrer Policy"
+					},
+					"rel" : {
+						"type" : "enum",
+						"values" : [
+							"alternate",
+							"author",
+							"dns-prefetch",
+							"help",
+							"icon",
+							"license",
+							"next",
+							"pingback",
+							"preconnect",
+							"prefetch",
+							"preload",
+							"prerender",
+							"prev",
+							"search",
+							"stylesheet"
+						],
+						"name" : "Relationship"
+					},
+					"sizes" : {
+						"type" : "string",
+						"name" : "Icon Sizes"
+					},
+					"title" : {
+						"type" : "string",
+						"name" : "Title"
+					},
+					"type" : {
+						"type" : "string",
+						"name" : "Media Type"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"rel",
+							"href",
+							"media",
+							"crossorigin",
+							"referrerpolicy",
+							"hreflang",
+							"title",
+							"sizes",
+							"type"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Image",
+				"tag" : "img",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"alt" : {
+						"type" : "string",
+						"name" : "Alternative Text"
+					},
+					"crossorigin" : {
+						"name" : "Cross Origin",
+						"type" : "enum",
+						"values" : [
+							"anonymous",
+							"use-credentials"
+						]
+					},
+					"height" : {
+						"name" : "Height",
+						"type" : "integer"
+					},
+					"ismap" : {
+						"name" : "Is Map",
+						"type" : "boolean"
+					},
+					"usemap" : {
+						"type" : "string",
+						"name" : "Map ID"
+					},
+					"longdesc" : {
+						"name" : "Description URL",
+						"type" : "string"
+					},
+					"referrerpolicy" : {
+						"name" : "Referrer Policy",
+						"type" : "enum",
+						"values" : [
+						 	"no-referrer",
+							"no-referrer-when-downgrade",
+							"origin",
+							"origin-when-cross-origin",
+							"unsafe-url"
+						]
+					},
+					"sizes" : {
+						"name" : "Sizes",
+						"type" : "string"
+					},
+					"src" : {
+						"name" : "Source",
+						"type" : "string"
+					},
+					"srcset" : {
+						"name" : "Source Set",
+						"type" : "string"
+					},
+					"width" : {
+						"name" : "Width",
+						"type" : "integer"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"src",
+							"width",
+							"height",
+							"alt",
+							"referrerpolicy",
+							"crossorigin",
+							"srcset",
+							"sizes",
+							"ismap",
+							"longdesc"
+						]
+					}
+				],
+				"inline" : true,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Iframe",
+				"tag" : "iframe",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"allow" : {
+						"name" : "Feature Policy",
+						"type" : "string"
+					},
+					"allowfullscreen" : {
+						"name" : "Allow Full Screen",
+						"type" : "boolean"
+					},
+					"allowpaymentrequest" : {
+						"name" : "Allow Payment Requests",
+						"type" : "boolean"
+					},
+					"height" : {
+						"name" : "Height",
+						"type" : "integer"
+					},
+					"name" : {
+						"name" : "Name",
+						"type" : "string"
+					},
+					"referrerpolicy" : {
+						"name" : "Referrer Policy",
+						"type" : "enum",
+						"values" : [
+							"no-referrer",
+							"no-referrer-when-downgrade",
+							"origin",
+							"origin-when-cross-origin",
+							"same-origin",
+							"strict-origin",
+							"strict-origin-when-cross-origin",
+							"unsafe-url"
+						]
+					},
+					"sandbox" : {
+						"name" : "Sandbox",
+						"type" : "enum",
+						"values" : [
+							"allow-forms",
+							"allow-pointer-lock",
+							"allow-popups",
+							"allow-same-origin",
+							"allow-scripts",
+							"allow-top-navigation"
+						]
+					},
+					"src" : {
+						"name" : "URL",
+						"type" : "string"
+					},
+					"srcdoc" : {
+						"name" : "HTML Content",
+						"type" : "string",
+						"multiline" : true
+					},
+					"width" : {
+						"name" : "Width",
+						"type" : "integer"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name",
+							"width",
+							"height",
+							"src",
+							"referrerpolicy",
+							"sandbox",
+							"allowfullscreen",
+							"allowpaymentrequest",
+							"allow",
+							"srcdoc"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Figure",
+				"tag" : "figure",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"class"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Figure Caption",
+				"tag" : "figcaption",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Text",
+						"type" : "string",
+						"multiline" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Embed",
+				"tag" : "embed",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"height" : {
+						"name" : "Height",
+						"type" : "integer"
+					},
+					"src" : {
+						"name" : "Source",
+						"type" : "string"
+					},
+					"type" : {
+						"name" : "Media Type",
+						"type" : "string"
+					},
+					"width" : {
+						"name" : "Width",
+						"type" : "integer"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"src",
+							"width",
+							"height",
+							"type"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Canvas",
+				"tag" : "canvas",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"height" : {
+						"type" : "integer",
+						"name" : "Height"
+					},
+					"width" : {
+						"type" : "integer",
+						"name" : "Width"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"id",
+							"height",
+							"width"
+						]
+					}
+				],
+				"hasChildren" : false,
+				"inline" : false
+			},
+			{
+				"name" : "Audio",
+				"tag" : "audio",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"name" : "Unsupported Message",
+						"type" : "string",
+						"multiline" : true
+					},
+					"autoplay" : {
+						"name" : "Autoplay",
+						"type" : "boolean"
+					},
+					"controls" : {
+						"name" : "Controls available",
+						"type" : "boolean"
+					},
+					"loop" : {
+						"name" : "Loop audio",
+						"type" : "boolean"
+					},
+					"muted" : {
+						"name" : "Muted",
+						"type" : "boolean"
+					},
+					"preload" : {
+						"type" : "enum",
+						"values" : [
+							"auto",
+							"metadata",
+							"none"
+						]
+					},
+					"src" : {
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Audio Source",
+				"tag" : "source",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"src" : {
+						"name" : "Source",
+						"type" : "string"
+					},
+					"type" : {
+						"name" : "File type",
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"src",
+							"media",
+							"type"
+						]
+					}
+				],
+				"hasChildren" : false,
+				"inline" : false
+			},
+			{
+				"name" : "Picture",
+				"tag" : "picture",
+				"events" : {
+					"click" : true
+				},
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {},
+				"propertyGroups" : [],
+				"hasChildren" : true,
+				"inline" : false
+			},
+			{
+				"name" : "Picture Source",
+				"tag" : "source",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"srcset" : {
+						"name" : "Source",
+						"type" : "string"
+					},
+					"media" : {
+						"name" : "Media query",
+						"type" : "string"
+					},
+					"sizes" : {
+						"name" : "Image sizes",
+						"type" : "string"
+					},
+					"type": {
+						"name" : "File type",
+						"type" : "string"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"type",
+							"media",
+							"sizes",
+							"srcset"
+						]
+					}
+				],
+				"hasChildren" : false,
+				"inline" : false
+			}
+		]
+	},
+	{
+		"name" : "Metadata",
+		"tags" : [
+			{
+				"name" : "Page title",
+				"tag" : "title",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"text" : {
+						"type" : "string",
+						"multiline" : true,
+						"name" : "Title"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"text"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "Metadata",
+				"tag" : "meta",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"charset" : {
+						"type" : "string",
+						"name" : "Character Set"
+					},
+					"content" : {
+						"type" : "string",
+						"name" : "Content",
+						"multiline" : true
+					},
+					"http-equiv" : {
+						"type" : "enum",
+						"values" : [
+							"content-type",
+							"default-style",
+							"refresh"
+						],
+						"name" : "HTTP Header Equalivilent"
+					},
+					"name" : {
+						"type" : "string",
+						"name" : "Name"
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"name",
+							"content",
+							"charset",
+							"http-equiv"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : false
+			},
+			{
+				"name" : "HTML",
+				"tag" : "html",
+				"includedPropertyGroups" : [],
+				"properties" : {
+					"xmlns" : {
+						"name" : "XML Namespace",
+						"type" : "enum",
+						"values" : [
+							"http://www.w3.org/1999/xhtml"
+						]
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"xmlns"
+						]
+					}
+				],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Head",
+				"tag" : "head",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {},
+				"propertyGroups" : [],
+				"inline" : false,
+				"hasChildren" : true
+			},
+			{
+				"name" : "Base URI",
+				"tag" : "base",
+				"includedPropertyGroups" : [
+					"global"
+				],
+				"properties" : {
+					"href" : {
+						"name" : "Href",
+						"type" : "string"
+					},
+					"target" : {
+						"name" : "Target",
+						"type" : "enum",
+						"values" : [
+							"_blank",
+							"_parent",
+							"_self",
+							"_top"
+						],
+						"canOverride" : true
+					}
+				},
+				"propertyGroups" : [
+					{
+						"name" : "Properties",
+						"properties" : [
+							"href",
+							"target"
+						]
+					}
+				],
+				"hasChildren" : false
+			}
+		]
+	}
+]

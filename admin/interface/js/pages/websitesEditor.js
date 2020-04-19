@@ -1,25 +1,44 @@
 const _websitesEditorController = function(page) {
-	this._page = page;
-	this.website = {};
-	this.clients = [];
-	this.routes = [];
-	this.tags = [];
-	this.mainVisible = true;
-	this.viewEditorVisible = false;
-	this.controllerEditorVisible = false;
-	this.newResourceVisible = false;
-	this.resources = {};
-	this.staticfiles = [];
-
-	this.editor = null;
+	this._page 						= page;
+	this.website 					= {};
+	this.clients 					= [];
+	this.routes 					= [];
+	this.tags 						= [];
+	this.mainVisible 				= true;
+	this.viewEditorVisible 			= false;
+	this.controllerEditorVisible 	= false;
+	this.newResourceVisible 		= false;
+	this.sourceMode 				= false;
+	this.resources 					= {};
+	this.staticfiles 				= [];
+	this.tagsets 					= {};
+	this.activeView 				= {};
+	this.loadedTagsets 				= {};
+	this.activeDefinition 			= {};
+	this.activeProperties 			= {};
+	this.uniqueTags 				= {};
+	this.loadedProperties 			= {};
+	this.propertyGroups 				= {};
+	this.editor 					= null;
 };
 
 _websitesEditorController.prototype.wipeData = function() {
-	this.website = {};
-	this.routes = [];
-	this.tags = [];
-	this.resources = {};
-	this.staticfiles = [];
+	this.website 					= {};
+	this.routes 					= [];
+	this.tags 						= [];
+	this.resources 					= {};
+	this.staticfiles 				= [];
+	this.mainVisible 				= true;
+	this.viewEditorVisible 			= false;
+	this.controllerEditorVisible 	= false;
+	this.newResourceVisible 		= false;
+	this.sourceMode 				= false;
+	this.activeProperties 			= {};
+	this.activeDefinition 			= {};
+	this.propertyGroups 				= {};
+	this.loadedTagsets 				= {};
+	this.uniqueTags 				= {};
+	this.loadedProperties 			= {};
 };
 
 _websitesEditorController.prototype.getData = function() {
@@ -33,7 +52,12 @@ _websitesEditorController.prototype.getData = function() {
 		controllerEditorVisible : this.controllerEditorVisible,
 		newResourceVisible 		: this.newResourceVisible,
 		showAlert 				: false,
+		sourceMode 				: this.sourceMode,
 		staticfiles 			: this.staticfiles,
+		tagsets 				: this.tagsets,
+		activeView 				: this.activeView,
+		activeProperties 		: this.activeProperties,
+		allProperties 			: this.propertyGroups,
 	};
 };
 
@@ -59,6 +83,10 @@ _websitesEditorController.prototype.initEditor = function(elem, type, value) {
 
 _websitesEditorController.prototype.saveResource = function(path, value) {
 	return new Promise((resolve, reject) => {
+		if (typeof(value) === 'object') {
+			value = JSON.stringify(value, null, 4);
+		}
+
 		return window.axios
 			.post(`http://localhost:8001/websites/${this.website.name}/resource?path=${path}`, {
 				resource : value
@@ -105,7 +133,11 @@ _websitesEditorController.prototype.saveAll = function() {
 	return this.saveWebsite().then(() => {
 		if (this.activeResource) {
 			//make sure our active resource is set
-			this.resources[this.activeResource] = this.editor.getValue();
+			if (!this.sourceMode && this.viewEditorVisible) {
+				this.resources[this.activeResource] = this.getConfigFromEditor();
+ 			} else {
+ 				this.resources[this.activeResource] = this.editor.getValue();
+ 			}
 		}
 
 		return Promise.all(Object.keys(this.resources).map((k) => {
@@ -114,6 +146,24 @@ _websitesEditorController.prototype.saveAll = function() {
 	}).then(() => {
 		this.showSaveMessage();
 	});
+};
+
+_websitesEditorController.prototype.showEditor = function() {
+	this.resources[this.activeResource] = this.editor.getValue();
+	this.activeView = JSON.parse(this.resources[this.activeResource]);
+
+	this.sourceMode = false;
+	this.caller.sourceMode = false;
+	this.caller.$forceUpdate();
+};
+
+_websitesEditorController.prototype.showSource = function() {
+	this.sourceMode = true;
+	this.caller.sourceMode = true;
+	setTimeout(() => {
+		this.initEditor("viewEditor", "json", this.getConfigFromEditor());
+		this.caller.$forceUpdate();
+	}, 25);
 };
 
 _websitesEditorController.prototype.refreshState = function() {
@@ -126,6 +176,12 @@ _websitesEditorController.prototype.refreshState = function() {
 	this.caller.tags = this.tags;
 	this.caller.newResourceVisible = this.newResourceVisible;
 	this.caller.staticfiles = this.staticfiles;
+	this.caller.sourceMode = this.sourceMode;
+	this.caller.tagsets = this.tagsets;
+	this.caller.activeView = this.activeView;
+	this.caller.activeProperties = this.activeProperties;
+	this.caller.activeDefinition = this.activeDefinition;
+	this.caller.propertyGroups = this.propertyGroups;
 	this.caller.$forceUpdate();
 };
 
@@ -155,17 +211,77 @@ _websitesEditorController.prototype.editView = function(path) {
 		this.mainVisible = false;
 		this.viewEditorVisible = true;
 		this.controllerEditorVisible = false;
-		this.refreshState();
 		var rawResource = resource;
 
 		if (typeof(resource) === "object") {
 			rawResource = JSON.stringify(resource, null, 4);
 		}
 
-		setTimeout(() => {
-			this.initEditor("viewEditor", "json", rawResource);
-		}, 10);
+		this.activeView = JSON.parse(rawResource);
+
+		//convert our custom tags into a tagset
+		return this.configureCustomTagset();
+	}).then(() => {
+		this.refreshState();
 	});
+};
+
+_websitesEditorController.prototype.findProps = function(obj, props) {
+	if (!obj) {
+		return props;
+	}
+
+	if (typeof(obj) === 'string') {
+		if (obj.indexOf('$.') !== -1) {
+			let parts = obj.split('$.');
+			parts.forEach((p) => {
+				let name = p.split(' ')[0];
+				if (name) {
+					props[name] = "";
+				}
+			});
+		}
+
+		return props;
+	}
+
+	if (Array.isArray(obj)) {
+		obj.forEach((o) => {
+			props = this.findProps(o, props);
+		});
+
+		return props;
+	}
+
+	if (typeof(obj) === 'object') {
+		Object.keys(obj).forEach((k) => {
+			props = this.findProps(obj[k], props);
+		});
+
+		return props;
+	}
+
+
+	return props;
+};
+
+_websitesEditorController.prototype.configureCustomTagset = function() {
+	this.tagsets.Custom = {
+		name : 'Custom',
+		tags : []
+	};
+
+	return Promise.all(this.tags.map((t) => {
+		return this.loadResource(t.view).then((resource) => {
+			this.tagsets.Custom.tags.push({
+				tag 			: t.name,
+				name 			: t.name,
+				properties 		: this.findProps(resource, {})
+			});
+
+			this.uniqueTags[t.name] = resource;
+		});
+	}));
 };
 
 _websitesEditorController.prototype.editController = function(path) {
@@ -183,8 +299,13 @@ _websitesEditorController.prototype.editController = function(path) {
 
 _websitesEditorController.prototype.mainView = function() {
 	//save our active resource
-	this.resources[this.activeResource] = this.editor.getValue();
+	if (!this.sourceMode && this.viewEditorVisible) {
+		this.resources[this.activeResource] = this.getConfigFromEditor();
+	} else {
+		this.resources[this.activeResource] = this.editor.getValue();
+	}
 
+	this.activeResource = null;
 	this.mainVisible = true;
 	this.viewEditorVisible = false;
 	this.controllerEditorVisible = false;
@@ -219,6 +340,50 @@ _websitesEditorController.prototype.removeTag = function(num) {
 	this.refreshState();
 };
 
+_websitesEditorController.prototype.fetchProperties = function(name) {
+	if (this.loadedProperties[name]) {
+		return Promise.resolve();
+	}
+
+	return window.axios.get(`http://localhost:8001/properties/${name}`, {
+		headers : {
+			Authorization : `Bearer ${window.getToken()}`
+		}
+	}).then((response) => {
+		this.loadedProperties[name] = true;
+		this.propertyGroups[name] = response.data;
+		this.refreshState();
+	});
+};
+
+_websitesEditorController.prototype.fetchTagset = function(name) {
+	if (this.loadedTagsets[name]) {
+		return Promise.resolve();
+	}
+
+	return window.axios.get(`http://localhost:8001/tags/${name}`, {
+		headers : {
+			Authorization : `Bearer ${window.getToken()}`
+		}
+	}).then((response) => {
+		this.loadedTagsets[name] = true;
+
+		response.data.forEach((group) => {
+			group.tags.forEach((t) => {
+				this.uniqueTags[t.tag] = t;
+			});
+
+			if (!this.tagsets[group.name]) {
+				this.tagsets[group.name] = group;
+			} else {
+				//add the elements
+				this.tagsets[group.name].tags = this.tagsets[group.name].tags.concat(group.tags);
+			}
+		});
+
+		this.refreshState();
+	});
+};
 
 _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 	this.caller = caller;
@@ -368,15 +533,77 @@ _websitesEditorController.prototype.removeResource = function(filename) {
 	});
 };
 
+_websitesEditorController.prototype.setDroppableConfig = function(event) {
+	const groupName = event.target.attributes['data-group'].value;
+	const tagName = event.target.attributes['data-tag'].value;
+
+	let config = {};
+	_websitesEditorControllerInstance.tagsets[groupName].tags.forEach((t) => {
+		if (t.name === tagName) {
+			config = t;
+		}
+	});
+
+	event.dataTransfer.setData('text', JSON.stringify(config));
+};
+
+_websitesEditorController.prototype.setProperties = function(properties) {
+	//find the tags definition
+	this.activeDefinition = this.uniqueTags[properties.tag];
+	this.activeProperties = properties;
+
+	if (this.activeDefinition && this.activeDefinition.includedPropertyGroups) {
+		this.activeDefinition.includedPropertyGroups.forEach((group) => {
+			if (this.propertyGroups[group]) {
+				Object.assign(this.activeDefinition.properties, this.propertyGroups[group]);
+			}
+		});
+	}
+
+	if (this.activeDefinition && this.activeDefinition.events) {
+		if (this.activeDefinition.events.click) {
+			this.activeProperties.onclick = this.activeProperties.onclick || {};
+		}
+	}
+
+	this.activeProperties.if = this.activeProperties.if || [];
+
+	//generate our misc properties group if required
+	let includedProps = [];
+	Object.keys(this.activeDefinition.propertyGroups).forEach((groupName) => {
+		includedProps = includedProps.concat(this.activeDefinition.propertyGroups[groupName].properties);
+	});
+
+	let remaining = [];
+	Object.keys(this.activeDefinition.properties).forEach((prop) => {
+		if (includedProps.indexOf(prop) === -1) {
+			remaining.push(prop);
+		}
+	});
+
+	if (remaining.length > 0) {
+		this.activeDefinition.propertyGroups.push({
+			name : "Other Properties",
+			properties : remaining
+		});
+	}
+
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.getConfigFromEditor = function() {
+	return JSON.stringify(this.activeView, null, 4);
+};
+
 window.WebsiteEditor = {
 	template : "#template-websiteEditor",
 	data 	 : () => {
 		return window._websitesEditorControllerInstance.getData();
 	},
 	mounted  : function() {
-		if (this.$route.params.name === ".new") {
-			window._websitesEditorControllerInstance.wipeData();
+		window._websitesEditorControllerInstance.wipeData();
 
+		if (this.$route.params.name === ".new") {
 			return window._websitesEditorControllerInstance.fetchClients(this);
 		}
 
@@ -384,8 +611,216 @@ window.WebsiteEditor = {
 			return window._websitesEditorControllerInstance.fetchClients(this);
 		}).then(() => {
 			return window._websitesEditorControllerInstance.fetchStaticFiles(this, this.$route.params.name);
+		}).then(() => {
+			//fetch our basic tagset
+			return window._websitesEditorControllerInstance.fetchTagset("basic");
+		}).then(() => {
+			//fetch our global properties
+			return window._websitesEditorControllerInstance.fetchProperties("global");
 		});
 	}
 };
+
+window.selectedTags = [];
+
+function detectValues(string, data) {
+	if (!string || !string.indexOf || string.indexOf("$.") === -1) {
+		return string;
+	}
+
+	const regex = /(\$\.[\w\.]+)/gm;
+	let m;
+	let replacements = [];
+
+	while ((m = regex.exec(string)) !== null) {
+		// This is necessary to avoid infinite loops with zero-width matches
+		if (m.index === regex.lastIndex) {
+			regex.lastIndex++;
+		}
+
+		// The result can be accessed through the `m`-variable.
+		m.forEach((match, groupIndex) => {
+			var rep = resolveValue(match, data);
+
+			replacements.push({
+				val : match,
+				rep : resolveValue(match, data)
+			});
+		});
+	}
+
+	replacements.forEach((r) => {
+		if (typeof(r.rep) === "object") {
+			string = r.rep;
+		} else {
+			string = string.replace(r.val, r.rep);
+		}
+	});
+
+	return string;
+};
+
+function resolveValue(path, data) {
+	let current = data;
+	let parts = path.replace("$.", "").split(".");
+	parts.forEach((p) => {
+		if (current) {
+			current = current[p];
+		}
+	});
+
+	if (typeof(current) === 'undefined') {
+		return path;
+	}
+
+	return current;
+};
+
+function renderTag(tag, scope, expandChildren) {
+	let parts = [];
+	let needsEnd = false;
+
+	let tagName = detectValues(tag.tag, scope);
+
+	parts.push(`<${tagName}`);
+
+	Object.keys(tag).forEach((k) => {
+		if (["text", "tag", "onclick", "children", "repeat", "submit", "bind", "_scope", "if"].indexOf(k) === -1) {
+			let value = detectValues(tag[k], scope);
+
+			if (!(typeof(value) === 'undefined' || value === null)) {
+				if (value === true) {
+					parts.push(` ${k}="${k}" `);
+				}
+
+				if (!(value === false)) {
+					parts.push(` ${k}="${detectValues(tag[k], scope)}" `);
+				}
+			}
+		}
+	});
+
+	if (tag.text) {
+		needsEnd = true;
+		parts.push('>');
+		if (Array.isArray(tag.text)) {
+			parts = parts.concat(tag.text.map((t) => {
+				return detectValues(t, scope);
+			}));
+		} else {
+			parts.push(detectValues(tag.text, scope));
+		}
+	}
+
+	if (tag.children && expandChildren) {
+		if (!needsEnd) {
+			needsEnd = true;
+			parts.push('>');
+		}
+
+		tag.children.forEach((child) => {
+			parts.push(renderTag(child, scope));
+		});
+	}
+
+	if (needsEnd || ['textarea'].indexOf(tagName) !== -1) {
+		if (!needsEnd) {
+			parts.push('>');
+		}
+
+		parts.push(`</${tagName}>`);
+	} else {
+		parts.push('/>');
+	}
+
+	return parts.join('');
+};
+
+window.Vue.component("tagsection", {
+	template : "#template-tagSection",
+	props : [
+		"tag"
+	],
+	data : function() {
+		let ret = {
+			droppable 	: false,
+			selected 	: false,
+			definition 	: _websitesEditorControllerInstance.uniqueTags[this.$options.propsData.tag.tag] || {}
+		};
+
+		ret.renderTag = ((tag) => {
+			if (window._websitesEditorControllerInstance.tags.find((t) => {
+				return t.name === tag.tag;
+			})) {
+				return renderTag(window._websitesEditorControllerInstance.uniqueTags[tag.tag], tag, true);
+			}
+
+			return renderTag(tag, {}, false);
+		}).bind(ret);
+
+		ret.removeSelection = () => {
+			ret.selected = false;
+		};
+
+		ret.onClick = (event) => {
+			let shouldSelect = window.selectedTags.indexOf(this) === -1;
+
+			window.selectedTags.forEach((t) => {
+				t.removeSelection();
+			});
+			window.selectedTags = [];
+
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (shouldSelect) {
+				ret.selected = true;
+				window.selectedTags.push(this);
+
+				_websitesEditorControllerInstance.setProperties(this.$options.propsData.tag);
+			}
+
+			return true;
+		};
+
+		ret.onDragOver = function(event) {
+			event.preventDefault();
+		};
+
+		ret.onDragEnter = function(event) {
+			event.preventDefault();
+			ret.droppable = true;
+		};
+
+		ret.onDragLeave = function(event) {
+			ret.droppable = false;
+		};
+
+		ret.onDrop = (event) => {
+			event.stopPropagation();
+			ret.droppable = false;
+
+			const config = JSON.parse(event.dataTransfer.getData('text'));
+
+			//construct our object
+			let newTag = {
+				tag 		: config.tag,
+				children 	: null,
+			};
+
+			Object.keys(config.properties).forEach((prop) => {
+				newTag[prop] = null;
+			});
+
+			this.$options.propsData.tag.children = this.$options.propsData.tag.children || [];
+			this.$options.propsData.tag.children.push(newTag);
+		};
+
+		return ret;
+	},
+	mounted : function() {
+
+	}
+});
 
 window._websitesEditorControllerInstance = new _websitesEditorController(window.WebsiteEditor);

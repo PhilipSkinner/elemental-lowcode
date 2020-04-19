@@ -86,7 +86,28 @@ websitesController.prototype.deleteStaticFile = function(req, res, next) {
 	});
 };
 
+/*
+ * Tagset controllers
+ */
+
+websitesController.prototype.getPossibleTags = function(req, res, next) {
+	this.fileLister.readFile(this.path.join(__dirname, '../resources/tagsets'), `${req.params.name}.json`).then((data) => {
+		res.send(data);
+		next();
+	});
+};
+
+websitesController.prototype.getProperties = function(req, res, next) {
+	this.fileLister.readFile(this.path.join(__dirname, '../resources/properties'), `${req.params.name}.json`).then((data) => {
+		res.send(data);
+		next();
+	});
+};
+
 websitesController.prototype.initEndpoints = function() {
+	this.app.get("/properties/:name", 							this.roleCheckHandler.enforceRoles(this.getProperties.bind(this), 			["website_reader", "website_admin", "system_reader", "system_admin"]));
+	this.app.get("/tags/:name", 								this.roleCheckHandler.enforceRoles(this.getPossibleTags.bind(this), 		["website_reader", "website_admin", "system_reader", "system_admin"]));
+
 	this.app.get("/websites", 									this.roleCheckHandler.enforceRoles(this.get.bind(this), 					["website_reader", "website_admin", "system_reader", "system_admin"]));
 	this.app.get("/websites/:name", 							this.roleCheckHandler.enforceRoles(this.getWebsite.bind(this), 				["website_reader", "website_admin", "system_reader", "system_admin"]));
 	this.app.put("/websites/:name", 							this.roleCheckHandler.enforceRoles(this.updateWebsite.bind(this), 			["website_writer", "website_admin", "system_writer", "system_admin"]));

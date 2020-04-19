@@ -11,6 +11,10 @@ conditionals.prototype.evaluate = function(ifStatement) {
 		ifStatement = [ifStatement];
 	}
 
+	if (ifStatement.length === 0) {
+		return true;
+	}
+
 	for (var i = 0; i < ifStatement.length; i++) {
 		var statement = ifStatement[i];
 

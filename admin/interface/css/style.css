@@ -11009,12 +11009,25 @@ body.sidebar-toggled footer.sticky-footer {
  * custom styles here
  */
 
-.editorWindow {
+.editorWindow, .editorSelector {
   position: absolute;
   top: 0px;
   left: 0px;
   bottom: 0px;
   right: 0px;
+}
+
+.editorSelector .editorWindow {
+  top: 70px;
+  display: none;
+}
+
+.editorSelector.sourceMode .editorWindow {
+  display: inherit;
+}
+
+.editorSelector nav {
+  padding: 0px 40px 0px 0px;
 }
 
 #content {
@@ -11078,3 +11091,114 @@ div.block {
   text-align: center;
   font-style: italic;
 }
+
+/*
+ * UI Editor styles.
+ */
+
+.uiEditor {
+  position: absolute;
+  top: 70px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.uiEditor .uiTags {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: 250px;
+  overflow: auto;
+}
+
+.uiEditor .uiProperties {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 350px;
+  overflow: auto;
+}
+
+.uiEditor .uiProperties .propGroup:last-of-type {
+  padding-bottom: 80px;
+}
+
+.uiEditor .uiPreview {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 250px;
+  right: 350px;
+  overflow: auto;
+}
+
+.uiPreview .tagSection {
+  border: 2px rgba(0,0,0,0.2) dashed;
+  position: relative;
+  margin: 2px;
+  transition: all 0.2s ease;
+}
+
+.uiPreview .tagSection .tagRender {
+  padding: 10px;
+}
+
+.uiPreview .tagSection .tagInfo {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  opacity: 0.5;
+}
+
+.uiPreview .tagSection:hover {
+  border: 2px solid #4e73df;
+}
+
+.uiPreview .tagSection.selected {
+  border: 2px solid #1cc88a;
+}
+
+.uiPreview .tagSection:hover > .tagInfo, .tagSection.droppable > .tagInfo, .tagSection.selected > .tagInfo {
+  opacity: 1;
+}
+
+.tagChildren {
+  border: 2px dotted rgba(0,0,0,0.1);
+  padding: 10px 5px;
+  margin: 10px 5px;
+  transition: all 0.2s ease;
+}
+
+.tagSection.droppable > .tagChildren {
+  border: 2px solid #e74a3b;
+  padding: 10px;
+}
+
+.tagEntry {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  cursor: pointer;
+  padding: 0.75rem 1.25rem;
+}
+
+.tagEntry:hover {
+  background: #4e73df;
+  color: #FFF;
+  border-radius: 5px;
+}
+
+.tagSection.inline {
+  display: inline-block;
+}
+
+.tagSection.inline .tagChildren, .tagSection.inline .tagRender {
+  display: inline-block;
+}
+

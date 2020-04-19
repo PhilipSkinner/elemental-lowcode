@@ -26,7 +26,7 @@ clickHandler.prototype.handleClick = function(event) {
 };
 
 var enhanceLinks = function() {
-	var elems = document.querySelectorAll("a[href^=\"?event\"]");
+	var elems = document.querySelectorAll("a[href^=\"?event\"], area[href^=\"?event\"]");
 	var handlers = [];
 	for (var i = 0; i < elems.length; i++) {
 		if (!elems[i].attributes["_clickEnhanced"]) {

@@ -1,0 +1,69 @@
+{
+	"accesskey" : {
+		"name" : "Access Key",
+		"type" : "string"
+	},
+	"class" : {
+		"name" : "Class",
+		"type" : "string"
+	},
+	"contenteditable" : {
+		"name" : "Content Editable",
+		"type" : "boolean"
+	},
+	"dir" : {
+		"name" : "Dir",
+		"type" : "enum",
+		"values" : [
+			"ltr",
+			"rtl",
+			"auto"
+		]
+	},
+	"draggable" : {
+		"name" : "Draggable",
+		"type" : "boolean"
+	},
+	"dropzone" : {
+		"name" : "Dropzone",
+		"type" : "enum",
+		"values" : [
+			"copy",
+			"move",
+			"link"
+		]
+	},
+	"hidden" : {
+		"name" : "Hidden",
+		"type" : "boolean"
+	},
+	"id" : {
+		"name" : "Unique ID",
+		"type" : "string"
+	},
+	"lang" : {
+		"name" : "Language",
+		"type" : "string"
+	},
+	"spellcheck" : {
+		"name" : "Spellcheck Enabled",
+		"type" : "boolean"
+	},
+	"style" : {
+		"name" : "Styles",
+		"type" : "string",
+		"multiline" : true
+	},
+	"tabindex" : {
+		"name" : "Tab Index",
+		"type": "integer"
+	},
+	"title" : {
+		"name" : "Title",
+		"type": "string"
+	},
+	"translate" : {
+		"name" : "Should translate",
+		"type" : "boolean"
+	}
+}
