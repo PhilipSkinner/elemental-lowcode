@@ -102,12 +102,14 @@
 					</ul>
 				</nav>
 				<div class="uiEditor">
-					<div class="uiTags card shadow">
+					<div class="uiTags card shadow" id="uiTags">
 						<div class="tagGroup" v-for="(group, name) in tagsets">
 							<div class="card-header">
-								<h6 class="m-0 font-weight-bold">{{name}}</h6>
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" :data-target="'#tags_' + name.replace(' ', '').replace('/', '')" aria-expanded="false" :aria-controls="'tags_' + name.replace(' ', '').replace('/', '')">
+									{{name}}
+								</button>
 							</div>
-							<div class="card-body p-0">
+							<div class="card-body p-0 collapse" :id="'tags_' + name.replace(' ', '').replace('/', '')" :aria-labelledby="'tags_' + name.replace(' ', '').replace('/', '')" data-parent="#uiTags">
 								<div :data-group="name" :data-tag="tag.name" class="tagEntry" v-for="tag in group.tags" draggable="true" v-on:dragstart="_websitesEditorControllerInstance.setDroppableConfig">
 									{{ tag.name }}
 								</div>
@@ -117,12 +119,17 @@
 					<div class="uiPreview">
 						<tagSection :tag="activeView" />
 					</div>
-					<div class="uiProperties card shadow">
-						<div class="propGroup" v-if="activeDefinition && activeDefinition.events">
+					<div class="uiProperties card shadow" id="uiProperties">
+						<div class="nothing-selected" v-if="!tagSelected">
+							<div>Select an element to view properties.</div>
+						</div>
+						<div class="propGroup" v-if="tagSelected && activeDefinition && activeDefinition.events">
 							<div class="card-header">
-								<h6 class="m-0 font-weight-bold">Events</h6>
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">
+									Events
+								</button>
 							</div>
-							<div class="card-body">
+							<div class="card-body collapse" id="events" aria-labelledby="events" data-parent="#uiProperties">
 								<div class="form-group" v-if="activeDefinition.events.click">
 									<label for="eventName">Event Name</label>
 
@@ -130,11 +137,13 @@
 								</div>
 							</div>
 						</div>
-						<div class="propGroup" v-if="activeDefinition && activeProperties">
+						<div class="propGroup" v-if="tagSelected">
 							<div class="card-header">
-								<h6 class="m-0 font-weight-bold">Conditionals</h6>
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" data-target="#conditionals" aria-expanded="false" aria-controls="conditional">
+									Conditionals
+								</button>
 							</div>
-							<div class="card-body">
+							<div class="card-body collapse" id="conditionals" aria-labelledby="conditionals" data-parent="#uiProperties">
 								<div class="form-group">
 									<div v-for="conditional in activeProperties.if">
 										<label for="statement">Statement</label>
@@ -151,11 +160,13 @@
 								</div>
 							</div>
 						</div>
-						<div class="propGroup" v-if="activeDefinition && activeProperties">
+						<div class="propGroup" v-if="tagSelected">
 							<div class="card-header">
-								<h6 class="m-0 font-weight-bold">Loops</h6>
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" data-target="#loops" aria-expanded="false" aria-controls="loops">
+									Looping
+								</button>
 							</div>
-							<div class="card-body">
+							<div class="card-body collapse" id="loops" aria-labelledby="loops" data-parent="#uiProperties">
 								<div class="form-group">
 									<label for="repeat">Repeat</label>
 
@@ -163,11 +174,13 @@
 								</div>
 							</div>
 						</div>
-						<div class="propGroup" v-for="group in activeDefinition.propertyGroups" v-if="activeDefinition">
+						<div class="propGroup" v-if="tagSelected && activeDefinition" v-for="group in activeDefinition.propertyGroups" v-if="activeDefinition">
 							<div class="card-header">
-								<h6 class="m-0 font-weight-bold">{{group.name}}</h6>
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" :data-target="'#prop_' + group.name.replace(' ', '').replace('/', '')" aria-expanded="false" :aria-controls="'prop_' + group.name.replace(' ', '').replace('/', '')">
+									{{group.name}}
+								</button>
 							</div>
-							<div class="card-body">
+							<div class="card-body collapse" :id="'prop_' + group.name.replace(' ', '').replace('/', '')" :aria-labelledby="'prop_' + group.name.replace(' ', '').replace('/', '')" data-parent="#uiProperties">
 								<div class="form-group" v-for="prop in group.properties">
 									<label :for="'prop_' + prop">{{activeDefinition.properties[prop].name}}:</label>
 									<!-- single string -->

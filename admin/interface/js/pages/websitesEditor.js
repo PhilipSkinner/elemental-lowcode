@@ -18,7 +18,8 @@ const _websitesEditorController = function(page) {
 	this.activeProperties 			= {};
 	this.uniqueTags 				= {};
 	this.loadedProperties 			= {};
-	this.propertyGroups 				= {};
+	this.propertyGroups 			= {};
+	this.tagSelected 			 	= false;
 	this.editor 					= null;
 };
 
@@ -35,10 +36,11 @@ _websitesEditorController.prototype.wipeData = function() {
 	this.sourceMode 				= false;
 	this.activeProperties 			= {};
 	this.activeDefinition 			= {};
-	this.propertyGroups 				= {};
+	this.propertyGroups 			= {};
 	this.loadedTagsets 				= {};
 	this.uniqueTags 				= {};
 	this.loadedProperties 			= {};
+	this.tagSelected 				= false;
 };
 
 _websitesEditorController.prototype.getData = function() {
@@ -58,6 +60,7 @@ _websitesEditorController.prototype.getData = function() {
 		activeView 				: this.activeView,
 		activeProperties 		: this.activeProperties,
 		allProperties 			: this.propertyGroups,
+		tagSelected 			: this.tagSelected,
 	};
 };
 
@@ -180,6 +183,7 @@ _websitesEditorController.prototype.refreshState = function() {
 	this.caller.tagsets = this.tagsets;
 	this.caller.activeView = this.activeView;
 	this.caller.activeProperties = this.activeProperties;
+	this.caller.tagSelected = this.tagSelected;
 	this.caller.activeDefinition = this.activeDefinition;
 	this.caller.propertyGroups = this.propertyGroups;
 	this.caller.$forceUpdate();
@@ -547,10 +551,16 @@ _websitesEditorController.prototype.setDroppableConfig = function(event) {
 	event.dataTransfer.setData('text', JSON.stringify(config));
 };
 
+_websitesEditorController.prototype.clearProperties = function() {
+	this.tagSelected = false;
+	this.refreshState();
+}
+
 _websitesEditorController.prototype.setProperties = function(properties) {
 	//find the tags definition
 	this.activeDefinition = this.uniqueTags[properties.tag];
 	this.activeProperties = properties;
+	this.tagSelected = true;
 
 	if (this.activeDefinition && this.activeDefinition.includedPropertyGroups) {
 		this.activeDefinition.includedPropertyGroups.forEach((group) => {
@@ -778,6 +788,8 @@ window.Vue.component("tagsection", {
 				window.selectedTags.push(this);
 
 				_websitesEditorControllerInstance.setProperties(this.$options.propsData.tag);
+			} else {
+				_websitesEditorControllerInstance.clearProperties();
 			}
 
 			return true;

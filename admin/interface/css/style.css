@@ -11202,3 +11202,19 @@ div.block {
   display: inline-block;
 }
 
+.nothing-selected {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  text-align: center;
+}
+
+.nothing-selected div {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 50%;
+  margin-top: -12px;
+}
