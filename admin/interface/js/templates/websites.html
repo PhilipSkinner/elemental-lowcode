@@ -181,34 +181,44 @@
 								</button>
 							</div>
 							<div class="card-body collapse" :id="'prop_' + group.name.replace(' ', '').replace('/', '')" :aria-labelledby="'prop_' + group.name.replace(' ', '').replace('/', '')" data-parent="#uiProperties">
-								<div class="form-group" v-for="prop in group.properties">
+								<div class="form-group prop-group" v-for="prop in group.properties">
 									<label :for="'prop_' + prop">{{activeDefinition.properties[prop].name}}:</label>
-									<!-- single string -->
-									<input :id="'prop_' + prop" type="text" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'string' && activeDefinition.properties[prop].multiline !== true"/>
+									
+									<div class="propToggleWrapper">
+										<div v-if="!_websitesEditorControllerInstance.isExpression(activeProperties[prop]) || activeDefinition.properties[prop].type === 'string'">
+											<!-- single string -->
+											<input :id="'prop_' + prop" type="text" v-bind:class="{'form-control' : true, 'expression-input' : _websitesEditorControllerInstance.isExpression(activeProperties[prop]) }" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'string' && activeDefinition.properties[prop].multiline !== true"/>
 
-									<!-- integer -->
-									<input :id="'prop_' + prop" type="number" step="1" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'integer'"/>
+											<!-- integer -->
+											<input :id="'prop_' + prop" type="number" step="1" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'integer'"/>
 
-									<!-- string array -->
-									<div class="array-input" v-if="activeDefinition.properties[prop].type === 'stringArray'">
-										<div class="array-input-item" v-for="(index, val) in activeProperties[prop]">
-											<input :id="'prop_' + prop + (index === 0 ? '' : '_' + index)" type="text" class="form-control" v-model="activeProperties[prop][index]" />
-											<button class="btn btn-xs btn-warning" v-on:click="activeProperties[prop].splice(index, 1) && _websitesEditorControllerInstance.refreshState();">Remove</button>
+											<!-- string array -->
+											<div class="array-input" v-if="activeDefinition.properties[prop].type === 'stringArray'">
+												<div class="array-input-item" v-for="(val, index) in _websitesEditorControllerInstance.ensureArray(prop)">
+													<input :id="'prop_' + prop + (index === 0 ? '' : '_' + index)" type="text" v-bind:class="{'form-control' : true, 'expression-input' : _websitesEditorControllerInstance.isExpression(activeProperties[prop][index]) }" v-model="activeProperties[prop][index]" />
+													<button class="btn btn-warning" v-on:click="activeProperties[prop].splice(index, 1) && _websitesEditorControllerInstance.refreshState();">X</button>
+												</div>
+												<button v-on:click="_websitesEditorControllerInstance.addToArray(prop);" class="btn btn-success add-entry">Add Entry</button>
+											</div>
+
+											<!-- multiline string -->
+											<textarea :id="'prop_' + prop" type="text" v-bind:class="{'form-control' : true, 'expression-input' : _websitesEditorControllerInstance.isExpression(activeProperties[prop]) }" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'string' && activeDefinition.properties[prop].multiline === true"></textarea>
+
+											<!-- enumerations -->
+											<select :id="'prop_' + prop" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'enum'">
+												<option value="">Select a value</option>
+												<option :value="v" v-for="v in activeDefinition.properties[prop].values">{{v}}</option>
+											</select>
+
+											<!-- booleans -->
+											<input :id="'prop_' + prop" type="checkbox" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'boolean'"/>
+
+											<button class="btn btn-xs btn-primary expression-button" v-if="activeDefinition.properties[prop].type !== 'string'" v-on:click="_websitesEditorControllerInstance.setAsExpression(prop);">Expression</button>
 										</div>
-										<button v-on:click="(activeProperties[prop] = activeProperties[prop] || []) && activeProperties[prop].push('') && _websitesEditorControllerInstance.refreshState();" class="btn btn-xs btn-primary">Add Entry</button>
+
+										<!-- expression -->
+										<input :id="'prop_' + prop" class="form-control expression-input" type="text" v-model="activeProperties[prop]" v-if="_websitesEditorControllerInstance.isExpression(activeProperties[prop]) && activeDefinition.properties[prop].type !== 'string'" />
 									</div>
-
-									<!-- multiline string -->
-									<textarea :id="'prop_' + prop" type="text" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'string' && activeDefinition.properties[prop].multiline === true"></textarea>
-
-									<!-- enumerations -->
-									<select :id="'prop_' + prop" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'enum'">
-										<option value="">Select a value</option>
-										<option :value="v" v-for="v in activeDefinition.properties[prop].values">{{v}}</option>
-									</select>
-
-									<!-- booleans -->
-									<input :id="'prop_' + prop" type="checkbox" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'boolean'"/>
 								</div>
 							</div>
 						</div>

@@ -154,18 +154,23 @@ _websitesEditorController.prototype.saveAll = function() {
 _websitesEditorController.prototype.showEditor = function() {
 	this.resources[this.activeResource] = this.editor.getValue();
 	this.activeView = JSON.parse(this.resources[this.activeResource]);
-
 	this.sourceMode = false;
-	this.caller.sourceMode = false;
-	this.caller.$forceUpdate();
+	this.activeDefinition = {};
+	this.activeProperties = {};
+	this.refreshState();
 };
 
 _websitesEditorController.prototype.showSource = function() {
 	this.sourceMode = true;
-	this.caller.sourceMode = true;
+	this.activeProperties = this.caller.activeProperties;
+	window.selectedTags.forEach((t) => {
+		t.removeSelection();
+	});
+	window.selectedTags = [];
+	this.tagSelected = false;
 	setTimeout(() => {
 		this.initEditor("viewEditor", "json", this.getConfigFromEditor());
-		this.caller.$forceUpdate();
+		this.refreshState();
 	}, 25);
 };
 
@@ -554,7 +559,46 @@ _websitesEditorController.prototype.setDroppableConfig = function(event) {
 _websitesEditorController.prototype.clearProperties = function() {
 	this.tagSelected = false;
 	this.refreshState();
-}
+};
+
+_websitesEditorController.prototype.isExpression = function(val) {
+	return typeof(val) !== 'undefined' && val !== null && !Array.isArray(val) && val.indexOf && val.indexOf('$.') !== -1;
+};
+
+_websitesEditorController.prototype.setAsExpression = function(prop) {
+	this.activeProperties[prop] = "$.";
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.ensureArray = function(prop) {
+	if (!Array.isArray(this.caller.activeProperties[prop])) {
+		if (!(typeof(this.caller.activeProperties[prop]) === 'undefined' || this.caller.activeProperties[prop] === null)) {
+			this.caller.activeProperties[prop] = [this.caller.activeProperties[prop]];
+		} else {
+			this.caller.activeProperties[prop] = [];	
+		}
+	}
+
+	return this.caller.activeProperties[prop];
+};
+
+_websitesEditorController.prototype.addToArray = function(prop) {
+	this.activeProperties = this.caller.activeProperties;
+
+	if (Array.isArray(this.activeProperties[prop])) {
+		this.activeProperties[prop].push('');
+	} else {
+		if (!(typeof(this.activeProperties[prop]) === 'undefined' || this.activeProperties[prop] === null)) {
+			this.activeProperties[prop] = [this.activeProperties[prop]];
+		} else {
+			this.activeProperties[prop] = [''];	
+		}
+	}
+
+	console.log(this.activeProperties[prop]);
+
+	this.refreshState();
+};
 
 _websitesEditorController.prototype.setProperties = function(properties) {
 	//find the tags definition

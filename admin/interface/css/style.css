@@ -11218,3 +11218,41 @@ div.block {
   top: 50%;
   margin-top: -12px;
 }
+
+.expression-input, .expression-input:focus {
+  background: rgb(20,20,20);
+  color: rgb(255,255,255);
+}
+
+.array-input .add-entry {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+.array-input-item {
+  position: relative;
+  padding-bottom: 5px;
+}
+
+.array-input-item input {
+  padding-right: 40px;
+}
+
+.array-input-item button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.prop-group {
+  position: relative;
+}
+
+.prop-group .expression-button {
+  position: absolute;
+  top: 5px;
+  right: 0px;
+}
