@@ -14,6 +14,10 @@ authClientProvider.prototype.getAccessToken = function() {
 		return Promise.resolve(token);
 	}
 
+	if (!this.config) {
+		return Promise.resolve("");
+	}
+
 	return new Promise((resolve, reject) => {
 		this.request.post("http://localhost:8008/token", {
 			form : {

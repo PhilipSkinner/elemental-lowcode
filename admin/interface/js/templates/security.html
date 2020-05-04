@@ -175,7 +175,7 @@
 												{{user.data.registered}}
 											</td>
 											<td>
-												<span v-for="role in user.data.claims.roles" class="btn btn-xs btn-primary ml-1">
+												<span v-for="role in (user.data.claims && user.data.claims.roles ? user.data.claims.roles : [])" class="btn btn-xs btn-primary ml-1">
 													{{role}}
 												</span>
 											</td>

@@ -127,6 +127,7 @@ The following services are automatically added into each controller:
 * [sessionState](/documentation/websites/sessionState)
 * [integrationService](/documentation/websites/integrationService)
 * [rulesetService](/documentation/websites/rulesetService)
+* [idmService](/documentation/websites/idmService)
 
 Each of these are defined upon the controller instance as a property that can be access, for example:
 

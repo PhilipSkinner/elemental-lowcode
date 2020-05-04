@@ -86,7 +86,8 @@ setup.setupEnvironment(directories).then(() => {
 		SIG 	: keys.public
 	});
 	serviceRunner.runService("identity", 	"../identity/main.js", 		8008, directories.identity, {
-		SECRET 	: secret,
-		SIG		: keys.private
+		SECRET 		: secret,
+		SIG			: keys.private,
+		SIG_PUBLIC  : keys.public
 	});
 });

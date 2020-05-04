@@ -16,7 +16,7 @@ module.exports = function(db, bcrypt) {
 		}
 
 		async claims(use, scope) {
-			return Object.assign(this.profile.claims, {
+			return Object.assign(this.profile.claims || {}, {
 				sub : this.accountId
 			});
 		}
@@ -51,7 +51,7 @@ module.exports = function(db, bcrypt) {
 					}
 
 					return {
-						roles : user.claims.roles
+						roles : user.claims && user.claims.roles ? user.claims.roles : []
 					};
 				}
 

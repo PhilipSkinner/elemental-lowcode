@@ -45,7 +45,7 @@ roleCheckHandler.prototype.enforceRoles = function(middleware, roles) {
 			res.end();
 			return;
 		}
-		
+
 		middleware(req, res, next);
 	};
 };

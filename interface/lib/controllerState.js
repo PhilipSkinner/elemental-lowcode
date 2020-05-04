@@ -1,10 +1,11 @@
-const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider) {
+const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService) {
 	this.controllerDefinition 						= controllerDefinition;
 	this.controllerDefinition.storageService 		= storageService;
 	this.controllerDefinition.sessionState 			= sessionState;
 	this.controllerDefinition.integrationService 	= integrationService;
 	this.controllerDefinition.rulesetService 		= rulesetService;
 	this.controllerDefinition.authClientProvider 	= authClientProvider;
+	this.controllerDefinition.idmService 			= idmService;
 };
 
 controllerState.prototype.setContext = function(request, response) {
@@ -54,7 +55,7 @@ controllerState.prototype.triggerEvent = function(name, details) {
 	});
 };
 
-module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider) {
+module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService) {
 	if (!storageService) {
 		storageService = require("../../shared/storageService")();
 	}
@@ -75,5 +76,9 @@ module.exports = function(controllerDefinition, clientConfig, storageService, se
 		authClientProvider = require("../../shared/authClientProvider")(clientConfig);
 	}
 
-	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider);
+	if (!idmService) {
+		idmService = require("../../shared/idmService")();
+	}
+
+	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService);
 };
