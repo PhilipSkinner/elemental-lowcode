@@ -11256,3 +11256,7 @@ div.block {
   top: 5px;
   right: 0px;
 }
+
+.documentation-menu div > div {
+  padding-left: 15px;
+}

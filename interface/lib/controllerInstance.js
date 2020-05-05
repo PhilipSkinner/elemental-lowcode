@@ -59,7 +59,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 								current[parts[i]] = req.files[path];
 							} else {
 								if (!current[parts[i]]) {
-									current[parts[i]] = {};									
+									current[parts[i]] = {};
 								}
 
 								current = current[parts[i]];
@@ -105,11 +105,20 @@ controllerInstance.prototype.handler = function(req, res, next) {
 		}).then(() => {
 			return stateEngine.triggerEvent("load", Object.assign(req.query, req.params));
 		}).then(() => {
+			stateEngine.generateResponseHeaders();
+
+			// only render the view if we need to
+			if (res.statusCode !== 200) {
+				stateEngine = null;
+				res.send('');
+				next();
+				return;
+			}
+
 			//load the view
 			this.loadView().then((view) => {
 				return this.templateRenderer.renderView(view, stateEngine.getBag());
 			}).then((html) => {
-				stateEngine.generateResponseHeaders();
 				res.send(html);
 
 				//clear the stateEngine

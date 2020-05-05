@@ -6,6 +6,9 @@ const loadPage = function(name, obj) {
 
 		//quickly replace any /documentation links
 		obj.html = obj.html.replace(/"\/documentation/g, "\"#/documentation");
+
+		//scroll to the top
+		window.scrollTo(0, 0);
 	});
 }
 

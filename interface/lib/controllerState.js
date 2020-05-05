@@ -1,4 +1,4 @@
-const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService) {
+const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService) {
 	this.controllerDefinition 						= controllerDefinition;
 	this.controllerDefinition.storageService 		= storageService;
 	this.controllerDefinition.sessionState 			= sessionState;
@@ -6,6 +6,7 @@ const controllerState = function(controllerDefinition, storageService, sessionSt
 	this.controllerDefinition.rulesetService 		= rulesetService;
 	this.controllerDefinition.authClientProvider 	= authClientProvider;
 	this.controllerDefinition.idmService 			= idmService;
+	this.controllerDefinition.navigationService 	= navigationService;
 };
 
 controllerState.prototype.setContext = function(request, response) {
@@ -13,6 +14,7 @@ controllerState.prototype.setContext = function(request, response) {
 	this.response = response;
 
 	this.controllerDefinition.sessionState.setContext(this.request, this.response);
+	this.controllerDefinition.navigationService.setContext(this.request, this.response);
 	this.controllerDefinition.authClientProvider.setSessionState(this.controllerDefinition.sessionState);
 
 	//set this within all of the services
@@ -26,6 +28,7 @@ controllerState.prototype.setContext = function(request, response) {
 
 controllerState.prototype.generateResponseHeaders = function() {
 	this.controllerDefinition.sessionState.generateResponseHeaders();
+	this.controllerDefinition.navigationService.generateResponseHeaders();
 };
 
 controllerState.prototype.deallocate = function() {
@@ -55,7 +58,7 @@ controllerState.prototype.triggerEvent = function(name, details) {
 	});
 };
 
-module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService) {
+module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService) {
 	if (!storageService) {
 		storageService = require("../../shared/storageService")();
 	}
@@ -80,5 +83,9 @@ module.exports = function(controllerDefinition, clientConfig, storageService, se
 		idmService = require("../../shared/idmService")();
 	}
 
-	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService);
+	if (!navigationService) {
+		navigationService = require("../../shared/navigationService")();
+	}
+
+	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService);
 };
