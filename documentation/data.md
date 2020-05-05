@@ -15,13 +15,19 @@ Each data type is a JSON document that contains:
 * The data types keys for filtering (todo)
 * The schema for the data type (JSON Schema document)
 * The roles to authorize access to the data type
+* Keys/constraints defined on the resource
 
 The following is an example data type definition:
 
 ```
 {
     "name": "todoList",
-    "keys": [],
+    "keys": [
+        {
+            "type" : "unique",
+            "paths" : "$.name"
+        }
+    ],
     "roles" : {
     	"replace" : {
     		"read" : false,
@@ -205,3 +211,42 @@ The needsRole object has three properties that can be set:
 * delete
 
 Each of these is a boolean. Setting a property to true will enforce a role being present on the token. Setting a property to false will only check if a valid token was presented to the storage API.
+
+## Constraints
+
+The keys collection on the document allows you to specify constraints within the data. The following constraints are supported:
+
+* unique
+
+**Unique Keys**
+
+A unique key allows you to control the uniqueness of items within the data collection. To create a unique key you need to specify the paths within your object that hold the values you wish to be unique:
+
+````
+{
+    "keys" : [
+        {
+            "type" : "unique",
+            "paths" : [
+                "$.username"
+            ]
+        }
+    ]
+}
+````
+
+You can include multiple paths within your unique key constraints, to create multi-value unique constraints:
+
+````
+{
+    "keys" : [
+        {
+            "type" : "unique",
+            "paths" : [
+                "$.firstname",
+                "$.surname"
+            ]
+        }
+    ]
+}
+````

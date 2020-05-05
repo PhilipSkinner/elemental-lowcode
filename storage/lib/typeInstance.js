@@ -1,10 +1,11 @@
-const typeInstance = function(store, app, definition, uuid, ajv, roleCheckHandler) {
+const typeInstance = function(store, app, definition, uuid, ajv, roleCheckHandler, jsonpath) {
 	this.store 				= store;
 	this.app 				= app;
 	this.definition 		= definition;
 	this.uuid 				= uuid;
 	this.ajv 				= ajv;
 	this.roleCheckHandler 	= roleCheckHandler;
+	this.jsonpath 			= jsonpath;
 
 	//setup the _id property
 	this.definition.schema.properties["_id"] = {
@@ -51,6 +52,50 @@ typeInstance.prototype.getDetailsHandler = function(req, res) {
 	});
 };
 
+typeInstance.prototype.isUnique = function(data) {
+	const ret = {
+		isUnique 	: true,
+		errors 		: []
+	};
+
+	if (!this.definition.keys) {
+		return Promise.resolve(ret);
+	}
+
+	return new Promise((resolve, reject) => {
+		Promise.all(this.definition.keys.map((key) => {
+			if (key.type !== "unique") {
+				return Promise.resolve(null);
+			}
+
+			return this.store.getResources(this.definition.name, 0, 1, key.paths.map((p) => {
+				return {
+					path 	: p,
+					value 	: this.jsonpath.query(data, p)[0]
+				};
+			})).then((res) => {
+				return Promise.resolve({
+					isUnique 	: res.length === 0,
+					errors 		: res.length === 0 ? [] : [
+						`Duplicate key error - ${key.paths.join(', ')}`
+					]
+				});
+			});
+		})).then((results) => {
+			if (results && results.length > 0) {
+				results.forEach((keyResult) => {
+					if (keyResult && keyResult.isUnique === false) {
+						ret.isUnique = false;
+						ret.errors = ret.errors.concat(keyResult.errors);
+					}
+				});
+			}
+
+			return resolve(ret);
+		});
+	});
+};
+
 typeInstance.prototype.createHandler = function(req, res) {
 	//confirm that the structure is correct
 	let validator = this.ajv.compile(this.definition.schema);
@@ -66,30 +111,41 @@ typeInstance.prototype.createHandler = function(req, res) {
 
 	let newId = this.uuid();
 
-	this.store.createResource(this.definition.name, newId, req.body).then((success) => {
-		if (!success) {
+	this.isUnique(req.body).then((result) => {
+		if (!result.isUnique) {
 			res.json({
-				errors : [
-					"error constructing object"
-				]
+				errors : result.errors
 			});
-			res.status(424);
+			res.status(409);
 			res.end();
 			return;
 		}
 
-		res.header("Location", `/${this.definition.name}/${newId}`);
-		res.status(201);
-		res.send("");
-		res.end();
-		return;
-	}).catch((err) => {
-		res.json({
-			errors : [err.toString()]
+		this.store.createResource(this.definition.name, newId, req.body).then((success) => {
+			if (!success) {
+				res.json({
+					errors : [
+						"error constructing object"
+					]
+				});
+				res.status(424);
+				res.end();
+				return;
+			}
+
+			res.header("Location", `/${this.definition.name}/${newId}`);
+			res.status(201);
+			res.send("");
+			res.end();
+			return;
+		}).catch((err) => {
+			res.json({
+				errors : [err.toString()]
+			});
+			res.status(500);
+			res.end();
+			return;
 		});
-		res.status(500);
-		res.end();
-		return;
 	});
 };
 
@@ -307,7 +363,7 @@ typeInstance.prototype.init = function() {
 	});
 };
 
-module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler) {
+module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler, jsonpath) {
 	if (!uuid) {
 		uuid = require("uuid/v4");
 	}
@@ -322,5 +378,9 @@ module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler) {
 		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
 
-	return new typeInstance(store, app, definition, uuid, ajv, roleCheckHandler);
+	if (!jsonpath) {
+		jsonpath = require("jsonpath");
+	}
+
+	return new typeInstance(store, app, definition, uuid, ajv, roleCheckHandler, jsonpath);
 };
