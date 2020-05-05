@@ -125,7 +125,7 @@ Parameters:
 
 Creates a new entity within the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
-This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly.
+This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly. This promise will return the newly created object as the result.
 
 This can be called from within a controller like so:
 

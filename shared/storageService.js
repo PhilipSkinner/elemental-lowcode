@@ -159,7 +159,7 @@ storageService.prototype.createEntity = function(name, entity, authToken) {
 				}
 
 				if (res.statusCode === 201) {
-					return resolve();
+					return this.getEntity(name, res.headers.location.split("/").slice(-1)[0], token).then(resolve).catch(reject);
 				}
 
 				return reject(body);
@@ -184,10 +184,10 @@ storageService.prototype.updateEntity = function(name, id, entity, authToken) {
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
 			this.request.put(`http://localhost:8006/${name}/${id}`, {
-				body : JSON.stringify(entity), 
+				body : JSON.stringify(entity),
 				headers : {
 					"content-type" : "application/json",
-					Authorization : `Bearer ${token}`	
+					Authorization : `Bearer ${token}`
 				}
 			}, (err, res, body) => {
 				if (err) {
@@ -217,7 +217,7 @@ storageService.prototype.deleteEntity = function(name, id, authToken) {
 		return new Promise((resolve, reject) => {
 			this.request.delete(`http://localhost:8006/${name}/${id}`, {
 				headers : {
-					Authorization : `Bearer ${token}`	
+					Authorization : `Bearer ${token}`
 				}
 			}, (err, res, body) => {
 				if (err) {
