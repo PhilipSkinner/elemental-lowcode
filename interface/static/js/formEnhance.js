@@ -11,7 +11,7 @@ submitHandler.prototype.init = function() {
 submitHandler.prototype.resetForm = function() {
 	this.elem.querySelectorAll("input, select, textarea").forEach((field) => {
 		if (field.type !== "file") {
-			field.value = field.getAttribute("value");	
+			field.value = field.getAttribute("value");
 		} else {
 			field.value = null;
 		}
@@ -46,6 +46,8 @@ submitHandler.prototype.handleSubmit = function(event) {
 
 				files[name] = files[name].concat(fileArray);
 			}
+		} if ((field.type === "radio" || field.type === "checkbox") && !field.checked) {
+			// do nothing
 		} else {
 			if (!params[name]) {
 				params[name] = value;
@@ -83,7 +85,7 @@ submitHandler.prototype.handleSubmit = function(event) {
 			document.open();
 	        document.write(response.data);
 	        document.close();
-		});		
+		});
 	} else {
 		window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, JSON.stringify(params), {
 			headers : {
@@ -94,7 +96,7 @@ submitHandler.prototype.handleSubmit = function(event) {
 			document.open();
 	        document.write(response.data);
 	        document.close();
-		});		
+		});
 	}
 
 	return false;
