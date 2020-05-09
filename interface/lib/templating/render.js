@@ -45,17 +45,30 @@ render.prototype.submitHandler = function(eventProps, toWrap) {
 	return `${toWrap} method="POST" action="${action}" `;
 };
 
+render.prototype._unpackParams = function(prefix, params) {
+	if (Array.isArray(params)) {
+		return params.map((val, index) => {
+			if (typeof(val) === "object") {
+				return this._unpackParams(`${prefix}${index}__`, val);
+			}
+			return `${encodeURIComponent(prefix)}${encodeURIComponent(index)}=${encodeURIComponent(params[index])}`;
+		}).join("&").replace(/&&/g, "&");
+	}
+
+	return Object.keys(params || {}).map((key) => {
+		if (typeof(params[key]) === "object") {
+			return this._unpackParams(`${prefix}${key}__`, params[key]);
+		};
+		return `${encodeURIComponent(prefix)}${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`;
+	}).join("&").replace(/&&/g, "&");
+};
+
 render.prototype.clickHandler = function(eventProps, toWrap, parentTag) {
 	if (typeof(eventProps.eventName) === 'undefined' || eventProps.eventName === null || eventProps.eventName === "") {
 		return toWrap;
 	}
 
-	let extraParams = Object.keys(eventProps.params || {}).map((key) => {
-		if (typeof(eventProps.params[key]) === "object") {
-			return "";
-		};
-		return `${encodeURIComponent(key)}=${encodeURIComponent(eventProps.params[key])}`;
-	}).join("&").replace(/&&/g, "&");
+	let extraParams = this._unpackParams("", eventProps.params || {});
 
 	if (this.nativeClickTags.indexOf(parentTag) !== -1) {
 		//just add the params on

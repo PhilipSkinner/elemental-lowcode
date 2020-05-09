@@ -97,7 +97,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 			if (req.method === "GET") {
 				//do we have an event to trigger?
 				if (req.query.event) {
-					return stateEngine.triggerEvent(req.query.event, req.query);
+					return stateEngine.triggerEvent(req.query.event, this.parseQuery(req.query));
 				}
 			}
 
@@ -142,6 +142,33 @@ controllerInstance.prototype.handler = function(req, res, next) {
 	}
 
 	return handleRequest(req, res, next);
+};
+
+controllerInstance.prototype.parseQuery = function(obj) {
+	const ret = {};
+
+	Object.keys(obj).forEach((key) => {
+		const parts = key.split("__");
+
+		let current = ret;
+		parts.forEach((p, index) => {
+			if (index + 1 === parts.length) {
+				current[p] = obj[key];
+			} else {
+				let isArray = (parseInt(parts[index + 1]) + '') === parts[index + 1];
+
+				if (isArray) {
+					current[p] = current[p] || [];
+				} else {
+					current[p] = current[p] || {};
+				}
+
+				current = current[p];
+			}
+		});
+	});
+
+	return ret;
 };
 
 controllerInstance.prototype.ensureArrays = function(obj) {

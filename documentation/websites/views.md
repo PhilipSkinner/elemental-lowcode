@@ -156,7 +156,20 @@ Configures an event which is fired and handled by the relevant controller:
 	"onclick" : {
 		"eventName" : "increment",
 		"params" : {
-			"currentValue" : "$.bag.value"
+			"currentValue" : "$.bag.value",
+			"an" : {
+				"object" : {
+					"with" : "a scalar",
+					"and" : [
+						"an",
+						"array",
+						"of",
+						{
+							"lots_of" : "stuff"
+						}
+					]
+				}
+			}
 		}
 	}
 }
