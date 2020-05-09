@@ -17,13 +17,23 @@ clickHandler.prototype.handleClick = function(event) {
 	window.axios.get(`${location.pathname}${href.value}`, {
 		withCredentials : true
 	}).then((response) => {
-		document.open();
-        document.write(response.data);
-        document.close();
+		this.handleResponse(response);
 	});
 
 	return false;
 };
+
+clickHandler.prototype.handleResponse = function(response) {
+	if (response.request && response.request.responseURL) {
+		//need to rewrite the location
+		history.pushState({}, '', response.request.responseURL);
+	}
+
+	document.open();
+    document.write(response.data);
+    document.close();
+};
+
 
 var enhanceLinks = function() {
 	var elems = document.querySelectorAll("a[href^=\"?event\"], area[href^=\"?event\"]");

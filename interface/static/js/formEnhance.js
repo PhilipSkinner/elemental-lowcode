@@ -82,9 +82,7 @@ submitHandler.prototype.handleSubmit = function(event) {
 			},
 			withCredentials : true
 		}).then((response) => {
-			document.open();
-	        document.write(response.data);
-	        document.close();
+			this.handleResponse(response);
 		});
 	} else {
 		window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, JSON.stringify(params), {
@@ -93,13 +91,22 @@ submitHandler.prototype.handleSubmit = function(event) {
 			},
 			withCredentials : true
 		}).then((response) => {
-			document.open();
-	        document.write(response.data);
-	        document.close();
+			this.handleResponse(response);
 		});
 	}
 
 	return false;
+};
+
+submitHandler.prototype.handleResponse = function(response) {
+	if (response.request && response.request.responseURL) {
+		//need to rewrite the location
+		history.pushState({}, '', response.request.responseURL);
+	}
+
+	document.open();
+    document.write(response.data);
+    document.close();
 };
 
 var enhanceForms = function() {
