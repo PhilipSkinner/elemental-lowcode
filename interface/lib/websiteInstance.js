@@ -65,13 +65,19 @@ websiteInstance.prototype.init = function() {
 				done(null, user);
 			});
 
+			const session = require("express-session");
+			const fsStore = require("session-file-store")(session);
+
 			//setup our authentication
-			this.app.use(require("express-session")({
+			this.app.use(session({
 				name 				: `session.${this.definition.name}`,
 				path 				: `/${this.definition.name}`,
 				secret 				: this.definition.name,
 				resave 			  	: true,
-				saveUninitialized 	: true
+				saveUninitialized 	: true,
+				store 				: new fsStore({
+					path : "./.sessions"
+				})
 			}));
 			this.app.use(`/${this.definition.name}`, passport.initialize());
 			this.app.use(`/${this.definition.name}`, passport.session());

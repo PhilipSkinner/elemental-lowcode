@@ -7,3 +7,4 @@ kernel/.store
 **/coverage
 .nyc_output
 kernel/.tmp
+kernel/.sessions
