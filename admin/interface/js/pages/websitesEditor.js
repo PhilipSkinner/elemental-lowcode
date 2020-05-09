@@ -219,6 +219,7 @@ _websitesEditorController.prototype.editView = function(path) {
 	this.loadResource(path).then((resource) => {
 		this.mainVisible = false;
 		this.viewEditorVisible = true;
+		this.sourceMode = false;
 		this.controllerEditorVisible = false;
 		var rawResource = resource;
 
@@ -575,7 +576,7 @@ _websitesEditorController.prototype.ensureArray = function(prop) {
 		if (!(typeof(this.caller.activeProperties[prop]) === 'undefined' || this.caller.activeProperties[prop] === null)) {
 			this.caller.activeProperties[prop] = [this.caller.activeProperties[prop]];
 		} else {
-			this.caller.activeProperties[prop] = [];	
+			this.caller.activeProperties[prop] = [];
 		}
 	}
 
@@ -591,7 +592,7 @@ _websitesEditorController.prototype.addToArray = function(prop) {
 		if (!(typeof(this.activeProperties[prop]) === 'undefined' || this.activeProperties[prop] === null)) {
 			this.activeProperties[prop] = [this.activeProperties[prop]];
 		} else {
-			this.activeProperties[prop] = [''];	
+			this.activeProperties[prop] = [''];
 		}
 	}
 
