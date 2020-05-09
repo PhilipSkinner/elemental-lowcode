@@ -5,6 +5,7 @@
 The auth client provider allows you to access the users authentication state, and to request access tokens - either user or application. You can access the following methods on this service:
 
 * loginUser
+* logoutUser
 * getAccessToken
 
 These methods are covered in more detail below.
@@ -45,6 +46,25 @@ module.exports = {
 			}).catch((err) => {
 				...
 			});
+		}
+	}
+};
+```
+
+### logoutUser
+
+Logs the users session out.
+
+If the user is not logged in, this will fail silently.
+
+Called from your controllers like so:
+
+```
+
+module.exports = {
+	events : {
+		logout : (event) => {
+			this.authClient.logoutUser();
 		}
 	}
 };

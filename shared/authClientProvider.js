@@ -45,6 +45,11 @@ authClientProvider.prototype.loginUser = function(username, password) {
 	});
 };
 
+authClientProvider.prototype.logoutUser = function() {
+	this.sessionState.setAccessToken(null);
+	this.sessionState.setIdentityToken(null);
+	this.sessionState.setRefreshToken(null);
+};
 
 authClientProvider.prototype.getAccessToken = function() {
 	let token = this.sessionState && this.sessionState.getAccessToken ? this.sessionState.getAccessToken() : null;
