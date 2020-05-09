@@ -17,7 +17,8 @@ const render = function(fs, path, preProcessor) {
 	];
 	this.requireClosing = [
 		"script",
-		"div"
+		"div",
+		"a"
 	];
 	this.singleProps = [
 		"required",
