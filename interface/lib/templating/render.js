@@ -35,14 +35,25 @@ const render = function(fs, path, preProcessor) {
 	this.customTags = {};
 };
 
+render.prototype._getPollParams = function(eventProps) {
+	let pollParams = "";
+	if (eventProps.poll) {
+		if (eventProps.poll.every) {
+			pollParams = ` data-poll="${eventProps.poll.every}" `;
+		}
+	}
+	return pollParams;
+}
+
 render.prototype.submitHandler = function(eventProps, toWrap) {
 	let action = "";
-
 	if (eventProps && eventProps.eventName) {
 		action = `?_event=${eventProps.eventName}`;
 	}
 
-	return `${toWrap} method="POST" action="${action}" `;
+	let pollParams = this._getPollParams(eventProps);
+
+	return `${toWrap} method="POST" action="${action}" ${pollParams} `;
 };
 
 render.prototype._unpackParams = function(prefix, params) {
@@ -69,17 +80,18 @@ render.prototype.clickHandler = function(eventProps, toWrap, parentTag) {
 	}
 
 	let extraParams = this._unpackParams("", eventProps.params || {});
+	let pollParams = this._getPollParams(eventProps);
 
 	if (this.nativeClickTags.indexOf(parentTag) !== -1) {
 		//just add the params on
-		return `${toWrap} href="?event=${eventProps.eventName}&${extraParams}" `;
+		return `${toWrap} href="?event=${eventProps.eventName}&${extraParams}" ${pollParams} `;
 	}
 
 	if (this.internalClick.indexOf(parentTag) !== -1) {
-		return `<!-- @internalClickHandler -->${toWrap}><a href="?event=${eventProps.eventName}&${extraParams}">`;
+		return `<!-- @internalClickHandler -->${toWrap}><a href="?event=${eventProps.eventName}&${extraParams}" ${pollParams}>`;
 	}
 
-	return `<!-- @clickHandler --><a href="?event=${eventProps.eventName}&${extraParams}">${toWrap}`;
+	return `<!-- @clickHandler --><a href="?event=${eventProps.eventName}&${extraParams}" ${pollParams}>${toWrap}`;
 };
 
 render.prototype.endClickHandler = function(val) {

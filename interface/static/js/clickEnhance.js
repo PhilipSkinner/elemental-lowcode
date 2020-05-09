@@ -5,12 +5,23 @@ var clickHandler = function(elem) {
 
 clickHandler.prototype.init = function() {
 	this.elem.addEventListener("click", this.handleClick.bind(this));
+
+	const poll = this.elem.attributes["data-poll"];
+	if (poll && poll.value) {
+		this.timeout = setTimeout(this.pollEvent.bind(this), poll.value);
+	}
+};
+
+clickHandler.prototype.pollEvent = function() {
+	this.handleClick(null);
 };
 
 clickHandler.prototype.handleClick = function(event) {
-	event.preventDefault();
-	event.stopPropagation();
-	event.cancelBubble = true;
+	if (event) {
+		event.preventDefault();
+		event.stopPropagation();
+		event.cancelBubble = true;
+	}
 
 	//load the response
 	const href = this.elem.attributes["href"];

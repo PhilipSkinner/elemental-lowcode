@@ -3,9 +3,19 @@ var submitHandler = function(elem) {
 	this.init();
 };
 
+submitHandler.prototype.pollEvent = function() {
+	this.handleSubmit(null);
+};
+
 submitHandler.prototype.init = function() {
 	this.resetForm();
 	this.elem.addEventListener("submit", this.handleSubmit.bind(this));
+
+	const poll = this.elem.attributes["data-poll"];
+	console.log(poll);
+	if (poll && poll.value) {
+		this.timeout = setTimeout(this.pollEvent.bind(this), poll.value);
+	}
 };
 
 submitHandler.prototype.resetForm = function() {
@@ -19,9 +29,11 @@ submitHandler.prototype.resetForm = function() {
 };
 
 submitHandler.prototype.handleSubmit = function(event) {
-	event.preventDefault();
-	event.stopPropagation();
-	event.cancelBubble = true;
+	if (event) {
+		event.preventDefault();
+		event.stopPropagation();
+		event.cancelBubble = true;
+	}
 
 	const params = {};
 	const files = {};

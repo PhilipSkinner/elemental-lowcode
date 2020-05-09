@@ -27,13 +27,13 @@ Each view is a single parent **tag objects** which then defines its child tag ob
 
 The following properties are special - any other properties are used to render attributes on the DOM element (e.g. class can be used to specify css classes, id for the id of an element).
 
-**tag** - *required*
+### tag - *required*
 
 This is the tag that is to be used to render the element within the DOM. This can be any valid HTML tag or [custom tag](/documentation/websites/tags).
 
 This property is required.
 
-**children**
+### children
 
 An array of child tag objects - each of these will be rendered within the parent tag, for example:
 
@@ -67,7 +67,7 @@ An array of child tag objects - each of these will be rendered within the parent
 </div>
 ```
 
-**text**
+### text
 
 This is the textual content to be added into the tag. Simple strings or arrays of strings are supported:
 
@@ -104,7 +104,7 @@ This is the textual content to be added into the tag. Simple strings or arrays o
 </div>
 ```
 
-**repeat**
+### repeat
 
 Allows you to define a loop for repeating a tag - including its children:
 
@@ -122,7 +122,7 @@ Allows you to define a loop for repeating a tag - including its children:
 }
 ```
 
-**if**
+### if
 
 Allows for a series of conditionals to be combined to determine if this tag (and its children) are included in the rendered output:
 
@@ -145,7 +145,7 @@ Allows for a series of conditionals to be combined to determine if this tag (and
 
 ; will include the tag object in the output if either `$.bag.validationError` or `$.bag.insertionError` evaluate to a truthy value.
 
-**onclick**
+### onclick
 
 Configures an event which is fired and handled by the relevant controller:
 
@@ -207,11 +207,11 @@ module.exports = {
 
 The parameters collection within the event can contain hard coded values or values passed into the template from repeating groups, template includes or bag values.
 
-**submit**
+### submit
 
-Can be attached to form tag objects and allows for events to be triggered back to the controller on submission. See the bind section below for more information on how to use this to retrieve values.
+Can be attached to form tag objects and allows for events to be triggered back to the controller on submission. See the bind section below for more information on how to use this to retrieve values. Submission events can be turned into pollers - see the polling section below.
 
-**bind**
+### bind
 
 Binds an input field to a particular bag value:
 
@@ -287,5 +287,65 @@ module.exports = {
 ```
 
 ; shows a combination of using both a click based event and a form based submission to modify shared data - aswell as persisting this data within the users session.
+
+## Polling
+
+If you need to update your interface to reflect new state from your controller you can create a poller.
+
+You can create pollers from any event by adding polling configuration onto the event:
+
+```
+{
+    "tag": "html",
+    "children": [
+        {
+            "tag": "head",
+            "children": []
+        },
+        {
+            "tag": "body",
+            "children": [
+                {
+                    "tag": "div",
+                    "text": "$.bag.counter"
+                },
+                {
+                    "tag": "form",
+                    "submit": {
+                        "eventName": "poll",
+                        "poll": {
+                            "every": 500
+                        }
+                    },
+                    "children": [
+                        {
+                            "tag": "input",
+                            "type": "hidden",
+                            "bind": "$.bag.counter"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+; and controller:
+
+```
+module.exports = {
+    bag : {
+        counter : 0
+    },
+	events : {
+		load : function(event) {},
+		poll : function(event) {
+		    this.bag.counter = event.bag.counter;
+		    this.bag.counter++;
+		}
+	}
+}
+```
 
 [Continue to Controllers](/documentation/websites/controllers)
