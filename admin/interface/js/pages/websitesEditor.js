@@ -659,7 +659,13 @@ window.WebsiteEditor = {
 		window._websitesEditorControllerInstance.wipeData();
 
 		if (this.$route.params.name === ".new") {
-			return window._websitesEditorControllerInstance.fetchClients(this);
+			return window._websitesEditorControllerInstance.fetchClients(this).then(() => {
+				//fetch our basic tagset
+				return window._websitesEditorControllerInstance.fetchTagset("basic");
+			}).then(() => {
+				//fetch our global properties
+				return window._websitesEditorControllerInstance.fetchProperties("global");
+			});
 		}
 
 		return window._websitesEditorControllerInstance.fetchWebsite(this, this.$route.params.name).then(() => {
