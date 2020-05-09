@@ -94,6 +94,12 @@ module.exports = function(db, bcrypt) {
 		}
 
 		static async registerUser(username, password) {
+			const user = await userDB.find(username);
+
+			if (typeof(user) === "undefined" || user === null) {
+				return null;
+			}
+
 			const hashed = await Account.generatePassword(password);
 
 			await userDB.upsert(username, {

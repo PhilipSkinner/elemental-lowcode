@@ -31,6 +31,15 @@ idm.prototype.getUser = function(req, res, next) {
 
 idm.prototype.createUser = function(req, res, next) {
 	this._connect().then(() => {
+		this.userDB.find(req.body.username);
+	}).then((existing) => {
+		if (typeof(existing) !== 'undefined' || existing !== null) {
+			res.status(409);
+			res.send("");
+			next();
+			return Promise.reject(new Error('User already exists'));
+		}
+
 		//generate the password
 		return new Promise((resolve, reject) => {
 			this.bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -49,6 +58,8 @@ idm.prototype.createUser = function(req, res, next) {
 		res.status(201);
 		res.send("");
 		next();
+	}).catch((err) => {
+		console.log(err);
 	});
 };
 
