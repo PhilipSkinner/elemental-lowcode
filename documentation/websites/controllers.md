@@ -129,6 +129,7 @@ The following services are automatically added into each controller:
 * [rulesetService](/documentation/websites/rulesetService)
 * [idmService](/documentation/websites/idmService)
 * [navigationService](/documentation/websites/navigationService)
+* [authClientProvider](/documentation/websites/authClientProvider)
 
 Each of these are defined upon the controller instance as a property that can be access, for example:
 
