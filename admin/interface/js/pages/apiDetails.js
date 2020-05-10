@@ -60,7 +60,7 @@ _apiDetailsController.prototype.refreshState = function() {
 
 _apiDetailsController.prototype.fetchApi = function(name) {
 	return window.axios
-		.get(`http://localhost:8001/apis/${name}`, {
+		.get(`${window.hosts.kernel}/apis/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

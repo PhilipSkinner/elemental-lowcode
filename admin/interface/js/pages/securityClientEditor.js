@@ -36,7 +36,7 @@ _securityClientEditorController.prototype.initBlankType = function() {
 		client_secret : "my really secret secret",
 		scope : "openid roles",
 		redirect_uris : [
-			"http://localhost/callback"
+			`${window.hosts.interface}/callback`
 		]
 	}, null, 4));
 };
@@ -52,7 +52,7 @@ _securityClientEditorController.prototype.getData = function() {
 _securityClientEditorController.prototype.fetchClient = function(name) {
 	this.name = name;
 	return window.axios
-		.get(`http://localhost:8001/security/clients/${name}`, {
+		.get(`${window.hosts.kernel}/security/clients/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -71,7 +71,7 @@ _securityClientEditorController.prototype.save = function() {
 
 	if (this.name) {
 		return window.axios
-			.put(`http://localhost:8001/security/clients/${this.name}`, this.editor.getValue(), {
+			.put(`${window.hosts.kernel}/security/clients/${this.name}`, this.editor.getValue(), {
 				headers : {
 					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -95,7 +95,7 @@ _securityClientEditorController.prototype.save = function() {
 			});
 	} else {
 		return window.axios
-			.post(`http://localhost:8001/security/clients`, this.editor.getValue(), {
+			.post(`${window.hosts.kernel}/security/clients`, this.editor.getValue(), {
 				headers : {
 					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -133,7 +133,7 @@ window.SecurityClientEditor = {
 		if (this.$route.params.id === ".new") {
 			window._securityClientEditorControllerInstance.initBlankType();
 			return null;
-		}	
+		}
 
 		return window._securityClientEditorControllerInstance.fetchClient(this.$route.params.id);
 	}

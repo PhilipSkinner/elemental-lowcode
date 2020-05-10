@@ -1,14 +1,14 @@
 const templateProvider = function() {
 	this.templateFiles = [
-		"/js/templates/main.html",
-		"/js/templates/apis.html",
-		"/js/templates/rules.html",
-		"/js/templates/documentation.html",
-		"/js/templates/integrations.html",
-		"/js/templates/dataTypes.html",
-		"/js/templates/security.html",
-		"/js/templates/websites.html",
-		"/js/templates/packager.html",
+		"js/templates/main.html",
+		"js/templates/apis.html",
+		"js/templates/rules.html",
+		"js/templates/documentation.html",
+		"js/templates/integrations.html",
+		"js/templates/dataTypes.html",
+		"js/templates/security.html",
+		"js/templates/websites.html",
+		"js/templates/packager.html",
 	];
 
 	this.initWrapper();

@@ -25,7 +25,7 @@ _homeController.prototype.setCaller = function(caller) {
 
 _homeController.prototype.fetchRules = function() {
 	return window.axios
-		.get("http://localhost:8001/rules", {
+		.get(`${window.hosts.kernel}/rules`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -37,7 +37,7 @@ _homeController.prototype.fetchRules = function() {
 
 _homeController.prototype.fetchIntegrations = function() {
 	return window.axios
-		.get("http://localhost:8001/integrations", {
+		.get(`${window.hosts.kernel}/integrations`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -49,7 +49,7 @@ _homeController.prototype.fetchIntegrations = function() {
 
 _homeController.prototype.fetchDataTypes = function() {
 	return window.axios
-		.get("http://localhost:8001/data/types", {
+		.get(`${window.hosts.kernel}/data/types`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -61,7 +61,7 @@ _homeController.prototype.fetchDataTypes = function() {
 
 _homeController.prototype.fetchWebsites = function() {
 	return window.axios
-		.get("http://localhost:8001/websites", {
+		.get(`${window.hosts.kernel}/websites`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -73,7 +73,7 @@ _homeController.prototype.fetchWebsites = function() {
 
 _homeController.prototype.fetchClients = function() {
 	return window.axios
-		.get("http://localhost:8001/security/clients", {
+		.get(`${window.hosts.kernel}/security/clients`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -85,7 +85,7 @@ _homeController.prototype.fetchClients = function() {
 
 _homeController.prototype.fetchAPIs = function() {
 	return window.axios
-		.get("http://localhost:8001/apis", {
+		.get(`${window.hosts.kernel}/apis`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -122,7 +122,7 @@ window.Home = {
 			window._homeControllerInstance.fetchAPIs(),
 		]).then(() => {
 			window._homeControllerInstance.refresh();
-		}); 
+		});
 	}
 };
 

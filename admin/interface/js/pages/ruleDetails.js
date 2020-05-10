@@ -17,7 +17,7 @@ _ruleDetailController.prototype.getData = function() {
 _ruleDetailController.prototype.fetchRule = function(name) {
 	this.name = name;
 	return window.axios
-		.get("http://localhost:8001/rules/" + name, {
+		.get(`${window.hosts.kernel}/rules/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

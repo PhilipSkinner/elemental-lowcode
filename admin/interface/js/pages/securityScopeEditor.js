@@ -51,7 +51,7 @@ _securityScopeEditorController.prototype.getData = function() {
 _securityScopeEditorController.prototype.fetchScope = function(name) {
 	this.name = name;
 	return window.axios
-		.get(`http://localhost:8001/security/scopes/${name}`, {
+		.get(`${window.hosts.kernel}/security/scopes/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -70,7 +70,7 @@ _securityScopeEditorController.prototype.save = function() {
 
 	if (this.name) {
 		return window.axios
-			.put(`http://localhost:8001/security/scopes/${this.name}`, this.editor.getValue(), {
+			.put(`${window.hosts.kernel}/security/scopes/${this.name}`, this.editor.getValue(), {
 				headers : {
 					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -94,7 +94,7 @@ _securityScopeEditorController.prototype.save = function() {
 			});
 	} else {
 		return window.axios
-			.post(`http://localhost:8001/security/scopes`, this.editor.getValue(), {
+			.post(`${window.hosts.kernel}/security/scopes`, this.editor.getValue(), {
 				headers : {
 					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -132,7 +132,7 @@ window.SecurityScopeEditor = {
 		if (this.$route.params.name === ".new") {
 			window._securityScopeEditorControllerInstance.initBlankType();
 			return null;
-		}	
+		}
 
 		return window._securityScopeEditorControllerInstance.fetchScope(this.$route.params.name);
 	}

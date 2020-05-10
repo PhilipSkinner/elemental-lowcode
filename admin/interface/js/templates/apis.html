@@ -67,7 +67,7 @@
 				<!-- GET -->
 				<div class="card shadow mb-4" v-if="route.get.controller">
 					<div class="card-header py-3">
-						<h6 class="m-0 font-weight-bold text-primary">GET http://localhost:8003/{{api.name}}{{route.name}}</h6>
+						<h6 class="m-0 font-weight-bold text-primary">GET {{window.hosts.api}}/{{api.name}}{{route.name}}</h6>
 					</div>
 
 					<div class="card-body">
@@ -102,7 +102,7 @@
 				<!-- POST -->
 				<div class="card shadow mb-4" v-if="route.post.controller">
 					<div class="card-header py-3">
-						<h6 class="m-0 font-weight-bold text-primary">POST http://localhost:8003/{{api.name}}{{route.name}}</h6>
+						<h6 class="m-0 font-weight-bold text-primary">POST {{window.hosts.api}}/{{api.name}}{{route.name}}</h6>
 					</div>
 
 					<div class="card-body">

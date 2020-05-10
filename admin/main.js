@@ -1,9 +1,11 @@
 const
-	express 		= require("express"),
-	path			= require("path"),
-	fs 				= require("fs"),
-	cookieParser 	= require("cookie-parser"),
-	auth 			= require("simple-oauth2");
+	express 			= require("express"),
+	path				= require("path"),
+	fs 					= require("fs"),
+	cookieParser 		= require("cookie-parser"),
+	auth 				= require("simple-oauth2"),
+	handlebars 			= require("handlebars"),
+	hostnameResolver 	= require("../shared/hostnameResolver")();
 
 const credentials = {
 	client: {
@@ -11,7 +13,7 @@ const credentials = {
 		secret: process.env.SECRET
 	},
 	auth: {
-		tokenHost: "http://localhost:8008",
+		tokenHost: hostnameResolver.resolveIdentity(),
 		tokenPath: "/token",
 		authorizePath: "/auth",
 	}
@@ -24,13 +26,25 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
 	if (req.cookies.token && req.cookies.token !== "undefined") {
 		//write the contents of our index.html file
-		res.write(fs.readFileSync(path.join(process.env.DIR, "interface/index.html")));
+		const template = handlebars.compile(fs.readFileSync(path.join(process.env.DIR, "interface/index.html")).toString('utf8'));
+		res.write(template({
+			hosts : {
+				kernel 		: hostnameResolver.resolveKernel(),
+				admin 		: hostnameResolver.resolveAdmin(),
+				api 		: hostnameResolver.resolveAPI(),
+				integration : hostnameResolver.resolveIntegration(),
+				interface 	: hostnameResolver.resolveInterface(),
+				storage 	: hostnameResolver.resolveStorage(),
+				rules 		: hostnameResolver.resolveRules(),
+				identity 	: hostnameResolver.resolveIdentity()
+			}
+		}));
 		res.end();
 		return;
 	}
 
 	const authorizationUri = oauth2.authorizationCode.authorizeURL({
-		redirect_uri 	: "http://localhost:8002/auth",
+		redirect_uri 	: `${hostnameResolver.resolveAdmin()}/auth`,
 		scope 			: "openid roles"
 	});
 
@@ -41,7 +55,7 @@ app.get("/", (req, res) => {
 app.get("/auth", (req, res) => {
 	const tokenConfig = {
 		code: req.query.code,
-		redirect_uri: "http://localhost:8002/auth",
+		redirect_uri: `${hostnameResolver.resolveAdmin()}/auth`,
 		scope: "openid roles",
 	};
 

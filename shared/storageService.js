@@ -1,6 +1,7 @@
-const storageService = function(request) {
-	this.request = request;
+const storageService = function(request, hostnameResolver) {
+	this.request 			= request;
 	this.authClientProvider = null;
+	this.hostnameResolver 	= hostnameResolver;
 };
 
 storageService.prototype.setAuthClientProvider = function(authClientProvider) {
@@ -22,7 +23,7 @@ storageService.prototype.detailCollection = function(name, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.get(`http://localhost:8006/${name}/.details`, {
+			this.request.get(`${this.hostnameResolver.resolveStorage()}/${name}/.details`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				}
@@ -71,7 +72,7 @@ storageService.prototype.getList = function(name, start, count, filters, authTok
 		}
 
 		return new Promise((resolve, reject) => {
-			this.request.get(`http://localhost:8006/${name}`, {
+			this.request.get(`${this.hostnameResolver.resolveStorage()}/${name}`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				},
@@ -109,7 +110,7 @@ storageService.prototype.getEntity = function(name, id, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.get(`http://localhost:8006/${name}/${id}`, {
+			this.request.get(`${this.hostnameResolver.resolveStorage()}/${name}/${id}`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				}
@@ -147,7 +148,7 @@ storageService.prototype.createEntity = function(name, entity, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.post(`http://localhost:8006/${name}`, {
+			this.request.post(`${this.hostnameResolver.resolveStorage()}/${name}`, {
 				body : JSON.stringify(entity),
 				headers : {
 					"content-type" : "application/json",
@@ -183,7 +184,7 @@ storageService.prototype.updateEntity = function(name, id, entity, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.put(`http://localhost:8006/${name}/${id}`, {
+			this.request.put(`${this.hostnameResolver.resolveStorage()}/${name}/${id}`, {
 				body : JSON.stringify(entity),
 				headers : {
 					"content-type" : "application/json",
@@ -215,7 +216,7 @@ storageService.prototype.deleteEntity = function(name, id, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.delete(`http://localhost:8006/${name}/${id}`, {
+			this.request.delete(`${this.hostnameResolver.resolveStorage()}/${name}/${id}`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				}
@@ -230,10 +231,14 @@ storageService.prototype.deleteEntity = function(name, id, authToken) {
 	});
 };
 
-module.exports = function(request) {
+module.exports = function(request, hostnameResolver) {
 	if (!request) {
 		request = require("request");
 	}
 
-	return new storageService(request);
+	if (!hostnameResolver) {
+		hostnameResolver = require("./hostnameResolver")();
+	}
+
+	return new storageService(request, hostnameResolver);
 };

@@ -1,6 +1,7 @@
-const authClientProvider = function(config, request) {
-	this.config = config;
-	this.request = request;
+const authClientProvider = function(config, request, hostnameResolver) {
+	this.config 			= config;
+	this.request 			= request;
+	this.hostnameResolver 	= hostnameResolver;
 };
 
 authClientProvider.prototype.setSessionState = function(sessionState) {
@@ -9,7 +10,7 @@ authClientProvider.prototype.setSessionState = function(sessionState) {
 
 authClientProvider.prototype.loginUser = function(username, password) {
 	return new Promise((resolve, reject) => {
-		this.request.post("http://localhost:8008/token", {
+		this.request.post(`${this.hostnameResolver.resolveIdentity()}/token`, {
 			form : {
 				grant_type 		: "password",
 				username 		: username,
@@ -63,7 +64,7 @@ authClientProvider.prototype.getAccessToken = function() {
 	}
 
 	return new Promise((resolve, reject) => {
-		this.request.post("http://localhost:8008/token", {
+		this.request.post(`${this.hostnameResolver.resolveIdentity()}/token`, {
 			form : {
 				grant_type 		: "client_credentials",
 				scope 			: this.config.scope,
@@ -91,10 +92,14 @@ authClientProvider.prototype.getAccessToken = function() {
 	});
 };
 
-module.exports = function(config, request) {
+module.exports = function(config, request, hostnameResolver) {
 	if (!request) {
 		request = require("request");
 	}
 
-	return new authClientProvider(config, request);
+	if (!hostnameResolver) {
+		hostnameResolver = require("./hostnameResolver")();
+	}
+
+	return new authClientProvider(config, request, hostnameResolver);
 };

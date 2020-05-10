@@ -10,7 +10,7 @@ _packagerController.prototype.getData = function() {
 
 _packagerController.prototype.export = function() {
 	//generate the package
-	window.axios.get('http://localhost:8001', {
+	window.axios.get(`${window.hosts.kernel}`, {
 		responseType: 'arraybuffer',
 		headers : {
 			Authorization : `Bearer ${window.getToken()}`
@@ -37,7 +37,7 @@ _packagerController.prototype.import = function() {
 		});
 		formData.append('import', importFile);
 
-		window.axios.post('http://localhost:8001', formData, {
+		window.axios.post(`${window.hosts.kernel}`, formData, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

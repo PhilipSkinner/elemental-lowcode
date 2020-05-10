@@ -1,5 +1,6 @@
-const ruleService = function(request) {
-	this.request = request;
+const ruleService = function(request, hostnameResolver) {
+	this.request 			= request;
+	this.hostnameResolver 	= hostnameResolver;
 };
 
 ruleService.prototype.setAuthClientProvider = function(authClientProvider) {
@@ -21,7 +22,7 @@ ruleService.prototype.callRuleset = function(name, facts, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.post(`http://localhost:8007/${name}`, {
+			this.request.post(`${this.hostnameResolver.resolveRules()}/${name}`, {
 				body : JSON.stringify(facts),
 				headers : {
 					"content-type" : "application/json",
@@ -45,10 +46,14 @@ ruleService.prototype.callRuleset = function(name, facts, authToken) {
 	});
 };
 
-module.exports = function(request) {
+module.exports = function(request, hostnameResolver) {
 	if (!request) {
 		request = require("request");
 	}
 
-	return new ruleService(request);
+	if (!hostnameResolver) {
+		hostnameResolver = require("./hostnameResolver")();
+	}
+
+	return new ruleService(request, hostnameResolver);
 };

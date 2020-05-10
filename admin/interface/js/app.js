@@ -17,27 +17,27 @@ window.logout = function() {
 
 window.templates.fetchTemplates().then(() => {
 	const pages = [
-		"/js/pages/home.js",
-		"/js/pages/apis.js",
-		"/js/pages/apiEditor.js",
-		"/js/pages/apiDetails.js",
-		"/js/pages/data.js",
-		"/js/pages/dataTypeDetails.js",
-		"/js/pages/dataTypeEditor.js",
-		"/js/pages/integrations.js",
-		"/js/pages/integrationsEditor.js",
-		"/js/pages/integrationDetails.js",
-		"/js/pages/websites.js",
-		"/js/pages/websitesEditor.js",
-		"/js/pages/documentation.js",
-		"/js/pages/rules.js",
-		"/js/pages/rulesEditor.js",
-		"/js/pages/ruleDetails.js",
-		"/js/pages/security.js",
-		"/js/pages/securityClientEditor.js",
-		"/js/pages/securityScopeEditor.js",
-		"/js/pages/securityUserEditor.js",
-		"/js/pages/packager.js",
+		"js/pages/home.js",
+		"js/pages/apis.js",
+		"js/pages/apiEditor.js",
+		"js/pages/apiDetails.js",
+		"js/pages/data.js",
+		"js/pages/dataTypeDetails.js",
+		"js/pages/dataTypeEditor.js",
+		"js/pages/integrations.js",
+		"js/pages/integrationsEditor.js",
+		"js/pages/integrationDetails.js",
+		"js/pages/websites.js",
+		"js/pages/websitesEditor.js",
+		"js/pages/documentation.js",
+		"js/pages/rules.js",
+		"js/pages/rulesEditor.js",
+		"js/pages/ruleDetails.js",
+		"js/pages/security.js",
+		"js/pages/securityClientEditor.js",
+		"js/pages/securityScopeEditor.js",
+		"js/pages/securityUserEditor.js",
+		"js/pages/packager.js",
 	];
 
 	const loadPage = (file) => {
@@ -195,6 +195,8 @@ window.templates.fetchTemplates().then(() => {
 				"visible"
 			]
 		});
+
+		window.Vue.prototype.window = window;
 
 		const router = new VueRouter({
 			routes : routes,

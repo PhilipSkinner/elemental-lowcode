@@ -1,15 +1,16 @@
 const
-	Provider 		    = require("oidc-provider"),
-	clientProvider 	= require("./lib/configProvider")(),
-	path 			      = require("path"),
-	set 			      = require("lodash/set"),
-	express 		    = require("express"),
-	bodyParser 		  = require("body-parser"),
-	routes 			    = require("./lib/routes"),
-	idm 			      = require('./lib/idm'),
-  passwordGrant   = require('./lib/passwordGrant')();
+	Provider 		     = require("oidc-provider"),
+	clientProvider 	 = require("./lib/configProvider")(),
+	path 			       = require("path"),
+	set 			       = require("lodash/set"),
+	express 		     = require("express"),
+	bodyParser 		   = require("body-parser"),
+	routes 			     = require("./lib/routes"),
+	idm 			       = require('./lib/idm'),
+  hostnameResolver = require("../shared/hostnameResolver")(),
+  passwordGrant    = require('./lib/passwordGrant')();
 
-const { PORT = 3000, ISSUER = `http://localhost:${PORT}` } = process.env;
+const { PORT = 3000, ISSUER = `${hostnameResolver.resolveIdentity()}` } = process.env;
 const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");

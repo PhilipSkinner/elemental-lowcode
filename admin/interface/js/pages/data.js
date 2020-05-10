@@ -11,9 +11,9 @@ _dataController.prototype.getData = function() {
 
 _dataController.prototype.fetchTypes = function(caller) {
 	this.caller = caller;
-	
+
 	return window.axios
-		.get("http://localhost:8001/data/types", {
+		.get(`${window.hosts.kernel}/data/types`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -27,7 +27,7 @@ _dataController.prototype.fetchTypes = function(caller) {
 
 _dataController.prototype.deleteType = function(name) {
 	return window.axios
-		.delete(`http://localhost:8001/data/types/${name}`, {
+		.delete(`${window.hosts.kernel}/data/types/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

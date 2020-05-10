@@ -1,5 +1,6 @@
-const integrationService = function(request) {
-	this.request = request;
+const integrationService = function(request, hostnameResolver) {
+	this.request 			= request;
+	this.hostnameResolver 	= hostnameResolver;
 };
 
 integrationService.prototype.setAuthClientProvider = function(authClientProvider) {
@@ -21,7 +22,7 @@ integrationService.prototype.callIntegration = function(name, method, params, au
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request[method](`http://localhost:8004/${name}`, {
+			this.request[method](`${this.hostnameResolver.resolveIntegration()}/${name}`, {
 				qs : params
 			}, (err, res, body) => {
 				return resolve(JSON.parse(body));
@@ -30,10 +31,14 @@ integrationService.prototype.callIntegration = function(name, method, params, au
 	});
 };
 
-module.exports = function(request) {
+module.exports = function(request, hostnameResolver) {
 	if (!request) {
 		request = require("request");
 	}
 
-	return new integrationService(request);
+	if (!hostnameResolver) {
+		hostnameResolver = require("./hostnameResolver")();
+	}
+
+	return new integrationService(request, hostnameResolver);
 };

@@ -15,14 +15,14 @@ _rulesController.prototype.setCaller = function(caller) {
 
 _rulesController.prototype.fetchRules = function() {
 	return window.axios
-		.get("http://localhost:8001/rules", {
+		.get(`${window.hosts.kernel}/rules`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
 		})
 		.then((response) => {
 			response.data = response.data.map((w) => {
-				w.url = `http://localhost:8007/${w.name}/`;
+				w.url = `${window.hosts.rule}/${w.name}/`;
 				return w;
 			});
 
@@ -34,7 +34,7 @@ _rulesController.prototype.fetchRules = function() {
 
 _rulesController.prototype.removeRule = function(rule) {
 	return window.axios
-		.delete(`http://localhost:8001/rules/${rule}`, {
+		.delete(`${window.hosts.kernel}/rules/${rule}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

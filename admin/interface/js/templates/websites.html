@@ -431,7 +431,7 @@
 										{{resource.basename}}
 									</td>
 									<td>
-										<a :href="'http://localhost:8005' + resource.absolutePath" target="_blank">{{resource.absolutePath}}</a>
+										<a :href="window.hosts.interface + resource.absolutePath" target="_blank">{{resource.absolutePath}}</a>
 									</td>
 									<td>
 										<button class="btn btn-sm btn-danger" v-on:click="_websitesEditorControllerInstance.removeResource(resource.basename);">Remove</button>

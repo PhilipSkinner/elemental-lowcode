@@ -14,11 +14,18 @@ A simple low(ish) code development platform.
 
 ## Running
 
-1. Clone the repo
-2. Run setup.sh
-3. Run start.sh
-4. If this is the first time the system has run, you will be prompted to enter your first admin users credentials
-5. Open a browser and point it at http://localhost:8002
+To run use the public docker image:
+
+```
+$> sudo docker run -d -p 80:80 --name elemental philipskinner/elemental:latest
+```
+
+; then open a browser and point it at (http://admin.elementalsystem.org).
+
+The default administration login details are:
+
+* Username: admin
+* Password: admin
 
 ## Documentation
 
@@ -27,6 +34,15 @@ Get started by reading the [system documentation](/documentation).
 ## Examples
 
 Examples can be found in the [elemental-examples repository](https://github.com/PhilipSkinner/elemental-examples).
+
+## Developing
+
+1. Clone the repo
+2. Run setup.sh
+3. Run start.sh
+4. If this is the first time the system has run, you will be prompted to enter your first admin users credentials
+5. Open a browser and point it at http://localhost:8002
+
 
 ## What does it do
 
@@ -37,6 +53,19 @@ Elemental currently allows you to:
 * Construct your own more complex APIs
 * Build simple rulesets for business logic/validation logic
 * Construct server side first websites/interfaces and integrate them with the storage, integrations and rulesets services
+
+## Environmental variables
+
+Set the following variables to control the resolved hostnames for the services:
+
+* ELEMENTAL_KERNEL_HOST
+* ELEMENTAL_ADMIN_HOST
+* ELEMENTAL_API_HOST
+* ELEMENTAL_INTEGRATION_HOST
+* ELEMENTAL_INTERFACE_HOST
+* ELEMENTAL_STORAGE_HOST
+* ELEMENTAL_RULES_HOST
+* ELEMENTAL_IDENTITY_HOST
 
 ## What does it not do
 

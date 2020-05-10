@@ -1,22 +1,24 @@
 #!/usr/bin/env bash
 
 #install dependencies
-cd ./admin && npm i
+cd ./admin && npm i --unsafe-perm=true --allow-root
 cd ..
-cd ./api && npm i
+cd ./api && npm i --unsafe-perm=true --allow-root
 cd ..
-cd ./integration && npm i
+cd ./integration && npm i --unsafe-perm=true --allow-root
 cd ..
-cd ./interface && npm i
+cd ./interface && npm i --unsafe-perm=true --allow-root
 cd ..
-cd ./kernel && npm i
+cd ./kernel && npm i --unsafe-perm=true --allow-root
 cd ..
-cd ./storage && npm i
+cd ./storage && npm i --unsafe-perm=true --allow-root
 cd ..
-cd ./rules && npm i
+cd ./rules && npm i --unsafe-perm=true --allow-root
 cd ..
-cd ./processes && npm i
+cd ./processes && npm i --unsafe-perm=true --allow-root
 cd ..
-cd ./identity && npm i
+cd ./identity && npm i --unsafe-perm=true --allow-root
 cd ..
-cd ./shared && npm i
+cd ./shared && npm i --unsafe-perm=true --allow-root
+cd ..
+npm i --unsafe-perm=true --allow-root

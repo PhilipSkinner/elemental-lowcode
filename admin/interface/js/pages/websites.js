@@ -12,14 +12,14 @@ _websitesController.prototype.getWebsites = function() {
 _websitesController.prototype.fetchWebsites = function(caller) {
 	this.caller = caller ? caller : this.caller;
 	return window.axios
-		.get("http://localhost:8001/websites", {
+		.get(`${window.hosts.kernel}/websites`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
 		})
 		.then((response) => {
 			response.data = response.data.map((w) => {
-				w.url = `http://localhost:8005/${w.name}/`;
+				w.url = `${window.hosts.interface}/${w.name}/`;
 				return w;
 			});
 
@@ -31,7 +31,7 @@ _websitesController.prototype.fetchWebsites = function(caller) {
 
 _websitesController.prototype.deleteWebsite = function(name) {
 	return window.axios
-		.delete(`http://localhost:8001/websites/${name}`, {
+		.delete(`${window.hosts.kernel}/websites/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

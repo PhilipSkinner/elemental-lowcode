@@ -1,6 +1,7 @@
-const idmService = function(request) {
-	this.request = request;
+const idmService = function(request, hostnameResolver) {
+	this.request 			= request;
 	this.authClientProvider = null;
+	this.hostnameResolver 	= hostnameResolver;
 };
 
 idmService.prototype.setAuthClientProvider = function(authClientProvider) {
@@ -26,7 +27,7 @@ idmService.prototype._getToken = function(authToken) {
 idmService.prototype.registerUser = function(user, authToken) {
 	return this._getToken(authToken).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.post("http://localhost:8008/api/users", {
+			this.request.post(`${this.hostnameResolver.resolveIdentity()}/api/users`, {
 				body : JSON.stringify(user),
 				headers : {
 					Authorization 	: `Bearer ${token}`,
@@ -50,7 +51,7 @@ idmService.prototype.registerUser = function(user, authToken) {
 idmService.prototype.getUser = function(user, authToken) {
 	return this._getToken(authToken).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.get(`http://localhost:8008/api/users/${user}`, {
+			this.request.get(`${this.hostnameResolver.resolveIdentity()}/api/users/${user}`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				}
@@ -69,10 +70,14 @@ idmService.prototype.getUser = function(user, authToken) {
 	});
 };
 
-module.exports = function(request) {
+module.exports = function(request, hostnameResolver) {
 	if (!request) {
 		request = require("request");
 	}
 
-	return new idmService(request);
+	if (!hostnameResolver) {
+		hostnameResolver = require("./hostnameResolver")();
+	}
+
+	return new idmService(request, hostnameResolver);
 };

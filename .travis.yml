@@ -1,19 +1,20 @@
 language: node_js
 node_js:
   - 12
+services:
+  - docker
 jobs:
   include:
     - stage: build and test
-      script: 
-        - cd ./shared && npm i && cd ..
-        - cd ./admin && npm i && cd ..
-        - cd ./api && npm i && cd ..
-        - cd ./integration && npm i && cd ..
-        - cd ./interface && npm i && cd ..
-        - cd ./kernel && npm i && cd ..
-        - cd ./storage && npm i && cd ..
-        - cd ./rules && npm i && cd ..
-        - cd ./processes && npm i && cd ..
-        - cd ./identity && npm i && cd ..
-        - npm i
+      script:
+        - ./setup.sh
         - npm run test
+        - ./clean.sh
+        - docker build -t philipskinner/elemental:latest .
+deploy:
+    provider: script
+    script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker push philipskinner/elemental:latest
+    on:
+        branch: master

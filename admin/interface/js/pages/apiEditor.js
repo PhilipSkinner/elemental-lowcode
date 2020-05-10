@@ -95,7 +95,7 @@ _apiEditorController.prototype.editController = function(name) {
 	}
 
 	return window.axios.get(
-		`http://localhost:8001/apis/${this.api.name}/${resourceName}`,
+		`${window.hosts.kernel}/apis/${this.api.name}/${resourceName}`,
 		{
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
@@ -125,7 +125,7 @@ _apiEditorController.prototype.editService = function(name) {
 	}
 
 	return window.axios.get(
-		`http://localhost:8001/apis/${this.api.name}/${resourceName}`,
+		`${window.hosts.kernel}/apis/${this.api.name}/${resourceName}`,
 		{
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
@@ -205,7 +205,7 @@ _apiEditorController.prototype.refreshState = function() {
 
 _apiEditorController.prototype.fetchApi = function(name) {
 	return window.axios
-		.get(`http://localhost:8001/apis/${name}`, {
+		.get(`${window.hosts.kernel}/apis/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -218,7 +218,7 @@ _apiEditorController.prototype.fetchApi = function(name) {
 
 _apiEditorController.prototype.fetchClients = function() {
 	return window.axios
-		.get("http://localhost:8001/security/clients", {
+		.get(`${window.hosts.kernel}/security/clients`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -321,7 +321,7 @@ _apiEditorController.prototype._saveAPI = function() {
 	});
 
 	return window.axios.put(
-		`http://localhost:8001/apis/${this.api.name}`,
+		`${window.hosts.kernel}/apis/${this.api.name}`,
 		this.api,
 		{
 			headers : {
@@ -343,7 +343,7 @@ _apiEditorController.prototype._saveAPI = function() {
 _apiEditorController.prototype._saveService = function(name, resource) {
 	return new Promise((resolve, reject) => {
 		return window.axios.put(
-			`http://localhost:8001/apis/${this.api.name}/services/${name}`, {
+			`${window.hosts.kernel}/apis/${this.api.name}/services/${name}`, {
 				content : resource
 			},
 			{
@@ -360,7 +360,7 @@ _apiEditorController.prototype._saveService = function(name, resource) {
 _apiEditorController.prototype._saveController = function(name, resource) {
 	return new Promise((resolve, reject) => {
 		return window.axios.put(
-			`http://localhost:8001/apis/${this.api.name}/controllers/${name}`, {
+			`${window.hosts.kernel}/apis/${this.api.name}/controllers/${name}`, {
 				content : resource
 			},
 			{

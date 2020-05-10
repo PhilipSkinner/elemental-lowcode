@@ -8,7 +8,7 @@ This tutorial will take you through the construction of a todo list app where us
 
 We we utilise an authorization code flow authentication mechanism for this app.
 
-The first step to enable this is to navigate to the security section on the elemental administration website (http://localhost:8002) and to press on the add client option:
+The first step to enable this is to navigate to the security section on the elemental administration website (http://admin.elementalsystem.org) and to press on the add client option:
 
 **Step 1**
 

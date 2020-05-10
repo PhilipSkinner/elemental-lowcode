@@ -55,7 +55,7 @@ _securityUserEditorController.prototype.getData = function() {
 _securityUserEditorController.prototype.fetchUser = function(id) {
 	this.id = id;
 	return window.axios
-		.get(`http://localhost:8001/security/users/${id}`, {
+		.get(`${window.hosts.kernel}/security/users/${id}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -74,7 +74,7 @@ _securityUserEditorController.prototype.save = function() {
 
 	if (this.id) {
 		return window.axios
-			.put(`http://localhost:8001/security/users/${this.id}`, this.editor.getValue(), {
+			.put(`${window.hosts.kernel}/security/users/${this.id}`, this.editor.getValue(), {
 				headers : {
 					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -98,7 +98,7 @@ _securityUserEditorController.prototype.save = function() {
 			});
 	} else {
 		return window.axios
-			.post("http://localhost:8001/security/users", this.editor.getValue(), {
+			.post(`${window.hosts.kernel}/security/users`, this.editor.getValue(), {
 				headers : {
 					"Content-Type" : "application/json",
 					Authorization : `Bearer ${window.getToken()}`

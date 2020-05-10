@@ -19,7 +19,7 @@ _integrationDetailController.prototype.getData = function() {
 _integrationDetailController.prototype.fetchType = function(name) {
 	this.name = name;
 	return window.axios
-		.get("http://localhost:8001/integrations/" + name, {
+		.get(`${window.hosts.kernel}/integrations/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

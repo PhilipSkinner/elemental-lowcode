@@ -24,7 +24,7 @@ _dataTypeDetailsController.prototype.getData = function() {
 _dataTypeDetailsController.prototype.fetchType = function(name) {
 	this.name = name;
 	return window.axios
-		.get("http://localhost:8001/data/types/" + name, {
+		.get(`${window.hosts.kernel}/data/types/` + name, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

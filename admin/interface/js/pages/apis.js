@@ -12,7 +12,7 @@ _apisController.prototype.getData = function() {
 _apisController.prototype.fetchApis = function(caller) {
 	this.caller = caller ? caller : this.caller;
 	return window.axios
-		.get("http://localhost:8001/apis", {
+		.get(`${window.hosts.kernel}/apis`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -26,7 +26,7 @@ _apisController.prototype.fetchApis = function(caller) {
 
 _apisController.prototype.deleteApi = function(name) {
 	return window.axios
-		.delete(`http://localhost:8001/apis/${name}`, {
+		.delete(`${window.hosts.kernel}/apis/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

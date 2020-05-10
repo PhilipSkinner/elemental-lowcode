@@ -13,7 +13,7 @@ _integrationsController.prototype.fetchIntegrations = function(caller) {
 	this.caller = caller;
 
 	return window.axios
-		.get("http://localhost:8001/integrations", {
+		.get(`${window.hosts.kernel}/integrations`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -27,7 +27,7 @@ _integrationsController.prototype.fetchIntegrations = function(caller) {
 
 _integrationsController.prototype.removeIntegration = function(name) {
 	return window.axios
-		.delete(`http://localhost:8001/integrations/${name}`, {
+		.delete(`${window.hosts.kernel}/integrations/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}

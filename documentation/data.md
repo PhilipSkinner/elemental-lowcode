@@ -86,13 +86,13 @@ The following is an example data type definition:
 
 Each data type is automatically hosted on the storage service with 7 endpoints:
 
-* `GET http://localhost:8006/[typeName]`
-* `POST http://localhost:8006/[typeName]`
-* `GET http://localhost:8006/[typeName]/.details`
-* `GET http://localhost:8006/[typeName]/[entityId]`
-* `PUT http://localhost:8006/[typeName]/[entityId]`
-* `PATCH http://localhost:8006/[typeName]/[entityId]`
-* `DELETE http://localhost:8006/[typeName][entityId]`
+* `GET http://storage.elementalsystem.org/[typeName]`
+* `POST http://storage.elementalsystem.org/[typeName]`
+* `GET http://storage.elementalsystem.org/[typeName]/.details`
+* `GET http://storage.elementalsystem.org/[typeName]/[entityId]`
+* `PUT http://storage.elementalsystem.org/[typeName]/[entityId]`
+* `PATCH http://storage.elementalsystem.org/[typeName]/[entityId]`
+* `DELETE http://storage.elementalsystem.org/[typeName][entityId]`
 
 Documentation for the requests & responses for each data type can be found by clicking on the data types name within the data section of the administration. This documentation is automatically generated and displays information on the expected payloads, responses, headers and authorization details.
 

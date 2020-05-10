@@ -1,10 +1,11 @@
-const websiteInstance = function(app, definition, controllerInstance, templateRenderer, express, path) {
+const websiteInstance = function(app, definition, controllerInstance, templateRenderer, express, path, hostnameResolver) {
 	this.app 					= app;
 	this.definition 			= definition;
 	this.controllerInstance 	= controllerInstance;
 	this.templateRenderer 		= templateRenderer;
 	this.express 				= express;
 	this.path 					= path;
+	this.hostnameResolver 		= hostnameResolver;
 };
 
 websiteInstance.prototype.configureTag = function(tag) {
@@ -42,11 +43,11 @@ websiteInstance.prototype.init = function() {
 			const oidc = require("passport-oauth2");
 			passport = require("passport");
 			passport.use(new oidc({
-				authorizationURL 	: "http://localhost:8008/auth",
-				tokenURL 			: "http://localhost:8008/token",
+				authorizationURL 	: `${this.hostnameResolver.resolveIdentity()}/auth`,
+				tokenURL 			: `${this.hostnameResolver.resolveIdentity()}/token`,
 				clientID			: this.definition.client.client_id,
 				clientSecret 		: this.definition.client.client_secret,
-				callbackURL 		: `http://localhost:8005/${this.definition.name}/_auth`,
+				callbackURL 		: `${this.hostnameResolver.resolveInterface()}/${this.definition.name}/_auth`,
 				scope 				: this.definition.client.scope,
 				passReqToCallback	: true,
 			}, (req, accessToken, refreshToken, params, profile, done) => {
@@ -96,7 +97,7 @@ websiteInstance.prototype.init = function() {
 	});
 };
 
-module.exports = function(app, definition, controllerInstance, templateRenderer, express, path) {
+module.exports = function(app, definition, controllerInstance, templateRenderer, express, path, hostnameResolver) {
 	if (!controllerInstance) {
 		controllerInstance = require("./controllerInstance");
 	}
@@ -113,5 +114,9 @@ module.exports = function(app, definition, controllerInstance, templateRenderer,
 		path = require("path");
 	}
 
-	return new websiteInstance(app, definition, controllerInstance, templateRenderer, express, path);
+	if (!hostnameResolver) {
+		hostnameResolver = require("../../shared/hostnameResolver")();
+	}
+
+	return new websiteInstance(app, definition, controllerInstance, templateRenderer, express, path, hostnameResolver);
 };

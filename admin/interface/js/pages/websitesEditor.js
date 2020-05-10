@@ -91,7 +91,7 @@ _websitesEditorController.prototype.saveResource = function(path, value) {
 		}
 
 		return window.axios
-			.post(`http://localhost:8001/websites/${this.website.name}/resource?path=${path}`, {
+			.post(`${window.hosts.kernel}/websites/${this.website.name}/resource?path=${path}`, {
 				resource : value
 			}, {
 				headers : {
@@ -120,7 +120,7 @@ _websitesEditorController.prototype.saveWebsite = function() {
 		this.website.tags = this.tags;
 
 		return window.axios
-			.put(`http://localhost:8001/websites/${this.website.name}`, this.website, {
+			.put(`${window.hosts.kernel}/websites/${this.website.name}`, this.website, {
 				headers : {
 					Authorization : `Bearer ${window.getToken()}`
 				}
@@ -201,7 +201,7 @@ _websitesEditorController.prototype.loadResource = function(path) {
 
 	return new Promise((resolve, reject) => {
 		window.axios
-			.get(`http://localhost:8001/websites/${this.website.name}/resource?path=${path}`, {
+			.get(`${window.hosts.kernel}/websites/${this.website.name}/resource?path=${path}`, {
 				headers : {
 					Authorization : `Bearer ${window.getToken()}`
 				}
@@ -355,7 +355,7 @@ _websitesEditorController.prototype.fetchProperties = function(name) {
 		return Promise.resolve();
 	}
 
-	return window.axios.get(`http://localhost:8001/properties/${name}`, {
+	return window.axios.get(`${window.hosts.kernel}/properties/${name}`, {
 		headers : {
 			Authorization : `Bearer ${window.getToken()}`
 		}
@@ -371,7 +371,7 @@ _websitesEditorController.prototype.fetchTagset = function(name) {
 		return Promise.resolve();
 	}
 
-	return window.axios.get(`http://localhost:8001/tags/${name}`, {
+	return window.axios.get(`${window.hosts.kernel}/tags/${name}`, {
 		headers : {
 			Authorization : `Bearer ${window.getToken()}`
 		}
@@ -398,7 +398,7 @@ _websitesEditorController.prototype.fetchTagset = function(name) {
 _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 	this.caller = caller;
 	return window.axios
-		.get(`http://localhost:8001/websites/${name}`, {
+		.get(`${window.hosts.kernel}/websites/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -424,7 +424,7 @@ _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 _websitesEditorController.prototype.fetchClients = function(caller) {
 	this.caller = caller;
 	return window.axios
-		.get("http://localhost:8001/security/clients", {
+		.get(`${window.hosts.kernel}/security/clients`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -515,7 +515,7 @@ _websitesEditorController.prototype.uploadResource = function() {
 	var formData = new FormData();
 	var imagefile = document.querySelector("#file");
 	formData.append("resource", imagefile.files[0]);
-	return window.axios.post(`http://localhost:8001/websites/${this.website.name}/staticfiles`, formData, {
+	return window.axios.post(`${window.hosts.kernel}/websites/${this.website.name}/staticfiles`, formData, {
 		headers: {
 	  		"Content-Type" : "multipart/form-data",
 	  		Authorization  : `Bearer ${window.getToken()}`
@@ -528,7 +528,7 @@ _websitesEditorController.prototype.uploadResource = function() {
 
 _websitesEditorController.prototype.fetchStaticFiles = function(caller, name) {
 	this.caller = caller;
-	return window.axios.get(`http://localhost:8001/websites/${name}/staticfiles`, {
+	return window.axios.get(`${window.hosts.kernel}/websites/${name}/staticfiles`, {
 		headers : {
 			Authorization : `Bearer ${window.getToken()}`
 		}
@@ -539,7 +539,7 @@ _websitesEditorController.prototype.fetchStaticFiles = function(caller, name) {
 };
 
 _websitesEditorController.prototype.removeResource = function(filename) {
-	return window.axios.delete(`http://localhost:8001/websites/${this.website.name}/staticfiles/${filename}`, {
+	return window.axios.delete(`${window.hosts.kernel}/websites/${this.website.name}/staticfiles/${filename}`, {
 		headers : {
 			Authorization : `Bearer ${window.getToken()}`
 		}

@@ -1,10 +1,11 @@
-const configProvider = function(glob, path, fs, jose, userDB, db) {
-	this.glob = glob;
-	this.path = path;
-	this.fs = fs;
-	this.jose = jose;
-	this.userDB = userDB;
-	this.db = db;
+const configProvider = function(glob, path, fs, jose, userDB, db, hostnameResolver) {
+	this.glob 				= glob;
+	this.path 				= path;
+	this.fs 				= fs;
+	this.jose 				= jose;
+	this.userDB 			= userDB;
+	this.db 				= db;
+	this.hostnameResolver 	= hostnameResolver;
 };
 
 configProvider.prototype.getClients = function(dir) {
@@ -118,7 +119,7 @@ configProvider.prototype.generateAdminClient = function(secret) {
 		client_secret	: secret,
 		scope 			: "openid roles",
 		redirect_uris	: [
-			"http://localhost:8002/auth"
+			`${this.hostnameResolver.resolveAdmin()}/auth`
 		]
 	});
 };
@@ -222,7 +223,7 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
 	});
 };
 
-module.exports = function(glob, path, fs, jose, keygrip, userDB, db) {
+module.exports = function(glob, path, fs, jose, keygrip, userDB, db, hostnameResolver) {
 	if (!glob) {
 		glob = require("glob");
 	}
@@ -247,5 +248,9 @@ module.exports = function(glob, path, fs, jose, keygrip, userDB, db) {
 		db = require("../../shared/db")();
 	}
 
-	return new configProvider(glob, path, fs, jose, userDB, db);
+	if (!hostnameResolver) {
+		hostnameResolver = require("../../shared/hostnameResolver")();
+	}
+
+	return new configProvider(glob, path, fs, jose, userDB, db, hostnameResolver);
 };

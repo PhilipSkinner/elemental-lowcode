@@ -101,7 +101,7 @@ _integrationsEditorController.prototype.getData = function() {
 _integrationsEditorController.prototype.fetchType = function(name) {
 	this.name = name;
 	return window.axios
-		.get("http://localhost:8001/integrations/" + name, {
+		.get(`${window.hosts.kernel}/integrations/${name}`, {
 			headers : {
 				Authorization : `Bearer ${window.getToken()}`
 			}
@@ -120,7 +120,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 
 	if (this.name) {
 		return window.axios
-			.put("http://localhost:8001/integrations/" + this.name, this.editor.getValue(), {
+			.put(`${window.hosts.kernel}/integrations/${this.name}`, this.editor.getValue(), {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization : `Bearer ${window.getToken()}`
@@ -146,7 +146,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 			});
 	} else {
 		return window.axios
-			.post("http://localhost:8001/integrations", this.editor.getValue(), {
+			.post(`${window.hosts.kernel}/integrations`, this.editor.getValue(), {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization : `Bearer ${window.getToken()}`
