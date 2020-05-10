@@ -183,7 +183,7 @@
 							<div class="card-body collapse" :id="'prop_' + group.name.replace(' ', '').replace('/', '')" :aria-labelledby="'prop_' + group.name.replace(' ', '').replace('/', '')" data-parent="#uiProperties">
 								<div class="form-group prop-group" v-for="prop in group.properties">
 									<label :for="'prop_' + prop">{{activeDefinition.properties[prop].name}}:</label>
-									
+
 									<div class="propToggleWrapper">
 										<div v-if="!_websitesEditorControllerInstance.isExpression(activeProperties[prop]) || activeDefinition.properties[prop].type === 'string'">
 											<!-- single string -->
@@ -459,7 +459,7 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="exampleModalLabel">Upload Static File</h5>
-							<button class="close" type="button" data-dismiss="modal" aria-label="Close" v-on:click="newResourceVisible=false">
+							<button class="close" type="button" data-dismiss="modal" aria-label="Close" v-on:click="_websitesEditorControllerInstance.closeUploader()">
 								<span aria-hidden="true">×</span>
 							</button>
 						</div>
@@ -469,7 +469,7 @@
 							</slot>
 						</div>
 						<div class="modal-footer">
-							<button class="btn btn-default" type="button" data-dismiss="modal" v-on:click="newResourceVisible=false">Cancel</button>
+							<button class="btn btn-default" type="button" data-dismiss="modal" v-on:click="_websitesEditorControllerInstance.closeUploader()">Cancel</button>
 							<button class="btn btn-primary" type="button" data-dismiss="modal" v-on:click="_websitesEditorControllerInstance.uploadResource();">Upload</button>
 						</div>
 					</div>

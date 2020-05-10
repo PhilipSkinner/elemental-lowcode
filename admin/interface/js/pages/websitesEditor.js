@@ -506,6 +506,11 @@ _websitesEditorController.prototype.newStaticFile = function() {
 	this.refreshState();
 };
 
+_websitesEditorController.prototype.closeUploader = function() {
+	this.newResourceVisible = false;
+	this.refreshState();
+};
+
 _websitesEditorController.prototype.uploadResource = function() {
 	var formData = new FormData();
 	var imagefile = document.querySelector("#file");

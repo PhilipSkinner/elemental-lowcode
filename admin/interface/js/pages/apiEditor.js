@@ -10,7 +10,52 @@ const _apiEditorController = function(page) {
 	this.routes = [];
 	this.controllers = [];
 	this.services = [];
+	this.securityPopupOpen = false;
+	this.selectedRoute = {};
+	this.securityDetails = {};
 };
+
+_apiEditorController.prototype.closeSecurityPopup = function() {
+	this.securityPopupOpen = false;
+	this.securityDetails = {};
+	this.selectedRoute = null;
+
+	this.refreshState();
+};
+
+_apiEditorController.prototype.configureRouteSecurity = function(name, method) {
+	this.selectedRoute = this.routes.find((r) => {
+		return r.name == name;
+	});
+	this.securityDetails = {
+		name 	: name,
+		method 	: method
+	};
+	this.selectedRoute = JSON.parse(JSON.stringify(this.selectedRoute[method.toLowerCase()]));
+	this.selectedRoute.roles = this.selectedRoute.roles.join(', ');
+	this.securityPopupOpen = true;
+	this.refreshState();
+};
+
+_apiEditorController.prototype.setSecurity = function() {
+	const route = this.routes.find((r) => {
+		return r.name == this.securityDetails.name;
+	});
+
+	route[this.securityDetails.method.toLowerCase()] = JSON.parse(JSON.stringify(this.selectedRoute));
+	let roles = this.selectedRoute.roles.split(',').map((val) => {
+		return val.trim();
+	}).reduce((sum, a) => {
+		if (a !== "") {
+			sum.push(a);
+		}
+		return sum;
+	}, []);
+	route[this.securityDetails.method.toLowerCase()].roles = roles;
+
+	this.closeSecurityPopup();
+};
+
 
 _apiEditorController.prototype.initEditor = function(elem, type, value) {
 	//set our editor up
@@ -103,6 +148,8 @@ _apiEditorController.prototype.getData = function() {
 		routes 					: this.routes,
 		controllers 			: this.controllers,
 		services 				: this.services,
+		securityPopupOpen		: this.securityPopupOpen,
+		selectedRoute 			: this.selectedRoute
 	};
 };
 
@@ -151,6 +198,8 @@ _apiEditorController.prototype.refreshState = function() {
 	this.caller.routes 					= this.routes;
 	this.caller.controllers 			= this.controllers;
 	this.caller.services 				= this.services;
+	this.caller.securityPopupOpen 		= this.securityPopupOpen;
+	this.caller.selectedRoute 			= this.selectedRoute;
 	this.caller.$forceUpdate();
 };
 

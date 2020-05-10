@@ -122,14 +122,14 @@ apiInstance.prototype.setupEndpoints = function() {
 	return new Promise((resolve, reject) => {
 		console.info("Setting up API endpoints...");
 
-		const readerRoles = [
+		const originalReaderRoles = [
 			"system_admin",
 			"system_reader",
 			"api_reader",
 			`${this.definition.name}_reader`
 		];
 
-		const writerRoles = [
+		const originalWriterRoles = [
 			"system_admin",
 			"system_writer",
 			"api_writer",
@@ -142,13 +142,40 @@ apiInstance.prototype.setupEndpoints = function() {
 			console.info(`Setting up routes for ${routePath}`);
 
 			if (routeConfig.get) {
+				let readerRoles = JSON.parse(JSON.stringify(originalReaderRoles));
+				if (routeConfig.get.replace) {
+					readerRoles = ["system_admin"];
+				}
+
+				if (routeConfig.get.roles) {
+					readerRoles = readerRoles.concat(routeConfig.get.roles);
+				}
+
+				if (routeConfig.get.needsRole === false) {
+					readerRoles = null;
+				}
+
 				console.info(`Setting up GET on ${routePath}`);
+				console.log(readerRoles);
 				this.app.get(routePath, this.roleCheckHandler.enforceRoles((req, res, next) => {
 					this.resolveController(routeConfig.get.controller)(req, res, next);
 				}, readerRoles));
 			}
 
 			if (routeConfig.post) {
+				let writerRoles = JSON.parse(JSON.stringify(originalWriterRoles));
+				if (routeConfig.post.replace) {
+					writerRoles = ["system_admin"];
+				}
+
+				if (routeConfig.post.roles) {
+					writerRoles = writerRoles.concat(routeConfig.post.roles);
+				}
+
+				if (routeConfig.post.needsRole === false) {
+					writerRoles = null;
+				}
+
 				console.info(`Setting up POST on ${routePath}`);
 				this.app.post(routePath, this.roleCheckHandler.enforceRoles((req, res, next) => {
 					this.resolveController(routeConfig.post.controller)(req, res, next);

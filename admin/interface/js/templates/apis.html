@@ -91,7 +91,7 @@
 								<li v-if="!route.get.replace"><code class="inline">system_reader</code></li>
 								<li v-if="!route.get.replace"><code class="inline">api_reader</code></li>
 								<li v-if="!route.get.replace"><code class="inline">{{api.name}}_reader</code></li>
-								<li v-for="role in route.roles">
+								<li v-for="role in route.get.roles">
 									<code class="inline">{{role}}</code>
 								</li>
 							</ul>
@@ -126,7 +126,7 @@
 								<li v-if="!route.get.replace"><code class="inline">system_writer</code></li>
 								<li v-if="!route.get.replace"><code class="inline">api_writer</code></li>
 								<li v-if="!route.get.replace"><code class="inline">{{api.name}}_writer</code></li>
-								<li v-for="role in route.roles">
+								<li v-for="role in route.post.roles">
 									<code class="inline">{{role}}</code>
 								</li>
 							</ul>
@@ -155,6 +155,40 @@
 			</div>
 		</div>
 
+		<div v-if="securityPopupOpen">
+			<div class="modal">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Configure Security</h5>
+							<button class="close" type="button" data-dismiss="modal" aria-label="Close" v-on:click="_apiEditorControllerInstance.closeSecurityPopup();">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<input type="checkbox" id="needsRole" v-model="selectedRoute.needsRole" v-bind:value="true" />
+								<label for="needsRole">Needs role</label>
+							</div>
+							<div class="form-group">
+								<input type="checkbox" id="replaceRoles" v-model="selectedRoute.replace" v-bind:value="true" />
+								<label for="replaceRoles">Replace default roles</label>
+							</div>
+							<div class="form-group">
+								<label for="roles">Roles:</label>
+								<input id="roles" type="text" v-model="selectedRoute.roles" class="form-control" />
+								<em>Comma separated</em>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" type="button" data-dismiss="modal" v-on:click="_apiEditorControllerInstance.closeSecurityPopup();">Cancel</button>
+							<button class="btn btn-primary" type="button" data-dismiss="modal" v-on:click="_apiEditorControllerInstance.setSecurity();">Apply</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="container-fluid" v-if="mainVisible">
 			<h1 class="h3 mb-2 text-gray-800">Manage API</h1>
 
@@ -167,7 +201,7 @@
 						<div class="card-body">
 							<div class="form-group">
 								<label>Name:</label>
-								<input type="text" class="form-control" name="name" v-model="api.name" />
+								<input type="text" class="form-control form-control-sm" name="name" v-model="api.name" />
 							</div>
 						</div>
 					</div>
@@ -180,7 +214,7 @@
 						<div class="card-body">
 							<div class="form-group">
 								<label>Client:</label>
-								<select name="client_id" v-model="api.client_id" class="form-control">
+								<select name="client_id" v-model="api.client_id" class="form-control form-control-sm">
 									<option value="">None</option>
 									<option v-for="client in clients" v-bind:value="client.client_id">{{client.client_id}}</option>
 								</select>
@@ -221,21 +255,27 @@
 								</tr>
 								<tr v-for="route in routes">
 									<td>
-										<input class="form-control" type="text" name="route" v-model="route.name" />
+										<input class="form-control form-control-sm" type="text" name="route" v-model="route.name" />
 									</td>
 									<td>
-										<select class="form-control" v-model="route.get.controller">
+										<select class="form-control form-control-sm float-left w-75" v-model="route.get.controller">
 											<option v-for="controller in controllers" option="controller.name">
 												{{ controller.name }}
 											</option>
 										</select>
+										<button class="btn btn-sm btn-info float-right w-25" v-on:click="_apiEditorControllerInstance.configureRouteSecurity(route.name, 'GET');">
+											Security
+										</button>
 									</td>
 									<td>
-										<select class="form-control" v-model="route.post.controller">
+										<select class="form-control form-control-sm float-left w-75" v-model="route.post.controller">
 											<option v-for="controller in controllers" option="controller.name">
 												{{ controller.name }}
 											</option>
 										</select>
+										<button class="btn btn-sm btn-info float-right w-25" v-on:click="_apiEditorControllerInstance.configureRouteSecurity(route.name, 'POST');">
+											Security
+										</button>
 									</td>
 									<td>
 										<button class="btn btn-sm btn-danger" v-on:click="_apiEditorControllerInstance.removeRoute(route.name);">
@@ -276,7 +316,7 @@
 								</tr>
 								<tr v-for="controller in controllers">
 									<td>
-										<input class="form-control" type="text" name="controller" v-model="controller.name" />
+										<input class="form-control form-control-sm" type="text" name="controller" v-model="controller.name" />
 									</td>
 									<td>
 										<button class="btn btn-sm btn-primary" v-on:click="_apiEditorControllerInstance.editController(controller.name);">
@@ -322,10 +362,10 @@
 								</tr>
 								<tr v-for="service in services">
 									<td>
-										<input class="form-control" type="text" name="service" v-model="service.name" />
+										<input class="form-control form-control-sm" type="text" name="service" v-model="service.name" />
 									</td>
 									<td>
-										<select class="form-control" v-model="service.type">
+										<select class="form-control form-control-sm" v-model="service.type">
 											<option value="singleton">Singleton</option>
 											<option value="transative">Transative</option>
 										</select>
