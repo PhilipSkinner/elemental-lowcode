@@ -15,29 +15,11 @@ const
 	certProvider 			= require("../shared/certProvider")(),
 	websitesController 		= require("./controllers/websitesController"),
 	securityController 		= require("./controllers/securityController"),
-	indexController 		= require("./controllers/indexController");
+	indexController 		= require("./controllers/indexController"),
+	intialSetup 			= require('./setup')();
 
-const app = express();
 const args = argParser.fetch();
-
-let keys = {
-	public 	: certProvider.fetchPulicSigningKey(),
-	private : certProvider.fetchPrivateSigningKey(),
-};
-
-const tHandler = tokenHandler(keys.public);
-
-//middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended : false }));
-app.use(tHandler.tokenCheck.bind(tHandler));
-app.use(fileUpload({
-    createParentPath: true
-}));
-
 let sourcesDir = args.sources || process.env.SOURCES_DIR || ".sources";
-
 //setup all of our source folders
 const directories = {
 	identity 	: path.join(sourcesDir, "identity"),
@@ -48,7 +30,25 @@ const directories = {
 	rules 		: path.join(sourcesDir, "rules"),
 };
 
-setup.setupEnvironment(directories).then(() => {
+const runApp = function() {
+	const app = express();
+
+	let keys = {
+		public 	: certProvider.fetchPulicSigningKey(),
+		private : certProvider.fetchPrivateSigningKey(),
+	};
+
+	const tHandler = tokenHandler(keys.public);
+
+	//middleware
+	app.use(cors());
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended : false }));
+	app.use(tHandler.tokenCheck.bind(tHandler));
+	app.use(fileUpload({
+	    createParentPath: true
+	}));
+
 	//set our process dir for the identity db
 	process.env.DIR = directories.identity;
 
@@ -90,4 +90,17 @@ setup.setupEnvironment(directories).then(() => {
 		SIG			: keys.private,
 		SIG_PUBLIC  : keys.public
 	});
-});
+};
+
+//determine if we should run the setup?
+if (intialSetup.shouldRun(directories.identity)) {
+	setup.setupEnvironment(directories).then(() => {
+		intialSetup.runSetup(directories.identity).then(() => {
+			runApp();
+		});
+	});
+} else {
+	setup.setupEnvironment(directories).then(() => {
+		runApp();
+	});
+}

@@ -17,8 +17,8 @@ A simple low(ish) code development platform.
 1. Clone the repo
 2. Run setup.sh
 3. Run start.sh
-4. Open a browser and point it at http://localhost:8002
-5. Register a user on the IdP, all users are issued the system_admin role at the moment
+4. If this is the first time the system has run, you will be prompted to enter your first admin users credentials
+5. Open a browser and point it at http://localhost:8002
 
 ## Documentation
 

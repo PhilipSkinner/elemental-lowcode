@@ -8,6 +8,7 @@
 		"express": "^4.17.1",
 		"express-fileupload": "^1.1.6",
 		"glob": "^7.1.6",
+		"inquirer": "^7.1.0",
 		"jose": "^1.22.2",
 		"mkdirp": "^1.0.3",
 		"request": "^2.88.0",

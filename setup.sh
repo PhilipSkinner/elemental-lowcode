@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#install dependencies
 cd ./admin && npm i
 cd ..
 cd ./api && npm i

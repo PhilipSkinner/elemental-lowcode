@@ -8,7 +8,10 @@ const idm = function(app, roleCheckHandler, db, bcrypt, tokenHandler) {
 
 	this.connected 			= false;
 
-	this.initRoutes();
+	//support none HTTP usage of lib
+	if (this.app) {
+		this.initRoutes();
+	}
 };
 
 idm.prototype.getUsers = function(req, res, next) {
@@ -33,7 +36,7 @@ idm.prototype.createUser = function(req, res, next) {
 	this._connect().then(() => {
 		this.userDB.find(req.body.username);
 	}).then((existing) => {
-		if (typeof(existing) !== 'undefined' || existing !== null) {
+		if (typeof(existing) !== 'undefined' && existing !== null) {
 			res.status(409);
 			res.send("");
 			next();

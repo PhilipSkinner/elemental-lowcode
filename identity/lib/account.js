@@ -107,9 +107,7 @@ module.exports = function(db, bcrypt) {
 				password	: hashed,
 				registered	: new Date(),
 				claims		: {
-					roles : [
-					"system_admin"
-					]
+					roles : []
 				}
 			});
 
