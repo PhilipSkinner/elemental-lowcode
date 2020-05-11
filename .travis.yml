@@ -15,6 +15,6 @@ deploy:
     provider: script
     script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker push philipskinner/elemental:latest
+        - docker push philipskinner/elemental
     on:
         branch: master
