@@ -226,7 +226,7 @@ render.prototype.generateTabs = function() {
 };
 
 render.prototype.renderChildren = function(children, data) {
-	if (!children) {
+	if (!children || !Array.isArray(children)) {
 		return "";
 	}
 
