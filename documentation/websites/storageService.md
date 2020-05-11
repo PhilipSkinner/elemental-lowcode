@@ -49,7 +49,7 @@ Parameters:
 * `name` - string, the name of the collection to fetch from
 * `start` - integer, the index of the first item to retrieve
 * `count` - integer, the maximum number of items to retrieve
-* `filters` - array<filter>, the filters to apply when fetching items
+* `filters` - object, the filters to apply when fetching items
 * `token` - string, the access token to use to access the API *optional*
 
 Returns a paginated list of entities from the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
@@ -68,12 +68,9 @@ module.exports = {
 				"books",
 				1,
 				10,
-				[
-					{
-						path : "$.author",
-						value : "Philip Skinner"
-					}
-				]
+				{
+					"$.author" : "Philip Skinner"
+				}
 			).then((result) => {
 
 			}).catch((err) => {

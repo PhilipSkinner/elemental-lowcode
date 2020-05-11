@@ -23,7 +23,7 @@ conditionals.prototype.evaluate = function(ifStatement) {
 		try {
 			result = eval(statement.statement);
 		} catch(e) {
-			console.log("Error evaluating statement", statement, e);
+			//console.log("Error evaluating statement", statement, e);
 		}
 
 		//now set our validity

@@ -82,6 +82,10 @@ storageService.prototype.getList = function(name, start, count, filters, authTok
 					return reject(err);
 				}
 
+				if (res.statusCode !== 200) {
+					return reject(new Error(`Invalid response code received - ${res.statusCode}`));
+				}
+
 				let result = null;
 				try {
 					result = JSON.parse(body);
