@@ -7,6 +7,10 @@ const replaceValues = {
 	applySync : () => {}
 };
 
+const handleLoops = {
+	applySync : () => {}
+};
+
 const constructorTest = (done) => {
 	const instance = expandCustomTags();
 	expect(instance.replaceValues).not.toBe(null);
@@ -61,7 +65,65 @@ const expansionTest = (done) => {
 		]
 	});
 
-	const instance = expandCustomTags(replaceValues);
+	const loopsMock = sinon.mock(handleLoops);
+	loopsMock.expects('applySync').once().withArgs({
+		view : [
+			{
+				my : "value",
+				if : "this"
+			}
+		],
+		data : {
+			tag : "custom",
+			if : "this"
+		}
+	}).returns({
+		view : [
+			{
+				my : "value",
+				if : "this"
+			}
+		]
+	});
+	loopsMock.expects('applySync').once().withArgs({
+		view : [
+			{
+				repeat : "yes please",
+				prop : [
+					"one",
+					"two"
+				]
+			}
+		],
+		data : {
+			tag : "expander",
+			repeat : "yes please",
+			items : [
+				"one",
+				"two"
+			]
+		}
+	}).returns({
+		view : [
+			{
+				repeat : "yes please",
+				prop : [
+					"one",
+					"two"
+				],
+				children : [
+					{
+						"item" : "one"
+					},
+					{
+						"item" : "two"
+					}
+				]
+			}
+		]
+	});
+
+	const instance = expandCustomTags(replaceValues, handleLoops);
 	instance.setTags({
 		custom : {
 			definition : {
@@ -114,6 +176,14 @@ const expansionTest = (done) => {
 						prop : [
 							"one",
 							"two"
+						],
+						children : [
+							{
+								"item" : "one"
+							},
+							{
+								"item" : "two"
+							}
 						]
 					}
 				]

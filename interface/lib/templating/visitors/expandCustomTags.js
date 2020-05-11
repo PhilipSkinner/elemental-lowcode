@@ -1,5 +1,6 @@
-const expandCustomTag = function(replaceValues) {
+const expandCustomTag = function(replaceValues, handleLoops) {
 	this.replaceValues = replaceValues;
+	this.handleLoops = handleLoops;
 
 	this.tags = {};
 };
@@ -14,7 +15,7 @@ expandCustomTag.prototype.needsExpansion = function(view) {
 		var tag = view[i];
 
 		if (Array.isArray(tag)) {
-			if (this.needsExpansion(view)) {
+			if (tag.length > 0 && this.needsExpansion(tag)) {
 				needs = true;
 			}
 		}
@@ -45,7 +46,11 @@ expandCustomTag.prototype.expand = function(view) {
 		}
 
 		if (Array.isArray(tag)) {
-			return this.expand(view);
+			if (tag.length === 0) {
+				return tag;
+			}
+
+			return this.expand(tag);
 		}
 
 		if (tag.tag && this.tags[tag.tag]) {
@@ -60,10 +65,17 @@ expandCustomTag.prototype.expand = function(view) {
 				replacement.if = tag.if;
 			}
 
-			tag = this.replaceValues.applySync({
+			let newTag = this.replaceValues.applySync({
 				view : [replacement],
 				data : tag
 			}).view[0];
+
+			newTag = this.handleLoops.applySync({
+				view : [newTag],
+				data : tag
+			}).view[0];
+
+			tag = newTag;
 		}
 
 		//check the properties;
@@ -87,10 +99,14 @@ expandCustomTag.prototype.apply = function(definition) {
 	return Promise.resolve(definition);
 };
 
-module.exports = function(replaceValues) {
+module.exports = function(replaceValues, handleLoops) {
 	if (!replaceValues) {
 		replaceValues = require("./replaceValues")();
 	}
 
-	return new expandCustomTag(replaceValues);
+	if (!handleLoops) {
+		handleLoops = require("./handleLoops")();
+	}
+
+	return new expandCustomTag(replaceValues, handleLoops);
 };
