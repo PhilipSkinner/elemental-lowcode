@@ -3,7 +3,6 @@ const _apiDetailsController = function(page) {
 	this.api = {};
 	this.routes = [];
 	this.controllers = [];
-	this.services = [];
 };
 
 _apiDetailsController.prototype.getData = function() {
@@ -11,7 +10,6 @@ _apiDetailsController.prototype.getData = function() {
 		api 					: this.api,
 		routes 					: this.routes,
 		controllers 			: this.controllers,
-		services 				: this.services,
 	};
 };
 
@@ -30,16 +28,6 @@ _apiDetailsController.prototype.refreshState = function() {
 		this.routes = [];
 	}
 
-	if (this.api.services) {
-		this.services = Object.keys(this.api.services).map((name) => {
-			return Object.assign(this.api.services[name], {
-				name : name
-			});
-		});
-	} else {
-		this.services = [];
-	}
-
 	if (this.api.controllers) {
 		this.controllers = Object.keys(this.api.controllers).map((name) => {
 			return {
@@ -54,7 +42,6 @@ _apiDetailsController.prototype.refreshState = function() {
 	this.caller.api 					= this.api;
 	this.caller.routes 					= this.routes;
 	this.caller.controllers 			= this.controllers;
-	this.caller.services 				= this.services;
 	this.caller.$forceUpdate();
 };
 

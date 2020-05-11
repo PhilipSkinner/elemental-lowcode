@@ -1,4 +1,4 @@
-const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService) {
+const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider) {
 	this.controllerDefinition 						= controllerDefinition;
 	this.controllerDefinition.storageService 		= storageService;
 	this.controllerDefinition.sessionState 			= sessionState;
@@ -7,6 +7,7 @@ const controllerState = function(controllerDefinition, storageService, sessionSt
 	this.controllerDefinition.authClientProvider 	= authClientProvider;
 	this.controllerDefinition.idmService 			= idmService;
 	this.controllerDefinition.navigationService 	= navigationService;
+	this.controllerDefinition.servicesProvider 		= servicesProvider;
 };
 
 controllerState.prototype.setContext = function(request, response) {
@@ -58,7 +59,7 @@ controllerState.prototype.triggerEvent = function(name, details) {
 	});
 };
 
-module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService) {
+module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider) {
 	if (!storageService) {
 		storageService = require("../../shared/storageService")();
 	}
@@ -87,5 +88,9 @@ module.exports = function(controllerDefinition, clientConfig, storageService, se
 		navigationService = require("../../shared/navigationService")();
 	}
 
-	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService);
+	if (!servicesProvider) {
+		servicesProvider = require("../../shared/iocProvider")();
+	}
+
+	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider);
 };

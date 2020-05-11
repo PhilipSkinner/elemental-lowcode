@@ -16,6 +16,7 @@ const
 	websitesController 		= require("./controllers/websitesController"),
 	securityController 		= require("./controllers/securityController"),
 	indexController 		= require("./controllers/indexController"),
+	serviceController 		= require("./controllers/serviceController"),
 	intialSetup 			= require('./setup')();
 
 const args = argParser.fetch();
@@ -28,6 +29,7 @@ const directories = {
 	website 	: path.join(sourcesDir, "website"),
 	data 		: path.join(sourcesDir, "data"),
 	rules 		: path.join(sourcesDir, "rules"),
+	services	: path.join(sourcesDir, "services"),
 };
 
 const runApp = function() {
@@ -59,6 +61,7 @@ const runApp = function() {
 	rulesController(app, directories.rules);
 	securityController(app, directories.identity);
 	apiController(app, directories.api);
+	serviceController(app, directories.services);
 	indexController(app, sourcesDir);
 
 	app.listen(8001);

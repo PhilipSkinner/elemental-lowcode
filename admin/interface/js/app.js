@@ -38,6 +38,8 @@ window.templates.fetchTemplates().then(() => {
 		"js/pages/securityScopeEditor.js",
 		"js/pages/securityUserEditor.js",
 		"js/pages/packager.js",
+		"js/pages/services.js",
+		"js/pages/servicesEditor.js",
 	];
 
 	const loadPage = (file) => {
@@ -176,7 +178,17 @@ window.templates.fetchTemplates().then(() => {
 			/* packager endpoints */
 			{
 				path 		: "/packager",
-				component 	: window.packager
+				component 	: window.Packager
+			},
+			/* IoC services */
+			{
+				path 		: "/services",
+				component 	: window.Services
+			},
+			{
+				path 		: "/services/editor/:name",
+				name 		: "servicesEditor",
+				component 	: window.ServicesEditor
 			}
 		];
 

@@ -143,12 +143,6 @@
 	<div class="api-editor">
 		<alert text="API saved!" v-bind:visible="showAlert"></alert>
 
-		<div class="container-fluid" v-if="serviceEditorVisible">
-			<div class="editorWrapper">
-				<div id="serviceEditor" class="editorWindow"></div>
-			</div>
-		</div>
-
 		<div class="container-fluid" v-if="controllerEditorVisible">
 			<div class="editorWrapper">
 				<div id="controllerEditor" class="editorWindow"></div>
@@ -332,66 +326,12 @@
 					</div>
 				</div>
 			</div>
-
-			<div class="card shadow mb-4">
-				<div class="card-header py-3">
-					<h6 class="m-0 font-weight-bold text-primary">Services</h6>
-				</div>
-				<div class="card-body">
-					<div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-							<thead>
-								<tr>
-									<th>Name</th>
-									<th>Type</th>
-									<th>Operations</th>
-								</tr>
-							</thead>
-							<tfoot>
-								<tr>
-									<th>Name</th>
-									<th>Type</th>
-									<th>Operations</th>
-								</tr>
-							</tfoot>
-							<tbody>
-								<tr v-if="services.length === 0">
-									<td colspan="3" class="no-results">
-										The API has no services defined.
-									</td>
-								</tr>
-								<tr v-for="service in services">
-									<td>
-										<input class="form-control form-control-sm" type="text" name="service" v-model="service.name" />
-									</td>
-									<td>
-										<select class="form-control form-control-sm" v-model="service.type">
-											<option value="singleton">Singleton</option>
-											<option value="transative">Transative</option>
-										</select>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-primary" v-on:click="_apiEditorControllerInstance.editService(service.name);">
-											Modify
-										</button>
-										<button class="btn btn-sm btn-danger" v-on:click="_apiEditorControllerInstance.removeService(service.name);">
-											Remove
-										</button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
 		</div>
 
 		<div class="actionButtons">
-			<button v-if="serviceEditorVisible" class="rounded-circle border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.mainView();"><i class="fas fa-fw fa-arrow-left"></i></button>
 			<button v-if="controllerEditorVisible" class="rounded-circle border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.mainView();"><i class="fas fa-fw fa-arrow-left"></i></button>
 			<button v-if="mainVisible" class="rounded-pill border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.newController();"><i class="fas fa-fw fa-plus"></i> Controller</button>
 			<button v-if="mainVisible" class="rounded-pill border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.newRoute();"><i class="fas fa-fw fa-plus"></i> Route</button>
-			<button v-if="mainVisible" class="rounded-pill border-0 btn btn-primary" v-on:click="_apiEditorControllerInstance.newService();"><i class="fas fa-fw fa-plus"></i> Service</button>
 			<button class="rounded-circle border-0 btn btn-success" v-on:click="_apiEditorControllerInstance.saveAll();"><i class="fas fa-fw fa-save"></i></button>
 		</div>
 	</div>

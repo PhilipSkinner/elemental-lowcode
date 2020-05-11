@@ -50,7 +50,7 @@ _packagerController.prototype.import = function() {
 
 };
 
-window.packager = {
+window.Packager = {
 	template : "#template-packager",
 	data 	 : () => {
 		return window._packagerControllerInstance.getData();

@@ -11038,6 +11038,7 @@ body.sidebar-toggled footer.sticky-footer {
   position: fixed;
   bottom: 20px;
   right: 20px;
+  z-index: 1000;
 }
 
 .actionButtons button, .actionButtons a {
@@ -11259,4 +11260,19 @@ div.block {
 
 .documentation-menu div > div {
   padding-left: 15px;
+}
+
+.editor-form {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: 268px;
+  z-index: 100;
+  background: #FFF;
+  padding: 20px;
+}
+
+.editorWindow--withform {
+  right: 268px;
 }

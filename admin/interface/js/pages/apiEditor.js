@@ -3,13 +3,11 @@ const _apiEditorController = function(page) {
 	this.api = {};
 	this.clients = [];
 	this.showAlert = false;
-	this.serviceEditorVisible = false;
 	this.controllerEditorVisible = false;
 	this.mainVisible = true;
 	this.resources = {};
 	this.routes = [];
 	this.controllers = [];
-	this.services = [];
 	this.securityPopupOpen = false;
 	this.selectedRoute = {};
 	this.securityDetails = {};
@@ -107,47 +105,15 @@ _apiEditorController.prototype.editController = function(name) {
 	});
 };
 
-_apiEditorController.prototype.editService = function(name) {
-	this.serviceEditorVisible = true;
-	this.mainVisible = false;
-	this.refreshState();
-
-	//get the resource name
-	let resourceName = this.api.services[name].source;
-
-	this.openResource = resourceName;
-
-	//is it already loaded?
-	if (this.resources[resourceName]) {
-		return setTimeout(() => {
-			this.initEditor("serviceEditor", "javascript", this.resources[resourceName]);
-		}, 10);
-	}
-
-	return window.axios.get(
-		`${window.hosts.kernel}/apis/${this.api.name}/${resourceName}`,
-		{
-			headers : {
-				Authorization : `Bearer ${window.getToken()}`
-			}
-		}
-	).then((resource) => {
-		this.resources[resourceName] = resource.data;
-		return this.initEditor("serviceEditor", "javascript", this.resources[resourceName]);
-	});
-};
-
 _apiEditorController.prototype.getData = function() {
 	return {
 		api 					: this.api,
 		clients 				: this.clients,
 		showAlert 				: this.showAlert,
-		serviceEditorVisible 	: this.serviceEditorVisible,
 		controllerEditorVisible : this.controllerEditorVisible,
 		mainVisible 			: this.mainVisible,
 		routes 					: this.routes,
 		controllers 			: this.controllers,
-		services 				: this.services,
 		securityPopupOpen		: this.securityPopupOpen,
 		selectedRoute 			: this.selectedRoute
 	};
@@ -168,16 +134,6 @@ _apiEditorController.prototype.refreshState = function() {
 		this.routes = [];
 	}
 
-	if (this.api.services) {
-		this.services = Object.keys(this.api.services).map((name) => {
-			return Object.assign(this.api.services[name], {
-				name : name
-			});
-		});
-	} else {
-		this.services = [];
-	}
-
 	if (this.api.controllers) {
 		this.controllers = Object.keys(this.api.controllers).map((name) => {
 			return {
@@ -192,12 +148,10 @@ _apiEditorController.prototype.refreshState = function() {
 	this.caller.api 					= this.api;
 	this.caller.clients 				= this.clients;
 	this.caller.showAlert 				= this.showAlert;
-	this.caller.serviceEditorVisible 	= this.serviceEditorVisible;
 	this.caller.controllerEditorVisible = this.controllerEditorVisible;
 	this.caller.mainVisible 			= this.mainVisible;
 	this.caller.routes 					= this.routes;
 	this.caller.controllers 			= this.controllers;
-	this.caller.services 				= this.services;
 	this.caller.securityPopupOpen 		= this.securityPopupOpen;
 	this.caller.selectedRoute 			= this.selectedRoute;
 	this.caller.$forceUpdate();
@@ -233,7 +187,6 @@ _apiEditorController.prototype.mainView = function() {
 	this.resources[this.openResource] = this.editor.getValue();
 
 	this.mainVisible = true;
-	this.serviceEditorVisible = false;
 	this.controllerEditorVisible = false;
 	this.refreshState();
 };
@@ -278,32 +231,6 @@ _apiEditorController.prototype.newRoute = function() {
 	this.refreshState();
 };
 
-_apiEditorController.prototype.newService = function() {
-	this.api.services = this.api.services || {};
-	var name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
-
-	this.api.services[name] = {
-		type : "singleton",
-		source : `services/${name}.js`
-	};
-
-	this.resources[`services/${name}.js`] = [
-"module.exports = function() {",
-"	const service = function() {",
-"",
-"	};",
-"",
-"	service.prototype.getGreeting = function() {",
-"		return \"Hello world!\";",
-"	};",
-"",
-"	return new service();",
-"};",
-	].join("\n");
-
-	this.refreshState();
-};
-
 _apiEditorController.prototype._saveAPI = function() {
 	this.api.routes = {};
 	this.routes.forEach((route) => {
@@ -313,11 +240,6 @@ _apiEditorController.prototype._saveAPI = function() {
 	this.api.controllers = {};
 	this.controllers.forEach((controller) => {
 		this.api.controllers[controller.name] = controller.controller;
-	});
-
-	this.api.services = {};
-	this.services.forEach((service) => {
-		this.api.services[service.name] = service;
 	});
 
 	return window.axios.put(
@@ -337,23 +259,6 @@ _apiEditorController.prototype._saveAPI = function() {
 			this.showAlert = false;
 			this.refreshState();
 		}, 2500);
-	});
-};
-
-_apiEditorController.prototype._saveService = function(name, resource) {
-	return new Promise((resolve, reject) => {
-		return window.axios.put(
-			`${window.hosts.kernel}/apis/${this.api.name}/services/${name}`, {
-				content : resource
-			},
-			{
-				headers : {
-					Authorization : `Bearer ${window.getToken()}`
-				}
-			}
-		).then(() => {
-			return resolve();
-		});
 	});
 };
 
@@ -380,10 +285,6 @@ _apiEditorController.prototype.saveAll = function() {
 	}
 
 	return Promise.all(Object.keys(this.resources).map((name) => {
-		if (name.indexOf('services/') === 0) {
-			return this._saveService(name.substring(9), this.resources[name]);
-		}
-
 		if (name.indexOf('controllers/') === 0) {
 			return this._saveController(name.substring(12), this.resources[name]);
 		}
@@ -392,11 +293,6 @@ _apiEditorController.prototype.saveAll = function() {
 	})).then(() => {
 		return this._saveAPI();
 	});
-};
-
-_apiEditorController.prototype.removeService = function(name) {
-	delete(this.api.services[name]);
-	this.refreshState();
 };
 
 _apiEditorController.prototype.removeController = function(name) {

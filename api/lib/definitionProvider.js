@@ -22,31 +22,33 @@ definitionProvider.prototype._parseConfig = function(file) {
 			return resolve(config);
 		});
 	});
-}
+};
 
-definitionProvider.prototype._readServices = function(config) {
-	const services = Object.keys(config.services || {});
-	const doNext = () => {
-		if (services.length === 0) {
-			return Promise.resolve();
-		}
-
-		const next = services.pop();
-
-		//attempt to read in the source
-		return new Promise((resolve, reject) => {
-			try {
-				config.services[next]._code = require(this.path.join(process.cwd(), process.env.DIR, config.name, config.services[next].source));
-			} catch(e) {
-				return reject(e);
-			}
-
-			return resolve();
-		}).then(doNext);
+definitionProvider.prototype._getClient = function(config) {
+	if (!config.client_id) {
+		return Promise.resolve(null);
 	}
 
-	return doNext();
+	return new Promise((resolve, reject) => {
+		this.fs.readFile(this.path.join(process.env.DIR, "../identity", config.client_id + ".client.json"), (err, content) => {
+			if (err) {
+				return reject(err);
+			}
+
+			let client = null;
+			try {
+				client = JSON.parse(content);
+			} catch(e) {}
+
+			if (client === null) {
+				return reject(new Error(`Cannot read client definition`));
+			}
+
+			return resolve(client);
+		});
+	});
 };
+
 
 definitionProvider.prototype._readControllers = function(config) {
 	const controllers = Object.keys(config.controllers || {});
@@ -59,7 +61,9 @@ definitionProvider.prototype._readControllers = function(config) {
 
 		return new Promise((resolve, reject) => {
 			try {
-				config.controllers[next] = require(this.path.join(process.cwd(), process.env.DIR, config.name, config.controllers[next]));
+				let module = this.path.join(process.cwd(), process.env.DIR, config.name, config.controllers[next]);
+				delete require.cache[require.resolve(module)];
+				config.controllers[next] = require(module);
 			} catch(e) {
 				return reject(e);
 			}
@@ -74,12 +78,13 @@ definitionProvider.prototype._readControllers = function(config) {
 definitionProvider.prototype.fetchDefinition = function(file) {
 	return this._parseConfig(file).then((config) => {
 		//read in our service files
-		return this._readServices(config)
-			.then(() => {
-				return this._readControllers(config);
-			}).then(() => {
-				return Promise.resolve(config);
-			});
+		return this._readControllers(config).then(() => {
+		}).then(() => {
+			return this._getClient(config);
+		}).then((client) => {
+			config.client = client;
+			return Promise.resolve(config);
+		});
 	}).catch((err) => {
 		console.log("Failed to read definition!");
 	});

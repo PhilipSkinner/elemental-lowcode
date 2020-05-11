@@ -1,0 +1,79 @@
+<template id="template-services">
+	<div class="services">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">Services</h1>
+			<p class="mb-4">Services are shared components that can be included within any of your code by using the service provider.</p>
+
+			<!-- DataTales Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Current Services</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="services.length === 0">
+									<td colspan="2" class="no-results">
+										There are no services defined.
+									</td>
+								</tr>
+								<tr v-for="item in services">
+									<td>
+										{{item.name}}
+									</td>
+									<td>
+										<router-link class="btn btn-sm btn-primary" :to="{ name : 'servicesEditor', params : { name : item.name } }">Modify</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_servicesControllerInstance.deleteService(item.name);">Remove</router-link>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="actionButtons">
+			<router-link to="/services/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+		</div>
+	</div>
+</template>
+
+<template id="template-servicesEditor">
+	<div class="servicesEditor">
+		<div class="entityWrapper">
+			<div class="editor-form">
+				<div class="form-group">
+					<label for="serviceName">Name</label>
+					<input type="text" name="serviceName" v-model="serviceName" v-if="isNew" />
+					<input type="text" name="serviceName" v-bind:value="serviceName" v-if="!isNew" readonly />
+				</div>
+			</div>
+			<div id="serviceEditor" class="editorWindow editorWindow--withform"></div>
+		</div>
+		<div class="actionButtons">
+			<router-link to="/services" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_servicesEditorInstance.saveService();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+			{{error.description}}
+		</modal-error>
+		<alert text="Service saved!" v-bind:visible="showAlert"></alert>
+	</div>
+</template>
