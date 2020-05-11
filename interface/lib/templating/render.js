@@ -75,7 +75,13 @@ render.prototype._unpackParams = function(prefix, params) {
 };
 
 render.prototype.clickHandler = function(eventProps, toWrap, parentTag) {
-	if (typeof(eventProps.eventName) === 'undefined' || eventProps.eventName === null || eventProps.eventName === "") {
+	if (
+		typeof(eventProps) === "undefined"
+		|| eventProps === null
+		|| typeof(eventProps.eventName) === 'undefined'
+		|| eventProps.eventName === null
+		|| eventProps.eventName === ""
+	) {
 		return toWrap;
 	}
 
