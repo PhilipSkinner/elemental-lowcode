@@ -26,7 +26,7 @@ Enter the following details into your client configuration:
     "client_secret": "a secret for my todo client",
     "scope": "openid roles",
     "redirect_uris": [
-        "http://localhost:8005/todo/_auth"
+        "http://interface.elementalsystem.org/todo/_auth"
     ]
 }
 ```

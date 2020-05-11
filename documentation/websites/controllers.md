@@ -123,13 +123,14 @@ module.exports = {
 
 The following services are automatically added into each controller:
 
-* [storageService](/documentation/websites/storageService)
-* [sessionState](/documentation/websites/sessionState)
-* [integrationService](/documentation/websites/integrationService)
-* [rulesetService](/documentation/websites/rulesetService)
-* [idmService](/documentation/websites/idmService)
+* [authClientProvider](/documentation/services/authClientProvider)
+* [idmService](/documentation/services/idmService)
+* [integrationService](/documentation/services/integrationService)
 * [navigationService](/documentation/websites/navigationService)
-* [authClientProvider](/documentation/websites/authClientProvider)
+* [rulesetService](/documentation/services/rulesetService)
+* [serviceProvider](/documentation/services/serviceProvider)
+* [sessionState](/documentation/websites/sessionState)
+* [storageService](/documentation/services/storageService)
 
 Each of these are defined upon the controller instance as a property that can be access, for example:
 

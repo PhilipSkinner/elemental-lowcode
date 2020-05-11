@@ -1,4 +1,4 @@
-[Back to Controllers](/documentation/websites/controllers)
+[Back to Services](/documentation/services)
 
 # Service Provider
 

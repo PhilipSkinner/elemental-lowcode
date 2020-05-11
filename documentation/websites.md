@@ -15,6 +15,6 @@ The websites (or interface) runtime hosts each website on a path that equals the
 
 Eg. if your website is called "blog" then it will be hosted on the interface runtime on:
 
-`http://localhost:8005/blog`
+`http://interface.elementalsystem.org/blog`
 
 The websites service is designed to allow for maximum template re-use and is designed to be server side first - allowing for progressive enhancement of your interface should you require it.

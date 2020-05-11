@@ -1,4 +1,4 @@
-[Back to Controllers](/documentation/websites/controllers)
+[Back to Services](/documentation/services)
 
 # Auth Client Provider
 
@@ -20,6 +20,8 @@ Parameters:
 Authenticates using the `password` grant.
 
 If you client has not got the `password` grant setup in its accepted grants then this will fail. To add this into your grants, modify your client config to contain a list of grants like this:
+
+**Note:** This method is only available for website controllers.
 
 ```
 {
@@ -57,6 +59,8 @@ Logs the users session out.
 
 If the user is not logged in, this will fail silently.
 
+**Note:** This method is only available for website controllers.
+
 Called from your controllers like so:
 
 ```
@@ -77,6 +81,8 @@ This method fetches an access token to speak to third party APIs with. This acce
 All clients are issued the client_credentials grant by default if a custom list of grant types is not set on the client config. If you override the client config with a custom list of grant types, expect this call to fail if the current user is not authenticated.
 
 The response within the resolution of the promise can return a blank token - if no client is configured for the application for example.
+
+**Note:** This method will only return user access tokens on website controllers, every other service will be returned the relevant client access token.
 
 This can be called from your controllers like so:
 

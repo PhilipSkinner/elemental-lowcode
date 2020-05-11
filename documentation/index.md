@@ -12,6 +12,7 @@ The following links contain useful information about these standards:
 
 Further documentation relating to the runtimes held within Elemental can be found in the topics menu to the right. Important topics include:
 
+* [APIs](/documentation/apis)
 * [Websites](/documentation/websites)
 * [Integrations](/documentation/integrations)
 * [Data](/documentation/data)
