@@ -2,8 +2,8 @@ window.getToken = function() {
 	let token = null;
 	document.cookie.split(";").forEach((c) => {
 		let p = c.split("=");
-		if (p[0] === "token") {
-			token = p[1];
+		if (p[0].trim() === "token") {
+			token = p[1].trim();
 		}
 	});
 

@@ -62,6 +62,7 @@ app.get("/auth", (req, res) => {
 	oauth2.authorizationCode.getToken(tokenConfig).then((result) => {
 		const accessToken = oauth2.accessToken.create(result);
 
+		res.clearCookie("token");
 		//set the access token as a cookie
 		res.cookie("token", accessToken.token.access_token, {
 			expires : accessToken.token.expires_at,

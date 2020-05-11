@@ -40,11 +40,14 @@ handleLoops.prototype.expandNext = function(view, data) {
 
 					return copy;
 				});
+
+				this.modified = true;
 			}
 
 			//return our generated items
-			this.modified = true;
-			return generated;
+			if (this.modified) {
+				return generated;
+			}
 		}
 
 		//if we got this far, there was no repeating group
