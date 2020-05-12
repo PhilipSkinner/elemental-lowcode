@@ -43,9 +43,35 @@ controllerState.prototype.getBag = function() {
 	return this.controllerDefinition.bag;
 };
 
+controllerState.prototype.cleanValues = function(values) {
+	if (Array.isArray(values)) {
+		return values.map((v) => {
+			return cleanValues(v);
+		});
+	}
+
+	if (typeof(values) === 'object') {
+		Object.keys(values).forEach((k) => {
+			values[k] = this.cleanValues(values[k]);
+		});
+
+		return values;
+	}
+
+	if (values && values.replace) {
+		values = values.replace(/\$\(/g, '&#36;(');
+		values = values.replace(/\$\./g, '&#36;.')
+	}
+
+	return values;
+};
+
 controllerState.prototype.triggerEvent = function(name, details) {
 	return new Promise((resolve, reject) => {
 		let result = null;
+
+		//ensure we clean any nasty values
+		this.cleanValues(details);
 
 		if (this.controllerDefinition.events[name]) {
 			result = this.controllerDefinition.events[name].bind(this.controllerDefinition)(details);

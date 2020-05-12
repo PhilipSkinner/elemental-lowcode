@@ -23,6 +23,103 @@ A view is a template in the form of a JSON document:
 
 Each view is a single parent **tag objects** which then defines its child tag object. Custom tags can be defined and can be used to construct re-usable partial templates or wrapper templates.
 
+## Controller Variables
+
+Variables are held within the `bag` of a controller, and can be accessed anywhere within your views using the `$.bag` variable:
+
+```
+module.exports = function() {
+	bag : {
+		hello : "world"
+	}
+};
+```
+; with view:
+
+```
+{
+	"tag" : "b",
+	"text" : "$.bag.hello"
+}
+```
+
+You can use multiple variables in a property:
+
+```
+module.exports = function() {
+	bag : {
+		first : "first",
+		second : "second"
+	}
+};
+```
+
+; and view:
+
+```
+{
+	"tag" : "span",
+	"text" : "The value of $.bag.first is not $.bag.second"
+}
+```
+
+Variables that are passed into custom tags are accessed via the `$.` path instead of `$.bag`:
+
+```
+{
+	"tag" : "myCustomTag",
+	"isVisible" : true
+}
+```
+
+; with `myCustomTag` defined as:
+
+```
+{
+	"tag" : "div",
+	"if" : [
+		{
+			"statement" : "$.isVisible",
+			"logicalOperator" : "and"
+		}
+	]
+}
+```
+
+Any user input that appears to look like a variable is automatically escaped by the system.
+
+## Functions
+
+You can evaluate functions within a view property by using `$(...)` to wrap your function:
+
+```
+{
+	"tag" : "body",
+	"class" : "website-body $('$.bag.page' === 'home' ? 'website-body--home' : '')"
+}
+```
+
+If a function references a variable and that variable is a string, it must be wrapped in quotes - or it will be directly interpretted:
+
+```
+module.exports = function() {
+	bag : {
+		value : "true ? 'its true' : 'false'"
+	}
+};
+```
+
+; and value is referenced as:
+
+```
+{
+	"tag" : "body",
+	"text" : "$($.bag.value)"
+}
+```
+
+Any user input that appears to look like a function (wrapped in `$(...)`) is automatically escaped by the system.
+
 ## Standard Tag Object Properties
 
 The following properties are special - any other properties are used to render attributes on the DOM element (e.g. class can be used to specify css classes, id for the id of an element).

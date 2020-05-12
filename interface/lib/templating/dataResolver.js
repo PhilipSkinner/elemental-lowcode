@@ -15,18 +15,43 @@ dataResolver.prototype.detectValues = function(string, data, scope) {
 	let replacements = [];
 
 	while ((m = regex.exec(string)) !== null) {
-		// This is necessary to avoid infinite loops with zero-width matches
 		if (m.index === regex.lastIndex) {
 			regex.lastIndex++;
 		}
 
-		// The result can be accessed through the `m`-variable.
 		m.forEach((match, groupIndex) => {
 			var rep = this.resolveValue(match, scopedData);
 
 			replacements.push({
 				val : match,
-				rep : this.resolveValue(match, scopedData)
+				rep : rep
+			});
+		});
+	}
+
+	replacements.forEach((r) => {
+		if (typeof(r.rep) === "object") {
+			string = r.rep;
+		} else {
+			string = string.replace(r.val, r.rep);
+		}
+	});
+
+	//now detect functions
+	const funcRegex = /(\$\(.*?\))/gm
+	replacements = [];
+
+	while ((m = funcRegex.exec(string)) !== null) {
+		if (m.index === funcRegex.lastIndex) {
+			funcRegex.lastIndex++;
+		}
+
+		m.forEach((match, groupIndex) => {
+			var rep = this.resolveFunction(match, scopedData);
+
+			replacements.push({
+				val : match,
+				rep : rep
 			});
 		});
 	}
@@ -40,6 +65,16 @@ dataResolver.prototype.detectValues = function(string, data, scope) {
 	});
 
 	return string;
+};
+
+dataResolver.prototype.resolveFunction = function(fn, data) {
+	//does it have unresolved values?
+	if (fn.indexOf('$.') !== -1) {
+		return fn;
+	}
+
+	//evaluate and return the value
+	return eval(fn.slice(2).slice(0, -1));
 };
 
 dataResolver.prototype.resolveValue = function(path, data) {
