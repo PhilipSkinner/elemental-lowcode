@@ -6,6 +6,7 @@ The identity management (idm) service allows you to manage users held within the
 
 * registerUser
 * getUser
+* updateUser
 
 These methods are covered in more detail below.
 
@@ -53,6 +54,32 @@ module.exports = {
 	events : {
 		load : (event) => {
 			return this.idmService.getUser("dave").then((user) => {
+				...
+			}).catch((err) => {
+				...
+			});
+		}
+	}
+};
+```
+
+### updateUser
+
+Parameters:
+
+* `username` - string, the username of the user to update
+* `password` - string, the password to set on the user, set to null to leave unchanged
+* `claims` - object, an object that contains all of the claims for the user
+
+Updates a users entry in the identity provider.
+
+This can be called from your controllers like so:
+
+```
+module.exports = {
+	events : {
+		changePassword : (event) => {
+			return this.idmService.updateUser(event.bag.username, event.bag.password, {}).then(() => {
 				...
 			}).catch((err) => {
 				...

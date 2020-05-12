@@ -70,6 +70,34 @@ idmService.prototype.getUser = function(user, authToken) {
 	});
 };
 
+idmService.prototype.updateUser = function(username, password, claims, authToken) {
+	return this._getToken(authToken).then((token) => {
+		return new Promise((resolve, reject) => {
+			this.request.put(`${this.hostnameResolver.resolveIdentity()}/api/users/${username}`, {
+				body : JSON.stringify({
+					username 	: username,
+					password 	: password,
+					claims 		: claims || {}
+				}),
+				headers : {
+					Authorization : `Bearer ${token}`,
+					"content-type" : "application/json"
+				}
+			}, (err, res, body) => {
+				if (err) {
+					return reject(err);
+				}
+
+				if (res.statusCode === 204) {
+					return resolve();
+				}
+
+				return reject(body);
+			});
+		});
+	})
+};
+
 module.exports = function(request, hostnameResolver) {
 	if (!request) {
 		request = require("request");
