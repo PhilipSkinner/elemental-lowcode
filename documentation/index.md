@@ -16,6 +16,7 @@ Further documentation relating to the runtimes held within Elemental can be foun
 * [Websites](/documentation/websites)
 * [Integrations](/documentation/integrations)
 * [Data](/documentation/data)
+* [Messaging](/documentation/messaging)
 * [Rulesets](/documentation/rulesets)
 * [Services](/documentation/services)
 * [Node Modules](/documentation/nodeModules)

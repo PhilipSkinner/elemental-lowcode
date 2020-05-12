@@ -11017,6 +11017,14 @@ body.sidebar-toggled footer.sticky-footer {
   display: inherit;
 }
 
+.editorSelector.queueMode #queueEditor {
+  display: inherit;
+}
+
+.editorSelector.handlerMode #handlerEditor {
+  display: inherit;
+}
+
 .editorSelector nav {
   padding: 0px 40px 0px 0px;
 }

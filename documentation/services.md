@@ -22,3 +22,17 @@ module.exports = service;
 ```
 
 Once a service is named it cannot be renamed.
+
+A service can be resolved using the [service provider](/documentation/services/serviceProvider).
+
+## Predefined services
+
+There are a number of predefined services that can be access from within your controllers/handlers, these are:
+
+* [authClientProvider](/documentation/services/authClientHandler)
+* [idmService](/documentation/services/idmService)
+* [integrationService](/documentation/services/integrationService)
+* [messagingService](/documentation/services/messagingService)
+* [rulesetService](/documentation/services/rulesetService)
+* [serviceProvider](/documentation/services/serviceProvider)
+* [storageService](/documentation/services/storageService)

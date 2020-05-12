@@ -51,8 +51,11 @@ Elemental currently allows you to:
 * Construct simple document storage APIs using JSON schema
 * Integrate with other simple APIs
 * Construct your own more complex APIs
+* Handle async processes using queues & messaging
 * Build simple rulesets for business logic/validation logic
-* Construct server side first websites/interfaces and integrate them with the storage, integrations and rulesets services
+* Construct server side first websites/interfaces
+* Create re-usable services & inject them into controllers
+* Include node modules from npmjs.com to extend services
 
 ## Environmental variables
 
@@ -66,13 +69,12 @@ Set the following variables to control the resolved hostnames for the services:
 * ELEMENTAL_STORAGE_HOST
 * ELEMENTAL_RULES_HOST
 * ELEMENTAL_IDENTITY_HOST
+* ELEMENTAL_QUEUE_HOST
 
 ## What does it not do
 
 Alot of things, services that have not been fully completed:
 
-* Administrative interface
-* Documentation
 * Identity provision & management
-* Async messaging
 * Process modelling
+* Unit tests!

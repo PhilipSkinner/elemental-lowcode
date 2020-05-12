@@ -126,6 +126,7 @@ The following services are automatically added into each controller:
 * [authClientProvider](/documentation/services/authClientProvider)
 * [idmService](/documentation/services/idmService)
 * [integrationService](/documentation/services/integrationService)
+* [messagingService](/documentation/services/messagingService)
 * [navigationService](/documentation/websites/navigationService)
 * [rulesetService](/documentation/services/rulesetService)
 * [serviceProvider](/documentation/services/serviceProvider)

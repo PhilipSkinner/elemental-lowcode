@@ -3,6 +3,7 @@ storage/.store
 */package-lock.json
 kernel/.sources
 kernel/.store
+kernel/.queues
 *.key
 **/coverage
 .nyc_output

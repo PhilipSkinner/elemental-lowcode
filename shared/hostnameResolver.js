@@ -34,6 +34,10 @@ hostnameResolver.prototype.resolveIdentity = function() {
 	return process.env.ELEMENTAL_IDENTITY_HOST || "http://localhost:8008";
 };
 
+hostnameResolver.prototype.resolveQueue = function() {
+	return process.env.ELEMENTAL_QUEUE_HOST || "http://localhost:8009";
+};
+
 module.exports = function() {
 	return new hostnameResolver();
 };

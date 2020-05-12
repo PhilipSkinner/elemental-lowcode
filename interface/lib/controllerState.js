@@ -1,4 +1,4 @@
-const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider) {
+const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider, messagingService) {
 	this.controllerDefinition 						= controllerDefinition;
 	this.controllerDefinition.storageService 		= storageService;
 	this.controllerDefinition.sessionState 			= sessionState;
@@ -8,6 +8,7 @@ const controllerState = function(controllerDefinition, storageService, sessionSt
 	this.controllerDefinition.idmService 			= idmService;
 	this.controllerDefinition.navigationService 	= navigationService;
 	this.controllerDefinition.serviceProvider 		= servicesProvider;
+	this.controllerDefinition.messagingService 		= messagingService;
 };
 
 controllerState.prototype.setContext = function(request, response) {
@@ -85,7 +86,7 @@ controllerState.prototype.triggerEvent = function(name, details) {
 	});
 };
 
-module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider) {
+module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider, messagingService) {
 	if (!storageService) {
 		storageService = require("../../shared/storageService")();
 	}
@@ -118,5 +119,9 @@ module.exports = function(controllerDefinition, clientConfig, storageService, se
 		servicesProvider = require("../../shared/iocProvider")();
 	}
 
-	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider);
+	if (!messagingService) {
+		messagingService = require("../../shared/messagingService")();
+	}
+
+	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider, messagingService);
 };

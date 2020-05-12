@@ -1,4 +1,4 @@
-const apiInstance = function(app, definition, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider) {
+const apiInstance = function(app, definition, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService) {
 	this.app 					= app;
 	this.definition 			= definition;
 	this.roleCheckHandler 		= roleCheckHandler;
@@ -8,6 +8,7 @@ const apiInstance = function(app, definition, roleCheckHandler, serviceProvider,
 	this.rulesetService 		= rulesetService;
 	this.idmService 			= idmService;
 	this.authClientProvider 	= authClientProvider;
+	this.messagingService 		= messagingService;
 };
 
 apiInstance.prototype.resolveController = function(name) {
@@ -16,7 +17,8 @@ apiInstance.prototype.resolveController = function(name) {
 		storageService 		: this.storageService,
 		integrationService 	: this.integrationService,
 		rulesetService 		: this.rulesetService,
-		idmService 			: this.idmService
+		idmService 			: this.idmService,
+		messagingService 	: this.messagingService,
 	};
 
 	Object.keys(services).forEach((prop) => {
@@ -68,9 +70,7 @@ apiInstance.prototype.setupEndpoints = function() {
 				}
 
 				console.info(`Setting up GET on ${routePath}`);
-				console.log(readerRoles);
 				this.app.get(routePath, this.roleCheckHandler.enforceRoles((req, res, next) => {
-					console.log(this.resolveController(routeConfig.get.controller));
 					this.resolveController(routeConfig.get.controller).bind({
 						serviceProvider : this.serviceProvider
 					})(req, res, next);
@@ -110,7 +110,7 @@ apiInstance.prototype.init = function() {
 	return this.setupEndpoints();
 };
 
-module.exports = function(app, definition, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider) {
+module.exports = function(app, definition, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService) {
 	if (!roleCheckHandler) {
 		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
@@ -139,5 +139,9 @@ module.exports = function(app, definition, roleCheckHandler, serviceProvider, st
 		authClientProvider = require("../../shared/authClientProvider")(definition ? definition.client : null);
 	}
 
-	return new apiInstance(app, definition, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider);
+	if (!messagingService) {
+		messagingService = require("../../shared/messagingService")();
+	}
+
+	return new apiInstance(app, definition, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService);
 };

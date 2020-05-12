@@ -1,0 +1,213 @@
+<template id="template-messaging">
+	<div class="messaging">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">Queues</h1>
+			<p class="mb-4">Queues allow you to process messages in an async fashion. Each queue supports a specific message type and has a single handler for that message type.</p>
+
+			<!-- DataTales Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Current Queues</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="queues.length === 0">
+									<td colspan="2" class="no-results">
+										There are no queues defined.
+									</td>
+								</tr>
+								<tr v-for="item in queues">
+									<td>
+										<router-link :to="{ name : 'queueDetails', params : { name : item.name } }">{{item.name}}</router-link>
+									</td>
+									<td>
+										<router-link class="btn btn-sm btn-primary" :to="{ name : 'queueEditor', params : { name : item.name } }">Modify</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_messagingControllerInstance.removeQueue(item.name);">Remove</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="actionButtons">
+			<router-link to="/messaging/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+		</div>
+	</div>
+</template>
+
+<template id="template-queueDetails">
+	<div class="queueDetails">
+		<div class="container-fluid">
+			<h1 class="h3 mb-2 text-gray-800">{{queue.name}} queue</h1>
+			<p class="mb-4">
+				This queue can be communicated with using the following details.
+			</p>
+
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">
+						POST {{window.hosts.queue}}/{{queue.name}}
+					</h6>
+				</div>
+				<div class="card-body">
+					<div class="block">
+						<b>Header: <code class="inline">Authorization : Bearer [token]</code></b>
+						<br/>
+							A bearer token issued by the Identity Provider.
+						<br/>
+						<span v-if="queue.roles && queue.roles.needsRole">
+							Atleast one of these roles must be present to access required to access:
+						</span>
+						<ul class="mb-0" v-if="queue.roles && queue.roles.needsRole">
+							<li><code class="inline">system_admin</code></li>
+							<li v-if="!queue.roles.replace"><code class="inline">system_writer</code></li>
+							<li v-if="!queue.roles.replace"><code class="inline">queue_writer</code></li>
+							<li v-if="!queue.roles.replace"><code class="inline">{{queue.name}}_writer</code></li>
+							<li v-for="role in queue.roles.roles"><code class="inline">{{role}}</code></li>
+						</ul>
+					</div>
+
+					<div class="block" v-if="queue.incoming && queue.incoming.schema">
+						<b>Body format:</b>
+
+						<pre class="inline">{{JSON.stringify(queue.incoming.schema, null, 4)}}</pre>
+					</div>
+
+					<div class="block">
+						<b>Response:</b>
+
+						<pre>Status: 201
+Location: {{window.hosts.queue}}/{{queue.name}}/{{window.generateGuid()}}</pre>
+					</div>
+				</div>
+			</div>
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">
+						GET {{window.hosts.queue}}/{{queue.name}}/:id
+					</h6>
+				</div>
+				<div class="card-body">
+					<div class="block">
+						<b>Header: <code class="inline">Authorization : Bearer [token]</code></b>
+						<br/>
+							A bearer token issued by the Identity Provider.
+						<br/>
+						<span v-if="queue.roles && queue.roles.needsRole">
+							Atleast one of these roles must be present to access required to access:
+						</span>
+						<ul class="mb-0" v-if="queue.roles && queue.roles.needsRole">
+							<li><code class="inline">system_admin</code></li>
+							<li v-if="!queue.roles.replace"><code class="inline">system_writer</code></li>
+							<li v-if="!queue.roles.replace"><code class="inline">queue_writer</code></li>
+							<li v-if="!queue.roles.replace"><code class="inline">{{queue.name}}_writer</code></li>
+							<li v-for="role in queue.roles.roles"><code class="inline">{{role}}</code></li>
+						</ul>
+					</div>
+
+					<div class="block">
+						<b>Response:</b>
+
+						<pre>Status: 200
+Body: {{JSON.stringify({
+	id 		: window.generateGuid(),
+	queue 	: queue.name,
+	status 	: "COMPLETE",
+	request :{},
+	result 	:{},
+	error 	:null
+}, null, 4)}}</pre>
+					</div>
+				</div>
+			</div>
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">
+						DELETE {{window.hosts.queue}}/{{queue.name}}/:id
+					</h6>
+				</div>
+				<div class="card-body">
+					<div class="block">
+						<b>Header: <code class="inline">Authorization : Bearer [token]</code></b>
+						<br/>
+							A bearer token issued by the Identity Provider.
+						<br/>
+						<span v-if="queue.roles && queue.roles.needsRole">
+							Atleast one of these roles must be present to access required to access:
+						</span>
+						<ul class="mb-0" v-if="queue.roles && queue.roles.needsRole">
+							<li><code class="inline">system_admin</code></li>
+							<li v-if="!queue.roles.replace"><code class="inline">system_writer</code></li>
+							<li v-if="!queue.roles.replace"><code class="inline">queue_writer</code></li>
+							<li v-if="!queue.roles.replace"><code class="inline">{{queue.name}}_writer</code></li>
+							<li v-for="role in queue.roles.roles"><code class="inline">{{role}}</code></li>
+						</ul>
+					</div>
+
+					<div class="block">
+						<b>Response:</b>
+
+						<pre>Status: 204</pre>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="template-queueEditor">
+	<div class="queueEditor">
+		<div class="editorSelector" v-bind:class="{ 'queueMode' : queueMode, 'handlerMode' : !queueMode }">
+			<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item mx-4">
+						<button class="btn" v-bind:class="{ 'btn-primary' : queueMode }" v-on:click="_queueEditorInstance.showQueueEditor();">
+							Queue
+						</button>
+					</li>
+					<li class="nav-item mx-4">
+						<button class="btn" v-bind:class="{ 'btn-primary' : !queueMode }" v-on:click="_queueEditorInstance.showHandlerEditor();">
+							Handler
+						</button>
+					</li>
+				</ul>
+			</nav>
+			<div class="entityWrapper">
+				<div id="queueEditor" class="editorWindow"></div>
+			</div>
+			<div class="entityWrapper">
+				<div id="handlerEditor" class="editorWindow"></div>
+			</div>
+		</div>
+
+
+		<div class="actionButtons">
+			<router-link to="/messaging" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_queueEditorInstance.saveQueue();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+			{{error.description}}
+		</modal-error>
+		<alert text="Queue saved!" v-bind:visible="showAlert"></alert>
+	</div>
+</template>

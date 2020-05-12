@@ -36,7 +36,8 @@ app.get("/", (req, res) => {
 				interface 	: hostnameResolver.resolveInterface(),
 				storage 	: hostnameResolver.resolveStorage(),
 				rules 		: hostnameResolver.resolveRules(),
-				identity 	: hostnameResolver.resolveIdentity()
+				identity 	: hostnameResolver.resolveIdentity(),
+				messaging 	: hostnameResolver.resolveQueue()
 			}
 		}));
 		res.end();

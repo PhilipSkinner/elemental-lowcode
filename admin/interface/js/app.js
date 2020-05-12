@@ -15,6 +15,13 @@ window.logout = function() {
 	location.href = "/";
 };
 
+window.generateGuid = function() {
+	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    	var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    	return v.toString(16);
+	});
+};
+
 window.templates.fetchTemplates().then(() => {
 	const pages = [
 		"js/pages/home.js",
@@ -40,7 +47,10 @@ window.templates.fetchTemplates().then(() => {
 		"js/pages/packager.js",
 		"js/pages/services.js",
 		"js/pages/servicesEditor.js",
-		"js/pages/nodeModules.js"
+		"js/pages/nodeModules.js",
+		"js/pages/messaging.js",
+		"js/pages/queueDetails.js",
+		"js/pages/queueEditor.js"
 	];
 
 	const loadPage = (file) => {
@@ -195,6 +205,21 @@ window.templates.fetchTemplates().then(() => {
 			{
 				path 		: "/nodemodules",
 				component	: window.NodeModules
+			},
+			/* Messaging */
+			{
+				path 		: "/messaging",
+				component 	: window.Messaging
+			},
+			{
+				path 		: "/messaging/editor/:name",
+				name 		: "queueEditor",
+				component 	: window.QueueEditor
+			},
+			{
+				path 		: "/messaging/:name",
+				name 		: "queueDetails",
+				component 	: window.QueueDetails
 			}
 		];
 

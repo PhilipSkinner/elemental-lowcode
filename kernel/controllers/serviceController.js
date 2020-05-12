@@ -160,7 +160,7 @@ serviceController.prototype.initEndpoints = function() {
 	this.app.patch("/dependencies", 		this.roleCheckHandler.enforceRoles(this.installDependencies.bind(this), ["service_writer", "service_admin", "system_writer", "system_admin"]));
 };
 
-module.exports = function(app, dir, fileLister, path, roleCheckHandler, typeValidator, childProcess) {
+module.exports = function(app, dir, fileLister, path, roleCheckHandler, childProcess) {
 	if (!fileLister) {
 		fileLister = require("../lib/fileLister")();
 	}

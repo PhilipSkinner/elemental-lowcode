@@ -17,6 +17,7 @@ const
 	securityController 		= require("./controllers/securityController"),
 	indexController 		= require("./controllers/indexController"),
 	serviceController 		= require("./controllers/serviceController"),
+	queueController 		= require("./controllers/queueController"),
 	intialSetup 			= require('./setup')();
 
 const args = argParser.fetch();
@@ -30,6 +31,7 @@ const directories = {
 	data 		: path.join(sourcesDir, "data"),
 	rules 		: path.join(sourcesDir, "rules"),
 	services	: path.join(sourcesDir, "services"),
+	queues 		: path.join(sourcesDir, "queues"),
 };
 
 const runApp = function() {
@@ -64,6 +66,7 @@ const runApp = function() {
 	securityController(app, directories.identity);
 	apiController(app, directories.api);
 	serviceController(app, directories.services);
+	queueController(app, directories.queues);
 	indexController(app, sourcesDir);
 
 	app.listen(8001);
@@ -94,6 +97,9 @@ const runApp = function() {
 		SECRET 		: secret,
 		SIG			: keys.private,
 		SIG_PUBLIC  : keys.public
+	});
+	serviceRunner.runService("messaging", 	"../messaging/main.js",		8009, directories.queues, {
+		SIG 	: keys.public
 	});
 };
 

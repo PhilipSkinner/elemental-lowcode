@@ -9,6 +9,14 @@ let server = null;
 let restarting = false;
 let tHandler = tokenHandler(process.env.SIG);
 
+if (!process.env.DIR) {
+	process.env.DIR = "./example";
+}
+
+if (!process.env.PORT) {
+	process.env.PORT = 5000;
+}
+
 const startup = () => {
 	app = express();
 
@@ -17,14 +25,6 @@ const startup = () => {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended : false }));
 	app.use(tHandler.tokenCheck.bind(tHandler));
-
-	if (!process.env.DIR) {
-		process.env.DIR = "./example";
-	}
-
-	if (!process.env.PORT) {
-		process.env.PORT = 5000;
-	}
 
 	//load our APIs
 	apiService.init(process.env.DIR).then(() => {
