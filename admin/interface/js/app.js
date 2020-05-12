@@ -40,6 +40,7 @@ window.templates.fetchTemplates().then(() => {
 		"js/pages/packager.js",
 		"js/pages/services.js",
 		"js/pages/servicesEditor.js",
+		"js/pages/nodeModules.js"
 	];
 
 	const loadPage = (file) => {
@@ -189,6 +190,11 @@ window.templates.fetchTemplates().then(() => {
 				path 		: "/services/editor/:name",
 				name 		: "servicesEditor",
 				component 	: window.ServicesEditor
+			},
+			/* Node Modules */
+			{
+				path 		: "/nodemodules",
+				component	: window.NodeModules
 			}
 		];
 

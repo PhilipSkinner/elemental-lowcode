@@ -28,6 +28,11 @@
 								</tr>
 							</tfoot>
 							<tbody>
+								<tr v-if="rules.length === 0">
+									<td colspan="2" class="no-results">
+										There are no rulesets defined.
+									</td>
+								</tr>
 								<tr v-for="item in rules">
 									<td>
 										<router-link :to="{ name : 'rulesetDetails', params : { name : item.name } }">{{item.name}}</router-link>

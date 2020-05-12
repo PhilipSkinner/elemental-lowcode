@@ -10,6 +10,7 @@ const templateProvider = function() {
 		"js/templates/websites.html",
 		"js/templates/packager.html",
 		"js/templates/services.html",
+		"js/templates/nodeModules.html"
 	];
 
 	this.initWrapper();

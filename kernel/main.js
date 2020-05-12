@@ -43,7 +43,9 @@ const runApp = function() {
 	const tHandler = tokenHandler(keys.public);
 
 	//middleware
-	app.use(cors());
+	app.use(cors({
+		methods : 'GET,HEAD,PUT,PATCH,POST,DELETE'
+	}));
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended : false }));
 	app.use(tHandler.tokenCheck.bind(tHandler));
