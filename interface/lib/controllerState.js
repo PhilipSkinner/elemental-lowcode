@@ -7,7 +7,7 @@ const controllerState = function(controllerDefinition, storageService, sessionSt
 	this.controllerDefinition.authClientProvider 	= authClientProvider;
 	this.controllerDefinition.idmService 			= idmService;
 	this.controllerDefinition.navigationService 	= navigationService;
-	this.controllerDefinition.servicesProvider 		= servicesProvider;
+	this.controllerDefinition.serviceProvider 		= servicesProvider;
 };
 
 controllerState.prototype.setContext = function(request, response) {

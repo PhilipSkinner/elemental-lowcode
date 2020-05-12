@@ -23,7 +23,7 @@ This can be called from your controllers like so:
 module.exports = {
 	events : {
 		load : (event) => {
-			const emailService = this.serviceProvider.getService("emailService");
+			const emailService = this.serviceProvider.resolveService("emailService");
 			return emailService.sendEmail("me@philip-skinner.co.uk", "Hello", "How are you doing today?");
 		}
 	}
