@@ -9,6 +9,12 @@ const replaceValues = function(dataResolver) {
 
 replaceValues.prototype.replace = function(view, data) {
 	return view.map((tag) => {
+		let scopedData = Object.assign(data, tag._scope && tag._scope.data ? tag._scope.data : {});
+
+		if (tag && tag.replace) {
+			tag = this.dataResolver.detectValues(tag, scopedData, {});
+		}
+
 		if (typeof(tag) !== "object" || tag === null) {
 			return tag;
 		}
@@ -22,7 +28,6 @@ replaceValues.prototype.replace = function(view, data) {
 				return;
 			}
 
-			let scopedData = Object.assign(data, tag._scope && tag._scope.data ? tag._scope.data : {});
 			if (Array.isArray(tag[prop])) {
 				tag[prop] = this.replace(tag[prop], scopedData);
 				return;
