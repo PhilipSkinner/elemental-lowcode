@@ -22,6 +22,7 @@ COPY identity /var/elemental/identity
 COPY interface /var/elemental/interface
 COPY integration /var/elemental/integration
 COPY kernel /var/elemental/kernel
+COPY messaging /var/elemental/messaging
 COPY processes /var/elemental/processes
 COPY rules /var/elemental/rules
 COPY shared /var/elemental/shared
@@ -50,6 +51,7 @@ ENV ELEMENTAL_INTERFACE_HOST="http://interface.elementalsystem.org"
 ENV ELEMENTAL_STORAGE_HOST="http://storage.elementalsystem.org"
 ENV ELEMENTAL_RULES_HOST="http://rules.elementalsystem.org"
 ENV ELEMENTAL_IDENTITY_HOST="http://identity.elementalsystem.org"
+ENV ELEMENTAL_QUEUE_HOST="http://queues.elementalsystem.org"
 
 #run our app
 CMD ["./docker-start.sh"]

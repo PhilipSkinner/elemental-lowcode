@@ -19,6 +19,8 @@ cd ./processes && rm -rf node_modules
 cd ..
 cd ./identity && rm -rf node_modules
 cd ..
+cd ./messaging && rm -rf node_modules
+cd ..
 cd ./shared && rm -rf node_modules
 cd ../
 rm -rf node_modules

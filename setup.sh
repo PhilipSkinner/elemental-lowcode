@@ -19,6 +19,8 @@ cd ./processes && npm i --unsafe-perm=true --allow-root
 cd ..
 cd ./identity && npm i --unsafe-perm=true --allow-root
 cd ..
+cd ./messaging && npm i --unsafe-perm=true --allow-root
+cd ..
 cd ./shared && npm i --unsafe-perm=true --allow-root
 cd ..
 npm i --unsafe-perm=true --allow-root
