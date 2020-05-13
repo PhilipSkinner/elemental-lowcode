@@ -17,7 +17,7 @@ A simple low(ish) code development platform.
 To run use the public docker image:
 
 ```
-$> sudo docker run -d -p 80:80 --name elemental philipskinner/elemental:latest
+$> sudo docker run -d -p 80:80 --name elemental philipskinner/elemental:master
 ```
 
 ; then open a browser and point it at (http://admin.elementalsystem.org).

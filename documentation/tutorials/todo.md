@@ -58,7 +58,15 @@ Enter the definition for the data type, the definition for this data type will b
 ```
 {
     "name": "todoList",
-    "keys": [],
+    "keys": [
+        {
+            "type":"unique",
+            "paths":[
+                "$.subject",
+                "$.name"
+            ]
+        }
+    ],
     "roles" : {
         "replace" : {
             "read" : true,

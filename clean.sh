@@ -25,3 +25,6 @@ rm -rf node_modules
 rm -rf .nyc_output
 rm -rf coverage
 rm -rf kernel/.sources
+rm -rf kernel/.queues
+rm -rf kernel/.store
+rm -rf kernel/.sessions
