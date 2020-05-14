@@ -1,6 +1,8 @@
-const definitionProvider = function(fs, path) {
-	this.fs = fs;
-	this.path = path;
+const definitionProvider = function(fs, path, reqMethod, resolveMethod) {
+	this.fs 			= fs;
+	this.path 			= path;
+	this.reqMethod 		= reqMethod;
+	this.resolveMethod 	= resolveMethod;
 };
 
 definitionProvider.prototype._parseConfig = function(file) {
@@ -62,8 +64,8 @@ definitionProvider.prototype._readControllers = function(config) {
 		return new Promise((resolve, reject) => {
 			try {
 				let module = this.path.join(process.cwd(), process.env.DIR, config.name, config.controllers[next]);
-				delete require.cache[require.resolve(module)];
-				config.controllers[next] = require(module);
+				delete require.cache[this.resolveMethod(module)];
+				config.controllers[next] = this.reqMethod(module);
 			} catch(e) {
 				return reject(e);
 			}
@@ -87,10 +89,11 @@ definitionProvider.prototype.fetchDefinition = function(file) {
 		});
 	}).catch((err) => {
 		console.log("Failed to read definition!");
+		throw err;
 	});
 };
 
-module.exports = function(fs, path) {
+module.exports = function(fs, path, reqMethod, resolveMethod) {
 	if (!fs) {
 		fs = require("fs");
 	}
@@ -99,5 +102,13 @@ module.exports = function(fs, path) {
 		path = require("path");
 	}
 
-	return new definitionProvider(fs, path);
+	if (!reqMethod) {
+		reqMethod = require;
+	}
+
+	if (!resolveMethod) {
+		resolveMethod = require.resolve;
+	}
+
+	return new definitionProvider(fs, path, reqMethod, resolveMethod);
 };
