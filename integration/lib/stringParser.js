@@ -32,7 +32,6 @@ stringParser.prototype.parseString = function(string, variables) {
 			regex.lastIndex++;
 		}
 
-		// The result can be accessed through the `m`-variable.
 		m.forEach((match, groupIndex) => {
 			//find our substitutions
 			var replacementValue = this._determineReplacementValue(match, variables);
@@ -50,7 +49,7 @@ stringParser.prototype.parseString = function(string, variables) {
 	if (needsReplacement) {
 		replacements.forEach((r) => {
 			string = string.replace(r[0], r[1]);
-		});		
+		});
 	}
 
 	return string;

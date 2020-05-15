@@ -28,7 +28,7 @@ integrationService.prototype.constructInstance = function(name, config) {
 
 		if (config.roles.needsRole) {
 			if (config.roles.needsRole.exec === false) {
-				execRoles = [];
+				execRoles = null;
 			}
 		}
 	}

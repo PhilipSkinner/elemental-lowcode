@@ -15,7 +15,7 @@ jsonSchemaVerifier.prototype.verify = function(config, body) {
 		return {
 			errors : validator.errors
 		};
-	}	
+	}
 
 	return {
 		data : data

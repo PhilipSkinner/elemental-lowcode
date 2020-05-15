@@ -18,7 +18,7 @@ integrationInstance.prototype.validateVariables = function(req) {
 		}).reduce((s, a) => {
 			if (a) {
 				s.push(a);
-			}			
+			}
 			return s;
 		}, []));
 	}
@@ -39,14 +39,14 @@ integrationInstance.prototype.generateVariables = function(req) {
 
 	return variables;
 };
-	
+
 integrationInstance.prototype.handler = function(req, res, next) {
 	//validate our variables
-	let validationErrors = this.validateVariables(req);	
+	let validationErrors = this.validateVariables(req);
 	if (validationErrors.length > 0) {
 		res.json({
 			errors : validationErrors
-		});		
+		});
 		next();
 		return;
 	}
@@ -66,7 +66,7 @@ integrationInstance.prototype.handler = function(req, res, next) {
 
 		if (verificationResponse.errors) {
 			//not good
-			res.send({
+			res.json({
 				errors : verificationResponse.errors
 			});
 			next();
@@ -76,14 +76,14 @@ integrationInstance.prototype.handler = function(req, res, next) {
 		//now we apply the transformer we were given
 		let transformer = eval(this.config.transformer);
 		let result = transformer(verificationResponse.data);
-		
-		res.json(result);		
+
+		res.json(result);
 		next();
 		return;
 	});
 };
 
-module.exports = function(name, config, requestService, jsonSchemaVerifier) {	
+module.exports = function(name, config, requestService, jsonSchemaVerifier) {
 	if (!requestService) {
 		requestService = require("./requestService")();
 	}

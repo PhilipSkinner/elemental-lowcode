@@ -54,7 +54,7 @@ iocProvider.prototype.resolveRequirements = function(fn) {
 
 iocProvider.prototype.resolveService = function(name) {
 	if (!this.services[name]) {
-		this.services[name] = require(this.path.join(this.path.dirname(process.env.DIR), "services", name));
+		this.services[name] = require(this.path.join(process.cwd(), this.path.dirname(process.env.DIR), "services", name));
 	}
 
 	return this.resolveRequirements(this.services[name]);
