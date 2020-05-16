@@ -47,7 +47,7 @@ controllerState.prototype.getBag = function() {
 controllerState.prototype.cleanValues = function(values) {
 	if (Array.isArray(values)) {
 		return values.map((v) => {
-			return cleanValues(v);
+			return this.cleanValues(v);
 		});
 	}
 

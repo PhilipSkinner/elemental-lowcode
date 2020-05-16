@@ -18,7 +18,8 @@ const render = function(fs, path, preProcessor) {
 	this.requireClosing = [
 		"script",
 		"div",
-		"a"
+		"a",
+		"textarea"
 	];
 	this.singleProps = [
 		"required",
