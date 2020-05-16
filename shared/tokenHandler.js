@@ -27,7 +27,7 @@ tokenHandler.prototype.tokenCheck = function(req, res, next) {
 		res.end();
 		return;
 	}
-}
+};
 
 module.exports = function(pubKey, jwt) {
 	if (!jwt) {

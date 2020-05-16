@@ -52,10 +52,80 @@ authClientProvider.prototype.logoutUser = function() {
 	this.sessionState.setRefreshToken(null);
 };
 
+authClientProvider.prototype.tokenExpired = function(token) {
+	let claims = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString("utf8"));
+
+	if (typeof(claims.exp) !== 'undefined' && claims.exp !== null && claims.exp > 0) {
+		const currentEpoch = Math.floor(new Date() / 1000);
+
+		//allow for 60 seconds
+		if (claims.exp > currentEpoch + 60) {
+			return false;
+		}
+
+		//it has expired
+		return true;
+	}
+
+	return false;
+};
+
+authClientProvider.prototype.refreshUserToken = function() {
+	let refreshToken = this.sessionState && this.sessionState.getRefreshToken ? this.sessionState.getRefreshToken() : null;
+
+	if (!refreshToken) {
+		return Promise.resolve(null);
+	}
+
+	return new Promise((resolve, reject) => {
+		this.request.post(`${this.hostnameResolver.resolveIdentity()}/token`, {
+			form : {
+				grant_type 		: "refresh_token",
+				refresh_token 	: refreshToken,
+				scope 			: this.config.scope,
+				client_id 		: this.config.client_id,
+				client_secret 	: this.config.client_secret
+			}
+		}, (err, response, body) => {
+			if (err) {
+				return reject(new Error("Error refreshing user access token"));
+			}
+
+			let data = null;
+			try {
+				data = JSON.parse(body);
+			} catch(e) {
+				return reject(new Error("Error parsing refresh token response"));
+			}
+
+			if (data) {
+				if (data.access_token) {
+					this.sessionState.setAccessToken(data.access_token);
+				}
+
+				if (data.id_token) {
+					this.sessionState.setIdentityToken(data.id_token);
+				}
+
+				if (data.access_token) {
+					this.sessionState.setRefreshToken(data.refresh_token);
+				}
+			}
+
+			return resolve(this.sessionState.getAccessToken());
+		});
+	});
+};
+
 authClientProvider.prototype.getAccessToken = function() {
 	let token = this.sessionState && this.sessionState.getAccessToken ? this.sessionState.getAccessToken() : null;
 
 	if (token) {
+		//has the token expired?
+		if (this.tokenExpired(token)) {
+			return this.refreshUserToken();
+		}
+
 		return Promise.resolve(token);
 	}
 

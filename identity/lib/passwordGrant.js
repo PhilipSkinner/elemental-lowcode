@@ -13,6 +13,8 @@ const gty = "password";
 
 const handler = function() {
 	return async function(ctx, next) {
+		const authTime = Math.floor(new Date() / 1000);
+
 		//get the account
 	    const user = await accountDB.findByLogin(ctx.oidc.params.username, ctx.oidc.params.password);
 	    const {
@@ -45,7 +47,7 @@ const handler = function() {
 			accountId           : account.accountId,
 			claims              : account.claims,
 			client              : ctx.oidc.client,
-			expiresWithSession  : true,
+			expiresWithSession  : false,
 			grantId             : ctx.oidc.uid,
 			gty,
 			scope               : ctx.oidc.params.scope,
@@ -77,17 +79,17 @@ const handler = function() {
 		let refreshToken;
 		if (true) {
 		const rt = new RefreshToken({
-			accountId: account.accountId,
-			authTime: "auth time",
-			claims: account.claims,
-			client: ctx.oidc.client,
-			expiresWithSession: true,
-			grantId: ctx.oidc.uid,
+			accountId 			: account.accountId,
+			authTime 			: authTime,
+			claims 				: account.claims,
+			client 				: ctx.oidc.client,
+			expiresWithSession 	: false,
+			grantId 			: ctx.oidc.uid,
 			gty,
-			rotations: 0,
-			scope: ctx.oidc.params.scope,
-			sessionUid: ctx.oidc.uid,
-			sid: ctx.oidc.uid,
+			rotations 			: 0,
+			scope 				: ctx.oidc.params.scope,
+			sessionUid 			: ctx.oidc.uid,
+			sid 				: ctx.oidc.uid,
 		});
 
 		if (ctx.oidc.client.tokenEndpointAuthMethod === 'none') {
@@ -112,7 +114,7 @@ const handler = function() {
 				...await account.claims('id_token', ctx.oidc.params.scope, claims, rejected),
 				acr: "acr",
 				amr: "amr",
-				auth_time: "auth time",
+				auth_time: authTime,
 			}, { ctx });
 
 			if (conformIdTokenClaims && userinfo.enabled) {

@@ -7,6 +7,8 @@ The auth client provider allows you to access the users authentication state, an
 * loginUser
 * logoutUser
 * getAccessToken
+* tokenExpired
+* refreshUserToken
 
 These methods are covered in more detail below.
 
@@ -98,4 +100,46 @@ module.exports = {
 		}
 	}
 };
+```
+
+### tokenExpired
+
+Parameters:
+
+* `token` - string, the JWT token to check for expiration
+
+Returns true if the token has expired, false if it has not.
+
+Called from your controllers like so:
+
+```
+module.exports = {
+	events : {
+		load : (event) => {
+			if (this.authClientProvider.tokenExpired("token value")) {
+				...
+			}
+		}
+	}
+}
+```
+
+### refreshUserToken
+
+Refreshes the current users access & identity tokens and returns the newly refreshed access token.
+
+This method returns a promise and will resolve a null access token if the user is either not logged in or does not have a refresh token.
+
+Called from your controllers like so:
+
+```
+module.exports = {
+	events : {
+		load : (event) => {
+			return this.authClientProvider.refreshUserToken().then((accessToken) => {
+				...
+			});
+		}
+	}
+}
 ```

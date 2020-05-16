@@ -1,4 +1,4 @@
-module.exports = function(sequelize, path) {  
+module.exports = function(sequelize, path) {
   if (!sequelize) {
     sequelize = require("sequelize");
   }
@@ -6,7 +6,7 @@ module.exports = function(sequelize, path) {
   if (!path) {
     path = require("path");
   }
-    
+
   const db = new sequelize({
     dialect: "sqlite",
     storage: path.join(process.env.DIR, "db.sqlite"),
@@ -71,14 +71,15 @@ module.exports = function(sequelize, path) {
 
     async find(id) {
       const found = await this.model.findByPk(id);
-      if (!found) return undefined;
 
-      let ret = {
+      if (!found) {
+        return undefined;
+      }
+
+      return {
         ...found.data,
         ...(found.consumedAt ? { consumed: true } : undefined),
-      };      
-
-      return ret;
+      };
     }
 
     async findByUserCode(userCode) {
@@ -95,7 +96,7 @@ module.exports = function(sequelize, path) {
       if (!found) {
         return undefined;
       }
-      
+
       return {
         ...found.data,
         ...(found.consumedAt ? { consumed: true } : undefined),
