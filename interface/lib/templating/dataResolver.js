@@ -1,9 +1,9 @@
-const dataResolver = function() {
-
+const dataResolver = function(stringFormat) {
+	this.stringFormat = stringFormat;
 };
 
 dataResolver.prototype.detectValues = function(string, data, scope) {
-	if (!string || !string.indexOf || string.indexOf("$.") === -1) {
+	if (!string || !string.indexOf || (string.indexOf("$.") === -1 && string.indexOf("$(") === -1)) {
 		return string;
 	}
 
@@ -38,7 +38,7 @@ dataResolver.prototype.detectValues = function(string, data, scope) {
 	});
 
 	//now detect functions
-	const funcRegex = /(\$\(.*?\))/gm
+	const funcRegex = /(\$\(.*?\)(?!\)))/gm
 	replacements = [];
 
 	while ((m = funcRegex.exec(string)) !== null) {
@@ -68,10 +68,15 @@ dataResolver.prototype.detectValues = function(string, data, scope) {
 };
 
 dataResolver.prototype.resolveFunction = function(fn, data) {
+	console.log(fn, data);
+
 	//does it have unresolved values?
 	if (fn.indexOf('$.') !== -1) {
 		return fn;
 	}
+
+	//allow access to the string formatter
+	const stringFormat = this.stringFormat;
 
 	//evaluate and return the value
 	return eval(fn.slice(2).slice(0, -1));
@@ -86,13 +91,17 @@ dataResolver.prototype.resolveValue = function(path, data) {
 		}
 	});
 
-	if (typeof(current) === 'undefined') {
+	if (typeof(current) === "undefined") {
 		return path;
 	}
 
 	return current;
 };
 
-module.exports = function() {
-	return new dataResolver();
+module.exports = function(stringFormat) {
+	if (!stringFormat) {
+		stringFormat = require("elemental-string-format");
+	}
+
+	return new dataResolver(stringFormat);
 };

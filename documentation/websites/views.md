@@ -120,6 +120,30 @@ module.exports = function() {
 
 Any user input that appears to look like a function (wrapped in `$(...)`) is automatically escaped by the system.
 
+## String formatting
+
+Functions can access the [elemental-string-format](https://github.com/PhilipSkinner/string-format) string formatter:
+
+```
+{
+	"tag" : "span",
+	"class" : "current-date",
+	"text" : "$('Welcome back {0}! You have {1} new messages.', '$.bag.name', $.bag.newMessages)"
+}
+```
+
+; or:
+
+```
+{
+	"tag" : "span",
+	"class" : "current-date",
+	"text" : "$('{0:D}', new Date())"
+}
+```
+
+All available formats can be found on the [number formats](/documentation/websites/numberFormats) and [date formats](/documentation/websites/dateFormats) documentation pages.
+
 ## Standard Tag Object Properties
 
 The following properties are special - any other properties are used to render attributes on the DOM element (e.g. class can be used to specify css classes, id for the id of an element).
