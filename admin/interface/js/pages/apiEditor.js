@@ -13,6 +13,41 @@ const _apiEditorController = function(page) {
 	this.securityDetails = {};
 };
 
+_apiEditorController.prototype.autoProvisionClient = function() {
+	if (!this.api.name) {
+		return;
+	}
+
+	//generate a default client
+	const client = {
+	    "client_id": `interface-${this.api.name}-client`,
+	    "client_secret": `${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}`,
+	    "scope": "roles",
+	    "grant_types" : [
+			"client_credentials"
+	    ],
+	    "redirect_uris": []
+	};
+
+	//save the client and set the value
+	return window.axios
+		.post(`${window.hosts.kernel}/security/clients`, JSON.stringify(client), {
+			headers : {
+				"Content-Type" : "application/json",
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			//set the client and save the website
+			this.api.client_id = client.client_id;
+			return this.fetchClients().then(() => {
+				return this.saveAll();
+			});
+		}).catch((err) => {
+			console.log(err);
+		});
+};
+
 _apiEditorController.prototype.closeSecurityPopup = function() {
 	this.securityPopupOpen = false;
 	this.securityDetails = {};

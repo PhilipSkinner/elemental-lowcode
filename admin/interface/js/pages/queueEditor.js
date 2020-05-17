@@ -11,6 +11,42 @@ const _queueEditorController = function(page) {
 	this.showAlert = false;
 };
 
+_queueEditorController.prototype.autoProvisionClient = function() {
+	let parsed = JSON.parse(this.editor.getValue());
+
+	if (!parsed.name) {
+		return;
+	}
+
+	//generate a default client
+	const client = {
+	    "client_id": `interface-${parsed.name}-client`,
+	    "client_secret": `${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}`,
+	    "scope": "roles",
+	    "grant_types" : [
+			"client_credentials"
+	    ],
+	    "redirect_uris": []
+	};
+
+	//save the client and set the value
+	return window.axios
+		.post(`${window.hosts.kernel}/security/clients`, JSON.stringify(client), {
+			headers : {
+				"Content-Type" : "application/json",
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			//set the client and save the website
+			parsed.client_id = client.client_id;
+			this.editor.setValue(JSON.stringify(parsed, null, 4));
+			return this.saveQueue();
+		}).catch((err) => {
+			console.log(err);
+		});
+};
+
 _queueEditorController.prototype.showHandlerEditor = function() {
 	this.queueMode = false;
 	this.refreshState();

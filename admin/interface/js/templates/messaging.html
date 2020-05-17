@@ -180,6 +180,11 @@ Body: {{JSON.stringify({
 		<div class="editorSelector" v-bind:class="{ 'queueMode' : queueMode, 'handlerMode' : !queueMode }">
 			<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 				<ul class="navbar-nav ml-auto">
+					<li class="nav-item mx-4" v-if="!queue.client_id">
+						<button class="btn" v-on:click="_queueEditorInstance.autoProvisionClient()">
+							Auto-provision Client
+						</button>
+					</li>
 					<li class="nav-item mx-4">
 						<button class="btn" v-bind:class="{ 'btn-primary' : queueMode }" v-on:click="_queueEditorInstance.showQueueEditor();">
 							Queue

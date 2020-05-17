@@ -8,29 +8,48 @@ const
 	routes 			     = require("./lib/routes"),
 	idm 			       = require('./lib/idm'),
   hostnameResolver = require("../shared/hostnameResolver")(),
-  passwordGrant    = require('./lib/passwordGrant')();
+  passwordGrant    = require('./lib/passwordGrant')(),
+  hotreload        = require("../shared/hotReload")();
 
 const { PORT = 3000, ISSUER = `${hostnameResolver.resolveIdentity()}` } = process.env;
-const app = express();
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
-app.use(bodyParser.json());
+let server = null;
+let restarting = false;
 
-let server;
+const startup = () => {
+  const app = express();
+  app.set("views", path.join(__dirname, "views"));
+  app.set("view engine", "ejs");
+  app.use(bodyParser.json());
 
-clientProvider.fetchConfig(process.env.DIR, process.env.SECRET).then((config) => {
-  const provider = new Provider(ISSUER, config);
+  clientProvider.fetchConfig(process.env.DIR, process.env.SECRET).then((config) => {
+    const provider = new Provider(ISSUER, config);
 
-  provider.registerGrantType("password", passwordGrant, ["client_id", "client_secret", "username", "password", "scope"], []);
+    provider.registerGrantType("password", passwordGrant, ["client_id", "client_secret", "username", "password", "scope"], []);
 
-  //register our routes
-  routes(app, provider);
+    //register our routes
+    routes(app, provider);
 
-  //register our idm
-  idm(app);
+    //register our idm
+    idm(app);
 
-  app.use(provider.callback);
-  server = app.listen(PORT, () => {
-    console.log(`application is listening on port ${PORT}, check its /.well-known/openid-configuration`);
+    app.use(provider.callback);
+    server = app.listen(PORT, () => {
+      console.log(`application is listening on port ${PORT}, check its /.well-known/openid-configuration`);
+      restarting = false;
+    });
   });
-});
+};
+
+const reload = () => {
+  if (!restarting) {
+    restarting = true;
+    if (server) {
+      console.log("Closing...");
+      server.close(startup);
+    } else {
+      startup();
+    }
+  }
+};
+
+hotreload.watch(process.env.DIR + '**/*.json', reload);

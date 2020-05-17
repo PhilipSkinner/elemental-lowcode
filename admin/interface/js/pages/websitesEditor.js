@@ -64,6 +64,40 @@ _websitesEditorController.prototype.getData = function() {
 	};
 };
 
+_websitesEditorController.prototype.autoProvisionClient = function() {
+	if (!this.website.name) {
+		return;
+	}
+
+	//generate a default client
+	const client = {
+	    "client_id": `interface-${this.website.name}-client`,
+	    "client_secret": `${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}`,
+	    "scope": "openid roles offline_access",
+	    "redirect_uris": [
+	        `${window.hosts.interface}/${this.website.name}/_auth`
+	    ]
+	};
+
+	//save the client and set the value
+	return window.axios
+		.post(`${window.hosts.kernel}/security/clients`, JSON.stringify(client), {
+			headers : {
+				"Content-Type" : "application/json",
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			//set the client and save the website
+			this.website.client_id = client.client_id;
+			return this.fetchClients().then(() => {
+				return this.saveAll();
+			});
+		}).catch((err) => {
+			console.log(err);
+		});
+};
+
 _websitesEditorController.prototype.initEditor = function(elem, type, value) {
 	//set our editor up
 	this.editor = window.ace.edit(document.getElementById(elem), {
@@ -422,7 +456,7 @@ _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 };
 
 _websitesEditorController.prototype.fetchClients = function(caller) {
-	this.caller = caller;
+	this.caller = this.caller || caller;
 	return window.axios
 		.get(`${window.hosts.kernel}/security/clients`, {
 			headers : {
@@ -432,6 +466,7 @@ _websitesEditorController.prototype.fetchClients = function(caller) {
 		.then((response) => {
 			this.clients = response.data;
 			this.refreshState();
+			return Promise.resolve();
 		});
 };
 

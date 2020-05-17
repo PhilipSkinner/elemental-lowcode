@@ -1,5 +1,6 @@
 const
 	express 		= require("express"),
+	path 			= require("path"),
 	tokenHandler 	= require("../shared/tokenHandler"),
 	hotreload 		= require("../shared/hotReload")();
 	bodyParser 		= require("body-parser");
@@ -52,6 +53,7 @@ const reload = () => {
 	}
 };
 
-console.log(process.env.DIR);
-
-hotreload.watch(process.env.DIR, reload);
+hotreload.watch([
+	process.env.DIR,
+	path.join(process.env.DIR, '../identity/**/*.json')
+], reload);

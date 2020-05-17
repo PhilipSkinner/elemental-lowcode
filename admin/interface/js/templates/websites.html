@@ -270,6 +270,9 @@
 									<option v-for="client in clients" v-bind:value="client.client_id">{{client.client_id}}</option>
 								</select>
 							</div>
+							<div class="form-group" v-if="!website.client_id">
+								<button class="btn btn-success" v-on:click="_websitesEditorControllerInstance.autoProvisionClient()">Auto-provision</button>
+							</div>
 						</div>
 					</div>
 				</div>
