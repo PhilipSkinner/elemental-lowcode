@@ -1,6 +1,5 @@
-const rulesService = function(app, fs, path, glob, configReader, rulesInstance) {
+const rulesService = function(app, path, glob, configReader, rulesInstance) {
 	this.app = app;
-	this.fs = fs;
 	this.path = path;
 	this.glob = glob;
 	this.configReader = configReader;
@@ -38,11 +37,7 @@ rulesService.prototype.init = function(dir) {
 	});
 };
 
-module.exports = function(app, fs, path, glob, configReader, rulesInstance) {
-	if (!fs) {
-		fs = require("fs");
-	}
-
+module.exports = function(app, path, glob, configReader, rulesInstance) {
 	if (!path) {
 		path = require("path");
 	}
@@ -59,5 +54,5 @@ module.exports = function(app, fs, path, glob, configReader, rulesInstance) {
 		rulesInstance = require("./rulesInstance");
 	}
 
-	return new rulesService(app, fs, path, glob, configReader, rulesInstance);
+	return new rulesService(app, path, glob, configReader, rulesInstance);
 }

@@ -69,22 +69,22 @@ const invalidFactsTest = (done) => {
 		},
 		json : (body) => {
 			expect(body).toEqual({
-				errors : [ 
-					{ 
-						keyword: 'type', 
-						dataPath: '.value', 
-						schemaPath: '#/properties/value/type', 
-						params: { 
-							type: 'string' 
-						}, 
-						message: 'should be string' 
+				errors : [
+					{
+						keyword: 'type',
+						dataPath: '.value',
+						schemaPath: '#/properties/value/type',
+						params: {
+							type: 'string'
+						},
+						message: 'should be string'
 					}
 				]
 			});
 		},
 		end : () => {
-			done();	
-		} 
+			done();
+		}
 	});
 };
 
@@ -124,8 +124,8 @@ const noMatchingRulesets = (done) => {
 		end : () => {
 			comparitorServiceMock.verify();
 
-			done();	
-		} 
+			done();
+		}
 	});
 };
 
@@ -167,8 +167,84 @@ const executionTest = (done) => {
 		end : () => {
 			comparitorServiceMock.verify();
 
-			done();	
-		} 
+			done();
+		}
+	});
+};
+
+const roleReplaceTest = (done) => {
+	const appMock = sinon.mock(app);
+	appMock.expects('post').once().withArgs('/doot');
+
+	const roleCheckHandlerMock = sinon.mock(roleCheckHandler);
+	roleCheckHandlerMock.expects('enforceRoles').once().withArgs(sinon.match.any, ["system_admin", "one", "two"]);
+
+	const instance = rulesInstance(app, {
+		name : 'doot',
+		roles : {
+			replace : {
+				exec : true
+			},
+			exec : [
+				"one",
+				"two"
+			]
+		}
+	}, ajv, comparitorService, roleCheckHandler);
+	instance.init().then(() => {
+		appMock.verify();
+		roleCheckHandlerMock.verify();
+
+		done();
+	});
+};
+
+const extraRolesTest = (done) => {
+	const appMock = sinon.mock(app);
+	appMock.expects('post').once().withArgs('/doot');
+
+	const roleCheckHandlerMock = sinon.mock(roleCheckHandler);
+	roleCheckHandlerMock.expects('enforceRoles').once().withArgs(sinon.match.any, ["system_admin", "system_exec", "rules_exec", "doot_exec", "one", "two"]);
+
+	const instance = rulesInstance(app, {
+		name : 'doot',
+		roles : {
+			replace : {},
+			exec : [
+				"one",
+				"two"
+			],
+			needsRole : {}
+		}
+	}, ajv, comparitorService, roleCheckHandler);
+	instance.init().then(() => {
+		appMock.verify();
+		roleCheckHandlerMock.verify();
+
+		done();
+	});
+};
+
+const noRolesTest = (done) => {
+	const appMock = sinon.mock(app);
+	appMock.expects('post').once().withArgs('/doot');
+
+	const roleCheckHandlerMock = sinon.mock(roleCheckHandler);
+	roleCheckHandlerMock.expects('enforceRoles').once().withArgs(sinon.match.any, null);
+
+	const instance = rulesInstance(app, {
+		name : 'doot',
+		roles : {
+			needsRole : {
+				exec : false
+			}
+		}
+	}, ajv, comparitorService, roleCheckHandler);
+	instance.init().then(() => {
+		appMock.verify();
+		roleCheckHandlerMock.verify();
+
+		done();
 	});
 };
 
@@ -180,5 +256,8 @@ describe("A rules service instance", () => {
 		it("handling invalid facts", invalidFactsTest);
 		it("handling no matching rulesets", noMatchingRulesets);
 		it("correctly executing  rules", executionTest);
+		it("handling role replacement", roleReplaceTest);
+		it("handling extra roles", extraRolesTest);
+		it("handling no roles", noRolesTest);
 	});
 });
