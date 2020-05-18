@@ -103,6 +103,10 @@ controllerInstance.prototype.handler = function(req, res, next) {
 
 			return Promise.resolve();
 		}).then(() => {
+			if (res.headersSent) {
+				return Promise.resolve();
+			}
+
 			return stateEngine.triggerEvent("load", Object.assign(req.query, req.params));
 		}).then(() => {
 			stateEngine.generateResponseHeaders();
@@ -110,7 +114,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 			// only render the view if we need to
 			if (res.statusCode !== 200) {
 				stateEngine = null;
-				res.send('');
+				res.end('');
 				next();
 				return;
 			}

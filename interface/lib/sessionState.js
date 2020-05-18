@@ -128,7 +128,7 @@ sessionState.prototype.generateResponseHeaders = function() {
 		this.sessionData = this.retrieveSession();
 	}
 
-	if (this.sessionData) {
+	if (this.sessionData && !this.response.headersSent) {
 		this.response.cookie(this.sessionName, Buffer.from(JSON.stringify(this.sessionData)).toString("base64"));
 	}
 };
