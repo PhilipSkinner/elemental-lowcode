@@ -52,7 +52,29 @@ fsStore.prototype.applyFilters = function(dir, filters, type) {
 				let found = true;
 				filters.forEach((f) => {
 					let value = this.jsonpath.query(resource, f.path);
-					if (value != f.value) {
+					if (Array.isArray(value) && Array.isArray(value[0])) {
+						if (Array.isArray(f.value)) {
+							let anyFound = false;
+							f.value.forEach((v) => {
+								anyFound = anyFound || value[0].indexOf(v) !== -1;
+							});
+
+							if (!anyFound) {
+								found = false;
+							}
+						} else if (value[0].indexOf(f.value) === -1) {
+							found = false;
+						}
+					} else if (Array.isArray(f.value)) {
+						let anyFound = false;
+						f.value.forEach((v) => {
+							anyFound = anyFound || value == v;
+						});
+
+						if (!anyFound) {
+							found = false;
+						}
+					} else if (value != f.value) {
 						found = false;
 					}
 				});
