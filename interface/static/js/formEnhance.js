@@ -12,9 +12,8 @@ submitHandler.prototype.init = function() {
 	this.elem.addEventListener("submit", this.handleSubmit.bind(this));
 
 	const poll = this.elem.attributes["data-poll"];
-	console.log(poll);
 	if (poll && poll.value) {
-		this.timeout = setTimeout(this.pollEvent.bind(this), poll.value);
+		this.timeout = setInterval(this.pollEvent.bind(this), poll.value);
 	}
 };
 
@@ -111,14 +110,17 @@ submitHandler.prototype.handleSubmit = function(event) {
 };
 
 submitHandler.prototype.handleResponse = function(response) {
-	if (response.request && response.request.responseURL) {
+	if (response.request && response.request.responseURL && location.href !== response.request.responseURL) {
 		//need to rewrite the location
 		history.pushState({}, '', response.request.responseURL);
 	}
 
-	document.open();
-    document.write(response.data);
-    document.close();
+	var newMap = createDOMMap(stringToHTML(response.data));
+	var domMap = createDOMMap(document.querySelector("html"));
+	diff(newMap[1].children, domMap, document.querySelector("html"));
+
+	enhanceForms();
+	enhanceLinks();
 };
 
 var enhanceForms = function() {

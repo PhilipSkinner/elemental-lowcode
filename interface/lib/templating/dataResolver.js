@@ -68,8 +68,6 @@ dataResolver.prototype.detectValues = function(string, data, scope) {
 };
 
 dataResolver.prototype.resolveFunction = function(fn, data) {
-	console.log(fn, data);
-
 	//does it have unresolved values?
 	if (fn.indexOf('$.') !== -1) {
 		return fn;
