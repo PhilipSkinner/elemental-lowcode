@@ -1,17 +1,6 @@
-const accountDB = require('./account')();
+const handler = function(accountDB, get, uidToGrantId, InvalidGrant, presence, instance, checkPKCE, revokeGrant) {
+	const gty = "password";
 
-const get = require('lodash/get');
-const uidToGrantId = require('debug')('oidc-provider:uid');
-
-const { InvalidGrant } = require('oidc-provider/lib/helpers/errors');
-const presence = require('oidc-provider/lib/helpers/validate_presence');
-const instance = require('oidc-provider/lib/helpers/weak_cache');
-const checkPKCE = require('oidc-provider/lib/helpers/pkce');
-const revokeGrant = require('oidc-provider/lib/helpers/revoke_grant');
-
-const gty = "password";
-
-const handler = function() {
 	return async function(ctx, next) {
 		const authTime = Math.floor(new Date() / 1000);
 
@@ -145,6 +134,38 @@ const handler = function() {
 	};
 };
 
-module.exports = function() {
-	return handler();
+module.exports = function(accountDB, get, uidToGrantId, InvalidGrant, presence, instance, checkPKCE, revokeGrant) {
+	if (!accountDB) {
+		accountDB = require('./account')();
+	}
+
+	if (!get) {
+		get = require('lodash/get');
+	}
+
+	if (!uidToGrantId) {
+		uidToGrantId = require('debug')('oidc-provider:uid');
+	}
+
+	if (!InvalidGrant) {
+		InvalidGrant = require('oidc-provider/lib/helpers/errors').InvalidGrant;
+	}
+
+	if (presence) {
+		presence = require('oidc-provider/lib/helpers/validate_presence');
+	}
+
+	if (!instance) {
+		instance = require('oidc-provider/lib/helpers/weak_cache');
+	}
+
+	if (!checkPKCE) {
+		checkPKCE = require('oidc-provider/lib/helpers/pkce');
+	}
+
+	if (!revokeGrant) {
+		revokeGrant = require('oidc-provider/lib/helpers/revoke_grant');
+	}
+
+	return handler(accountDB, get, uidToGrantId, InvalidGrant, presence, instance, checkPKCE, revokeGrant);
 };

@@ -223,7 +223,7 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
 	});
 };
 
-module.exports = function(glob, path, fs, jose, keygrip, userDB, db, hostnameResolver) {
+module.exports = function(glob, path, fs, jose, userDB, db, hostnameResolver) {
 	if (!glob) {
 		glob = require("glob");
 	}
