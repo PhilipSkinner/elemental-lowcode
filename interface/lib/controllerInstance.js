@@ -113,9 +113,18 @@ controllerInstance.prototype.handler = function(req, res, next) {
 
 			// only render the view if we need to
 			if (res.statusCode !== 200) {
-				stateEngine = null;
-				res.end('');
-				next();
+				if (req.session && req.session.save) {
+					req.session.save((err) => {
+						stateEngine = null;
+						res.end('');
+						next();
+					});
+				} else {
+					stateEngine = null;
+					res.end('');
+					next();
+				}
+
 				return;
 			}
 

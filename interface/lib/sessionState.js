@@ -22,6 +22,10 @@ sessionState.prototype.retrieveSession = function() {
 	return this.sessionData;
 };
 
+sessionState.prototype.wipeSession = function() {
+	this.request.session.destroy();
+};
+
 sessionState.prototype.setAccessToken = function(accessToken) {
 	this.request.session = this.request.session || {};
 	this.request.session.passport = this.request.session.passport || {};

@@ -47,9 +47,7 @@ authClientProvider.prototype.loginUser = function(username, password) {
 };
 
 authClientProvider.prototype.logoutUser = function() {
-	this.sessionState.setAccessToken(null);
-	this.sessionState.setIdentityToken(null);
-	this.sessionState.setRefreshToken(null);
+	this.sessionState.wipeSession();
 };
 
 authClientProvider.prototype.tokenExpired = function(token) {
