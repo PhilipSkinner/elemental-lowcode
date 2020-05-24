@@ -57,7 +57,7 @@ submitHandler.prototype.handleSubmit = function(event) {
 
 				files[name] = files[name].concat(fileArray);
 			}
-		} if ((field.type === "radio" || field.type === "checkbox") && !field.checked) {
+		} else if ((field.type === "radio" || field.type === "checkbox") && !field.checked) {
 			// do nothing
 		} else {
 			if (!params[name]) {
