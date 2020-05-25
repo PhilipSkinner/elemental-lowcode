@@ -1,8 +1,23 @@
-const storageEngine = function(store, app, typesReader, typeInstance) {
-	this.store = store;
-	this.app = app;
-	this.typesReader = typesReader;
-	this.typeInstance = typeInstance;
+const storageEngine = function(app, typesReader, typeInstance, fsStore, memoryStore, sqlStore) {
+	this.app 			= app;
+	this.typesReader 	= typesReader;
+	this.typeInstance 	= typeInstance;
+	this.fsStore 		= fsStore;
+	this.memoryStore 	= memoryStore;
+	this.sqlStore 		= sqlStore;
+};
+
+storageEngine.prototype.initStore = function(type) {
+	if (type.storageEngine === "memory") {
+		return this.memoryStore();
+	}
+
+	if (type.storageEngine === "sql") {
+		return this.sqlStore(type.connectionString, type);
+	}
+
+	//default to fsstore
+	return this.fsStore(type.directory);
 };
 
 storageEngine.prototype.init = function(dir) {
@@ -14,15 +29,15 @@ storageEngine.prototype.init = function(dir) {
 			}
 
 			const next = types.pop();
-			let instance = this.typeInstance(this.store, this.app, next);
+			let instance = this.typeInstance(this.initStore(next), this.app, next);
 			return instance.init().then(doNext);
 		};
-		
+
 		return doNext();
 	});
 };
 
-module.exports = function(store, app, typesReader, typeInstance) {
+module.exports = function(app, typesReader, typeInstance, fsStore, memoryStore, sqlStore) {
 	if (!typesReader) {
 		typesReader = require("./typesReader")();
 	}
@@ -32,5 +47,17 @@ module.exports = function(store, app, typesReader, typeInstance) {
 		typeInstance = require("./typeInstance");
 	}
 
-	return new storageEngine(store, app, typesReader, typeInstance);
+	if (!fsStore) {
+		fsStore = require("./stores/fsStore");
+	}
+
+	if (!memoryStore) {
+		memoryStore = require("./stores/memoryStore");
+	}
+
+	if (!sqlStore) {
+		sqlStore = require("./stores/sqlStore");
+	}
+
+	return new storageEngine(app, typesReader, typeInstance, fsStore, memoryStore, sqlStore);
 }

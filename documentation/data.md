@@ -7,6 +7,15 @@ The data system allows you to create APIs to serve basic resources, providing yo
 * Basic CRUD operations (GET, POST, PUT, DELETE, PATCH)
 * Ability to secure resources
 
+The data system comes with several storage engines, allowing the data to be presisted with different backends. The following backends are supported:
+
+* In memory store
+* File system store
+* Postgres SQL
+* MySQL
+* MariaDB
+* MSSQL
+
 ## Data types
 
 Each data type is a JSON document that contains:
@@ -16,11 +25,13 @@ Each data type is a JSON document that contains:
 * The schema for the data type (JSON Schema document)
 * The roles to authorize access to the data type
 * Keys/constraints defined on the resource
+* The storage engine to back the data onto
 
 The following is an example data type definition:
 
 ```
 {
+    "storageEngine" : "filesystem",
     "name": "todoList",
     "keys": [
         {
@@ -81,6 +92,69 @@ The following is an example data type definition:
     }
 }
 ```
+
+## Storage Engines
+
+Each data type can be configured to use a storage engine - which allows each type to use the same data store or for each type to use its own unique data store.
+
+The type of storage engine is configured via the `storageEngine` property. The supported values for this are:
+
+* `memory`
+* `filesystem`
+* `sql`
+
+Each of these options are covered in more detail below.
+
+### `memory`
+
+The memory backing store keeps data within memory - its contents will be loaded every time the application reloads.
+
+This type of store is useful for caches, but should not be used for storing authoratative data as it will be lost.
+
+### `filesystem`
+
+The file system backing store will record entities on the local file system.
+
+*If hosting the application within docker, this means your data will be lost if you upgrade and deploy a new version.*
+
+The file system store is useful for development, but it should not be used for production workloads as it needs to scan all entries from the hard drive when doing filtering or applying constraints.
+
+This store can be used for direct access to data, but will suffer from potential data loss if the file stores location on the systems drive is not persistent across deployments.
+
+### `sql`
+
+The sql backing store allows for the use of:
+
+* Postgres
+* MySQL
+* MariaDB
+* MSSQL
+
+This storage engine options requires a `connectionString` property to be defined within the data type:
+
+```
+{
+    "name" : "todoList",
+    "storageEngine" : "sql",
+    "connectionString" : "postgres://root:password@localhost:5432/todo"
+}
+```
+
+The connection string property is made up of:
+
+* A sql dialect
+* The username
+* The password
+* The servers hostname/IP
+* The servers port
+* The databases name
+
+The following dialects are supported:
+
+* Postgres - `postgres://`
+* MySQL - `mysql://`
+* MariaDB - `mariadb://`
+* MSSQL - `mssql://`
 
 ## Accessing/modifying data
 

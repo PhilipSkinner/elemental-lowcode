@@ -13,8 +13,7 @@ let tHandler = tokenHandler(process.env.SIG);
 const startup = () => {
 	app = express();
 
-	const backingStore = require("./lib/stores/fsStore")();
-	const storageEngine = require("./lib/storageEngine")(backingStore, app);
+	const storageEngine = require("./lib/storageEngine")(app);
 
 	app.use(cors());
 	app.use(bodyParser.json());
