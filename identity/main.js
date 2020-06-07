@@ -52,4 +52,6 @@ const reload = () => {
   }
 };
 
+reload();
+
 hotreload.watch(process.env.DIR + '**/*.json', reload);

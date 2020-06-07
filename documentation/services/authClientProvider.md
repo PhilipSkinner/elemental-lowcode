@@ -70,7 +70,7 @@ Called from your controllers like so:
 module.exports = {
 	events : {
 		logout : (event) => {
-			this.authClient.logoutUser();
+			this.authClientProvider.logoutUser();
 		}
 	}
 };
