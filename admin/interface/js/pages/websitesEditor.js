@@ -74,6 +74,11 @@ _websitesEditorController.prototype.autoProvisionClient = function() {
 	    "client_id": `interface-${this.website.name}-client`,
 	    "client_secret": `${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}`,
 	    "scope": "openid roles offline_access",
+	    "grants" : [
+        	"client_credentials",
+			"authorization_code",
+        	"refresh_token"
+    	],
 	    "redirect_uris": [
 	        `${window.hosts.interface}/${this.website.name}/_auth`
 	    ]

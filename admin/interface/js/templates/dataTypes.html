@@ -30,6 +30,11 @@
 								</tr>
 							</tfoot>
 							<tbody>
+								<tr v-if="dataTypes.length === 0">
+									<td colspan="3" class="no-results">
+										There are no data types defined.
+									</td>
+								</tr>
 								<tr v-for="item in dataTypes">
 									<td>
 										<router-link :to="{ name : 'dataTypeDetails', params : { type : item.name } }">{{item.name}}</router-link>

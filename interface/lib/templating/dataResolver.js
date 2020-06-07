@@ -38,7 +38,7 @@ dataResolver.prototype.detectValues = function(string, data, scope) {
 	});
 
 	//now detect functions
-	const funcRegex = /(\$\(.*?\)(?!\)))/gm
+	const funcRegex = /(\$\(.*\)(?!\)))/gm
 	replacements = [];
 
 	while ((m = funcRegex.exec(string)) !== null) {
