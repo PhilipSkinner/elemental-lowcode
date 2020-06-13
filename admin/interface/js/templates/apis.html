@@ -1,10 +1,9 @@
 <template id="template-apis">
 	<div class="apis">
+		<navigation title="APIs"></navigation>
+
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
-
-			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">APIs</h1>
 			<p class="mb-4">You can construct complex APIs that contain your business and application logic. To add a new API click the big plus button in the bottom right.</p>
 
 			<!-- DataTales Example -->
@@ -57,8 +56,9 @@
 
 <template id="template-api-details">
 	<div class="api-details">
+		<navigation :title="api.name"></navigation>
+
 		<div class="container-fluid">
-			<h1 class="h3 mb-2 text-gray-800">{{api.name}}</h1>
 			<p class="mb-4">
 				This API supports the following endpoints.
 			</p>
@@ -183,9 +183,9 @@
 			</div>
 		</div>
 
-		<div class="container-fluid" v-if="mainVisible">
-			<h1 class="h3 mb-2 text-gray-800">Manage API</h1>
+		<navigation title="Manage API"></navigation>
 
+		<div class="container-fluid" v-if="mainVisible">
 			<div class="row">
 				<div class="col-md-6">
 					<div class="card shadow mb-4">

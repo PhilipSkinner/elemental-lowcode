@@ -69,6 +69,10 @@ queueInstance.prototype.deleteMessage = function(req, res, next) {
 
 queueInstance.prototype.setupEndpoints = function() {
 	return new Promise((resolve, reject) => {
+		if (!(this.definition && this.definition.name)) {
+			return resolve();
+		}
+
 		let roles = [
 			"system_admin",
 			"system_writer",
@@ -105,6 +109,10 @@ queueInstance.prototype.terminate = function() {
 };
 
 queueInstance.prototype.setupHandler = function() {
+	if (!(this.definition && this.definition.name)) {
+		return;
+	}
+
 	console.log(`Starting handler for ${this.definition.name} queue`);
 
 	const runNext = () => {

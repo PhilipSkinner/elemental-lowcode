@@ -1,10 +1,9 @@
 <template id="template-dataTypes">
 	<div class="dataTypes">
+		<navigation title="Data"></navigation>
+
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
-
-			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">Data</h1>
 			<p class="mb-4">The table below allows you to see all data types currently configured within the storage system. Add a new data type by using the + icon in the bottom right hand corner of the screen.</p>
 
 			<!-- DataTales Example -->
@@ -62,11 +61,12 @@
 
 <template id="template-dataTypeDetails">
 	<div class="dataTypeDetails">
+		<navigation :title="dataType.name"></navigation>
+
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">{{dataType.name}}</h1>
 			<p class="mb-4">The following HTTP endpoints can be used to communicate with the storage engine hosting this data type. All requests must be made with a valid bearer token in your Authorization header. You can register a client to fetch a token in the security section.</p>
 
 			<!-- get request -->

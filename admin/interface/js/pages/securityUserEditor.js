@@ -130,15 +130,15 @@ window.SecurityUserEditor = {
 	data 	 : () => {
 		return window._securityUserEditorControllerInstance.getData();
 	},
-	mounted  : () => {
+	mounted  : function() {
 		window._securityUserEditorControllerInstance.setCaller(this);
 		window._securityUserEditorControllerInstance.initEditor();
-		if (this.$route.params.id === ".new") {
+		if (this.$route.params.name === ".new") {
 			window._securityUserEditorControllerInstance.initBlankType();
 			return null;
 		}
 
-		return window._securityUserEditorControllerInstance.fetchUser(this.$route.params.id);
+		return window._securityUserEditorControllerInstance.fetchUser(this.$route.params.name);
 	}
 };
 

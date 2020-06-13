@@ -25,6 +25,7 @@ module.exports = function(db, bcrypt) {
 			const user = await userDB.find(login);
 
 			if (typeof(user) === "undefined" || user === null) {
+				console.log("No such user");
 				return null;
 			}
 
@@ -96,7 +97,9 @@ module.exports = function(db, bcrypt) {
 		static async registerUser(username, password) {
 			const user = await userDB.find(username);
 
-			if (typeof(user) === "undefined" || user === null) {
+			console.log(user);
+
+			if (typeof(user) !== "undefined" && user !== null) {
 				return null;
 			}
 

@@ -1,0 +1,29 @@
+<template id="template-navigation">
+	<!-- Topbar -->
+	<div class="top-bar">
+		<nav class="navbar navbar-expand bg-white topbar mb-4 static-top shadow">
+			<h1 v-if="title !== null && title !== ''">{{title}}</h1>
+			<ul class="navbar-nav ml-auto">
+				<li v-bind:class="{ 'nav-item' : true, 'active' : item.selected }" v-for="item in navitems">
+					<a v-bind:class="{ 'nav-link' : true, 'active' : item.selected }" v-on:click="item.event">
+						{{item.name}}
+					</a>
+				</li>
+
+				<!-- Nav Item - Logout -->
+				<li class="nav-item">
+					<a class="nav-link" id="logout" href="/logout">
+						Logout
+					</a>
+				</li>
+				<!-- Nav Item - Alerts -->
+				<li class="nav-item dropdown no-arrow ">
+					<a class="nav-link dropdown-toggle" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fas fa-bell fa-fw"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	<!-- End of Topbar -->
+</template>

@@ -1,20 +1,59 @@
 <template id="template-security">
 	<div class="security">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-md-12">
-					<h1>Security</h1>
-				</div>
-			</div>
+		<navigation title="Security" :navitems="navitems"></navigation>
+
+		<alert text="Security settings saved!" v-bind:visible="showAlert"></alert>
+
+		<div class="container-fluid" v-if="storageVisible">
 			<div class="row">
 				<div class="col-md-6">
 					<div class="card shadow">
 						<div class="card-header py-3">
-							<h6 class="m-0 font-weight-bold text-primary">Configuration</h6>
+							<h6 class="m-0 font-weight-bold text-primary">Storage Settings</h6>
 						</div>
 						<div class="card-body">
 							<p>
-								The following configuration options can be set on the Identity Provider.
+								By default the Identity Provider will store its data within a local sqlite database. You can change this to connect it to a database instead. Select a supported technology from the drop down and then provide your connection string.
+							</p>
+
+							<p>
+								<strong>Warning:</strong> The Identity Provider will fail to issue tokens for users that do not exist within the new data store - this potentially could lock you out of your system. Ensure that you have enough access and knowledge to manually configure a user
+								within the store to have the <code class="inline">system_admin</code> role.
+							</p>
+
+							<div class="form-group">
+								<label>Database type:</label>
+								<select class="form-control" v-model="config.storageEngine">
+									<option value="memory">In-memory</option>
+									<option value="filesystem">Filesystem</option>
+									<option value="sql">*sql (sqlite, postgres, mysql, mariadb, mssql)</option>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label>Connection string:</label>
+								<input class="form-control" v-model="config.connectionString" />
+							</div>
+
+							<div class="form-group">
+								<button class="btn btn-primary" v-on:click="_securityControllerInstance.saveConfig()">Apply</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" v-if="settingsVisible">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Scopes</h6>
+						</div>
+						<div class="card-body">
+							<p>
+								The following scopes have been configured on the Identity Provider.
 							</p>
 
 							<div class="float-right">
@@ -180,7 +219,7 @@
 												</span>
 											</td>
 											<td>
-												<router-link class="btn btn-sm btn-success" :to="{ name : 'securityUserEditor', params : { id : user.id } }">
+												<router-link class="btn btn-sm btn-success" :to="{ name : 'securityUserEditor', params : { name : user.id } }">
 													Modify
 												</router-link>
 												<button class="btn btn-sm btn-danger"  v-on:click="_securityControllerInstance.deleteUser(user.id);">

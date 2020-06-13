@@ -1,160 +1,186 @@
 <template id="template-documentation">
 	<div class="documentation">
-		<!-- Begin Page Content -->
-		<div class="container-fluid">
-
-			<div class="row">
-				<div class="col-md-3">
-					<div class="card shadow">
-						<div class="card-header py-3">
-							<h6 class="m-0 font-weight-bold text-primary">Topics</h6>
+		<div class="row">
+			<div class="col-md-3 pr-0">
+				<div class="card shadow">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">Topics</h6>
+					</div>
+					<div class="card-body documentation-menu">
+						<div class="font-weight-bold">
+							<router-link to="/documentation">
+								Index
+							</router-link>
 						</div>
-						<div class="card-body documentation-menu">
-							<div class="font-weight-bold">
-								<router-link to="/documentation">
-									Index
+						<div>
+							<router-link to="/documentation/auth">
+								Authentication & Authorization
+							</router-link>
+							<div>
+								<router-link to="/documentation/auth/scopes">
+									Scopes
 								</router-link>
 							</div>
 							<div>
-								<router-link to="/documentation/apis">
-									APIs
-								</router-link>
-								<div>
-									<router-link to="/documentation/apis/routes">
-										Routes
-									</router-link>
-								</div>
-								<div>
-									<router-link to="/documentation/apis/controllers">
-										Controllers
-									</router-link>
-								</div>
-							</div>
-							<div>
-								<router-link to="/documentation/websites">
-									Websites
-								</router-link>
-								<div>
-									<router-link to="/documentation/websites/routes">
-										Routes
-									</router-link>
-								</div>
-								<div>
-									<router-link to="/documentation/websites/views">
-										Views
-									</router-link>
-									<div>
-										<router-link to="/documentation/websites/numberFormats">
-											Number Formats
-										</router-link>
-									</div>
-									<div>
-										<router-link to="/documentation/websites/dateFormats">
-											Date Formats
-										</router-link>
-									</div>
-								</div>
-								<div>
-									<router-link to="/documentation/websites/controllers">
-										Controllers
-									</router-link>
-									<div>
-										<router-link to="/documentation/websites/navigationService">
-											navigationService
-										</router-link>
-									</div>
-									<div>
-										<router-link to="/documentation/websites/sessionState">
-											sessionState
-										</router-link>
-									</div>
-								</div>
-								<div>
-									<router-link to="/documentation/websites/tags">
-										Tags
-									</router-link>
-								</div>
-							</div>
-							<div>
-								<router-link to="/documentation/integrations">
-									Integrations
+								<router-link to="/documentation/auth/clients">
+									Clients
 								</router-link>
 							</div>
 							<div>
-								<router-link to="/documentation/data">
-									Data
+								<router-link to="/documentation/auth/users">
+									Users
 								</router-link>
 							</div>
 							<div>
-								<router-link to="/documentation/messaging">
-									Messaging
+								<router-link to="/documentation/auth/storage">
+									Storage
 								</router-link>
 							</div>
 							<div>
-								<router-link to="/documentation/rulesets">
-									Rulesets
+								<router-link to="/documentation/auth/defaultRoles">
+									Default Roles
+								</router-link>
+							</div>
+						</div>
+						<div>
+							<router-link to="/documentation/apis">
+								APIs
+							</router-link>
+							<div>
+								<router-link to="/documentation/apis/routes">
+									Routes
 								</router-link>
 							</div>
 							<div>
-								<router-link to="/documentation/services">
-									Services
+								<router-link to="/documentation/apis/controllers">
+									Controllers
+								</router-link>
+							</div>
+						</div>
+						<div>
+							<router-link to="/documentation/websites">
+								Websites
+							</router-link>
+							<div>
+								<router-link to="/documentation/websites/routes">
+									Routes
+								</router-link>
+							</div>
+							<div>
+								<router-link to="/documentation/websites/views">
+									Views
 								</router-link>
 								<div>
-									<router-link to="/documentation/services/authClientProvider">
-										authClientProvider
+									<router-link to="/documentation/websites/numberFormats">
+										Number Formats
 									</router-link>
 								</div>
 								<div>
-									<router-link to="/documentation/services/idmService">
-										idmService
-									</router-link>
-								</div>
-								<div>
-									<router-link to="/documentation/services/integrationService">
-										integrationService
-									</router-link>
-								</div>
-								<div>
-									<router-link to="/documentation/services/messagingService">
-										messagingService
-									</router-link>
-								</div>
-								<div>
-									<router-link to="/documentation/services/rulesetService">
-										rulesetService
-									</router-link>
-								</div>
-								<div>
-									<router-link to="/documentation/services/serviceProvider">
-										serviceProvider
-									</router-link>
-								</div>
-								<div>
-									<router-link to="/documentation/services/storageService">
-										storageService
+									<router-link to="/documentation/websites/dateFormats">
+										Date Formats
 									</router-link>
 								</div>
 							</div>
 							<div>
-								<router-link to="/documentation/nodeModules">
-									Node Modules
+								<router-link to="/documentation/websites/controllers">
+									Controllers
+								</router-link>
+								<div>
+									<router-link to="/documentation/websites/navigationService">
+										navigationService
+									</router-link>
+								</div>
+								<div>
+									<router-link to="/documentation/websites/sessionState">
+										sessionState
+									</router-link>
+								</div>
+							</div>
+							<div>
+								<router-link to="/documentation/websites/tags">
+									Tags
 								</router-link>
 							</div>
+						</div>
+						<div>
+							<router-link to="/documentation/integrations">
+								Integrations
+							</router-link>
+						</div>
+						<div>
+							<router-link to="/documentation/data">
+								Data
+							</router-link>
+						</div>
+						<div>
+							<router-link to="/documentation/messaging">
+								Messaging
+							</router-link>
+						</div>
+						<div>
+							<router-link to="/documentation/rulesets">
+								Rulesets
+							</router-link>
+						</div>
+						<div>
+							<router-link to="/documentation/services">
+								Services
+							</router-link>
+							<div>
+								<router-link to="/documentation/services/authClientProvider">
+									authClientProvider
+								</router-link>
+							</div>
+							<div>
+								<router-link to="/documentation/services/idmService">
+									idmService
+								</router-link>
+							</div>
+							<div>
+								<router-link to="/documentation/services/integrationService">
+									integrationService
+								</router-link>
+							</div>
+							<div>
+								<router-link to="/documentation/services/messagingService">
+									messagingService
+								</router-link>
+							</div>
+							<div>
+								<router-link to="/documentation/services/rulesetService">
+									rulesetService
+								</router-link>
+							</div>
+							<div>
+								<router-link to="/documentation/services/serviceProvider">
+									serviceProvider
+								</router-link>
+							</div>
+							<div>
+								<router-link to="/documentation/services/storageService">
+									storageService
+								</router-link>
+							</div>
+						</div>
+						<div>
+							<router-link to="/documentation/nodeModules">
+								Node Modules
+							</router-link>
+						</div>
 
-							<hr class="sidebar-divider">
+						<hr class="sidebar-divider">
 
-							<div>
-								<router-link to="/documentation/tutorial">
-									Tutorials
-								</router-link>
-							</div>
+						<div>
+							<router-link to="/documentation/tutorial">
+								Tutorials
+							</router-link>
 						</div>
 					</div>
 				</div>
+			</div>
 
-				<div class="col-md-9">
-					<div class="card shadow documentationWrapper" id="documentationContent" v-html="html"></div>
-				</div>
+			<div class="col-md-9 pl-0">
+				<div class="card shadow documentationWrapper" id="documentationContent" v-html="html"></div>
 			</div>
 		</div>
 	</div>

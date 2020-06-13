@@ -147,6 +147,9 @@ module.exports = (app, provider) => {
 
 			if (!account) {
 				account = await Account.registerUser(req.body.login, req.body.password);
+
+				console.log(account);
+
 				result.login.account = account.accountId;
 				result.login.duplicate = false;
 			}

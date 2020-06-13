@@ -1,10 +1,11 @@
 <template id="template-websites">
 	<div class="websites">
+		<navigation title="Websites"></navigation>
+
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">Websites</h1>
 			<p class="mb-4">Websites allow you to provide interactive interfaces to your users. To create a new website press the plus button in the bottom right.</p>
 
 			<!-- DataTales Example -->
@@ -237,12 +238,10 @@
 			</div>
 		</div>
 
+		<navigation title="Manage Website" v-if="mainVisible"></navigation>
+
 		<!-- Begin Page Content -->
 		<div class="container-fluid" v-if="mainVisible">
-
-			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">Manage Website</h1>
-
 			<div class="row">
 				<div class="col-md-6">
 					<div class="card shadow mb-4">

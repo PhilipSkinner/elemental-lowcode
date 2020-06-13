@@ -183,7 +183,7 @@ window.templates.fetchTemplates().then(() => {
 			},
 			{
 				name 		: "securityUserEditor",
-				path 		: "/security/user/:id",
+				path 		: "/security/user/:name",
 				component	: window.SecurityUserEditor
 			},
 			/* packager endpoints */
@@ -236,6 +236,14 @@ window.templates.fetchTemplates().then(() => {
 			props : [
 				"text",
 				"visible"
+			]
+		});
+
+		window.Vue.component("navigation", {
+			template : "#template-navigation",
+			props : [
+				"title",
+				"navitems"
 			]
 		});
 

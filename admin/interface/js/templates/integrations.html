@@ -1,10 +1,11 @@
 <template id="template-integrations">
 	<div class="integrations">
+		<navigation title="Integrations"></navigation>
+
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">Integrations</h1>
 			<p class="mb-4">Integrations allow you to wrap an existing API/Service with a RESTful API that follows Elementals standard security model.</p>
 
 			<div class="card shadow mb-4">
@@ -56,8 +57,9 @@
 
 <template id="template-integrationDetails">
 	<div class="integrationDetails">
+		<navigation :title="integration.name"></navigation>
+
 		<div class="container-fluid">
-			<h1 class="h3 mb-2 text-gray-800">{{integration.name}}</h1>
 			<p class="mb-4">
 				This integration can be communicated with using the following details.
 			</p>

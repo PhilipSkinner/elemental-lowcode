@@ -1,5 +1,5 @@
 <template id="template-alert">
-	<div class="alert card" v-if="visible">
+	<div class="alert card alert-primary" v-if="visible">
 		{{text}}
 	</div>
 </template>
@@ -29,12 +29,9 @@
 
 <template id="template-home">
 	<div class="home">
+		<navigation title="Welcome to Elemental"></navigation>
+
 		<div class="container-fluid">
-			<div class="row">
-				<div class="col-md-12">
-					<h1>Welcome to Elemental</h1>
-				</div>
-			</div>
 			<div class="row">
 				<div class="col-md-12">
 					<div class="card shadow">

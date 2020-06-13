@@ -30,14 +30,18 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
 		"string",
 		"boolean",
 		"integer",
-		"number"
+		"number",
+		"datetime"
 	];
 
 	this.models = {};
 	this.tables = {};
 	this.mainTable = null;
+	this.isReady = false;
 
-	this.initType();
+	this.initType().then(() => {
+		this.isReady = true;
+	});
 };
 
 sqlStore.prototype.determineType = function(type) {
@@ -53,7 +57,11 @@ sqlStore.prototype.determineType = function(type) {
 		return this.sequelize.DECIMAL;
 	}
 
-	return this.sequelize.STRING;
+	if (type === "datetime") {
+		return this.sequelize.DATE;
+	}
+
+	return this.sequelize.TEXT;
 };
 
 sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, parentName) {
@@ -91,6 +99,15 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
 				columns[propName] = {
 					type : this.determineType(schemaConfig.properties[propName].type)
 				};
+
+				//is it our id?
+				if (propName === "id") {
+					columns[propName].primaryKey = true;
+
+					if (schemaConfig.properties[propName].type === "string") {
+						columns[propName].type = this.sequelize.STRING(255);
+					}
+				}
 			} else {
 				//generate a new table
 				tables = this.determineTables(`${baseName}_${propName}`, schemaConfig.properties[propName], tables, baseName);
@@ -147,7 +164,9 @@ sqlStore.prototype.initType = function() {
 			return next.sync({
 				force : false,
 				alter : true
-			}).then(doNext);
+			}).then(doNext).catch((err) => {
+				return doNext();
+			});
 		}
 
 		return doNext().then(resolve).catch(reject);
@@ -155,6 +174,14 @@ sqlStore.prototype.initType = function() {
 };
 
 sqlStore.prototype.getDetails = function(type) {
+	if (!this.isReady) {
+		return new Promise((resolve) => {
+			setTimeout(resolve, 2500);
+		}).then(() => {
+			return this.getDetails(type);
+		});
+	}
+
 	return this.mainTable.count().then((res) => {
 		return Promise.resolve({
 			count : res
@@ -164,11 +191,13 @@ sqlStore.prototype.getDetails = function(type) {
 
 sqlStore.prototype.generateIncludes = function() {
 	const include = {};
+	let hasIncludes = false;
 	let currentInclude = include;
 	let last = null;
 
 	Object.keys(this.models).sort().forEach((name) => {
 		if (name !== this.mainTable.name) {
+			hasIncludes = true;
 			currentInclude.model = this.models[name];
 			currentInclude.required = false;
 			currentInclude.include = [{}];
@@ -178,9 +207,15 @@ sqlStore.prototype.generateIncludes = function() {
 		}
 	});
 
-	delete(last.include);
+	if (last && last.include) {
+		delete(last.include);
+	}
 
-	return [include]
+	if (hasIncludes) {
+		return [include];
+	}
+
+	return [];
 };
 
 sqlStore.prototype.convertToReturnValue = function(result) {
@@ -203,6 +238,14 @@ sqlStore.prototype.convertToReturnValue = function(result) {
 };
 
 sqlStore.prototype.getResources = function(type, start, count, filters) {
+	if (!this.isReady) {
+		return new Promise((resolve) => {
+			setTimeout(resolve, 2500);
+		}).then(() => {
+			return this.getResources(type, start, count, filters);
+		});
+	}
+
 	if (!start) {
 		start = 1;
 	}
@@ -229,12 +272,19 @@ sqlStore.prototype.getResources = function(type, start, count, filters) {
 			return this.convertToReturnValue(r);
 		}));
 	}).catch((err) => {
-		console.log(err);
 		return Promise.reject(err);
 	});
 };
 
 sqlStore.prototype.getResource = function(type, id) {
+	if (!this.isReady) {
+		return new Promise((resolve) => {
+			setTimeout(resolve, 2500);
+		}).then(() => {
+			return this.getResource(type, id);
+		});
+	}
+
 	return this.getResources(type, 1, 1, [
 		{
 			path  : "$.id",
@@ -285,6 +335,14 @@ sqlStore.prototype.saveResource = function(name, data, id, parentId) {
 };
 
 sqlStore.prototype.createResource = function(type, id, data) {
+	if (!this.isReady) {
+		return new Promise((resolve) => {
+			setTimeout(resolve, 500);
+		}).then(() => {
+			return this.createResource(type, id, data);
+		});
+	}
+
 	//we ignore the ids here, we don't care for the auto-generated ones
 	let newResource = null;
 	data.id = id;
@@ -304,6 +362,12 @@ sqlStore.prototype.createResource = function(type, id, data) {
 		}));
 	}).then(() => {
 		return Promise.resolve(newResource.dataValues);
+	}).catch((err) => {
+		if (err && (err.original && err.original.code === "ER_DUP_ENTRY" || (err.fields && err.fields.indexOf('id') === 0))) {
+			return Promise.reject(new Error("Resource already exists"));
+		}
+
+		return Promise.reject(err);
 	});
 };
 
@@ -333,6 +397,14 @@ sqlStore.prototype.updateChildren = function(type, data, parentId) {
 };
 
 sqlStore.prototype.updateResource = function(type, id, data, parentId) {
+	if (!this.isReady) {
+		return new Promise((resolve) => {
+			setTimeout(resolve, 2500);
+		}).then(() => {
+			return this.updateResource(type, id, data, parentId);
+		});
+	}
+
 	let updatedResource = data;
 	return this.saveResource(type, data, id, parentId).then(() => {
 		//scan each key
@@ -354,6 +426,14 @@ sqlStore.prototype.updateResource = function(type, id, data, parentId) {
 };
 
 sqlStore.prototype.deleteResource = function(type, id) {
+	if (!this.isReady) {
+		return new Promise((resolve) => {
+			setTimeout(resolve, 2500);
+		}).then(() => {
+			return this.deleteResource(type, id);
+		});
+	}
+
 	return this.mainTable.destroy({
 		where : {
 			id : id

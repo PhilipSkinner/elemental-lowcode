@@ -3993,6 +3993,12 @@ input[type="button"].btn-block {
 .navbar-nav .nav-link {
   padding-right: 0;
   padding-left: 0;
+  cursor: pointer;
+}
+
+.navbar-nav .nav-link.active {
+  color: #FFF;
+  background-color: #4e73df;
 }
 
 .navbar-nav .dropdown-menu {
@@ -11050,10 +11056,9 @@ body.sidebar-toggled footer.sticky-footer {
   top: 10px;
   left: 50%;
   width: 200px;
-  margin-left: -100px;
   z-index: 45000;
   text-align: center;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .documentationWrapper {

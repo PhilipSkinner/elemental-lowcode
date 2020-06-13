@@ -1,5 +1,6 @@
 const templateProvider = function() {
 	this.templateFiles = [
+		"js/templates/navigation.html",
 		"js/templates/main.html",
 		"js/templates/apis.html",
 		"js/templates/rules.html",

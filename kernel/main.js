@@ -18,7 +18,7 @@ const
 	indexController 		= require("./controllers/indexController"),
 	serviceController 		= require("./controllers/serviceController"),
 	queueController 		= require("./controllers/queueController"),
-	intialSetup 			= require('./setup')();
+	initialSetup 			= require('./setup')();
 
 const args = argParser.fetch();
 let sourcesDir = args.sources || process.env.SOURCES_DIR || ".sources";
@@ -104,9 +104,9 @@ const runApp = function() {
 };
 
 //determine if we should run the setup?
-if (intialSetup.shouldRun(directories.identity)) {
+if (initialSetup.shouldRun(directories.identity)) {
 	setup.setupEnvironment(directories).then(() => {
-		intialSetup.runSetup(directories.identity).then(() => {
+		initialSetup.runSetup(directories.identity).then(() => {
 			runApp();
 		});
 	});

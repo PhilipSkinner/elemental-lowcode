@@ -1,0 +1,35 @@
+{
+	"name" : "idp__DeviceCode",
+	"storageEngine" : "sql",
+	"keys" : [
+		{
+			"type" : "unique",
+			"paths" : [
+				"$.id"
+			]
+		}
+	],
+	"schema" : {
+		"type" : "object",
+		"properties" : {
+			"id" : {
+				"type" : "string"
+			},
+			"grantId" : {
+				"type" : "string"
+			},
+			"userCode" : {
+				"type" : "string"
+			},
+			"data" : {
+				"type" : "string"
+			},
+			"expiresAt" : {
+				"type" : "datetime"
+			},
+			"consumedAt" : {
+				"type" : "datetime"
+			}
+		}
+	}
+}

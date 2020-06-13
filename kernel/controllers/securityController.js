@@ -186,6 +186,21 @@ securityController.prototype.deleteUser = function(req, res, next) {
 	});
 };
 
+securityController.prototype.getConfig = function(req, res, next) {
+	this.fileLister.readJSONFile(this.dir, "main.json").then((content) => {
+		res.json(content);
+		next();
+	});
+};
+
+securityController.prototype.saveConfig = function(req, res, next) {
+	this.fileLister.writeFile(this.dir, "main.json", JSON.stringify(req.body, null, 4)).then(() => {
+		res.status(204);
+		res.send("");
+		next();
+	});
+};
+
 securityController.prototype.initEndpoints = function() {
 	this.app.get("/security/clients", 			this.roleCheckHandler.enforceRoles(this.getClients.bind(this), 		["security_reader", "security_admin", "system_reader", "system_admin"]));
 	this.app.get("/security/clients/:id", 		this.roleCheckHandler.enforceRoles(this.getClient.bind(this), 		["security_reader", "security_admin", "system_reader", "system_admin"]));
@@ -204,6 +219,9 @@ securityController.prototype.initEndpoints = function() {
 	this.app.post("/security/users", 			this.roleCheckHandler.enforceRoles(this.createUser.bind(this), 		["security_writer", "security_admin", "system_writer", "system_admin"]));
 	this.app.put("/security/users/:id", 		this.roleCheckHandler.enforceRoles(this.updateUser.bind(this), 		["security_writer", "security_admin", "system_writer", "system_admin"]));
 	this.app.delete("/security/users/:id",		this.roleCheckHandler.enforceRoles(this.deleteUser.bind(this), 		["security_writer", "security_admin", "system_writer", "system_admin"]));
+
+	this.app.get("/security/config", 			this.roleCheckHandler.enforceRoles(this.getConfig.bind(this), 		["security_reader", "security_admin", "system_reader", "system_admin"]));
+	this.app.put("/security/config", 			this.roleCheckHandler.enforceRoles(this.saveConfig.bind(this), 		["security_writer", "security_admin", "system_writer", "system_admin"]));
 };
 
 module.exports = function(app, dir, fileLister, roleCheckHandler, db, bcrypt, path) {
