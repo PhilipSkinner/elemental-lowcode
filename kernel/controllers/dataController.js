@@ -73,6 +73,10 @@ dataController.prototype.createDataType = function(req, res, next) {
 };
 
 dataController.prototype.initEndpoints = function() {
+	if (!this.app) {
+		return;
+	}
+
 	this.app.get("/data/types", 			this.roleCheckHandler.enforceRoles(this.getDataTypes.bind(this), 	["datatype_reader", "datatype_admin", "system_reader", "system_admin"]));
 	this.app.get("/data/types/:name", 		this.roleCheckHandler.enforceRoles(this.getDataType.bind(this), 	["datatype_reader", "datatype_admin", "system_reader", "system_admin"]));
 	this.app.put("/data/types/:name", 		this.roleCheckHandler.enforceRoles(this.updateDataType.bind(this), 	["datatype_writer", "datatype_admin", "system_writer", "system_admin"]));

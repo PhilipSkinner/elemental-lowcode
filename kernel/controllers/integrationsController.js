@@ -67,6 +67,10 @@ integrationsController.prototype.create = function(req, res, next) {
 };
 
 integrationsController.prototype.initEndpoints = function() {
+	if (!this.app) {
+		return;
+	}
+
 	this.app.get("/integrations", 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		["integration_reader", "integration_admin", "system_reader", "system_admin"]));
 	this.app.get("/integrations/:name", 	this.roleCheckHandler.enforceRoles(this.getSingular.bind(this), ["integration_reader", "integration_admin", "system_reader", "system_admin"]));
 	this.app.put("/integrations/:name", 	this.roleCheckHandler.enforceRoles(this.update.bind(this), 		["integration_writer", "integration_admin", "system_writer", "system_admin"]));

@@ -84,6 +84,10 @@ queueController.prototype.setHandler = function(req, res, next) {
 };
 
 queueController.prototype.initEndpoints = function() {
+	if (!this.app) {
+		return;
+	}
+
 	this.app.get("/queues", 				this.roleCheckHandler.enforceRoles(this.get.bind(this), 				["queue_reader", "queue_admin", "system_reader", "system_admin"]));
 	this.app.get("/queues/:name", 			this.roleCheckHandler.enforceRoles(this.getSingular.bind(this), 		["queue_reader", "queue_admin", "system_reader", "system_admin"]));
 	this.app.put("/queues/:name", 			this.roleCheckHandler.enforceRoles(this.update.bind(this), 				["queue_writer", "queue_admin", "system_writer", "system_admin"]));

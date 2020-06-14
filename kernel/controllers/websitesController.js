@@ -105,6 +105,10 @@ websitesController.prototype.getProperties = function(req, res, next) {
 };
 
 websitesController.prototype.initEndpoints = function() {
+	if (!this.app) {
+		return;
+	}
+
 	this.app.get("/properties/:name", 							this.roleCheckHandler.enforceRoles(this.getProperties.bind(this), 			["website_reader", "website_admin", "system_reader", "system_admin"]));
 	this.app.get("/tags/:name", 								this.roleCheckHandler.enforceRoles(this.getPossibleTags.bind(this), 		["website_reader", "website_admin", "system_reader", "system_admin"]));
 

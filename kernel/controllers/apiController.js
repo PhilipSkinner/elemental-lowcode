@@ -89,6 +89,10 @@ apiController.prototype.deleteController = function(req, res, next) {
 };
 
 apiController.prototype.initEndpoints = function() {
+	if (!this.app) {
+		return;
+	}
+
 	this.app.get("/apis", 									this.roleCheckHandler.enforceRoles(this.getApis.bind(this), 			["api_reader", "api_admin", "system_reader", "system_admin"]));
 	this.app.get("/apis/:name", 							this.roleCheckHandler.enforceRoles(this.getApi.bind(this), 				["api_reader", "api_admin", "system_reader", "system_admin"]));
 	this.app.get("/apis/:name/controllers/:controller", 	this.roleCheckHandler.enforceRoles(this.getController.bind(this), 		["api_reader", "api_admin", "system_reader", "system_admin"]));

@@ -66,6 +66,10 @@ rulesController.prototype.create = function(req, res, next) {
 };
 
 rulesController.prototype.initEndpoints = function() {
+	if (!this.app) {
+		return;
+	}
+
 	this.app.get("/rules", 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		["rule_reader", "rule_admin", "system_reader", "system_admin"]));
 	this.app.get("/rules/:name", 	this.roleCheckHandler.enforceRoles(this.getSingular.bind(this), ["rule_reader", "rule_admin", "system_reader", "system_admin"]));
 	this.app.put("/rules/:name", 	this.roleCheckHandler.enforceRoles(this.update.bind(this), 		["rule_writer", "rule_admin", "system_writer", "system_admin"]));

@@ -202,6 +202,10 @@ securityController.prototype.saveConfig = function(req, res, next) {
 };
 
 securityController.prototype.initEndpoints = function() {
+	if (!this.app) {
+		return;
+	}
+
 	this.app.get("/security/clients", 			this.roleCheckHandler.enforceRoles(this.getClients.bind(this), 		["security_reader", "security_admin", "system_reader", "system_admin"]));
 	this.app.get("/security/clients/:id", 		this.roleCheckHandler.enforceRoles(this.getClient.bind(this), 		["security_reader", "security_admin", "system_reader", "system_admin"]));
 	this.app.post("/security/clients", 			this.roleCheckHandler.enforceRoles(this.createClient.bind(this), 	["security_writer", "security_admin", "system_writer", "system_admin"]));

@@ -147,6 +147,10 @@ serviceController.prototype.installDependencies = function(req, res, next) {
 };
 
 serviceController.prototype.initEndpoints = function() {
+	if (!this.app) {
+		return;
+	}
+
 	this.app.get("/services", 				this.roleCheckHandler.enforceRoles(this.get.bind(this), 				["service_reader", "service_admin", "system_reader", "system_admin"]));
 	this.app.get("/services/:name", 		this.roleCheckHandler.enforceRoles(this.getSingular.bind(this), 		["service_reader", "service_admin", "system_reader", "system_admin"]));
 	this.app.put("/services/:name", 		this.roleCheckHandler.enforceRoles(this.update.bind(this), 				["service_writer", "service_admin", "system_writer", "system_admin"]));

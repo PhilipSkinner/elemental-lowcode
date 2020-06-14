@@ -24,6 +24,10 @@ indexController.prototype.post = function(req, res, next) {
 };
 
 indexController.prototype.initEndpoints = function() {
+	if (!this.app) {
+		return;
+	}
+
 	this.app.get("/", 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		["system_reader", "system_admin"]));
 	this.app.post("/", 			this.roleCheckHandler.enforceRoles(this.post.bind(this), 		["system_writer", "system_admin"]));
 };
