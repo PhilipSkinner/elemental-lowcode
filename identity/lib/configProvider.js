@@ -141,7 +141,6 @@ configProvider.prototype.addJwks = function() {
 configProvider.prototype.addCookies = function() {
 	return new Promise((resolve, reject) => {
 		let secretOne = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join("").replace(/[^a-z]+/g, "");
-		let secretTwo = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join("").replace(/[^a-z]+/g, "");
 
 		return resolve({
 			keys : [secretOne]
