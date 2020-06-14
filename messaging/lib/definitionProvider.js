@@ -76,7 +76,7 @@ definitionProvider.prototype.fetchDefinition = function(file) {
 		config.client = client;
 		return Promise.resolve(config);
 	}).catch((err) => {
-		console.log("Failed to read definition!");
+		return Promise.reject(err);
 	});
 };
 

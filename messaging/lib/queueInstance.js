@@ -1,8 +1,30 @@
-const queueInstance = function(app, definition, roleCheckHandler, queueProvider, uuid, hostnameResolver, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService, ajv) {
+const queueInstance = function(
+	app,
+	definition,
+	roleCheckHandler,
+	fsQueueProvider,
+	sqlQueueProvider,
+	uuid,
+	hostnameResolver,
+	serviceProvider,
+	storageService,
+	integrationService,
+	rulesetService,
+	idmService,
+	authClientProvider,
+	messagingService,
+	ajv
+) {
 	this.app 					= app;
 	this.definition 			= definition;
 	this.roleCheckHandler 		= roleCheckHandler;
-	this.queueProvider 			= queueProvider;
+
+	if (this.definition.storageEngine === "sql") {
+		this.queueProvider = sqlQueueProvider(this.definition.connectionString);
+	} else {
+		this.queueProvider = fsQueueProvider;
+	}
+
 	this.uuid 					= uuid;
 	this.hostnameResolver 		= hostnameResolver;
 	this.serviceProvider 		= serviceProvider;
@@ -169,13 +191,33 @@ queueInstance.prototype.init = function() {
 	});
 };
 
-module.exports = function(app, definition, roleCheckHandler, queueProvider, uuid, hostnameResolver, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService, ajv) {
+module.exports = function(
+	app,
+	definition,
+	roleCheckHandler,
+	fsQueueProvider,
+	sqlQueueProvider,
+	uuid,
+	hostnameResolver,
+	serviceProvider,
+	storageService,
+	integrationService,
+	rulesetService,
+	idmService,
+	authClientProvider,
+	messagingService,
+	ajv
+) {
 	if (!roleCheckHandler) {
 		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
 
-	if (!queueProvider) {
-		queueProvider = require("./queues/fsQueue")();
+	if (!fsQueueProvider) {
+		fsQueueProvider = require("./queues/fsQueue")();
+	}
+
+	if (!sqlQueueProvider) {
+		sqlQueueProvider = require("./queues/sqlQueue");
 	}
 
 	if (!uuid) {
@@ -220,5 +262,5 @@ module.exports = function(app, definition, roleCheckHandler, queueProvider, uuid
 		});
 	}
 
-	return new queueInstance(app, definition, roleCheckHandler, queueProvider, uuid, hostnameResolver, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService, ajv);
+	return new queueInstance(app, definition, roleCheckHandler, fsQueueProvider, sqlQueueProvider, uuid, hostnameResolver, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService, ajv);
 };

@@ -29,7 +29,7 @@ queueService.prototype.terminateInstances = function() {
 queueService.prototype.compileDefinition = function(definitionFile) {
 	//read the definition
 	return this.definitionProvider.fetchDefinition(definitionFile).then((definition) => {
-		//pass this into an API instance
+		//pass this into an queue instance
 		let instance = this.queueInstance(this.app, definition);
 
 		this.instances.push(instance);

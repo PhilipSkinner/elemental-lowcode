@@ -10,12 +10,24 @@ Each queue includes:
 * Incoming message definition
 * Security configuration
 * A handler
+* Storage configuration
+
+The messaging system comes with several storage engines, allowing the data to be presisted with different backends. The following backends are supported:
+
+* File system store
+* Postgres SQL
+* MySQL
+* MariaDB
+* MSSQL
+
+Each queue will be backed by `filesystem` storage by default.
 
 Here is an example queue definition:
 
 ```
 {
     "name": "myQueue",
+    "storageEngine" : "filesystem",
     "client_id": "my-client",
     "roles": {
         "needsRole": true,
@@ -171,3 +183,59 @@ When this value is set to true, the system will keep only the `system_admin` rol
 You can add roles into the `roles` array on the `roles` object within the queue definition.
 
 These roles should be simple string values.
+
+## Storage Engines
+
+Each queue can be configured to use a storage engine - which allows each queue to use the same data store or for each type to use its own unique data store.
+
+The type of storage engine is configured via the `storageEngine` property. The supported values for this are:
+
+* `filesystem`
+* `sql`
+
+Each of these options are covered in more detail below.
+
+### `filesystem`
+
+The file system backing store will record queue messages on the local file system.
+
+*If hosting the application within docker, this means your messages will be lost if you upgrade and deploy a new version.*
+
+The file system store is useful for development, but it should not be used for production workloads.
+
+This store can be used for direct access to messages, but will suffer from potential message loss if the file stores location on the systems drive is not persistent across deployments.
+
+### `sql`
+
+The sql backing store allows for the use of:
+
+* Postgres
+* MySQL
+* MariaDB
+* MSSQL
+
+This storage engine options requires a `connectionString` property to be defined within the data type:
+
+```
+{
+    "name" : "myQueue",
+    "storageEngine" : "sql",
+    "connectionString" : "postgres://root:password@localhost:5432/todo"
+}
+```
+
+The connection string property is made up of:
+
+* A sql dialect
+* The username
+* The password
+* The servers hostname/IP
+* The servers port
+* The databases name
+
+The following dialects are supported:
+
+* Postgres - `postgres://`
+* MySQL - `mysql://`
+* MariaDB - `mariadb://`
+* MSSQL - `mssql://`

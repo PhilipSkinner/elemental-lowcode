@@ -1,6 +1,7 @@
 const _queueEditorController = function(page) {
 	this._page = page;
 	this.queue = {};
+	this.handler = "";
 	this.caller = null;
 	this.name = null;
 	this.editor = null;
@@ -160,6 +161,21 @@ _queueEditorController.prototype.fetchQueue = function(name) {
 		});
 };
 
+_queueEditorController.prototype.fetchQueueHandler = function(name) {
+	this.name = name;
+	return window.axios
+		.get(`${window.hosts.kernel}/queues/${name}/handler`, {
+			headers : {
+				Authorization : `Bearer ${window.getToken()}`
+			}
+		})
+		.then((response) => {
+			this.handler = response.data;
+			this.handlerEditor.setValue(response.data);
+			this.refreshState();
+		});
+};
+
 _queueEditorController.prototype.saveQueue = function() {
 	var parsed = JSON.parse(this.editor.getValue());
 
@@ -247,7 +263,9 @@ window.QueueEditor = {
 			return null;
 		}
 
-		return window._queueEditorInstance.fetchQueue(this.$route.params.name);
+		return window._queueEditorInstance.fetchQueue(this.$route.params.name).then(() => {
+			return window._queueEditorInstance.fetchQueueHandler(this.$route.params.name);
+		});
 	}
 };
 
