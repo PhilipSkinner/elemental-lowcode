@@ -19,7 +19,7 @@ const queueInstance = function(
 	this.definition 			= definition;
 	this.roleCheckHandler 		= roleCheckHandler;
 
-	if (this.definition.storageEngine === "sql") {
+	if (this.definition && this.definition.storageEngine === "sql") {
 		this.queueProvider = sqlQueueProvider(this.definition.connectionString);
 	} else {
 		this.queueProvider = fsQueueProvider;
