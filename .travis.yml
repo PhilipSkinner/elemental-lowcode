@@ -9,12 +9,11 @@ jobs:
       script:
         - ./setup.sh
         - npm run test
-        - ./clean.sh
-        - docker build -t philipskinner/elemental:master .
-deploy:
-    provider: script
-    script:
+    - stage: docker push
+      script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - ./clean.sh
+        - docker pull philipskinner/elemental:master
+        - docker build -t philipskinner/elemental:master .
         - docker push philipskinner/elemental:master
-    on:
-        branch: master
+      if: branch = master
