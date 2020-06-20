@@ -13,7 +13,7 @@ tokenHandler.prototype.tokenCheck = function(req, res, next) {
 	if (token) {
 		this.jwt.verify(token, this.pubKey, { algorithms: ["RS256"] }, (err, decoded) => {
 			if (err) {
-				console.log("Invalid bearer token received on", req.path);
+				console.error("Invalid bearer token received on", req.path);
 				res.status(401);
 				res.end();
 				return;

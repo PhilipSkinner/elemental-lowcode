@@ -11,3 +11,4 @@ kernel/.tmp
 kernel/.sessions
 kernel/.secrets
 *.sqlite
+kernel/logs

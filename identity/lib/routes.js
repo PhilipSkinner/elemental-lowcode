@@ -127,7 +127,7 @@ module.exports = (app, provider) => {
 
 			await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 			next(err);
 		}
 	});
@@ -147,9 +147,6 @@ module.exports = (app, provider) => {
 
 			if (!account) {
 				account = await Account.registerUser(req.body.login, req.body.password);
-
-				console.log(account);
-
 				result.login.account = account.accountId;
 				result.login.duplicate = false;
 			}
@@ -207,7 +204,7 @@ module.exports = (app, provider) => {
 
 			await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true });
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 			next(err);
 		}
 	});
@@ -236,7 +233,7 @@ module.exports = (app, provider) => {
 	});
 
 	app.use((err, req, res, next) => {
-		console.log(err);
+		console.error(err);
 
 		if (err instanceof SessionNotFound) {
 

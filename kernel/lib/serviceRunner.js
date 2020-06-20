@@ -1,5 +1,6 @@
-const serviceRunner = function(childProcess) {
+const serviceRunner = function(childProcess, logger) {
 	this.childProcess = childProcess;
+	this.logger = logger;
 
 	this.nodeProcess = "node";
 
@@ -19,6 +20,8 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
 		this.stopService(name);
 	}
 
+	this.logger.logStartup(name);
+
 	this.processes[name] = this.childProcess.spawn(this.nodeProcess, [
 		script
 	], {
@@ -30,7 +33,8 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
 	});
 
 	this.processes[name].on("error", (data) => {
-		console.log(data);
+		const lines = data.toString("utf8").split("\n");
+		this.logger.error(name, lines);
 	});
 
 	this.processes[name].stdout.on("data", (data) => {
@@ -38,7 +42,7 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
 
 		lines.forEach((l) => {
 			if (l !== "") {
-				console.log(name, "STDOUT", l);
+				this.logger.log(name, l);
 			}
 		});
 	});
@@ -48,20 +52,24 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
 
 		lines.forEach((l) => {
 			if (l !== "") {
-				console.error(name, "STDERR", l);
+				this.logger.error(name, l);
 			}
 		});
 	});
 
 	this.processes[name].on("close", (code) => {
-		console.error(name, "CLOSE", "SERVICE HAS CLOSED!");
+		this.logger.error(name, "SERVICE HAS CLOSED!");
 	});
 };
 
-module.exports = function(childProcess) {
+module.exports = function(childProcess, logger) {
 	if (!childProcess) {
 		childProcess = require("child_process");
 	}
 
-	return new serviceRunner(childProcess);
+	if (!logger) {
+		logger = require("../../shared/logger");
+	}
+
+	return new serviceRunner(childProcess, logger);
 };

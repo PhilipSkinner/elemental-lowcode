@@ -36,7 +36,6 @@ idm.prototype.createUser = function(req, res, next) {
 	this._connect().then(() => {
 		this.userDB.find(req.body.username);
 	}).then((existing) => {
-		console.log(existing);
 		if (typeof(existing) !== 'undefined' && existing !== null) {
 			res.status(409);
 			res.send("");
@@ -63,7 +62,7 @@ idm.prototype.createUser = function(req, res, next) {
 		res.send("");
 		next();
 	}).catch((err) => {
-		console.log(err);
+		console.error(err);
 	});
 };
 

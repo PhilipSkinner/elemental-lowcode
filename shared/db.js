@@ -15,7 +15,7 @@ const db = function(fs, path, glob, fsStore, memoryStore, sqlStore, dataResolver
     this.mainConfig = JSON.parse(this.fs.readFileSync(this.path.join(process.env.DIR, "main.json")));
   } catch(e) {
     this.mainConfig = {};
-    console.log("Could not load identity db global settings, will use default sqlite instance.");
+    console.warn("Could not load identity db global settings, will use default sqlite instance.");
   }
 };
 
@@ -96,8 +96,6 @@ db.prototype.generateClass = function() {
       if (data.uid) {
         resource.uid = data.uid;
       }
-
-      console.log(id);
 
       return this.model.engine.createResource(this.name, id, resource).catch((err) => {
         if (err.toString().indexOf("Resource already exists") !== -1) {
