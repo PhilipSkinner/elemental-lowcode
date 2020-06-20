@@ -136,6 +136,7 @@ If the promise has a rejection, either intended or otherwise, the error will be 
 You can use the following services within your handler code:
 
 * [authClientProvider](/documentation/services/authClientHandler)
+* [environmentService](/documentation/services/environmentService)
 * [idmService](/documentation/services/idmService)
 * [integrationService](/documentation/services/integrationService)
 * [messagingService](/documentation/services/messagingService)

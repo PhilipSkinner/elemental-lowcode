@@ -1,10 +1,12 @@
-const storageEngine = function(app, typesReader, typeInstance, fsStore, memoryStore, sqlStore) {
-	this.app 			= app;
-	this.typesReader 	= typesReader;
-	this.typeInstance 	= typeInstance;
-	this.fsStore 		= fsStore;
-	this.memoryStore 	= memoryStore;
-	this.sqlStore 		= sqlStore;
+const storageEngine = function(app, typesReader, typeInstance, fsStore, memoryStore, sqlStore, dataResolver, environmentService) {
+	this.app 				= app;
+	this.typesReader 		= typesReader;
+	this.typeInstance 		= typeInstance;
+	this.fsStore 			= fsStore;
+	this.memoryStore 		= memoryStore;
+	this.sqlStore 			= sqlStore;
+	this.dataResolver 		= dataResolver;
+	this.environmentService = environmentService;
 };
 
 storageEngine.prototype.initStore = function(type) {
@@ -13,6 +15,11 @@ storageEngine.prototype.initStore = function(type) {
 	}
 
 	if (type.storageEngine === "sql") {
+  		//resolve our values
+  		type.connectionString = this.dataResolver.detectValues(type.connectionString, {
+    		secrets : this.environmentService.listSecrets()
+  		}, {});
+
 		return this.sqlStore(type.connectionString, type);
 	}
 
@@ -37,7 +44,7 @@ storageEngine.prototype.init = function(dir) {
 	});
 };
 
-module.exports = function(app, typesReader, typeInstance, fsStore, memoryStore, sqlStore) {
+module.exports = function(app, typesReader, typeInstance, fsStore, memoryStore, sqlStore, dataResolver, environmentService) {
 	if (!typesReader) {
 		typesReader = require("./typesReader")();
 	}
@@ -59,5 +66,13 @@ module.exports = function(app, typesReader, typeInstance, fsStore, memoryStore, 
 		sqlStore = require("./stores/sqlStore");
 	}
 
-	return new storageEngine(app, typesReader, typeInstance, fsStore, memoryStore, sqlStore);
+	if (!dataResolver) {
+		dataResolver = require("../../interface/lib/templating/dataResolver")();
+	}
+
+	if (!environmentService) {
+		environmentService = require("../../shared/environmentService")();
+	}
+
+	return new storageEngine(app, typesReader, typeInstance, fsStore, memoryStore, sqlStore, dataResolver, environmentService);
 }

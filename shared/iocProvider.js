@@ -1,4 +1,13 @@
-const services = {};
+const services = {
+	environmentService 	: require("./environmentService")(),
+	hostnameResolver 	: require("./hostnameResolver")(),
+	storageService 		: require("./storageService")(),
+	integrationService 	: require("./integrationService")(),
+	rulesetService 		: require("./ruleService")(),
+	idmService 			: require("./idmService")(),
+	authClientProvider 	: require("./authClientProvider")(),
+	messagingService 	: require("./messagingService")()
+};
 
 const iocProvider = function(services, path) {
 	this.services = services;
@@ -12,17 +21,30 @@ iocProvider.prototype._getRequires = function(fnString) {
 		regex = /^function.*?\((.*?)\)/;
 	}
 
-	return fnString
-		.match(regex)[ 1 ].split( /\s*,\s*/ )
+	const matches = fnString.match(regex);
+
+	if (!matches) {
+		return [];
+	}
+
+	return matches[1].split( /\s*,\s*/ )
 		.map( function( parameterName ) { return parameterName.trim(); } )
 		.filter( function( parameterName ) { return parameterName.length > 0; } );
 };
 
 iocProvider.prototype.resolveRequirements = function(fn) {
+	if (typeof(fn) === "object") {
+		return fn;
+	}
+
 	const requires = this._getRequires(fn.toString());
 
 	if (requires.length === 0) {
-		return new fn();
+		try {
+			return new fn();
+		} catch(e) {
+			return fn();
+		}
 	}
 
 	let params = [];

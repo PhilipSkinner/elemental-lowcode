@@ -1,4 +1,16 @@
-const controllerState = function(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider, messagingService) {
+const controllerState = function(
+	controllerDefinition,
+	storageService,
+	sessionState,
+	integrationService,
+	rulesetService,
+	authClientProvider,
+	idmService,
+	navigationService,
+	servicesProvider,
+	messagingService,
+	environmentService
+) {
 	this.controllerDefinition 						= controllerDefinition;
 	this.controllerDefinition.storageService 		= storageService;
 	this.controllerDefinition.sessionState 			= sessionState;
@@ -9,6 +21,7 @@ const controllerState = function(controllerDefinition, storageService, sessionSt
 	this.controllerDefinition.navigationService 	= navigationService;
 	this.controllerDefinition.serviceProvider 		= servicesProvider;
 	this.controllerDefinition.messagingService 		= messagingService;
+	this.controllerDefinition.environmentService 	= environmentService;
 };
 
 controllerState.prototype.setContext = function(request, response) {
@@ -86,7 +99,20 @@ controllerState.prototype.triggerEvent = function(name, details) {
 	});
 };
 
-module.exports = function(controllerDefinition, clientConfig, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider, messagingService) {
+module.exports = function(
+	controllerDefinition,
+	clientConfig,
+	storageService,
+	sessionState,
+	integrationService,
+	rulesetService,
+	authClientProvider,
+	idmService,
+	navigationService,
+	servicesProvider,
+	messagingService,
+	environmentService
+) {
 	if (!storageService) {
 		storageService = require("../../shared/storageService")();
 	}
@@ -123,5 +149,21 @@ module.exports = function(controllerDefinition, clientConfig, storageService, se
 		messagingService = require("../../shared/messagingService")();
 	}
 
-	return new controllerState(controllerDefinition, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, servicesProvider, messagingService);
+	if (!environmentService) {
+		environmentService = require("../../shared/environmentService")();
+	}
+
+	return new controllerState(
+		controllerDefinition,
+		storageService,
+		sessionState,
+		integrationService,
+		rulesetService,
+		authClientProvider,
+		idmService,
+		navigationService,
+		servicesProvider,
+		messagingService,
+		environmentService
+	);
 };

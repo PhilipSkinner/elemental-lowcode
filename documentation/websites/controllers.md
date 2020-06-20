@@ -124,6 +124,7 @@ module.exports = {
 The following services are automatically added into each controller:
 
 * [authClientProvider](/documentation/services/authClientProvider)
+* [environmentService](/documentation/services/environmentService)
 * [idmService](/documentation/services/idmService)
 * [integrationService](/documentation/services/integrationService)
 * [messagingService](/documentation/services/messagingService)

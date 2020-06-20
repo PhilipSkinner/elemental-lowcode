@@ -1,4 +1,16 @@
-const apiInstance = function(app, definition, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService) {
+const apiInstance = function(
+	app,
+	definition,
+	roleCheckHandler,
+	serviceProvider,
+	storageService,
+	integrationService,
+	rulesetService,
+	idmService,
+	authClientProvider,
+	messagingService,
+	environmentService
+) {
 	this.app 					= app;
 	this.definition 			= definition;
 	this.roleCheckHandler 		= roleCheckHandler;
@@ -9,6 +21,7 @@ const apiInstance = function(app, definition, roleCheckHandler, serviceProvider,
 	this.idmService 			= idmService;
 	this.authClientProvider 	= authClientProvider;
 	this.messagingService 		= messagingService;
+	this.environmentService 	= environmentService;
 };
 
 apiInstance.prototype.resolveController = function(name) {
@@ -19,6 +32,7 @@ apiInstance.prototype.resolveController = function(name) {
 		rulesetService 		: this.rulesetService,
 		idmService 			: this.idmService,
 		messagingService 	: this.messagingService,
+		environmentService  : this.environmentService,
 	};
 
 	Object.keys(services).forEach((prop) => {
@@ -110,7 +124,19 @@ apiInstance.prototype.init = function() {
 	return this.setupEndpoints();
 };
 
-module.exports = function(app, definition, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService) {
+module.exports = function(
+	app,
+	definition,
+	roleCheckHandler,
+	serviceProvider,
+	storageService,
+	integrationService,
+	rulesetService,
+	idmService,
+	authClientProvider,
+	messagingService,
+	environmentService
+) {
 	if (!roleCheckHandler) {
 		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
@@ -143,5 +169,21 @@ module.exports = function(app, definition, roleCheckHandler, serviceProvider, st
 		messagingService = require("../../shared/messagingService")();
 	}
 
-	return new apiInstance(app, definition, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService);
+	if (!environmentService) {
+		environmentService = require("../../shared/environmentService")();
+	}
+
+	return new apiInstance(
+		app,
+		definition,
+		roleCheckHandler,
+		serviceProvider,
+		storageService,
+		integrationService,
+		rulesetService,
+		idmService,
+		authClientProvider,
+		messagingService,
+		environmentService
+	);
 };

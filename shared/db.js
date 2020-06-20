@@ -1,17 +1,20 @@
 const models = {};
 const mainConfig = {};
 
-const db = function(fs, path, glob, fsStore, memoryStore, sqlStore) {
-  this.fs           = fs;
-  this.path         = path;
-  this.glob         = glob;
-  this.fsStore      = fsStore;
-  this.memoryStore  = memoryStore;
-  this.sqlStore     = sqlStore;
+const db = function(fs, path, glob, fsStore, memoryStore, sqlStore, dataResolver, environmentService) {
+  this.fs                   = fs;
+  this.path                 = path;
+  this.glob                 = glob;
+  this.fsStore              = fsStore;
+  this.memoryStore          = memoryStore;
+  this.sqlStore             = sqlStore;
+  this.dataResolver         = dataResolver;
+  this.environmentService   = environmentService;
 
   try {
     this.mainConfig = JSON.parse(this.fs.readFileSync(this.path.join(process.env.DIR, "main.json")));
   } catch(e) {
+    this.mainConfig = {};
     console.log("Could not load identity db global settings, will use default sqlite instance.");
   }
 };
@@ -26,6 +29,11 @@ db.prototype.generateModel = function(name) {
   definition.storageEngine = this.mainConfig.storageEngine || definition.storageEngine;
   definition.connectionString = this.mainConfig.connectionString || "sqlite:db.sqlite";
 
+  //resolve our values
+  definition.connectionString = this.dataResolver.detectValues(definition.connectionString, {
+    secrets : this.environmentService.listSecrets()
+  }, {});
+
   if (definition.storageEngine === "memory") {
     engine = this.memoryStore();
   }
@@ -35,7 +43,7 @@ db.prototype.generateModel = function(name) {
   }
 
   if (engine === null) {
-    engine = this.fsStore(type.directory);
+    engine = this.fsStore(definition.directory);
   }
 
   return {
@@ -88,6 +96,8 @@ db.prototype.generateClass = function() {
       if (data.uid) {
         resource.uid = data.uid;
       }
+
+      console.log(id);
 
       return this.model.engine.createResource(this.name, id, resource).catch((err) => {
         if (err.toString().indexOf("Resource already exists") !== -1) {
@@ -257,7 +267,7 @@ db.prototype.generateClass = function() {
   return SequelizeAdapter;
 }
 
-module.exports = function(fs, path, glob, fsStore, memoryStore, sqlStore) {
+module.exports = function(fs, path, glob, fsStore, memoryStore, sqlStore, dataResolver, environmentService) {
   if (!fs) {
     fs = require("fs");
   }
@@ -282,7 +292,15 @@ module.exports = function(fs, path, glob, fsStore, memoryStore, sqlStore) {
     sqlStore = require("../storage/lib/stores/sqlStore");
   }
 
-  const instance = new db(fs, path, glob, fsStore, memoryStore, sqlStore);
+  if (!dataResolver) {
+    dataResolver = require("../interface/lib/templating/dataResolver")();
+  }
+
+  if (!environmentService) {
+    environmentService = require("./environmentService")();
+  }
+
+  const instance = new db(fs, path, glob, fsStore, memoryStore, sqlStore, dataResolver, environmentService);
 
   return instance.generateClass();
 };

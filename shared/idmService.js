@@ -24,6 +24,28 @@ idmService.prototype._getToken = function(authToken) {
 	});
 };
 
+idmService.prototype.getUsers = function(authToken) {
+	return this._getToken(authToken).then((token) => {
+		return new Promise((resolve, reject) => {
+			this.request.get(`${this.hostnameResolver.resolveIdentity()}/api/users`, {
+				headers : {
+					Authorization 	: `Bearer ${token}`,
+				}
+			}, (err, res, body) => {
+				if (err) {
+					return reject(err);
+				}
+
+				if (res.statusCode === 200) {
+					return resolve(JSON.parse(body));
+				}
+
+				return reject(body);
+			});
+		});
+	});
+};
+
 idmService.prototype.registerUser = function(user, authToken) {
 	return this._getToken(authToken).then((token) => {
 		return new Promise((resolve, reject) => {

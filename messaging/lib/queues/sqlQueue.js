@@ -1,4 +1,4 @@
-const sqlQueue = function(connectionString, sqlStore) {
+const sqlQueue = function(connectionString, sqlStore, dataResolver, environmentService) {
 	this.name = "queue__messages";
 	this.messageDefinition = {
 		"name" : this.name,
@@ -31,6 +31,12 @@ const sqlQueue = function(connectionString, sqlStore) {
 			}
 		}
 	};
+	this.dataResolver = dataResolver;
+	this.environmentService = environmentService;
+
+	connectionString = this.dataResolver.detectValues(connectionString, {
+		secrets : this.environmentService.listSecrets()
+	}, {});
 
 	this.sqlStore = sqlStore(connectionString, this.messageDefinition);
 };
@@ -117,10 +123,18 @@ sqlQueue.prototype.getNextMessage = function(queueName) {
 	});
 };
 
-module.exports = function(connectionString, sqlStore) {
+module.exports = function(connectionString, sqlStore, dataResolver, environmentService) {
 	if (!sqlStore) {
 		sqlStore = require("../../../storage/lib/stores/sqlStore");
 	}
 
-	return new sqlQueue(connectionString, sqlStore);
+	if (!dataResolver) {
+		dataResolver = require("../../../interface/lib/templating/dataResolver")();
+	}
+
+	if (!environmentService) {
+		environmentService = require("../../../shared/environmentService")();
+	}
+
+	return new sqlQueue(connectionString, sqlStore, dataResolver, environmentService);
 };

@@ -378,6 +378,9 @@ sqlStore.prototype.updateChildren = function(type, data, parentId) {
 		}
 
 		const next = data.pop();
+
+		console.log(next);
+
 		return this.saveResource(`${type}`, next, next.id, parentId).then(doNext);
 	};
 
@@ -412,7 +415,6 @@ sqlStore.prototype.updateResource = function(type, id, data, parentId) {
 			let obj = JSON.parse(JSON.stringify(data[key]));
 
 			if (Array.isArray(obj)) {
-
 				return this.updateChildren(`${type}_${key}`, obj, id);
 			} else if (typeof(obj) === 'object' && obj !== null) {
 				return this.updateResource(`${type}_${key}`, obj.id, obj, id);

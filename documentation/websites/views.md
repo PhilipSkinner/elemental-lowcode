@@ -88,6 +88,17 @@ Variables that are passed into custom tags are accessed via the `$.` path instea
 
 Any user input that appears to look like a variable is automatically escaped by the system.
 
+## Environmental Variables
+
+In the same way you can access values via `$.bag`, you can access environmental variables via `$.env`:
+
+```
+{
+	"tag" : "span",
+	"text" : "The language of the system is $.env.LANG"
+}
+```
+
 ## Functions
 
 You can evaluate functions within a view property by using `$(...)` to wrap your function:

@@ -13,7 +13,8 @@ const queueInstance = function(
 	idmService,
 	authClientProvider,
 	messagingService,
-	ajv
+	ajv,
+	environmentService
 ) {
 	this.app 					= app;
 	this.definition 			= definition;
@@ -35,6 +36,7 @@ const queueInstance = function(
 	this.authClientProvider 	= authClientProvider;
 	this.messagingService 		= messagingService;
 	this.ajv 					= ajv;
+	this.environmentService 	= environmentService;
 };
 
 queueInstance.prototype.queueMessage = function(req, res, next) {
@@ -155,7 +157,8 @@ queueInstance.prototype.setupHandler = function() {
 					rulesetService 		: this.rulesetService,
 					idmService 			: this.idmService,
 					authClientProvider 	: this.authClientProvider,
-					messagingService 	: this.messagingService
+					messagingService 	: this.messagingService,
+					environmentService 	: this.environmentService
 				};
 
 				Object.keys(services).forEach((prop) => {
@@ -206,7 +209,8 @@ module.exports = function(
 	idmService,
 	authClientProvider,
 	messagingService,
-	ajv
+	ajv,
+	environmentService
 ) {
 	if (!roleCheckHandler) {
 		roleCheckHandler = require("../../shared/roleCheckHandler")();
@@ -262,5 +266,26 @@ module.exports = function(
 		});
 	}
 
-	return new queueInstance(app, definition, roleCheckHandler, fsQueueProvider, sqlQueueProvider, uuid, hostnameResolver, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService, ajv);
+	if (!environmentService) {
+		environmentService = require("../../shared/environmentService")();
+	}
+
+	return new queueInstance(
+		app,
+		definition,
+		roleCheckHandler,
+		fsQueueProvider,
+		sqlQueueProvider,
+		uuid,
+		hostnameResolver,
+		serviceProvider,
+		storageService,
+		integrationService,
+		rulesetService,
+		idmService,
+		authClientProvider,
+		messagingService,
+		ajv,
+		environmentService
+	);
 };

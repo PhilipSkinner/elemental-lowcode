@@ -1,5 +1,6 @@
 const
 	Provider 		     = require("oidc-provider"),
+  cors             = require("cors"),
 	clientProvider 	 = require("./lib/configProvider")(),
 	path 			       = require("path"),
 	set 			       = require("lodash/set"),
@@ -20,6 +21,9 @@ const startup = () => {
   app.set("views", path.join(__dirname, "views"));
   app.set("view engine", "ejs");
   app.use(bodyParser.json());
+  app.use(cors({
+    methods : 'GET,HEAD,PUT,PATCH,POST,DELETE'
+  }));
 
   clientProvider.fetchConfig(process.env.DIR, process.env.SECRET).then((config) => {
     const provider = new Provider(ISSUER, config);

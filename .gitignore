@@ -9,3 +9,5 @@ kernel/.queues
 .nyc_output
 kernel/.tmp
 kernel/.sessions
+kernel/.secrets
+*.sqlite

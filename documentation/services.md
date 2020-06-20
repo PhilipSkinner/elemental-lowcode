@@ -30,6 +30,7 @@ A service can be resolved using the [service provider](/documentation/services/s
 There are a number of predefined services that can be access from within your controllers/handlers, these are:
 
 * [authClientProvider](/documentation/services/authClientProvider)
+* [environmentService](/documentation/services/environmentService)
 * [idmService](/documentation/services/idmService)
 * [integrationService](/documentation/services/integrationService)
 * [messagingService](/documentation/services/messagingService)

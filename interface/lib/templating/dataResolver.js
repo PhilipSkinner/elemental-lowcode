@@ -1,5 +1,6 @@
-const dataResolver = function(stringFormat) {
+const dataResolver = function(stringFormat, environmentService) {
 	this.stringFormat = stringFormat;
+	this.environmentService = environmentService;
 };
 
 dataResolver.prototype.detectValues = function(string, data, scope) {
@@ -81,7 +82,9 @@ dataResolver.prototype.resolveFunction = function(fn, data) {
 };
 
 dataResolver.prototype.resolveValue = function(path, data) {
-	let current = data;
+	let current = Object.assign({
+		env : this.environmentService.listEnvironmentVariables()
+	}, data);
 	let parts = path.replace("$.", "").split(".");
 	parts.forEach((p) => {
 		if (current) {
@@ -96,10 +99,14 @@ dataResolver.prototype.resolveValue = function(path, data) {
 	return current;
 };
 
-module.exports = function(stringFormat) {
+module.exports = function(stringFormat, environmentService) {
 	if (!stringFormat) {
 		stringFormat = require("elemental-string-format");
 	}
 
-	return new dataResolver(stringFormat);
+	if (!environmentService) {
+		environmentService = require("../../../shared/environmentService")();
+	}
+
+	return new dataResolver(stringFormat, environmentService);
 };

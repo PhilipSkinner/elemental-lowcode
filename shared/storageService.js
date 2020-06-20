@@ -199,6 +199,10 @@ storageService.prototype.updateEntity = function(name, id, entity, authToken) {
 					return reject(err);
 				}
 
+				if (res.statusCode !== 204) {
+					return reject(body);
+				}
+
 				return resolve();
 			});
 		});

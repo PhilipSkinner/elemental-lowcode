@@ -36,6 +36,7 @@ idm.prototype.createUser = function(req, res, next) {
 	this._connect().then(() => {
 		this.userDB.find(req.body.username);
 	}).then((existing) => {
+		console.log(existing);
 		if (typeof(existing) !== 'undefined' && existing !== null) {
 			res.status(409);
 			res.send("");
