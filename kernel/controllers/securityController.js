@@ -98,6 +98,9 @@ securityController.prototype.getConfig = function(req, res, next) {
 	this.fileLister.readJSONFile(this.identityDir, "main.json").then((content) => {
 		res.json(content);
 		next();
+	}).catch((err) => {
+		res.json({});
+		next();
 	});
 };
 

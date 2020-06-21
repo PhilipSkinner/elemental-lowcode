@@ -10,6 +10,7 @@ Each website is constructed of:
 * [Views](/documentation/websites/views)
 * [Controllers](/documentation/websites/controllers)
 * [Tags](/documentation/websites/tags)
+* [Session Storage](/documentation/websites/sessionStorage)
 
 The websites (or interface) runtime hosts each website on a path that equals the websites name.
 

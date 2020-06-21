@@ -12,3 +12,4 @@ kernel/.sessions
 kernel/.secrets
 *.sqlite
 kernel/logs
+logs

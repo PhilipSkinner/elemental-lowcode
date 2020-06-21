@@ -26,6 +26,23 @@ configReader.prototype.readDefinition = function(file) {
 	});
 };
 
+configReader.prototype.readMainConfig = function() {
+	return new Promise((resolve, reject) => {
+		this.fs.readFile(this.path.join(process.cwd(), process.env.DIR, "main.json"), (err, content) => {
+			if (err) {
+				return resolve({});
+			}
+
+			let data = {};
+			try {
+				data = JSON.parse(content);
+			} catch(e) {}
+
+			return resolve(data);
+		});
+	});
+};
+
 module.exports = function(fs, path) {
 	if (!fs) {
 		fs = require("fs");

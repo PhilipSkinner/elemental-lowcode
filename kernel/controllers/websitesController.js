@@ -104,6 +104,28 @@ websitesController.prototype.getProperties = function(req, res, next) {
 	});
 };
 
+/*
+ * Config controllers
+ */
+
+websitesController.prototype.getConfig = function(req, res, next) {
+	this.fileLister.readJSONFile(this.dir, "main.json").then((content) => {
+		res.json(content);
+		next();
+	}).catch((err) => {
+		res.json({});
+		next();
+	});
+};
+
+websitesController.prototype.saveConfig = function(req, res, next) {
+	this.fileLister.writeFile(this.dir, "main.json", JSON.stringify(req.body, null, 4)).then(() => {
+		res.status(204);
+		res.send("");
+		next();
+	});
+};
+
 websitesController.prototype.initEndpoints = function() {
 	if (!this.app) {
 		return;
@@ -111,6 +133,9 @@ websitesController.prototype.initEndpoints = function() {
 
 	this.app.get("/properties/:name", 							this.roleCheckHandler.enforceRoles(this.getProperties.bind(this), 			["website_reader", "website_admin", "system_reader", "system_admin"]));
 	this.app.get("/tags/:name", 								this.roleCheckHandler.enforceRoles(this.getPossibleTags.bind(this), 		["website_reader", "website_admin", "system_reader", "system_admin"]));
+
+	this.app.get("/websitesConfig", 							this.roleCheckHandler.enforceRoles(this.getConfig.bind(this), 				["website_reader", "website_admin", "system_reader", "system_admin"]));
+	this.app.put("/websitesConfig", 							this.roleCheckHandler.enforceRoles(this.saveConfig.bind(this), 				["website_writer", "website_admin", "system_writer", "system_admin"]));
 
 	this.app.get("/websites", 									this.roleCheckHandler.enforceRoles(this.get.bind(this), 					["website_reader", "website_admin", "system_reader", "system_admin"]));
 	this.app.get("/websites/:name", 							this.roleCheckHandler.enforceRoles(this.getWebsite.bind(this), 				["website_reader", "website_admin", "system_reader", "system_admin"]));

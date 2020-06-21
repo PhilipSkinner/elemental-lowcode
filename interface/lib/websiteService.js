@@ -19,15 +19,21 @@ websiteService.prototype.findDefinitions = function(dir) {
 };
 
 websiteService.prototype.init = function(dir) {
-	return this.findDefinitions(dir).then((definitions) => {
+	let mainConfig = {};
+	return this.configReader.readMainConfig().then((_mainConfig) => {
+		mainConfig = _mainConfig;
+
+		return this.findDefinitions(dir);
+	}).then((definitions) => {
 		const doNext = () => {
 			if (definitions.length === 0) {
 				return Promise.resolve();
 			}
 
 			const next = definitions.pop();
-
 			return this.configReader.readDefinition(next).then((definition) => {
+				definition.__main = mainConfig;
+
 				if (typeof(definition.client_id) === "undefined" || definition.client_id === null || definition.client_id === "") {
 					return Promise.resolve(definition);
 				}

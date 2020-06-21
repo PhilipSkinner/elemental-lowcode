@@ -1,4 +1,15 @@
-const websiteInstance = function(app, definition, controllerInstance, templateRenderer, express, path, hostnameResolver) {
+const websiteInstance = function(
+	app,
+	definition,
+	controllerInstance,
+	templateRenderer,
+	express,
+	path,
+	hostnameResolver,
+	dataResolver,
+	environmentService,
+	sqlSessionStore
+) {
 	this.app 					= app;
 	this.definition 			= definition;
 	this.controllerInstance 	= controllerInstance;
@@ -6,6 +17,9 @@ const websiteInstance = function(app, definition, controllerInstance, templateRe
 	this.express 				= express;
 	this.path 					= path;
 	this.hostnameResolver 		= hostnameResolver;
+	this.dataResolver 			= dataResolver;
+	this.environmentService 	= environmentService;
+	this.sqlSessionStore 		= sqlSessionStore;
 };
 
 websiteInstance.prototype.configureTag = function(tag) {
@@ -67,7 +81,35 @@ websiteInstance.prototype.init = function() {
 			});
 
 			const session = require("express-session");
-			const fsStore = require("session-file-store")(session);
+			let store = null;
+
+			console.log(this.definition.__main);
+			if (this.definition.__main && this.definition.__main.connectionString) {
+				this.definition.__main.connectionString = this.dataResolver.detectValues(this.definition.__main.connectionString, {
+					secrets : this.environmentService.listSecrets()
+				}, {}, true);
+			}
+
+			if (this.definition.__main && this.definition.__main.storageEngine) {
+				if (this.definition.__main.storageEngine === "memory") {
+					store = require("memorystore")(session);
+					store = new store({
+						checkPeriod : 3600000
+					});
+				}
+
+				if (this.definition.__main.storageEngine === "sql") {
+					store = this.sqlSessionStore(session, this.definition.__main.connectionString, this.definition.name);
+				}
+			}
+
+			//defaults to file system based store
+			if (store === null) {
+				store = require("session-file-store")(session);
+				store = new store({
+					path : "./.sessions"
+				});
+			}
 
 			//setup our authentication
 			this.app.use(session({
@@ -76,9 +118,7 @@ websiteInstance.prototype.init = function() {
 				secret 				: this.definition.name,
 				resave 			  	: true,
 				saveUninitialized 	: true,
-				store 				: new fsStore({
-					path : "./.sessions"
-				})
+				store 				: store
 			}));
 			this.app.use(`/${this.definition.name}`, passport.initialize());
 			this.app.use(`/${this.definition.name}`, passport.session());
@@ -97,7 +137,18 @@ websiteInstance.prototype.init = function() {
 	});
 };
 
-module.exports = function(app, definition, controllerInstance, templateRenderer, express, path, hostnameResolver) {
+module.exports = function(
+	app,
+	definition,
+	controllerInstance,
+	templateRenderer,
+	express,
+	path,
+	hostnameResolver,
+	dataResolver,
+	environmentService,
+	sqlSessionStore
+) {
 	if (!controllerInstance) {
 		controllerInstance = require("./controllerInstance");
 	}
@@ -118,5 +169,28 @@ module.exports = function(app, definition, controllerInstance, templateRenderer,
 		hostnameResolver = require("../../shared/hostnameResolver")();
 	}
 
-	return new websiteInstance(app, definition, controllerInstance, templateRenderer, express, path, hostnameResolver);
+	if (!dataResolver) {
+		dataResolver = require("./templating/dataResolver")();
+	}
+
+	if (!environmentService) {
+		environmentService = require("../../shared/environmentService")();
+	}
+
+	if (!sqlSessionStore) {
+		sqlSessionStore = require("./sqlSessionStore");
+	}
+
+	return new websiteInstance(
+		app,
+		definition,
+		controllerInstance,
+		templateRenderer,
+		express,
+		path,
+		hostnameResolver,
+		dataResolver,
+		environmentService,
+		sqlSessionStore
+	);
 };

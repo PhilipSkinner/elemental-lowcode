@@ -9,3 +9,5 @@ Configuration of these settings can be found within the Security section, in the
 ![image](https://i.postimg.cc/VNr2g9vN/Screenshot-2020-06-14-Screenshot.png)
 
 Any [Sequalize supported dialect](https://sequelize.org/v5/manual/dialects.html) can be configured as a data source.
+
+The [secrets store](/documentation/secrets) can be used to hold these connection strings.

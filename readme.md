@@ -112,6 +112,7 @@ Elemental supports persistence of:
 * Authentication details
 * Data types
 * Message queues
+* Website session state
 
 ; with many storage options. These storage options are:
 
