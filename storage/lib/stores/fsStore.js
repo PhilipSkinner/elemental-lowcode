@@ -165,10 +165,12 @@ fsStore.prototype.createResource = function(type, id, data) {
 		return new Promise((resolve, reject) => {
 			this.fs.writeFile(this.path.join(this.dir, type, id), JSON.stringify(data, null, 4), (err) => {
 				if (err) {
-					return resolve(false);
+					return reject(err);
 				}
 
-				return resolve(true);
+				return this.getResource(type, id).then((d) => {
+					return resolve(d)
+				});
 			});
 		});
 	});
@@ -183,10 +185,12 @@ fsStore.prototype.updateResource = function(type, id, data) {
 		return new Promise((resolve, reject) => {
 			this.fs.writeFile(this.path.join(this.dir, type, id), JSON.stringify(data, null, 4), (err) => {
 				if (err) {
-					return resolve(false);
+					return reject(err);
 				}
 
-				return resolve(true);
+				return this.getResource(type, id).then((d) => {
+					return resolve(d);
+				});
 			});
 		});
 	});
@@ -201,10 +205,10 @@ fsStore.prototype.deleteResource = function(type, id) {
 		return new Promise((resolve, reject) => {
 			this.fs.unlink(this.path.join(this.dir, type, id), (err) => {
 				if (err) {
-					return resolve(false);
+					return reject(err);
 				}
 
-				return resolve(true);
+				return resolve();
 			});
 		});
 	});

@@ -27,7 +27,9 @@ db.prototype.generateModel = function(name) {
   let engine = null;
 
   definition.storageEngine = this.mainConfig.storageEngine || definition.storageEngine;
-  definition.connectionString = this.mainConfig.connectionString || "sqlite:db.sqlite";
+
+  const idDbPath = this.path.join(process.env.DIR, "../identity/db.sqlite");
+  definition.connectionString = this.mainConfig.connectionString || `sqlite:${idDbPath}`;
 
   //resolve our values
   definition.connectionString = this.dataResolver.detectValues(definition.connectionString, {

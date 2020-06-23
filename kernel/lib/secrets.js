@@ -46,7 +46,8 @@ secrets.prototype.initSecrets = function(clientSecret, keys) {
 		identity : {
 			SECRET 		: clientSecret,
 			SIG			: keys.private,
-			SIG_PUBLIC  : keys.public
+			SIG_PUBLIC  : keys.public,
+			DEBUG 		: "oidc-provider:*"
 		},
 		queues : {
 			SIG 	: keys.public

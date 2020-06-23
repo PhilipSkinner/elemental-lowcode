@@ -60,6 +60,12 @@ app.get("/auth", (req, res) => {
 		scope: "openid roles",
 	};
 
+	if (!req.query.code) {
+		res.write("Error");
+		res.end();
+		return;
+	}
+
 	oauth2.authorizationCode.getToken(tokenConfig).then((result) => {
 		const accessToken = oauth2.accessToken.create(result);
 
