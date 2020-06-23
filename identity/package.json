@@ -7,6 +7,6 @@
 		"express": "^4.17.1",
 		"glob": "^7.1.6",
 		"jose": "^1.22.2",
-		"oidc-provider": "^6.20.1"
+		"oidc-provider": "6.20.1"
 	}
 }

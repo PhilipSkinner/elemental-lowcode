@@ -121,7 +121,7 @@ module.exports = (app, provider) => {
 			const result = {
 				select_account: {},
 				login: {
-					account: account ? account.accountId : null,
+					account : account && account.accountId ? account.accountId : null,
 				},
 			};
 
@@ -147,8 +147,13 @@ module.exports = (app, provider) => {
 
 			if (!account) {
 				account = await Account.registerUser(req.body.login, req.body.password);
-				result.login.account = account.accountId;
-				result.login.duplicate = false;
+				if (!account) {
+					result.login.account = null;
+					result.login.duplicate = true;
+				} else {
+					result.login.account = account.accountId;
+					result.login.duplicate = false;
+				}
 			}
 
 			await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
