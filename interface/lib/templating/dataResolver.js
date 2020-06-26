@@ -3,7 +3,7 @@ const dataResolver = function(stringFormat, environmentService) {
 	this.environmentService = environmentService;
 };
 
-dataResolver.prototype.detectValues = function(string, data, scope) {
+dataResolver.prototype.detectValues = function(string, data, scope, replaceUndefined) {
 	if (!string || !string.indexOf || (string.indexOf("$.") === -1 && string.indexOf("$(") === -1)) {
 		return string;
 	}
@@ -21,7 +21,7 @@ dataResolver.prototype.detectValues = function(string, data, scope) {
 		}
 
 		m.forEach((match, groupIndex) => {
-			var rep = this.resolveValue(match, scopedData);
+			var rep = this.resolveValue(match, scopedData, replaceUndefined);
 
 			replacements.push({
 				val : match,
@@ -81,7 +81,7 @@ dataResolver.prototype.resolveFunction = function(fn, data) {
 	return eval(fn.slice(2).slice(0, -1));
 };
 
-dataResolver.prototype.resolveValue = function(path, data) {
+dataResolver.prototype.resolveValue = function(path, data, replaceUndefined) {
 	let current = Object.assign({
 		env : this.environmentService.listEnvironmentVariables()
 	}, data);
@@ -92,8 +92,12 @@ dataResolver.prototype.resolveValue = function(path, data) {
 		}
 	});
 
-	if (typeof(current) === "undefined") {
+	if (typeof(current) === "undefined" && !replaceUndefined) {
 		return path;
+	}
+
+	if (replaceUndefined && typeof(current) === "undefined") {
+		return "";
 	}
 
 	return current;

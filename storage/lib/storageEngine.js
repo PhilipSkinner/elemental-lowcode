@@ -18,9 +18,11 @@ storageEngine.prototype.initStore = function(type) {
   		//resolve our values
   		type.connectionString = this.dataResolver.detectValues(type.connectionString, {
     		secrets : this.environmentService.listSecrets()
-  		}, {});
+  		}, {}, true);
 
-		return this.sqlStore(type.connectionString, type);
+  		if (typeof(type.connectionString) !== "undefined" && type.connectionString !== null && type.connectionString !== "") {
+			return this.sqlStore(type.connectionString, type);
+  		}
 	}
 
 	//default to fsstore

@@ -34,7 +34,11 @@ db.prototype.generateModel = function(name) {
   //resolve our values
   definition.connectionString = this.dataResolver.detectValues(definition.connectionString, {
     secrets : this.environmentService.listSecrets()
-  }, {});
+  }, {}, true);
+
+  if (typeof(definition.connectionString) === "undefined" || definition.connectionString === null || definition.connectionString === "") {
+    definition.connectionString = `sqlite:${idDbPath}`;
+  }
 
   if (definition.storageEngine === "memory") {
     engine = this.memoryStore();

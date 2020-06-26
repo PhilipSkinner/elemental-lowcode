@@ -56,16 +56,18 @@ secrets.prototype.initSecrets = function(clientSecret, keys) {
 
 	return this._listSecrets().then((secrets) => {
 		secrets.forEach((s) => {
-			//generate our elemental env name
-			const envName = `ELEMENTAL__ENV__${s.name}`;
+			if (typeof(s) !== "undefined" && s !== null && typeof(s.scope) !== "undefined" && s.scope !== null && typeof(s.value) !== "undefined" && s.value !== null) {
+				//generate our elemental env name
+				const envName = `ELEMENTAL__ENV__${s.name}`;
 
-			if (s.scope === "global") {
-				Object.keys(ret).forEach((system) => {
-					ret[system][envName] = s.value;
-				});
-			} else {
-				const p = s.scope.split(":");
-				ret[p[1]][envName] = s.value;
+				if (s.scope === "global") {
+					Object.keys(ret).forEach((system) => {
+						ret[system][envName] = s.value;
+					});
+				} else {
+					const p = s.scope.split(":");
+					ret[p[1]][envName] = s.value;
+				}
 			}
 		});
 

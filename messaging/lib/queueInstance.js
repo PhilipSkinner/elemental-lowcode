@@ -14,17 +14,29 @@ const queueInstance = function(
 	authClientProvider,
 	messagingService,
 	ajv,
-	environmentService
+	environmentService,
+	dataResolver
 ) {
 	this.app 					= app;
 	this.definition 			= definition;
 	this.roleCheckHandler 		= roleCheckHandler;
+	this.dataResolver 			= dataResolver;
+	this.environmentService 	= environmentService;
 
 	if (this.definition && this.definition.storageEngine === "sql") {
-		this.queueProvider = sqlQueueProvider(this.definition.connectionString);
-	} else {
-		this.queueProvider = fsQueueProvider;
-	}
+		//resolve our values
+		this.definition.connectionString = this.dataResolver.detectValues(this.definition.connectionString, {
+    		secrets : this.environmentService.listSecrets()
+  		}, {}, true);
+
+		if (typeof(this.definition.connectionString) !== "undefined" && this.definition.connectionString !== null && this.definition.connectionString !== "") {
+			this.queueProvider = sqlQueueProvider(this.definition.connectionString);
+  		}
+  	}
+
+  	if (typeof(this.queueProvider) === "undefined" || this.queueProvider === null) {
+  		this.queueProvider = fsQueueProvider;
+  	}
 
 	this.uuid 					= uuid;
 	this.hostnameResolver 		= hostnameResolver;
@@ -36,7 +48,6 @@ const queueInstance = function(
 	this.authClientProvider 	= authClientProvider;
 	this.messagingService 		= messagingService;
 	this.ajv 					= ajv;
-	this.environmentService 	= environmentService;
 };
 
 queueInstance.prototype.queueMessage = function(req, res, next) {
@@ -210,7 +221,8 @@ module.exports = function(
 	authClientProvider,
 	messagingService,
 	ajv,
-	environmentService
+	environmentService,
+	dataResolver
 ) {
 	if (!roleCheckHandler) {
 		roleCheckHandler = require("../../shared/roleCheckHandler")();
@@ -270,6 +282,10 @@ module.exports = function(
 		environmentService = require("../../shared/environmentService")();
 	}
 
+	if (!dataResolver) {
+		dataResolver = require("../../interface/lib/templating/dataResolver")();
+	}
+
 	return new queueInstance(
 		app,
 		definition,
@@ -286,6 +302,7 @@ module.exports = function(
 		authClientProvider,
 		messagingService,
 		ajv,
-		environmentService
+		environmentService,
+		dataResolver
 	);
 };

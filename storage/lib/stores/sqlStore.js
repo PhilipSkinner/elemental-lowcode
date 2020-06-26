@@ -9,7 +9,7 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
 		collate : "utf8_general_ci",
 	};
 
-	this.connection 		= new this.sequelize(this.connectionString, {
+	this.connection = new this.sequelize(this.connectionString, {
 		dialect : dialect,
 		pool: {
 			max			: 5,
