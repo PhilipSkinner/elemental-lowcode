@@ -11,7 +11,11 @@ sessionState.prototype.retrieveSession = function() {
 		return this.sessionData;
 	}
 
-	if (this.request.cookies[this.sessionName]) {
+	if (
+		this.request
+		&& this.request.cookies
+		&& this.request.cookies[this.sessionName]
+	) {
 		try {
 			this.sessionData = JSON.parse(Buffer.from(this.request.cookies.__session, "base64").toString("utf8"));
 		} catch(e) {
@@ -23,10 +27,17 @@ sessionState.prototype.retrieveSession = function() {
 };
 
 sessionState.prototype.wipeSession = function() {
-	this.request.session.destroy();
+	if (
+		this.request
+		&& this.request.session
+		&& this.request.session.destroy
+	) {
+		this.request.session.destroy();
+	}
 };
 
 sessionState.prototype.setAccessToken = function(accessToken) {
+	this.request = this.request || {};
 	this.request.session = this.request.session || {};
 	this.request.session.passport = this.request.session.passport || {};
 	this.request.session.passport.user = this.request.session.passport.user || {};
@@ -34,6 +45,7 @@ sessionState.prototype.setAccessToken = function(accessToken) {
 };
 
 sessionState.prototype.setIdentityToken = function(identityToken) {
+	this.request = this.request || {};
 	this.request.session = this.request.session || {};
 	this.request.session.passport = this.request.session.passport || {};
 	this.request.session.passport.user = this.request.session.passport.user || {};
@@ -41,6 +53,7 @@ sessionState.prototype.setIdentityToken = function(identityToken) {
 };
 
 sessionState.prototype.setRefreshToken = function(refreshToken) {
+	this.request = this.request || {};
 	this.request.session = this.request.session || {};
 	this.request.session.passport = this.request.session.passport || {};
 	this.request.session.passport.user = this.request.session.passport.user || {};
@@ -49,7 +62,8 @@ sessionState.prototype.setRefreshToken = function(refreshToken) {
 
 sessionState.prototype.getSubject = function() {
 	if (
-		this.request.session
+		this.request
+		&& this.request.session
 		&& this.request.session.passport
 		&& this.request.session.passport.user
 		&& this.request.session.passport.user.accessToken
@@ -68,7 +82,8 @@ sessionState.prototype.getSubject = function() {
 
 sessionState.prototype.getAccessToken = function() {
 	if (
-		this.request.session
+		this.request
+		&& this.request.session
 		&& this.request.session.passport
 		&& this.request.session.passport.user
 		&& this.request.session.passport.user.accessToken
@@ -81,7 +96,8 @@ sessionState.prototype.getAccessToken = function() {
 
 sessionState.prototype.getIdentityToken = function() {
 	if (
-		this.request.session
+		this.request
+		&& this.request.session
 		&& this.request.session.passport
 		&& this.request.session.passport.user
 		&& this.request.session.passport.user.idToken
@@ -94,7 +110,8 @@ sessionState.prototype.getIdentityToken = function() {
 
 sessionState.prototype.getRefreshToken = function() {
 	if (
-		this.request.session
+		this.request
+		&& this.request.session
 		&& this.request.session.passport
 		&& this.request.session.passport.user
 		&& this.request.session.passport.user.refreshToken
@@ -105,14 +122,19 @@ sessionState.prototype.getRefreshToken = function() {
 	return null;
 };
 
+sessionState.prototype._isDefined = function(val) {
+	return typeof(val) !== "undefined" && val !== null && val !== "";
+};
+
 sessionState.prototype.isAuthenticated = function() {
-	return this.request.session
-		&& this.request.session.passport
-		&& this.request.session.passport.user
+	return this._isDefined(this.request)
+		&& this._isDefined(this.request.session)
+		&& this._isDefined(this.request.session.passport)
+		&& this._isDefined(this.request.session.passport.user)
 		&& (
-			this.request.session.passport.user.accessToken
-			|| this.request.session.passport.user.idToken
-			|| this.request.session.passport.user.refreshToken
+			this._isDefined(this.request.session.passport.user.accessToken)
+			|| this._isDefined(this.request.session.passport.user.idToken)
+			|| this._isDefined(this.request.session.passport.user.refreshToken)
 		);
 };
 
@@ -132,7 +154,12 @@ sessionState.prototype.generateResponseHeaders = function() {
 		this.sessionData = this.retrieveSession();
 	}
 
-	if (this.sessionData && !this.response.headersSent) {
+	if (
+		this.sessionData
+		&& !this.response.headersSent
+		&& this.response
+		&& this.response.cookie
+	) {
 		this.response.cookie(this.sessionName, Buffer.from(JSON.stringify(this.sessionData)).toString("base64"));
 	}
 };
