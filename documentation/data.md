@@ -5,6 +5,8 @@
 The data system allows you to create APIs to serve basic resources, providing you with:
 
 * Basic CRUD operations (GET, POST, PUT, DELETE, PATCH)
+* Automatically generated OpenAPI definitions
+* OpenAPI (swagger) browser built into the admin
 * Ability to secure resources
 
 The data system comes with several storage engines, allowing the data to be presisted with different backends. The following backends are supported:
@@ -158,17 +160,41 @@ The following dialects are supported:
 
 ## Accessing/modifying data
 
-Each data type is automatically hosted on the storage service with 7 endpoints:
+Each datatype gets mapped into an automatically generated, heirarchial RESTful API. Each datatype comes with an automatically generated OpenAPI specification which can be access via:
 
-* `GET http://storage.elementalsystem.org/[typeName]`
-* `POST http://storage.elementalsystem.org/[typeName]`
-* `GET http://storage.elementalsystem.org/[typeName]/.details`
-* `GET http://storage.elementalsystem.org/[typeName]/[entityId]`
-* `PUT http://storage.elementalsystem.org/[typeName]/[entityId]`
-* `PATCH http://storage.elementalsystem.org/[typeName]/[entityId]`
-* `DELETE http://storage.elementalsystem.org/[typeName][entityId]`
+```
+http://storage.elementalsystem.org/[typeName]/.definition
+```
 
-Documentation for the requests & responses for each data type can be found by clicking on the data types name within the data section of the administration. This documentation is automatically generated and displays information on the expected payloads, responses, headers and authorization details.
+Each datatype gets hosted on its own collection endpoint:
+
+```
+http://storage.elementalsystem.org/[typeName]
+http://storage.elementalsystem.org/[typeName]/[id]
+http://storage.elementalsystem.org/[typeName]/.details
+```
+
+; which supports `GET`, `POST`, `PUT`, `PATCH` and `DELETE` operations.
+
+Collections (arrays) within the datatype definition get hosted on their own subcollections, automatically scoped by the parent object:
+
+```
+http://storage.elementalsystem.org/[typeName]/[parentId]/[subTypeName]
+http://storage.elementalsystem.org/[typeName]/[parentId]/[subTypeName]/[id]
+http://storage.elementalsystem.org/[typeName]/[parentId]/[subTypeName]/.details
+```
+
+These subcollection endpoints support `GET`, `POST`, `PUT`, `PATCH` and `DELETE` operations.
+
+Complex objects are broken down into into their own paths, in other words having a property of type object within your root type will yield a new endpoint on the API for accessing the properties within that child object:
+
+```
+http://storage.elementalsystem.org/[typeName]/[subTypeObject]
+```
+
+These child object endpoints only support `GET`, `PUT` and `PATCH`.
+
+Documentation for the requests & responses for each data type can be found by clicking on the data types name within the data section of the administration. This documentation is automatically generated and displays information on the expected payloads, responses, headers and authorization details. OpenAPI specification documents are automatically generated for every datatype, and this documentation browser is powered by Swagger.
 
 ## Security
 

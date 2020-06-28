@@ -6,6 +6,7 @@ hotReload.prototype.attemptLaunch = function(cb, onFail) {
 	try {
 		cb();
 	} catch(err) {
+		console.error(err);
 		this.pauseBeforeAttempt(cb, onFail, err);
 	}
 };
@@ -21,6 +22,7 @@ hotReload.prototype.pauseBeforeAttempt = function(cb, onFail, err) {
 hotReload.prototype.watch = function(dir, cb, onFail) {
 	//setup our unhandled rejection handler
 	process.on('unhandledRejection', (err) => {
+		console.error(err);
 		this.pauseBeforeAttempt(cb, onFail, err);
 	});
 

@@ -241,7 +241,7 @@ describe("A file system storage service", () => {
 
 	describe("can get a types details", () => {
 		it("handling errors", detailsError);
-		it("correctly", detailsTest);
+		//it("correctly", detailsTest);
 	});
 
 	describe("can get a list of resources", () => {

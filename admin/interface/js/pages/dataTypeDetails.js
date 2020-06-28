@@ -9,7 +9,10 @@ const _dataTypeDetailsController = function(page) {
 		exampleId 				: null,
 		exampleSingleResponse 	: null,
 		exampleObject 			: null,
-		token 					: window.getToken()
+		token 					: window.getToken(),
+		uri 					: '',
+		navitems : [
+		]
 	};
 };
 
@@ -31,26 +34,11 @@ _dataTypeDetailsController.prototype.fetchType = function(name) {
 		})
 		.then((response) => {
 			this.data.dataType = response.data;
-			this.generateExampleObject();
+			this.data.uri = `${window.hosts.storage}/${this.data.dataType.name}/.definition`;
+			this.caller.$forceUpdate();
 		});
 };
 
-_dataTypeDetailsController.prototype.generateExampleObject = function() {
-	var obj = JSONSchemaFaker.generate(this.data.dataType.schema);
-	this.data.exampleObject = JSON.stringify(obj, null, 4);
-	this.data.exampleId = "bda231fd-10c1-4a2c-9c70-f99ee9c237ec";
-	this.data.exampleSingleResponse = JSON.stringify(Object.assign(obj, {
-		id : this.data.exampleId
-	}), null, 4);
-	this.data.exampleGetResponse = JSON.stringify([
-		Object.assign(obj, {
-			id : this.data.exampleId
-		})
-	], null, 4);
-
-	Object.assign(this.caller, this.data);
-	this.caller.$forceUpdate();
-};
 
 window.DataTypeDetails = {
 	template : "#template-dataTypeDetails",
@@ -60,6 +48,32 @@ window.DataTypeDetails = {
 	mounted  : function() {
 		window._dataTypeDetailsInstance.setCaller(this);
 		window._dataTypeDetailsInstance.fetchType(this.$route.params.type);
+		window._dataTypeDetailsInstance.data.navitems = [
+			{
+				name 		: "Edit",
+				event 		: () => {
+					window.router.push({
+						name : 'dataTypeEditor',
+						params : {
+							type : this.$route.params.type
+						}
+					});
+				},
+				selected	: false
+			},
+			{
+				name 		: "API Explorer",
+				event 		: () => {
+
+				},
+				selected 	: true
+			},
+			{
+				name 		: "Definition",
+				link		: `${window.hosts.storage}/${this.$route.params.type}/.definition`,
+				selected	: false
+			}
+		];
 	}
 };
 

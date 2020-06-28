@@ -83,7 +83,6 @@ websiteInstance.prototype.init = function() {
 			const session = require("express-session");
 			let store = null;
 
-			console.log(this.definition.__main);
 			if (this.definition.__main && this.definition.__main.connectionString) {
 				this.definition.__main.connectionString = this.dataResolver.detectValues(this.definition.__main.connectionString, {
 					secrets : this.environmentService.listSecrets()

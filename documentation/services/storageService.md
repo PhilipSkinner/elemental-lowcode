@@ -9,6 +9,7 @@ The storage service allows you to access data types defined within the storage s
 * getEntity
 * createEntity
 * updateEntity
+* patchEntity
 * deleteEntity
 
 Each of these methods is covered in more detail below.
@@ -46,7 +47,7 @@ module.exports = {
 
 Parameters:
 
-* `name` - string, the name of the collection to fetch from
+* `path` - string, the root path of the collection to fetch from
 * `start` - integer, the index of the first item to retrieve
 * `count` - integer, the maximum number of items to retrieve
 * `filters` - object, the filters to apply when fetching items
@@ -63,13 +64,13 @@ This can be called from within a controller like so:
 ```
 module.exports = {
 	events : {
-		load : (event) => {
+		myEvent : (event) => {
 			return this.storageService.getList(
-				"books",
+				`authors/${event.authorId}/books`,
 				1,
 				10,
 				{
-					"$.author" : "Philip Skinner"
+					"$.rating" : "10"
 				}
 			).then((result) => {
 
@@ -85,7 +86,7 @@ module.exports = {
 
 Parameters:
 
-* `name` - string, the name of the collection to fetch from
+* `path` - string, the root path of the collection to fetch from
 * `id` - guid (string), the id of the entity to retrieve
 * `token` - string, the access token to use to access the API *optional*
 
@@ -98,9 +99,9 @@ This can be called from within a controller like so:
 ```
 module.exports = {
 	events : {
-		load : (event) => {
+		myEvent : (event) => {
 			return this.storageService.getEntity(
-				"books",
+				`authors/${event.authorId}/books`,
 				"16aeb990-4f40-4060-892c-bebe9456de3f"
 			).then((result) => {
 
@@ -116,7 +117,7 @@ module.exports = {
 
 Parameters:
 
-* `name` - string, the name of the collection to create the entity in
+* `path` - string, the root path of the collection to create the entity in
 * `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will be used to create the new entity
 * `token` - string, the access token to use to access the API *optional*
 
@@ -129,9 +130,9 @@ This can be called from within a controller like so:
 ```
 module.exports = {
 	events : {
-		load : (event) => {
+		myEvent : (event) => {
 			return this.storageService.createEntity(
-				"books",
+				`authors/${event.authorId}/books`,
 				{
 					hello : "world"
 				}
@@ -149,12 +150,12 @@ module.exports = {
 
 Parameters:
 
-* `name` - string, the name of the collection to update an entity in
+* `path` - string, the root path of the collection to update an entity in
 * `id` - guid, the id of the entity to update
 * `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will replace the entity with the given id
 * `token` - string, the access token to use to access the API *optional*
 
-Creates a new entity within the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
+Updates an entity within the collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
 This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly.
 
@@ -163,9 +164,44 @@ This can be called from within a controller like so:
 ```
 module.exports = {
 	events : {
-		load : (event) => {
+		myEvent : (event) => {
 			return this.storageService.updateEntity(
-				"books",
+				`authors/${event.authorId}/books`,
+				"16aeb990-4f40-4060-892c-bebe9456de3f",
+				{
+					hello : "world"
+				}
+			).then((result) => {
+
+			}).catch((err) => {
+
+			});
+		}
+	}
+};
+```
+
+### patchEntity
+
+Parameters:
+
+* `path` - string, the root path of the collection to update an entity in
+* `id` - guid, the id of the entity to update
+* `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will replace the entity with the given id
+* `token` - string, the access token to use to access the API *optional*
+
+Partially updates an entity within the collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
+
+This method returns a Promise which can resolve or reject. You must make sure to handle rejections correctly.
+
+This can be called from within a controller like so:
+
+```
+module.exports = {
+	events : {
+		myEvent : (event) => {
+			return this.storageService.updateEntity(
+				`authors/${event.authorId}/books`,
 				"16aeb990-4f40-4060-892c-bebe9456de3f",
 				{
 					hello : "world"
@@ -184,7 +220,7 @@ module.exports = {
 
 Parameters:
 
-* `name` - string, the name of the collection to delete from
+* `path` - string, the root path of the collection to delete from
 * `id` - guid (string), the id of the entity to delete
 * `token` - string, the access token to use to access the API *optional*
 
@@ -197,9 +233,9 @@ This can be called from within a controller like so:
 ```
 module.exports = {
 	events : {
-		load : (event) => {
+		myEvent : (event) => {
 			return this.storageService.deleteEntity(
-				"books",
+				`authors/${event.authorId}/books`,
 				"16aeb990-4f40-4060-892c-bebe9456de3f"
 			).then((result) => {
 

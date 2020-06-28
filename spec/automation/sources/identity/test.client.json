@@ -1,0 +1,16 @@
+{
+    "client_id": "test",
+    "client_secret": "test",
+    "scope": "openid roles offline_access",
+    "grants": [
+        "client_credentials",
+        "authorization_code",
+        "refresh_token"
+    ],
+    "roles" : [
+        "system_admin"
+    ],
+    "redirect_uris": [
+        "http://localhost:8005/dave/_auth"
+    ]
+}

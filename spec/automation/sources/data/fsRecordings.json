@@ -1,0 +1,78 @@
+{
+  "name": "fsRecordings",
+  "storageEngine": "filesystem",
+  "keys": [],
+  "roles": {
+    "replace": {
+      "read": false,
+      "write": false,
+      "delete": false
+    },
+    "needsRole": {
+      "read": true,
+      "write": true,
+      "delete": true
+    },
+    "read": [],
+    "write": [],
+    "delete": []
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "length": {
+        "type": "number"
+      },
+      "work": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "composer": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "functions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "name",
+              "functions"
+            ]
+          }
+        }
+      },
+      "recording_artists": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "functions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "name",
+            "functions"
+          ]
+        }
+      }
+    }
+  }
+}

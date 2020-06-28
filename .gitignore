@@ -13,3 +13,4 @@ kernel/.secrets
 *.sqlite
 kernel/logs
 logs
+kernel/recordings.db

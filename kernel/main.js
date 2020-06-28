@@ -126,3 +126,19 @@ if (initialSetup.shouldRun(directories.identity)) {
 		runApp();
 	});
 }
+
+//our sigint handler
+process.on('SIGINT', () => {
+	serviceRunner.stopService("admin");
+	serviceRunner.stopService("api");
+	serviceRunner.stopService("integration");
+	serviceRunner.stopService("interface");
+	serviceRunner.stopService("storage");
+	serviceRunner.stopService("rules");
+	serviceRunner.stopService("identity");
+	serviceRunner.stopService("messaging");
+
+	setTimeout(() => {
+		process.exit();
+	}, 100);
+});

@@ -29,18 +29,18 @@ fsStore.prototype.initType = function(type) {
 	});
 };
 
-fsStore.prototype.getDetails = function(type) {
-	return this.initType(type).then(() => {
-		return new Promise((resolve, reject) => {
-			this.fs.readdir(this.path.join(this.dir, type), (err, dir) => {
-				if (err) {
-					return reject(err);
-				}
+fsStore.prototype.getDetails = function(type, parent) {
+	const filters = [];
+	if (parent) {
+		filters.push({
+			path 	: "$.parent",
+			value 	: parent
+		});
+	}
 
-				return resolve({
-					count : dir.length
-				});
-			});
+	return this.getResources(type, 1, 9999999, filters).then((results) => {
+		return Promise.resolve({
+			count : results.length
 		});
 	});
 };
@@ -135,6 +135,10 @@ fsStore.prototype.getResources = function(type, start, count, filters) {
 };
 
 fsStore.prototype.getResource = function(type, id) {
+	if (typeof(id) === "undefined" || id === null) {
+		return Promise.resolve(null);
+	}
+
 	return this.initType(type).then(() => {
 		return new Promise((resolve, reject) => {
 			this.fs.readFile(this.path.join(this.dir, type, id), (err, content) => {
@@ -163,6 +167,8 @@ fsStore.prototype.createResource = function(type, id, data) {
 		}
 
 		return new Promise((resolve, reject) => {
+			data.id = id;
+
 			this.fs.writeFile(this.path.join(this.dir, type, id), JSON.stringify(data, null, 4), (err) => {
 				if (err) {
 					return reject(err);
@@ -177,20 +183,15 @@ fsStore.prototype.createResource = function(type, id, data) {
 };
 
 fsStore.prototype.updateResource = function(type, id, data) {
-	return this.getResource(type, id).then((resource) => {
-		if (!resource) {
-			return Promise.reject(new Error("Resource does not exist"));
-		}
+	return new Promise((resolve, reject) => {
+		data.id = id;
+		this.fs.writeFile(this.path.join(this.dir, type, id), JSON.stringify(data, null, 4), (err) => {
+			if (err) {
+				return reject(err);
+			}
 
-		return new Promise((resolve, reject) => {
-			this.fs.writeFile(this.path.join(this.dir, type, id), JSON.stringify(data, null, 4), (err) => {
-				if (err) {
-					return reject(err);
-				}
-
-				return this.getResource(type, id).then((d) => {
-					return resolve(d);
-				});
+			return this.getResource(type, id).then((d) => {
+				return resolve(d);
 			});
 		});
 	});
@@ -205,10 +206,10 @@ fsStore.prototype.deleteResource = function(type, id) {
 		return new Promise((resolve, reject) => {
 			this.fs.unlink(this.path.join(this.dir, type, id), (err) => {
 				if (err) {
-					return reject(err);
+					return resolve(false);
 				}
 
-				return resolve();
+				return resolve(true);
 			});
 		});
 	});

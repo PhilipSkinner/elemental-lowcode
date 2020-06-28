@@ -11013,6 +11013,7 @@ body.sidebar-toggled footer.sticky-footer {
   left: 0px;
   bottom: 0px;
   right: 0px;
+  overflow: scroll;
 }
 
 .editorSelector .editorWindow {
@@ -11282,6 +11283,10 @@ div.block {
   right: 268px;
 }
 
+.editorWindow--withHeader {
+  top: 70px;
+}
+
 .scrollable {
   max-height: 200px;
   overflow-x: scroll;
@@ -11304,3 +11309,30 @@ div.block {
   top: 200px;
   text-align: left;
 }
+
+/*
+ * Start swagger styling
+ */
+
+.swagger-def .information-container,
+.swagger-def .scheme-container,
+.swagger-def .opblock-tag {
+  display: none;
+}
+
+.swagger-def .wrapper {
+  max-width: 999999px;
+  padding-top: 20px;
+}
+
+.swagger-def .markdown p:first-of-type {
+  margin-top: 0px;
+}
+
+.swagger-def .markdown p:last-of-type {
+  margin-bottom: 0px;
+}
+
+/*
+ * End swagger styling
+ */

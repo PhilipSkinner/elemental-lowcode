@@ -567,7 +567,7 @@ To display the todo lists we should create a new custom tag called `todoListItem
             "tag": "div",
             "children": [
                 {
-                    "tag": "span",
+                    "tag": "div",
                     "style": "float: right;",
                     "text": "Delete",
                     "onclick": {
@@ -604,7 +604,7 @@ To display the todo lists we should create a new custom tag called `todoListItem
                     "children": [
                         {
                             "tag": "listItem",
-                            "repeat": "$.entry in $.list.entries"
+                            "repeat": "$.entry in $.bag.entries"
                         }
                     ]
                 }
@@ -673,7 +673,7 @@ Before we do that we need to create another custom tag called `listItem` which w
                     "onclick": {
                         "eventName": "removeListOption",
                         "params": {
-                            "num": "$._index",
+                            "entry": "$.entry.id",
                             "id": "$.list.id"
                         }
                     }
@@ -690,7 +690,7 @@ Before we do that we need to create another custom tag called `listItem` which w
                     "onclick": {
                         "eventName": "markAsCompleted",
                         "params": {
-                            "num": "$._index",
+                            "entry": "$.entry.id",
                             "id": "$.list.id"
                         }
                     }
@@ -756,6 +756,7 @@ module.exports = {
     bag : {
         formVisible : false,
         lists : [],
+        entries : [],
         name : '',
         error : '',
         openList : '',
@@ -763,14 +764,12 @@ module.exports = {
     },
     events : {
         load : function(event) {
-            let sessionState = this.sessionState.retrieveSession() || {};
-            if (sessionState.openList) {
-                this.bag.openList = sessionState.openList;
-            }
-
             if (typeof(this.bag.formVisible) === "undefined") {
                 this.bag.formVisible = false;
             }
+
+            this.bag.name = "";
+            this.bag.newListItem = "";
 
             return this.storageService.getList(
                 "todoList",
@@ -791,71 +790,105 @@ module.exports = {
         showForm : function(event) {
             this.bag.formVisible = true;
         },
+        addTodoList : function(event) {
+            return this.storageService.createEntity("todoList", {
+                subject : this.sessionState.getSubject(),
+                name : event.bag.name
+            }).then(() => {
+                this.bag.formVisible = false;
+            });
+        },
         openList : function(event) {
             this.bag.openList = event.id;
             let sessionState = this.sessionState.retrieveSession() || {};
             sessionState.openList = this.bag.openList;
             this.sessionState.saveSession(sessionState);
-        },
-        addTodoList : function(event) {
-            return this.storageService.createEntity("todoList", {
-                subject : this.sessionState.getSubject(),
-                name : event.bag.name,
-                entries : []
-            }).then(() => {
-                this.bag.formVisible = false;
+
+            //load the entries for the list
+            return this.storageService.getList(
+                `todoList/${this.bag.openList}/entries`,
+                1,
+                9999
+            ).then((result) => {
+                this.bag.entries = result;
+            }).catch((err) => {
+                this.bag.error = err;
             });
         },
         removeList : function(event) {
             return this.storageService.deleteEntity(
-                "todoList",
+                `todoList`,
                 event.id
-            ).catch((err) => {
+            ).then(() => {
+                return this.storageService.getList(
+                    "todoList",
+                    1,
+                    9999,
+                    {
+                        "$.subject" : this.sessionState.getSubject()
+                    }
+                );
+            }).then((result) => {
+                this.bag.lists = result;
+            }).catch((err) => {
                 this.bag.error = err;
             });
         },
         addListOption : function(event) {
             this.bag.openList = event.bag.openList;
-            //get the entry
-            return this.storageService.getEntity("todoList", this.bag.openList)
-                .then((list) => {
-                    list.entries = list.entries || [];
-
-                    list.entries.push({
-                        title : event.bag.newListItem,
-                        completed : false
-                    });
-
-                    this.bag.newListItem = '';
-
-                    return this.storageService.updateEntity("todoList", this.bag.openList, list);
-                }).catch((err) => {
-                    this.bag.error = err;
-                });
+            //post the new entry
+            return this.storageService.createEntity(`todoList/${this.bag.openList}/entries`, {
+                title : event.bag.newListItem,
+                completed : false
+            }).then(() => {
+                //load the entries again
+                return this.storageService.getList(
+                    `todoList/${this.bag.openList}/entries`,
+                    1,
+                    9999
+                );
+            }).then((result) => {
+                this.bag.entries = result;
+            }).catch((err) => {
+                this.bag.error = err;
+            });
         },
         removeListOption : function(event) {
             this.bag.openList = event.id;
             //get the entry
-            return this.storageService.getEntity("todoList", this.bag.openList)
-                .then((list) => {
-                    list.entries = list.entries || [];
-                    list.entries.splice(event.num, 1);
-                    return this.storageService.updateEntity("todoList", this.bag.openList, list);
-                }).catch((err) => {
-                    this.bag.error = err;
-                });
+            return this.storageService.deleteEntity(
+                `todoList/${this.bag.openList}/entries`,
+                event.entry
+            ).then(() => {
+                //load the entries again
+                return this.storageService.getList(
+                    `todoList/${this.bag.openList}/entries`,
+                    1,
+                    9999
+                );
+            }).then((result) => {
+                this.bag.entries = result;
+            }).catch((err) => {
+                this.bag.error = err;
+            });
         },
         markAsCompleted : function(event) {
             this.bag.openList = event.id;
             //get the entry
-            return this.storageService.getEntity("todoList", this.bag.openList)
-                .then((list) => {
-                    list.entries = list.entries || [];
-                    list.entries[event.num].completed = true;
-                    return this.storageService.updateEntity("todoList", this.bag.openList, list);
-                }).catch((err) => {
-                    this.bag.error = err;
-                });
+            return this.storageService.patchEntity(`todoList/${this.bag.openList}/entries`, event.entry, {
+                completed : true
+            }).then(() => {
+                //load the entries again
+                return this.storageService.getList(
+                    `todoList/${this.bag.openList}/entries`,
+                    1,
+                    9999
+                );
+            }).then((result) => {
+                this.bag.entries = result;
+            }).catch((err) => {
+                this.bag.error = err;
+            });
         }
     }
 };

@@ -11,6 +11,7 @@ The following links contain useful information about these standards:
 * [Role-based access control](https://en.wikipedia.org/wiki/Role-based_access_control)
 * [JSON Schema](https://json-schema.org/)
 * [JSON Path](https://goessner.net/articles/JsonPath/index.html#e2)
+* [OpenAPI](https://www.openapis.org/)
 
 ## Sections
 

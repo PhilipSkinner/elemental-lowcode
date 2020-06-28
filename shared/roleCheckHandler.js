@@ -36,9 +36,7 @@ roleCheckHandler.prototype.enforceRoles = function(middleware, roles) {
 					});
 				}
 			}
-		} catch(e) {
-			console.error(e);
-		}
+		} catch(e) {}
 
 		if (!found) {
 			res.status(403);

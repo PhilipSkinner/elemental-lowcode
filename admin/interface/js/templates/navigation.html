@@ -5,7 +5,10 @@
 			<h1 v-if="title !== null && title !== ''">{{title}}</h1>
 			<ul class="navbar-nav ml-auto">
 				<li v-bind:class="{ 'nav-item' : true, 'active' : item.selected }" v-for="item in navitems">
-					<a v-bind:class="{ 'nav-link' : true, 'active' : item.selected }" v-on:click="item.event">
+					<a v-bind:class="{ 'nav-link' : true, 'active' : item.selected }" v-on:click="item.event" v-if="typeof(item.event) === 'function'">
+						{{item.name}}
+					</a>
+					<a v-bind:class="{ 'nav-link' : true, 'active' : item.selected }" :href="item.link" target="_blank" v-if="typeof(item.link) !== 'undefined'">
 						{{item.name}}
 					</a>
 				</li>

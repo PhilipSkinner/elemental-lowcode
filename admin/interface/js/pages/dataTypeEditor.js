@@ -9,7 +9,9 @@ const _dataTypeEditorController = function(page) {
 		showAlert 	: false,
 		error 	 	: {
 			visible : false
-		}
+		},
+		navitems 	: [],
+		name 		: "untitled"
 	};
 };
 
@@ -63,6 +65,11 @@ _dataTypeEditorController.prototype.initBlankType = function() {
 			}
 		}
 	}, null, 4));
+
+	this.caller.name = "untitled";
+	this.data.name = "untitled";
+	this.caller.dataType = JSON.parse(this.editor.getValue());
+	this.caller.$forceUpdate();
 };
 
 _dataTypeEditorController.prototype.setCaller = function(caller) {
@@ -82,8 +89,11 @@ _dataTypeEditorController.prototype.fetchType = function(name) {
 			}
 		})
 		.then((response) => {
+			this.name = response.data.name;
+			this.data.name = response.data.name;
 			this.dataTypes = response.data;
 			this.caller.dataType = response.data;
+			this.caller.name = response.data.name;
 			this.caller.$forceUpdate();
 
 			this.editor.setValue(JSON.stringify(response.data, null, 4));
@@ -102,6 +112,7 @@ _dataTypeEditorController.prototype.saveType = function() {
 				}
 			})
 			.then((response) => {
+				this.caller.dataType = JSON.parse(this.editor.getValue());
 				this.data.error.visible = false;
 				this.caller.showAlert = true;
 				this.caller.$forceUpdate();
@@ -129,7 +140,30 @@ _dataTypeEditorController.prototype.saveType = function() {
 			.then((response) => {
 				//set our name
 				this.name = parsed.name;
+				this.data.name = parsed.name;
+				this.caller.name = parsed.name;
 				location.href = "/#/data/editor/" + this.name;
+				this.caller.dataType = JSON.parse(this.editor.getValue());
+
+				window._dataTypeEditorInstance.data.navitems.push({
+					name 		: "API Explorer",
+					event 		: () => {
+						window.router.push({
+							name : 'dataTypeDetails',
+							params : {
+								type : this.name
+							}
+						});
+					},
+					selected 	: false
+				});
+
+				window._dataTypeEditorInstance.data.navitems.push({
+					name 		: "Definition",
+					link		: `${window.hosts.storage}/${this.name}/.definition`,
+					selected	: false
+				});
+
 
 				this.data.error.visible = false;
 				this.caller.showAlert = true;
@@ -159,10 +193,38 @@ window.DataTypeEditor = {
 	mounted  : function() {
 		window._dataTypeEditorInstance.setCaller(this);
 		window._dataTypeEditorInstance.initEditor();
+		window._dataTypeEditorInstance.data.navitems = [
+			{
+				name 		: "Edit",
+				event 		: () => {
+
+				},
+				selected	: true
+			}
+		];
 		if (this.$route.params.type === ".new") {
 			window._dataTypeEditorInstance.initBlankType();
 			return null;
 		}
+
+		window._dataTypeEditorInstance.data.navitems.push({
+			name 		: "API Explorer",
+			event 		: () => {
+				window.router.push({
+					name : 'dataTypeDetails',
+					params : {
+						type : this.$route.params.type
+					}
+				});
+			},
+			selected 	: false
+		});
+
+		window._dataTypeEditorInstance.data.navitems.push({
+			name 		: "Definition",
+			link		: `${window.hosts.storage}/${this.$route.params.type}/.definition`,
+			selected	: false
+		});
 
 		return window._dataTypeEditorInstance.fetchType(this.$route.params.type);
 	}

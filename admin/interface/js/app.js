@@ -21,6 +21,11 @@ window.hasRole = function(role) {
 	}
 };
 
+window.logout = function() {
+	document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+	location.href = "/";
+};
+
 window.generateGuid = function() {
 	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
     	var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -252,7 +257,36 @@ window.templates.fetchTemplates().then(() => {
 			]
 		});
 
-		window.Vue.component("permissions", {
+		window.Vue.component("swaggerdef", {
+			template : "#template-swagger-def",
+			props : [
+				"uri"
+			],
+			mounted  : function() {
+				delete(window.swaggerUI);
+
+				setTimeout(() => {
+					const ui = SwaggerUIBundle({
+						dom_id 					: "#swagger-ui",
+						deepLinking 			: true,
+						displayRequestDuration 	: true,
+						presets 				: [
+							SwaggerUIBundle.presets.apis,
+							SwaggerUIStandalonePreset
+						],
+						url 		 			: this._props.uri,
+						validatorUrl			: "https://validator.swagger.io/validator",
+						onComplete 				: () => {
+							window.swaggerUI.preauthorizeApiKey("bearerToken", window.getToken());
+						}
+					});
+
+					window.swaggerUI = ui;
+				}, 250);
+			}
+		});
+
+    	window.Vue.component("permissions", {
 			data : function() {
 				const allowed = this.roles.reduce((s, a) => {
 					return s || window.hasRole(a);
@@ -270,7 +304,7 @@ window.templates.fetchTemplates().then(() => {
 
 		window.Vue.prototype.window = window;
 
-		const router = new VueRouter({
+		window.router = new VueRouter({
 			routes : routes,
 		});
 

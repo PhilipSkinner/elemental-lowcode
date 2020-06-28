@@ -8,7 +8,7 @@ storageService.prototype.setAuthClientProvider = function(authClientProvider) {
 	this.authClientProvider = authClientProvider;
 };
 
-storageService.prototype.detailCollection = function(name, authToken) {
+storageService.prototype.detailCollection = function(path, authToken) {
 	return new Promise((resolve, reject) => {
 		if (authToken) {
 			return resolve(authToken);
@@ -23,13 +23,17 @@ storageService.prototype.detailCollection = function(name, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.get(`${this.hostnameResolver.resolveStorage()}/${name}/.details`, {
+			this.request.get(`${this.hostnameResolver.resolveStorage()}/${path}`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				}
 			}, (err, res, body) => {
 				if (err) {
 					return reject(err);
+				}
+
+				if (res.statusCode !== 200) {
+					return reject(body);
 				}
 
 				let result = null;
@@ -45,7 +49,7 @@ storageService.prototype.detailCollection = function(name, authToken) {
 	});
 };
 
-storageService.prototype.getList = function(name, start, count, filters, authToken) {
+storageService.prototype.getList = function(path, start, count, filters, authToken) {
 	return new Promise((resolve, reject) => {
 		if (authToken) {
 			return resolve(authToken);
@@ -71,7 +75,7 @@ storageService.prototype.getList = function(name, start, count, filters, authTok
 		}
 
 		return new Promise((resolve, reject) => {
-			this.request.get(`${this.hostnameResolver.resolveStorage()}/${name}`, {
+			this.request.get(`${this.hostnameResolver.resolveStorage()}/${path}`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				},
@@ -82,7 +86,7 @@ storageService.prototype.getList = function(name, start, count, filters, authTok
 				}
 
 				if (res.statusCode !== 200) {
-					return reject(new Error(`Invalid response code received - ${res.statusCode}`));
+					return reject(body);
 				}
 
 				let result = null;
@@ -98,7 +102,7 @@ storageService.prototype.getList = function(name, start, count, filters, authTok
 	});
 };
 
-storageService.prototype.getEntity = function(name, id, authToken) {
+storageService.prototype.getEntity = function(path, id, authToken) {
 	return new Promise((resolve, reject) => {
 		if (authToken) {
 			return resolve(authToken);
@@ -113,13 +117,17 @@ storageService.prototype.getEntity = function(name, id, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.get(`${this.hostnameResolver.resolveStorage()}/${name}/${id}`, {
+			this.request.get(`${this.hostnameResolver.resolveStorage()}/${path}/${id}`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				}
 			}, (err, res, body) => {
 				if (err) {
 					return reject(err);
+				}
+
+				if (res.statusCode !== 200) {
+					return reject(body);
 				}
 
 				let result = null;
@@ -136,7 +144,7 @@ storageService.prototype.getEntity = function(name, id, authToken) {
 	});
 };
 
-storageService.prototype.createEntity = function(name, entity, authToken) {
+storageService.prototype.createEntity = function(path, entity, authToken) {
 	return new Promise((resolve, reject) => {
 		if (authToken) {
 			return resolve(authToken);
@@ -151,7 +159,7 @@ storageService.prototype.createEntity = function(name, entity, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.post(`${this.hostnameResolver.resolveStorage()}/${name}`, {
+			this.request.post(`${this.hostnameResolver.resolveStorage()}/${path}`, {
 				body : JSON.stringify(entity),
 				headers : {
 					"content-type" : "application/json",
@@ -163,7 +171,7 @@ storageService.prototype.createEntity = function(name, entity, authToken) {
 				}
 
 				if (res.statusCode === 201) {
-					return this.getEntity(name, res.headers.location.split("/").slice(-1)[0], token).then(resolve).catch(reject);
+					return this.getEntity(path, res.headers.location.split("/").slice(-1)[0], token).then(resolve).catch(reject);
 				}
 
 				return reject(body);
@@ -172,7 +180,7 @@ storageService.prototype.createEntity = function(name, entity, authToken) {
 	});
 };
 
-storageService.prototype.updateEntity = function(name, id, entity, authToken) {
+storageService.prototype.updateEntity = function(path, id, entity, authToken) {
 	return new Promise((resolve, reject) => {
 		if (authToken) {
 			return resolve(authToken);
@@ -187,7 +195,7 @@ storageService.prototype.updateEntity = function(name, id, entity, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.put(`${this.hostnameResolver.resolveStorage()}/${name}/${id}`, {
+			this.request.put(`${this.hostnameResolver.resolveStorage()}/${path}/${id}`, {
 				body : JSON.stringify(entity),
 				headers : {
 					"content-type" : "application/json",
@@ -208,7 +216,7 @@ storageService.prototype.updateEntity = function(name, id, entity, authToken) {
 	});
 };
 
-storageService.prototype.deleteEntity = function(name, id, authToken) {
+storageService.prototype.patchEntity = function(path, id, entity, authToken) {
 	return new Promise((resolve, reject) => {
 		if (authToken) {
 			return resolve(authToken);
@@ -223,13 +231,53 @@ storageService.prototype.deleteEntity = function(name, id, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.delete(`${this.hostnameResolver.resolveStorage()}/${name}/${id}`, {
+			this.request.patch(`${this.hostnameResolver.resolveStorage()}/${path}/${id}`, {
+				body : JSON.stringify(entity),
+				headers : {
+					"content-type" : "application/json",
+					Authorization : `Bearer ${token}`
+				}
+			}, (err, res, body) => {
+				if (err) {
+					return reject(err);
+				}
+
+				if (res.statusCode !== 204) {
+					return reject(body);
+				}
+
+				return resolve();
+			});
+		});
+	});
+};
+
+storageService.prototype.deleteEntity = function(path, id, authToken) {
+	return new Promise((resolve, reject) => {
+		if (authToken) {
+			return resolve(authToken);
+		}
+
+		if (this.authClientProvider) {
+			return this.authClientProvider.getAccessToken().then((token) => {
+				return resolve(token);
+			}).catch(reject);
+		}
+
+		return resolve("");
+	}).then((token) => {
+		return new Promise((resolve, reject) => {
+			this.request.delete(`${this.hostnameResolver.resolveStorage()}/${path}/${id}`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				}
 			}, (err, res, body) => {
 				if (err) {
 					return reject(err);
+				}
+
+				if (res.statusCode !== 204) {
+					return reject(body);
 				}
 
 				return resolve();

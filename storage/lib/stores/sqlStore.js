@@ -11,19 +11,19 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
 
 	this.connection = new this.sequelize(this.connectionString, {
 		dialect : dialect,
-		pool: {
+		pool 	: {
 			max			: 5,
 			min			: 0,
 			acquire		: 30000,
 			idle		: 10000
 		},
-		define : {
+		define 	: {
 			freezeTableName	: true,
 			charset 		: this.connectionString.indexOf("postgres://") !== -1 ? "utf-8" : "utf8",
 			dialectOptions 	: dialectOptions,
 			timestamps 		: false
 		},
-		logging: false
+		logging : false
 	});
 
 	this.simpleTypes = [
@@ -31,11 +31,14 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
 		"boolean",
 		"integer",
 		"number",
-		"datetime"
+		"datetime",
+		"decimal"
 	];
 
 	this.models = {};
 	this.tables = {};
+	this.simpleTables = {};
+	this.columnTableLookups = {};
 	this.mainTable = null;
 	this.isReady = false;
 
@@ -53,7 +56,7 @@ sqlStore.prototype.determineType = function(type) {
 		return this.sequelize.INTEGER;
 	}
 
-	if (type === "number") {
+	if (type === "number" || type === "decimal") {
 		return this.sequelize.DECIMAL;
 	}
 
@@ -64,10 +67,12 @@ sqlStore.prototype.determineType = function(type) {
 	return this.sequelize.TEXT;
 };
 
-sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, parentName) {
+sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, parentName, originalName) {
 	let columns = {};
+	let normalisedBaseName = baseName.toLowerCase();
+	let normalisedOriginalName = originalName.toLowerCase();
 
-	if (schemaConfig.type === "object") {
+	if (schemaConfig.type === "object" || this.simpleTypes.indexOf(schemaConfig.type) !== -1) {
 		//add our ID
 		columns.id = {
 			primaryKey 		: true,
@@ -93,32 +98,51 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
 			allowNull 		: false,
 		}
 
-		Object.keys(schemaConfig.properties).forEach((propName) => {
-			if (this.simpleTypes.indexOf(schemaConfig.properties[propName].type) !== -1) {
-				//add the column
-				columns[propName] = {
-					type : this.determineType(schemaConfig.properties[propName].type)
+		if (this.simpleTypes.indexOf(schemaConfig.type) !== -1) {
+			columns.value = {
+				type 		: this.determineType(schemaConfig.type),
+				allowNull 	: false
+			};
+
+			//record this as a simple type
+			if (!this.simpleTables[parentName]) {
+				this.simpleTables[parentName] = {
+					children : []
 				};
-
-				//is it our id?
-				if (propName === "id") {
-					columns[propName].primaryKey = true;
-
-					if (schemaConfig.properties[propName].type === "string") {
-						columns[propName].type = this.sequelize.STRING(255);
-					}
-				}
-			} else {
-				//generate a new table
-				tables = this.determineTables(`${baseName}_${propName}`, schemaConfig.properties[propName], tables, baseName);
 			}
-		});
 
-		tables[baseName] = columns;
+			this.simpleTables[parentName].children.push(normalisedBaseName);
+			this.columnTableLookups[`${parentName}@@${normalisedOriginalName}`] = normalisedBaseName;
+			this.columnTableLookups[normalisedBaseName] = normalisedOriginalName;
+		} else {
+			Object.keys(schemaConfig.properties).forEach((propName) => {
+				if (this.simpleTypes.indexOf(schemaConfig.properties[propName].type) !== -1) {
+					//add the column
+					columns[propName] = {
+						type : this.determineType(schemaConfig.properties[propName].type)
+					};
+
+					//is it our id?
+					if (propName === "id") {
+						columns[propName].primaryKey = true;
+
+						if (schemaConfig.properties[propName].type === "string") {
+							columns[propName].type = this.sequelize.STRING(255);
+						}
+					}
+				} else {
+					//generate a new table
+					let normName = propName.toLowerCase();
+					tables = this.determineTables(`${normalisedBaseName}_${normName}`, schemaConfig.properties[propName], tables, normalisedBaseName, normName);
+				}
+			});
+		}
+
+		tables[normalisedBaseName] = columns;
 	}
 
 	if (schemaConfig.type === "array") {
-		tables = this.determineTables(`${baseName}`, schemaConfig.items, tables, parentName);
+		tables = this.determineTables(`${normalisedBaseName}`, schemaConfig.items, tables, parentName, originalName);
 	}
 
 	return tables;
@@ -127,7 +151,7 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
 sqlStore.prototype.initType = function() {
 	return new Promise((resolve, reject) => {
 		//generate our list of tables and columns
-		this.tables = this.determineTables(this.config.name, this.config.schema, {});
+		this.tables = this.determineTables(this.config.name, this.config.schema, {}, "", this.config.name);
 
 		const models = [];
 		Object.keys(this.tables).forEach((name) => {
@@ -165,6 +189,7 @@ sqlStore.prototype.initType = function() {
 				force : false,
 				alter : true
 			}).then(doNext).catch((err) => {
+				console.log(err);
 				return doNext();
 			});
 		}
@@ -173,7 +198,7 @@ sqlStore.prototype.initType = function() {
 	});
 };
 
-sqlStore.prototype.getDetails = function(type) {
+sqlStore.prototype.getDetails = function(type, parent) {
 	if (!this.isReady) {
 		return new Promise((resolve) => {
 			setTimeout(resolve, 2500);
@@ -182,59 +207,59 @@ sqlStore.prototype.getDetails = function(type) {
 		});
 	}
 
-	return this.mainTable.count().then((res) => {
+	const filters = [];
+	if (parent) {
+		filters.push({
+			parent : parent
+		});
+	}
+
+	return this.models[type].count({
+		where : filters
+	}).then((res) => {
 		return Promise.resolve({
 			count : res
 		});
 	});
 };
 
-sqlStore.prototype.generateIncludes = function() {
-	const include = {};
-	let hasIncludes = false;
-	let currentInclude = include;
-	let last = null;
-
-	Object.keys(this.models).sort().forEach((name) => {
-		if (name !== this.mainTable.name) {
-			hasIncludes = true;
-			currentInclude.model = this.models[name];
-			currentInclude.required = false;
-			currentInclude.include = [{}];
-
-			last = currentInclude;
-			currentInclude = currentInclude.include[0];
+sqlStore.prototype.convertToReturnValue = function(result, name) {
+	return new Promise((resolve, reject) => {
+		if (!(result && (result.dataValues || result.entries))) {
+			return resolve(null);
 		}
-	});
 
-	if (last && last.include) {
-		delete(last.include);
-	}
+		let ret = {};
+		Object.keys(result.dataValues).forEach((val) => {
+			if (val.indexOf(`${result._modelOptions.name.singular}_`) === 0) {
+				ret[val.replace(`${result._modelOptions.name.singular}_`, '')] = JSON.parse(JSON.stringify(result.dataValues[val])).map((r) => {
+					return r;
+				});
+			} else {
+				ret[val] = result.dataValues[val];
+			}
+		});
 
-	if (hasIncludes) {
-		return [include];
-	}
-
-	return [];
-};
-
-sqlStore.prototype.convertToReturnValue = function(result) {
-	if (!(result && (result.dataValues || result.entries))) {
-		return null;
-	}
-
-	let ret = {};
-	Object.keys(result.dataValues).forEach((val) => {
-		if (val.indexOf(`${result._modelOptions.name.singular}_`) === 0) {
-			ret[val.replace(`${result._modelOptions.name.singular}_`, '')] = JSON.parse(JSON.stringify(result.dataValues[val])).map((r) => {
-				return r;
+		if (this.simpleTables[name] && this.simpleTables[name].children && this.simpleTables[name].children.length > 0) {
+			//need to fetch all of the children
+			return Promise.all(this.simpleTables[name].children.map((c) => {
+				return this.getResources(c, 1, 9999, [
+					{
+						path : "$.parent",
+						value : result.id
+					}
+				]).then((values) => {
+					ret[this.columnTableLookups[c]] = values.map((v) => {
+						return v.value;
+					});
+				});
+			})).then(() => {
+				return resolve(ret);
 			});
-		} else {
-			ret[val] = result.dataValues[val];
 		}
-	});
 
-	return ret;
+		return resolve(ret);
+	});
 };
 
 sqlStore.prototype.getResources = function(type, start, count, filters) {
@@ -262,16 +287,16 @@ sqlStore.prototype.getResources = function(type, start, count, filters) {
 		});
 	}
 
-	return this.mainTable.findAll({
-		include : this.generateIncludes(),
+	return this.models[type].findAndCountAll({
 		where 	: where,
-		offset 	: start - 1,
-		limit 	: count + 1 - 1,
+		limit 	: parseInt(count),
+		offset 	: parseInt(start) - 1,
 	}).then((results) => {
-		return Promise.resolve(results.map((r) => {
-			return this.convertToReturnValue(r);
+		return Promise.all(results.rows.map((r) => {
+			return this.convertToReturnValue(r, type);
 		}));
 	}).catch((err) => {
+		console.log(err);
 		return Promise.reject(err);
 	});
 };
@@ -283,6 +308,10 @@ sqlStore.prototype.getResource = function(type, id) {
 		}).then(() => {
 			return this.getResource(type, id);
 		});
+	}
+
+	if (typeof(id) === "undefined" || id === null) {
+		return Promise.resolve(null);
 	}
 
 	return this.getResources(type, 1, 1, [
@@ -317,21 +346,59 @@ sqlStore.prototype.saveResource = function(name, data, id, parentId) {
 		data.parent = parentId;
 	}
 
-	if (!id) {
-		if (typeof(data.id) === "undefined" || data.id === null) {
-			data.id = this.uuid();
+	return new Promise((resolve, reject) => {
+		if (!id) {
+			if (typeof(data.id) === "undefined" || data.id === null) {
+				data.id = this.uuid();
+			}
+
+			data.etag = this.uuid();
+
+			return this.models[name].create(this.mapData(data, name)).then(resolve).catch(reject);
+		} else {
+			//does it exist?
+			return this.getResource(name, id).then((item) => {
+				if (!item) {
+					data.etag = this.uuid();
+					data.id = id;
+					return this.models[name].create(this.mapData(data, name)).then(resolve).catch(reject);
+				}
+
+				data.id = id;
+				return this.models[name].update(this.mapData(data, name, id), {
+					where : {
+						id : id
+					}
+				}).then(resolve).catch(reject);
+			});
 		}
+	}).then((result) => {
+		//ensure any arrays of values are stored correctly
+		let promises = [];
+		Object.keys(data).forEach((k) => {
+			if (Array.isArray(data[k])) {
+				if (this.columnTableLookups[`${name}@@${k}`]) {
+					//purge the old ones
+					promises.push(this.models[this.columnTableLookups[`${name}@@${k}`]].destroy({
+						where : {
+							parent : data.id
+						}
+					}));
 
-		data.etag = this.uuid();
-
-		return this.models[name].create(this.mapData(data, name));
-	} else {
-		return this.models[name].update(this.mapData(data, name, id), {
-			where : {
-				id : id
+					//save em!
+					promises.push(data[k].map((value) => {
+						return this.saveResource(this.columnTableLookups[`${name}@@${k}`], {
+							value : value
+						}, null, data.id);
+					}));
+				}
 			}
 		});
-	}
+
+		return Promise.all(promises).then(() => {
+			return Promise.resolve(result);
+		});
+	});
 };
 
 sqlStore.prototype.createResource = function(type, id, data) {
@@ -349,18 +416,6 @@ sqlStore.prototype.createResource = function(type, id, data) {
 
 	return this.saveResource(type, data, null).then((_newResource) => {
 		newResource = _newResource;
-
-		//scan each key
-		return Promise.all(Object.keys(data).map((key) => {
-			let obj = JSON.parse(JSON.stringify(data[key]));
-
-			if (Array.isArray(obj)) {
-				return this.updateChildren(`${type}_${key}`, obj, newResource.dataValues.id);
-			} else if (typeof(obj) === 'object' && obj !== null) {
-				return this.updateResource(`${type}_${key}`, null, obj, newResource.dataValues.id);
-			}
-		}));
-	}).then(() => {
 		return Promise.resolve(newResource.dataValues);
 	}).catch((err) => {
 		if (err && (err.original && err.original.code === "ER_DUP_ENTRY" || (err.fields && err.fields.indexOf('id') === 0))) {
@@ -368,34 +423,6 @@ sqlStore.prototype.createResource = function(type, id, data) {
 		}
 
 		return Promise.reject(err);
-	});
-};
-
-sqlStore.prototype.updateChildren = function(type, data, parentId) {
-	const doNext = () => {
-		if (data.length === 0) {
-			return Promise.resolve();
-		}
-
-		const next = data.pop();
-
-		console.log(next);
-
-		return this.saveResource(`${type}`, next, next.id, parentId).then(doNext);
-	};
-
-	//remove all children that are no longer included within the object
-	return this.models[type].destroy({
-		where : {
-			id : {
-				[this.sequelize.Op.notIn] : data.map((d) => {
-					return d.id;
-				})
-			},
-			parent : parentId
-		}
-	}).then(() => {
-		return doNext();
 	});
 };
 
@@ -409,21 +436,8 @@ sqlStore.prototype.updateResource = function(type, id, data, parentId) {
 	}
 
 	let updatedResource = data;
-	return this.saveResource(type, data, id, parentId).then(() => {
-		//scan each key
-		return Promise.all(Object.keys(data).map((key) => {
-			let obj = JSON.parse(JSON.stringify(data[key]));
-
-			if (Array.isArray(obj)) {
-				return this.updateChildren(`${type}_${key}`, obj, id);
-			} else if (typeof(obj) === 'object' && obj !== null) {
-				return this.updateResource(`${type}_${key}`, obj.id, obj, id);
-			}
-
-			return Promise.resolve();
-		}));
-	}).then(() => {
-		return updatedResource;
+	return this.saveResource(type, data, id, parentId).then((_newResource) => {
+		return Promise.resolve(updatedResource);
 	});
 };
 
@@ -436,7 +450,7 @@ sqlStore.prototype.deleteResource = function(type, id) {
 		});
 	}
 
-	return this.mainTable.destroy({
+	return this.models[type].destroy({
 		where : {
 			id : id
 		}

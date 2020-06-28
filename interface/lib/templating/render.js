@@ -27,7 +27,8 @@ const render = function(fs, path, preProcessor) {
 	];
 	this.internalClick = [
 		"td",
-		"th"
+		"th",
+		"div"
 	];
 	this.nativeClickTags = [
 		"a",

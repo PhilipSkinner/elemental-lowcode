@@ -96,6 +96,9 @@ controllerState.prototype.triggerEvent = function(name, details) {
 		}
 
 		return resolve();
+	}).catch((err) => {
+       	console.error(err);
+		return Promise.resolve();
 	});
 };
 

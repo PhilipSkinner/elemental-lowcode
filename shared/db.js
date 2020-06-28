@@ -70,8 +70,8 @@ db.prototype.generateClass = function() {
 
   class SequelizeAdapter {
     constructor(name) {
-      this.name   = `idp__${name}`;
-      this.model  = self.getModel(this.name);
+      this.name   = `idp__${name.toLowerCase()}`;
+      this.model  = self.getModel(this.name.toLowerCase());
     }
 
     async upsert(id, data, expiresIn) {

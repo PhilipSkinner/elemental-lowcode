@@ -8,14 +8,24 @@ const
 let app = null;
 let server = null;
 let restarting = false;
-let tHandler = tokenHandler(process.env.SIG);
+let tHandler = tokenHandler(process.env.SIG, {
+	ignore : [
+		/\/\w+\/.definition/i
+	]
+});
 
 const startup = () => {
 	app = express();
 
 	const storageEngine = require("./lib/storageEngine")(app);
 
-	app.use(cors());
+	app.use(cors({
+		exposedHeaders : [
+			"location",
+			"etag",
+			"content-type"
+		]
+	}));
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended : false }));
 	app.use((res, req, next) => {
