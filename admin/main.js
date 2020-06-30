@@ -74,6 +74,9 @@ app.get("/auth", (req, res) => {
 		res.cookie("token", accessToken.token.access_token, {
 			expires : accessToken.token.expires_at,
 		});
+		res.cookie("identity", accessToken.token.id_token, {
+			expires : accessToken.token.expires_at,
+		});
 		res.redirect("/");
 	}).catch((err) => {
 		res.write("Error");
@@ -82,8 +85,13 @@ app.get("/auth", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
+	let idHint = req.cookies.identity;
+
+	console.log(idHint);
+
 	res.clearCookie("token");
-	res.redirect("/");
+	res.clearCookie("identity");
+	res.redirect(`${hostnameResolver.resolveIdentity()}/session/end?post_logout_redirect_uri=${encodeURIComponent(hostnameResolver.resolveAdmin())}&id_token_hint=${encodeURIComponent(idHint)}`);
 });
 
 app.use(express.static(path.join(process.env.DIR, "./interface"), {}));

@@ -10,11 +10,6 @@ window.getToken = function() {
 	return token;
 };
 
-window.logout = function() {
-	document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-	location.href = "/";
-};
-
 window.generateGuid = function() {
 	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
     	var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);

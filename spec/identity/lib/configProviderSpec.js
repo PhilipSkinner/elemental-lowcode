@@ -313,7 +313,7 @@ const scopeInvalidJSON = (done) => {
 
 const adminClientTest = (done) => {
 	const resolverMock = sinon.mock(hostnameResolver);
-	resolverMock.expects("resolveAdmin").once().returns("http://elemental");
+	resolverMock.expects("resolveAdmin").twice().returns("http://elemental");
 
 	const instance = configProvider(glob.main, path, fs, jose, userDB, db, hostnameResolver);
 
@@ -324,6 +324,9 @@ const adminClientTest = (done) => {
 			scope : "openid roles",
 			redirect_uris : [
 				"http://elemental/auth"
+			],
+			post_logout_redirect_uris : [
+				"http://elemental"
 			]
 		});
 
@@ -396,7 +399,7 @@ const fetchConfigTest = (done) => {
 	globMock.expects("main").once().withArgs("woot/**/*.scope.json").callsArgWith(1, null, []);
 
 	const resolverMock = sinon.mock(hostnameResolver);
-	resolverMock.expects("resolveAdmin").once().returns("http://elemental");
+	resolverMock.expects("resolveAdmin").twice().returns("http://elemental");
 
 	const keyMock = sinon.mock(jose.JWKS._KeyStore);
 	keyMock.expects("add").once().withArgs("woot");
@@ -450,6 +453,9 @@ const fetchConfigTest = (done) => {
     				scope : 'openid roles',
     				redirect_uris : [
     					'http://elemental/auth'
+					],
+					post_logout_redirect_uris : [
+						"http://elemental"
 					]
 				}
 			],

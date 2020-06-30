@@ -120,6 +120,9 @@ configProvider.prototype.generateAdminClient = function(secret) {
 		scope 			: "openid roles",
 		redirect_uris	: [
 			`${this.hostnameResolver.resolveAdmin()}/auth`
+		],
+		post_logout_redirect_uris : [
+			`${this.hostnameResolver.resolveAdmin()}`
 		]
 	});
 };
