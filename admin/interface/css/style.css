@@ -9576,6 +9576,7 @@ a:focus {
   background-color: #f8f9fc;
   width: 100%;
   overflow-x: hidden;
+  position: relative;
 }
 
 #wrapper #content-wrapper #content {
@@ -11052,7 +11053,7 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 .alert {
-  position: fixed;
+  position: absolute;
   top: 10px;
   left: 50%;
   width: 200px;
@@ -11284,4 +11285,22 @@ div.block {
 .scrollable {
   max-height: 200px;
   overflow-x: scroll;
+}
+
+.overlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  background: rgba(0,0,0,0.6);
+  z-index: 20000;
+}
+
+.overlay .alert {
+  width: 400px;
+  margin-left: -200px;
+  left: 50%;
+  top: 200px;
+  text-align: left;
 }

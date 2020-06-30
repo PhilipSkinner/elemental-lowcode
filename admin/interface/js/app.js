@@ -10,6 +10,17 @@ window.getToken = function() {
 	return token;
 };
 
+window.hasRole = function(role) {
+	const token = window.getToken();
+
+	try {
+		const claims = JSON.parse(atob(token.split('.')[1]));
+		return claims.roles.indexOf(role) !== -1;
+	} catch(e) {
+		return false;
+	}
+};
+
 window.generateGuid = function() {
 	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
     	var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -239,6 +250,23 @@ window.templates.fetchTemplates().then(() => {
 			props : [
 				"title",
 				"navitems"
+			]
+		});
+
+		window.Vue.component("permissions", {
+			data : function() {
+				const allowed = this.roles.reduce((s, a) => {
+					console.log(s, window.hasRole(a));
+					return s || window.hasRole(a);
+				}, false);
+
+				return {
+					missingRoles : !allowed
+				};
+			},
+			template : "#template-permissions",
+			props : [
+				"roles"
 			]
 		});
 

@@ -1,5 +1,7 @@
 <template id="template-integrations">
 	<div class="integrations">
+		<permissions :roles="['integration_reader','integration_admin','system_reader','system_admin']"></permissions>
+
 		<navigation title="Integrations"></navigation>
 
 		<!-- Begin Page Content -->
@@ -57,6 +59,8 @@
 
 <template id="template-integrationDetails">
 	<div class="integrationDetails">
+		<permissions :roles="['integration_reader','integration_admin','system_reader','system_admin']"></permissions>
+
 		<navigation :title="integration.name"></navigation>
 
 		<div class="container-fluid">
@@ -110,6 +114,8 @@
 
 <template id="template-integrationsEditor">
 	<div class="integrationsEditor">
+		<permissions :roles="['integration_writer','integration_admin','system_writer','system_admin']"></permissions>
+
 		<div class="entityWrapper">
 			<div id="integrationEditor" class="editorWindow"></div>
 		</div>

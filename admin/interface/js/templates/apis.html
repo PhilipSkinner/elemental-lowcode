@@ -1,5 +1,7 @@
 <template id="template-apis">
 	<div class="apis">
+		<permissions :roles="['api_reader','api_admin','system_reader', 'system_admin']"></permissions>
+
 		<navigation title="APIs"></navigation>
 
 		<!-- Begin Page Content -->
@@ -56,6 +58,8 @@
 
 <template id="template-api-details">
 	<div class="api-details">
+		<permissions :roles="['api_reader','api_admin','system_reader', 'system_admin']"></permissions>
+
 		<navigation :title="api.name"></navigation>
 
 		<div class="container-fluid">
@@ -141,6 +145,8 @@
 
 <template id="template-api-editor">
 	<div class="api-editor">
+		<permissions :roles="['api_writer','api_admin','system_writer', 'system_admin']"></permissions>
+
 		<alert text="API saved!" v-bind:visible="showAlert"></alert>
 
 		<div class="container-fluid" v-if="controllerEditorVisible">

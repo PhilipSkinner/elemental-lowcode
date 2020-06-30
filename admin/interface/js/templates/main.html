@@ -4,6 +4,25 @@
 	</div>
 </template>
 
+<template id="template-permissions">
+	<div v-if="missingRoles" class="overlay">
+		<div class="alert alert-danger alert-permissions">
+			<h2>Incorrect permissions</h2>
+
+			<p>
+				You do not have the required level of authorization to access this section. You must have one of the following roles
+				issued to your user to access this area:
+			</p>
+
+			<ul>
+				<li v-for="role in roles">
+					{{role}}
+				</li>
+			</ul>
+		</div>
+	</div>
+</template>
+
 <template id="template-modal-error">
 	<div v-if="visible">
 		<div class="modal">
@@ -29,6 +48,8 @@
 
 <template id="template-home">
 	<div class="home">
+		<permissions :roles="['system_reader', 'system_admin']"></permissions>
+
 		<navigation title="Welcome to Elemental"></navigation>
 
 		<div class="container-fluid">

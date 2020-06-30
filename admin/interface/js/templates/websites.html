@@ -1,5 +1,7 @@
 <template id="template-websites">
 	<div class="websites">
+		<permissions :roles="['website_reader','website_admin','system_reader','system_admin']"></permissions>
+
 		<navigation title="Websites" :navitems="navitems"></navigation>
 
 		<div class="container-fluid" v-if="sessionConfigVisible">
@@ -121,6 +123,8 @@
 
 <template id="template-websiteEditor">
 	<div class="websiteEditor">
+		<permissions :roles="['website_writer','website_admin','system_writer','system_admin']"></permissions>
+
 		<alert text="Website saved!" v-bind:visible="showAlert"></alert>
 
 		<div class="container-fluid" v-if="viewEditorVisible">

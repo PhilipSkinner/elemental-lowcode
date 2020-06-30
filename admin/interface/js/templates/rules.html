@@ -1,5 +1,7 @@
 <template id="template-rules">
 	<div class="rules">
+		<permissions :roles="['rule_reader','rule_admin','system_reader','system_admin']"></permissions>
+
 		<navigation title="Rulesets"></navigation>
 
 		<!-- Begin Page Content -->
@@ -58,6 +60,8 @@
 
 <template id="template-ruleDetails">
 	<div class="ruleDetails">
+		<permissions :roles="['rule_reader','rule_admin','system_reader','system_admin']"></permissions>
+
 		<navigation :title="ruleset.name"></navigation>
 
 		<div class="container-fluid">
@@ -123,6 +127,8 @@
 
 <template id="template-rulesEditor">
 	<div class="rulesEditor">
+		<permissions :roles="['rule_writer','rule_admin','system_writer','system_admin']"></permissions>
+
 		<div class="entityWrapper">
 			<div id="ruleEditor" class="editorWindow"></div>
 		</div>

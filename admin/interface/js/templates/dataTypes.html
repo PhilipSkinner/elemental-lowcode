@@ -1,5 +1,7 @@
 <template id="template-dataTypes">
 	<div class="dataTypes">
+		<permissions :roles="['datatype_reader','datatype_admin','system_reader','system_admin']"></permissions>
+
 		<navigation title="Data"></navigation>
 
 		<!-- Begin Page Content -->
@@ -61,6 +63,8 @@
 
 <template id="template-dataTypeDetails">
 	<div class="dataTypeDetails">
+		<permissions :roles="['datatype_reader','datatype_admin','system_reader','system_admin']"></permissions>
+
 		<navigation :title="dataType.name"></navigation>
 
 		<!-- Begin Page Content -->
@@ -318,6 +322,8 @@
 
 <template id="template-dataTypeEditor">
 	<div class="dataTypeEditor">
+		<permissions :roles="['datatype_writer','datatype_admin','system_writer','system_admin']"></permissions>
+
 		<div class="entityWrapper">
 			<div id="typeEditor" class="editorWindow"></div>
 		</div>

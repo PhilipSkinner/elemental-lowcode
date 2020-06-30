@@ -1,5 +1,7 @@
 <template id="template-messaging">
 	<div class="messaging">
+		<permissions :roles="['queue_reader','queue_admin','system_reader','system_admin']"></permissions>
+
 		<navigation title="Queues"></navigation>
 
 		<!-- Begin Page Content -->
@@ -58,6 +60,8 @@
 
 <template id="template-queueDetails">
 	<div class="queueDetails">
+		<permissions :roles="['queue_reader','queue_admin','system_reader','system_admin']"></permissions>
+
 		<navigation :title="queue.name"></navigation>
 
 		<div class="container-fluid">
@@ -179,6 +183,8 @@ Body: {{JSON.stringify({
 
 <template id="template-queueEditor">
 	<div class="queueEditor">
+		<permissions :roles="['queue_writer','queue_admin','system_writer','system_admin']"></permissions>
+
 		<div class="editorSelector" v-bind:class="{ 'queueMode' : queueMode, 'handlerMode' : !queueMode }">
 			<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 				<ul class="navbar-nav ml-auto">

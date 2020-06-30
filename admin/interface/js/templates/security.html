@@ -1,5 +1,7 @@
 <template id="template-security">
 	<div class="security">
+		<permissions :roles="['security_reader','security_admin','system_reader','system_admin']"></permissions>
+
 		<navigation title="Security" :navitems="navitems"></navigation>
 
 		<alert text="Security settings saved!" v-bind:visible="showAlert"></alert>
@@ -366,6 +368,8 @@
 
 <template id="template-securityClientEditor">
 	<div class="securityClientEditor">
+		<permissions :roles="['security_writer','security_admin','system_writer','system_admin']"></permissions>
+
 		<div class="entityWrapper">
 			<div id="clientEditor" class="editorWindow"></div>
 		</div>
@@ -382,6 +386,8 @@
 
 <template id="template-securityScopeEditor">
 	<div class="securityClientEditor">
+		<permissions :roles="['security_writer','security_admin','system_writer','system_admin']"></permissions>
+
 		<div class="entityWrapper">
 			<div id="scopeEditor" class="editorWindow"></div>
 		</div>
@@ -398,6 +404,8 @@
 
 <template id="template-securityUserEditor">
 	<div class="securityClientEditor">
+		<permissions :roles="['security_writer','security_admin','system_writer','system_admin']"></permissions>
+
 		<div class="entityWrapper">
 			<div id="userEditor" class="editorWindow"></div>
 		</div>
