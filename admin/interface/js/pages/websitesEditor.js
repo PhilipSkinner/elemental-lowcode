@@ -62,6 +62,7 @@ _websitesEditorController.prototype.getData = function() {
 		activeProperties 		: this.activeProperties,
 		allProperties 			: this.propertyGroups,
 		tagSelected 			: this.tagSelected,
+		activeDefinition 		: this.activeDefinition
 	};
 };
 
@@ -614,6 +615,11 @@ _websitesEditorController.prototype.isExpression = function(val) {
 
 _websitesEditorController.prototype.setAsExpression = function(prop) {
 	this.activeProperties[prop] = "$.";
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.unsetAsExpression = function(prop) {
+	this.activeProperties[prop] = "";
 	this.refreshState();
 };
 

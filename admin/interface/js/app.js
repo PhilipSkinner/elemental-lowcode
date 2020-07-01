@@ -60,7 +60,6 @@ window.templates.fetchTemplates().then(() => {
 	];
 
 	const loadPage = (file) => {
-		console.info("Loading", file);
 		return new Promise((resolve, reject) => {
 			var elem = document.createElement("script");
 			elem.src = file;
@@ -256,7 +255,6 @@ window.templates.fetchTemplates().then(() => {
 		window.Vue.component("permissions", {
 			data : function() {
 				const allowed = this.roles.reduce((s, a) => {
-					console.log(s, window.hasRole(a));
 					return s || window.hasRole(a);
 				}, false);
 

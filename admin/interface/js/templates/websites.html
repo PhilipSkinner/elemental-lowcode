@@ -255,11 +255,22 @@
 											<!-- booleans -->
 											<input :id="'prop_' + prop" type="checkbox" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'boolean'"/>
 
+											<!-- expression buttons -->
 											<button class="btn btn-xs btn-primary expression-button" v-if="activeDefinition.properties[prop].type !== 'string'" v-on:click="_websitesEditorControllerInstance.setAsExpression(prop);">Expression</button>
+
+
 										</div>
 
 										<!-- expression -->
 										<input :id="'prop_' + prop" class="form-control expression-input" type="text" v-model="activeProperties[prop]" v-if="_websitesEditorControllerInstance.isExpression(activeProperties[prop]) && activeDefinition.properties[prop].type !== 'string'" />
+
+										<button
+											class="btn btn-xs btn-primary expression-button"
+											v-if="_websitesEditorControllerInstance.isExpression(activeProperties[prop])"
+											v-on:click="_websitesEditorControllerInstance.unsetAsExpression(prop);"
+										>
+											Cancel
+										</button>
 									</div>
 								</div>
 							</div>
