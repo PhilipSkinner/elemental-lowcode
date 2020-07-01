@@ -109,7 +109,9 @@ const runApp = function() {
 
 	app.listen(8001);
 
-	hotreload.watch(directories.secretStore, reload);
+	hotreload.watch(directories.secretStore, reload, () => {
+  		restarting = false;
+	});
 };
 
 //determine if we should run the setup?

@@ -43,4 +43,6 @@ const reload = () => {
 	}
 };
 
-hotreload.watch(process.env.DIR, reload);
+hotreload.watch(process.env.DIR, reload, () => {
+	restarting = false;
+});

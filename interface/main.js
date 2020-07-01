@@ -49,4 +49,6 @@ const reload = () => {
 hotreload.watch([
 	process.env.DIR,
 	path.join(process.env.DIR, '../identity/**/*.json')
-], reload);
+], reload, () => {
+  restarting = false;
+});
