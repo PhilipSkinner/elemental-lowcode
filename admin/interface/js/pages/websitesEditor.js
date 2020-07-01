@@ -41,6 +41,7 @@ _websitesEditorController.prototype.wipeData = function() {
 	this.uniqueTags 				= {};
 	this.loadedProperties 			= {};
 	this.tagSelected 				= false;
+	this.tagsets 					= {};
 };
 
 _websitesEditorController.prototype.getData = function() {
