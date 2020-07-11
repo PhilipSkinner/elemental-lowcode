@@ -142,15 +142,19 @@ _apiEditorController.prototype.editController = function(name) {
 
 _apiEditorController.prototype.getData = function() {
 	return {
-		api 					: this.api,
-		clients 				: this.clients,
-		showAlert 				: this.showAlert,
-		controllerEditorVisible : this.controllerEditorVisible,
-		mainVisible 			: this.mainVisible,
-		routes 					: this.routes,
-		controllers 			: this.controllers,
-		securityPopupOpen		: this.securityPopupOpen,
-		selectedRoute 			: this.selectedRoute
+		api 							: this.api,
+		clients 						: this.clients,
+		showAlert 						: this.showAlert,
+		controllerEditorVisible 		: this.controllerEditorVisible,
+		mainVisible 					: this.mainVisible,
+		routes 							: this.routes,
+		controllers 					: this.controllers,
+		securityPopupOpen				: this.securityPopupOpen,
+		selectedRoute 					: this.selectedRoute,
+		deleteRouteConfirmVisible 		: false,
+		confirmRouteDeleteAction 		: () => {},
+		deleteControllerConfirmVisible 	: false,
+		confirmControllerDeleteAction 	: () => {}
 	};
 };
 
@@ -331,11 +335,35 @@ _apiEditorController.prototype.saveAll = function() {
 };
 
 _apiEditorController.prototype.removeController = function(name) {
+	this.caller.deleteControllerConfirmVisible = true;
+	this.caller.deleteRouteConfirmVisible = false;
+	this.caller.confirmControllerDeleteAction = () => {
+		this.caller.deleteControllerConfirmVisible = false;
+		this.caller.deleteRouteConfirmVisible = false;
+		return this._removeController(name);
+	}
+	this.caller.$forceUpdate();
+	return;
+};
+
+_apiEditorController.prototype._removeController = function(name) {
 	delete(this.api.controllers[name]);
 	this.refreshState();
 };
 
 _apiEditorController.prototype.removeRoute = function(name) {
+	this.caller.deleteRouteConfirmVisible = true;
+	this.caller.deleteControllerConfirmVisible = false;
+	this.caller.confirmRouteDeleteAction = () => {
+		this.caller.deleteRouteConfirmVisible = false;
+		this.caller.deleteControllerConfirmVisible = false;
+		return this._removeRoute(name);
+	}
+	this.caller.$forceUpdate();
+	return;
+};
+
+_apiEditorController.prototype._removeRoute = function(name) {
 	delete(this.api.routes[name]);
 	this.refreshState();
 };

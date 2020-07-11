@@ -46,23 +46,29 @@ _websitesEditorController.prototype.wipeData = function() {
 
 _websitesEditorController.prototype.getData = function() {
 	return {
-		website 				: this.website,
-		routes 					: this.routes,
-		clients 				: this.clients,
-		tags 					: this.tags,
-		mainVisible 			: this.mainVisible,
-		viewEditorVisible 		: this.viewEditorVisible,
-		controllerEditorVisible : this.controllerEditorVisible,
-		newResourceVisible 		: this.newResourceVisible,
-		showAlert 				: false,
-		sourceMode 				: this.sourceMode,
-		staticfiles 			: this.staticfiles,
-		tagsets 				: this.tagsets,
-		activeView 				: this.activeView,
-		activeProperties 		: this.activeProperties,
-		allProperties 			: this.propertyGroups,
-		tagSelected 			: this.tagSelected,
-		activeDefinition 		: this.activeDefinition
+		website 					: this.website,
+		routes 						: this.routes,
+		clients 					: this.clients,
+		tags 						: this.tags,
+		mainVisible 				: this.mainVisible,
+		viewEditorVisible 			: this.viewEditorVisible,
+		controllerEditorVisible 	: this.controllerEditorVisible,
+		newResourceVisible 			: this.newResourceVisible,
+		showAlert 					: false,
+		sourceMode 					: this.sourceMode,
+		staticfiles 				: this.staticfiles,
+		tagsets 					: this.tagsets,
+		activeView 					: this.activeView,
+		activeProperties 			: this.activeProperties,
+		allProperties 				: this.propertyGroups,
+		tagSelected 				: this.tagSelected,
+		activeDefinition 			: this.activeDefinition,
+		deleteRouteConfirmVisible 	: false,
+		confirmRouteDeleteAction 	: () => {},
+		deleteTagConfirmVisible 	: false,
+		confirmTagDeleteAction 		: () => {},
+		deleteStaticConfirmVisible 	: false,
+		confirmStaticDeleteAction 	: () => {}
 	};
 };
 
@@ -364,6 +370,20 @@ _websitesEditorController.prototype.mainView = function() {
 };
 
 _websitesEditorController.prototype.removeRoute = function(num) {
+	this.caller.deleteStaticConfirmVisible = false;
+	this.caller.deleteTagConfirmVisible = false;
+	this.caller.deleteRouteConfirmVisible = true;
+	this.caller.confirmRouteDeleteAction = () => {
+		this.caller.deleteStaticConfirmVisible = false;
+		this.caller.deleteTagConfirmVisible = false;
+		this.caller.deleteRouteConfirmVisible = false;
+		return this._removeRoute(num);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_websitesEditorController.prototype._removeRoute = function(num) {
 	if (this.routes.length <= 1) {
 		return;
 	}
@@ -380,6 +400,20 @@ _websitesEditorController.prototype.removeRoute = function(num) {
 };
 
 _websitesEditorController.prototype.removeTag = function(num) {
+	this.caller.deleteStaticConfirmVisible = false;
+	this.caller.deleteTagConfirmVisible = true;
+	this.caller.deleteRouteConfirmVisible = false;
+	this.caller.confirmTagDeleteAction = () => {
+		this.caller.deleteStaticConfirmVisible = false;
+		this.caller.deleteTagConfirmVisible = false;
+		this.caller.deleteRouteConfirmVisible = false;
+		return this._removeTag(num);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_websitesEditorController.prototype._removeTag = function(num) {
 	var i = 0;
 	this.tags = this.tags.reduce((s, a) => {
 		if (i !== num) {
@@ -581,6 +615,20 @@ _websitesEditorController.prototype.fetchStaticFiles = function(caller, name) {
 };
 
 _websitesEditorController.prototype.removeResource = function(filename) {
+	this.caller.deleteStaticConfirmVisible = true;
+	this.caller.deleteTagConfirmVisible = false;
+	this.caller.deleteRouteConfirmVisible = false;
+	this.caller.confirmStaticDeleteAction = () => {
+		this.caller.deleteStaticConfirmVisible = false;
+		this.caller.deleteTagConfirmVisible = false;
+		this.caller.deleteRouteConfirmVisible = false;
+		return this._removeResource(filename);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_websitesEditorController.prototype._removeResource = function(filename) {
 	return window.axios.delete(`${window.hosts.kernel}/websites/${this.website.name}/staticfiles/${filename}`, {
 		headers : {
 			Authorization : `Bearer ${window.getToken()}`

@@ -59,7 +59,9 @@ _websitesController.prototype.getWebsites = function() {
 		websitesVisible 		: this.websitesVisible,
 		sessionConfigVisible 	: this.sessionConfigVisible,
 		config 					: this.config,
-		showAlert 				: this.showAlert
+		showAlert 				: this.showAlert,
+		deleteConfirmVisible 	: false,
+		confirmDeleteAction 	: () => {}
 	};
 };
 
@@ -82,6 +84,16 @@ _websitesController.prototype.fetchWebsites = function() {
 };
 
 _websitesController.prototype.deleteWebsite = function(name) {
+	this.caller.deleteConfirmVisible = true;
+	this.caller.confirmDeleteAction = () => {
+		this.caller.deleteConfirmVisible = false;
+		return this._deleteWebsite(name);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_websitesController.prototype._deleteWebsite = function(name) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/websites/${name}`, {
 			headers : {

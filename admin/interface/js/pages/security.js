@@ -33,19 +33,25 @@ const _securityController = function(page) {
 
 _securityController.prototype.getData = function() {
 	return {
-		clients 			: this.clients,
-		users 				: this.users,
-		scopes 				: this.scopes,
-		settingsVisible 	: this.settingsVisible,
-		storageVisible 		: this.storageVisible,
-		secretsVisible 		: this.secretsVisible,
-		addingSecret 		: this.addingSecret,
-		Secrets 			: this.secrets,
-		navitems 			: this.navitems,
-		config 				: this.config,
-		showAlert 			: this.showAlert,
-		currentSecret 		: this.currentSecret,
-		settingSecretValue 	: this.settingSecretValue
+		clients 					: this.clients,
+		users 						: this.users,
+		scopes 						: this.scopes,
+		settingsVisible 			: this.settingsVisible,
+		storageVisible 				: this.storageVisible,
+		secretsVisible 				: this.secretsVisible,
+		addingSecret 				: this.addingSecret,
+		Secrets 					: this.secrets,
+		navitems 					: this.navitems,
+		config 						: this.config,
+		showAlert 					: this.showAlert,
+		currentSecret 				: this.currentSecret,
+		settingSecretValue 			: this.settingSecretValue,
+		deleteClientConfirmVisible 	: false,
+		confirmClientDeleteAction 	: () => {},
+		deleteUserConfirmVisible 	: false,
+		confirmUserDeleteAction 	: () => {},
+		deleteSecretConfirmVisible 	: false,
+		confirmSecretDeleteAction 	: () => {}
 	};
 };
 
@@ -123,7 +129,21 @@ _securityController.prototype.cancelSetSecret = function() {
 	this.forceRefresh();
 };
 
-_securityController.prototype.deleteClient = function(clientId) {
+_securityController.prototype.deleteClient = function(name) {
+	this.caller.deleteSecretConfirmVisible = false;
+	this.caller.deleteUserConfirmVisible = false;
+	this.caller.deleteClientConfirmVisible = true;
+	this.caller.confirmClientDeleteAction = () => {
+		this.caller.deleteSecretConfirmVisible = false;
+		this.caller.deleteUserConfirmVisible = false;
+		this.caller.deleteClientConfirmVisible = false;
+		return this._deleteClient(name);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_securityController.prototype._deleteClient = function(clientId) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/security/clients/${clientId}`, {
 			headers : {
@@ -174,6 +194,20 @@ _securityController.prototype.fetchScopes = function() {
 };
 
 _securityController.prototype.deleteUser = function(userId) {
+	this.caller.deleteSecretConfirmVisible = false;
+	this.caller.deleteUserConfirmVisible = true;
+	this.caller.deleteClientConfirmVisible = false;
+	this.caller.confirmUserDeleteAction = () => {
+		this.caller.deleteSecretConfirmVisible = false;
+		this.caller.deleteUserConfirmVisible = false;
+		this.caller.deleteClientConfirmVisible = false;
+		return this._deleteUser(userId);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_securityController.prototype._deleteUser = function(userId) {
 	return window.axios
 		.delete(`${window.hosts.identity}/api/users/${userId}`, {
 			headers : {
@@ -257,6 +291,20 @@ _securityController.prototype.saveSecret = function() {
 };
 
 _securityController.prototype.removeSecret = function(name) {
+	this.caller.deleteSecretConfirmVisible = true;
+	this.caller.deleteUserConfirmVisible = false;
+	this.caller.deleteClientConfirmVisible = false;
+	this.caller.confirmSecretDeleteAction = () => {
+		this.caller.deleteSecretConfirmVisible = false;
+		this.caller.deleteUserConfirmVisible = false;
+		this.caller.deleteClientConfirmVisible = false;
+		return this._removeSecret(name);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_securityController.prototype._removeSecret = function(name) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/security/secrets/${name}`, {
 			headers : {

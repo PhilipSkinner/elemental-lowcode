@@ -5,7 +5,9 @@ const _dataController = function(page) {
 
 _dataController.prototype.getData = function() {
 	return {
-		dataTypes : this.dataTypes
+		dataTypes 				: this.dataTypes,
+		deleteConfirmVisible 	: false,
+		confirmDeleteAction 	: () => {}
 	};
 };
 
@@ -26,6 +28,16 @@ _dataController.prototype.fetchTypes = function(caller) {
 };
 
 _dataController.prototype.deleteType = function(name) {
+	this.caller.deleteConfirmVisible = true;
+	this.caller.confirmDeleteAction = () => {
+		this.caller.deleteConfirmVisible = false;
+		return this._deleteType(name);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_dataController.prototype._deleteType = function(name) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/data/types/${name}`, {
 			headers : {

@@ -11054,7 +11054,7 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 .alert {
-  position: absolute;
+  position: fixed;
   top: 10px;
   left: 50%;
   width: 200px;

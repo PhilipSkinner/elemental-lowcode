@@ -302,6 +302,31 @@ window.templates.fetchTemplates().then(() => {
 			]
 		});
 
+		window.Vue.component("confirm", {
+			methods : {
+				_onConfirm : function() {
+					if (this._props.onConfirm && typeof(this._props.onConfirm) === "function") {
+						this._props.onConfirm();
+					}
+					this.visible = false;
+				},
+				_onCancel : function() {
+					if (this._props.onCancel && typeof(this._props.onCancel) === "function") {
+						this._props.onCancel();
+					}
+					this.visible = false;
+				}
+			},
+			template : "#template-confirm",
+			props : [
+				"title",
+				"message",
+				"onConfirm",
+				"onCancel",
+				"visible"
+			]
+		});
+
 		window.Vue.prototype.window = window;
 
 		window.router = new VueRouter({

@@ -5,7 +5,9 @@ const _servicesController = function(page) {
 
 _servicesController.prototype.getData = function() {
 	return {
-		services : this.services
+		services 				: this.services,
+		deleteConfirmVisible 	: false,
+		confirmDeleteAction 	: () => {}
 	};
 };
 
@@ -25,6 +27,16 @@ _servicesController.prototype.fetchServices = function(caller) {
 };
 
 _servicesController.prototype.deleteService = function(name) {
+	this.caller.deleteConfirmVisible = true;
+	this.caller.confirmDeleteAction = () => {
+		this.caller.deleteConfirmVisible = false;
+		return this._deleteService(name);
+	}
+	this.caller.$forceUpdate();
+	return;
+};
+
+_servicesController.prototype._deleteService = function(name) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/services/${name}`, {
 			headers : {

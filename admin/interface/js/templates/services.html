@@ -4,6 +4,13 @@
 
 		<navigation title="Services"></navigation>
 
+		<confirm
+			title="Confirmation"
+			message="Are you sure you want to delete this service?"
+			v-bind:visible="deleteConfirmVisible"
+			v-bind:on-confirm="confirmDeleteAction"
+		></confirm>
+
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 

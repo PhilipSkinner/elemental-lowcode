@@ -5,7 +5,9 @@ const _apisController = function(page) {
 
 _apisController.prototype.getData = function() {
 	return {
-		apis : this.apis
+		apis 					: this.apis,
+		deleteConfirmVisible 	: false,
+		confirmDeleteAction 	: () => {}
 	};
 };
 
@@ -25,6 +27,16 @@ _apisController.prototype.fetchApis = function(caller) {
 };
 
 _apisController.prototype.deleteApi = function(name) {
+	this.caller.deleteConfirmVisible = true;
+	this.caller.confirmDeleteAction = () => {
+		this.caller.deleteConfirmVisible = false;
+		return this._deleteApi(name);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_apisController.prototype._deleteApi = function(name) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/apis/${name}`, {
 			headers : {

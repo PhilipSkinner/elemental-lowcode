@@ -5,7 +5,9 @@ const _integrationsController = function(page) {
 
 _integrationsController.prototype.getData = function() {
 	return {
-		integrations : this.integrations
+		integrations 			: this.integrations,
+		deleteConfirmVisible 	: false,
+		confirmDeleteAction 	: () => {}
 	};
 };
 
@@ -26,6 +28,16 @@ _integrationsController.prototype.fetchIntegrations = function(caller) {
 };
 
 _integrationsController.prototype.removeIntegration = function(name) {
+	this.caller.deleteConfirmVisible = true;
+	this.caller.confirmDeleteAction = () => {
+		this.caller.deleteConfirmVisible = false;
+		this._removeIntegration(name);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_integrationsController.prototype._removeIntegration = function(name) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/integrations/${name}`, {
 			headers : {

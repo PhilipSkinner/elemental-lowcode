@@ -12,14 +12,16 @@ const _nodeModulesController = function(page) {
 
 _nodeModulesController.prototype.getData = function() {
 	return {
-		nodeModules 	: this.nodeModules,
-		formOpen 		: this.formOpen,
-		modifying 		: this.modifying,
-		moduleName 		: this.moduleName,
-		moduleVersion 	: this.moduleVersion,
-		displayResult 	: this.displayResult,
-		resultStdout	: this.resultStdout,
-		resultStderr 	: this.resultStderr
+		nodeModules 			: this.nodeModules,
+		formOpen 				: this.formOpen,
+		modifying 				: this.modifying,
+		moduleName 				: this.moduleName,
+		moduleVersion 			: this.moduleVersion,
+		displayResult 			: this.displayResult,
+		resultStdout			: this.resultStdout,
+		resultStderr 			: this.resultStderr,
+		deleteConfirmVisible 	: false,
+		confirmDeleteAction 	: () => {}
 	};
 };
 
@@ -53,6 +55,16 @@ _nodeModulesController.prototype.fetchNodeModules = function() {
 };
 
 _nodeModulesController.prototype.removeNodeModule = function(nodeModule) {
+	this.caller.deleteConfirmVisible = true;
+	this.caller.confirmDeleteAction = () => {
+		this.caller.deleteConfirmVisible = false;
+		return this._removeNodeModule(nodeModule);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_nodeModulesController.prototype._removeNodeModule = function(nodeModule) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/dependencies/${nodeModule}`, {
 			headers : {

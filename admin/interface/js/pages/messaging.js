@@ -5,7 +5,9 @@ const _messagingController = function(page) {
 
 _messagingController.prototype.getQueues = function() {
 	return {
-		queues : this.queues
+		queues 					: this.queues,
+		deleteConfirmVisible 	: false,
+		confirmDeleteAction 	: () => {}
 	};
 };
 
@@ -28,6 +30,16 @@ _messagingController.prototype.fetchQueues = function() {
 };
 
 _messagingController.prototype.removeQueue = function(name) {
+	this.caller.deleteConfirmVisible = true;
+	this.caller.confirmDeleteAction = () => {
+		this.caller.deleteConfirmVisible = false;
+		return this._removeQueue(name);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_messagingController.prototype._removeQueue = function(name) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/queues/${name}`, {
 			headers : {

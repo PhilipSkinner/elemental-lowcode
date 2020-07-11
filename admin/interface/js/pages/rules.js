@@ -5,7 +5,9 @@ const _rulesController = function(page) {
 
 _rulesController.prototype.getRules = function() {
 	return {
-		rules : this.rules
+		rules 					: this.rules,
+		deleteConfirmVisible 	: false,
+		confirmDeleteAction 	: () => {}
 	};
 };
 
@@ -33,6 +35,16 @@ _rulesController.prototype.fetchRules = function() {
 };
 
 _rulesController.prototype.removeRule = function(rule) {
+	this.caller.deleteConfirmVisible = true;
+	this.caller.confirmDeleteAction = () => {
+		this.caller.deleteConfirmVisible = false;
+		return this._removeRule(rule);
+	};
+	this.caller.$forceUpdate();
+	return;
+};
+
+_rulesController.prototype._removeRule = function(rule) {
 	return window.axios
 		.delete(`${window.hosts.kernel}/rules/${rule}`, {
 			headers : {

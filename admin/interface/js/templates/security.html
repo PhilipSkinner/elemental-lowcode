@@ -6,6 +6,27 @@
 
 		<alert text="Security settings saved!" v-bind:visible="showAlert"></alert>
 
+		<confirm
+			title="Confirmation"
+			message="Are you sure you want to delete this client?"
+			v-bind:visible="deleteClientConfirmVisible"
+			v-bind:on-confirm="confirmClientDeleteAction"
+		></confirm>
+
+		<confirm
+			title="Confirmation"
+			message="Are you sure you want to delete this user?"
+			v-bind:visible="deleteUserConfirmVisible"
+			v-bind:on-confirm="confirmUserDeleteAction"
+		></confirm>
+
+		<confirm
+			title="Confirmation"
+			message="Are you sure you want to delete this secret?"
+			v-bind:visible="deleteSecretConfirmVisible"
+			v-bind:on-confirm="confirmSecretDeleteAction"
+		></confirm>
+
 		<div class="container-fluid" v-if="secretsVisible">
 			<div class="row">
 				<div class="col-md-12">
