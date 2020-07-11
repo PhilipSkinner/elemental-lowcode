@@ -38,9 +38,13 @@ sqlSessionStore.prototype.all = function(cb) {
 
 sqlSessionStore.prototype.destroy = function(sid, cb) {
 	this.sqlStore.deleteResource(this.name, sid).then(() => {
-		cb();
+		if (cb && typeof(cb) === "function") {
+			cb();
+		}
 	}).catch((err) => {
-		cb(err);
+		if (cb && typeof(cb) === "function") {
+			cb(err);
+		}
 	});
 };
 

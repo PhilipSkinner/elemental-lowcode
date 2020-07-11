@@ -169,6 +169,11 @@ var addAttributes = function (elem, atts) {
  * @param  {Object} existing The existing DOM node
  */
 var diffAtts = function (template, existing) {
+	//reset any user modifiable attributes
+	var modifiable = ["value"];
+	modifiable.forEach((m) => {
+		existing.node[m] = "";
+	});
 
   	// Get attributes to remove
 	var remove = existing.atts.filter(function (att) {
@@ -189,7 +194,6 @@ var diffAtts = function (template, existing) {
 	// Add/remove any required attributes
 	addAttributes(existing.node, change);
 	removeAttributes(existing.node, remove);
-
 };
 
 /**

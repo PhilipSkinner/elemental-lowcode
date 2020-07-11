@@ -932,7 +932,7 @@ typeInstance.prototype.determinePaths = function(parentPath, name, fullName, sch
 		Object.keys(schema.properties).forEach((prop) => {
 			let childName = this.normaliseName(`${fullName}_${prop}`);
 
-			if (schema.properties[prop].type === "array" && schema.properties[prop].items.type === "object") {
+			if (schema.properties[prop].type === "array" && schema.properties[prop].items && schema.properties[prop].items.type === "object") {
 				//need a new set of paths!
 				ret = ret.concat(this.determinePaths(singularPath, prop, childName, schema.properties[prop].items));
 			}
