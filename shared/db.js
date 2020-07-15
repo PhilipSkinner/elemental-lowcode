@@ -103,6 +103,10 @@ db.prototype.generateClass = function() {
         resource.uid = data.uid;
       }
 
+      if (data.username) {
+        resource.username = data.username;
+      }
+
       return this.model.engine.createResource(this.name, id, resource).catch((err) => {
         if (err.toString().indexOf("Resource already exists") !== -1) {
           return this.model.engine.updateResource(this.name, id, resource);
@@ -121,7 +125,12 @@ db.prototype.generateClass = function() {
         });
       }
 
-      return this.model.engine.getResources(this.name, 1, 10);
+      return this.model.engine.getResources(this.name, 1, 10).then((resources) => {
+        return Promise.resolve(resources.map((r) => {
+          r.data = JSON.parse(r.data);
+          return r;
+        }));
+      });
     }
 
     async find(id) {
@@ -148,6 +157,37 @@ db.prototype.generateClass = function() {
       }
 
       return found.data;
+    }
+
+    async findByUsername(username) {
+      if (!this.model.engine) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, 500);
+        }).then(() => {
+          return this.find(id);
+        });
+      }
+
+      const found = await this.model.engine.getResources(this.name, 1, 1, [
+        {
+          path : "$.username",
+          value : username
+        }
+      ]);
+
+      if (!found || found.length === 0) {
+        return undefined;
+      }
+
+      found[0].consumed = false;
+      try {
+        found[0].data = JSON.parse(found[0].data);
+      } catch(e) {}
+      if (found[0].consumedAt) {
+        found[0].data.consumed = true;
+      }
+
+      return found[0].data;
     }
 
     async findByUserCode(userCode) {

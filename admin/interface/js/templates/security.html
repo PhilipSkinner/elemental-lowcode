@@ -333,6 +333,7 @@
 								<table class="table table-bordered" width="100%" cellspacing="0">
 									<thead>
 										<tr>
+											<th>Subject</th>
 											<th>Username</th>
 											<th>Registered date</th>
 											<th>Roles</th>
@@ -341,6 +342,7 @@
 									</thead>
 									<tfoot>
 										<tr>
+											<th>Subject</th>
 											<th>Username</th>
 											<th>Registered date</th>
 											<th>Roles</th>
@@ -358,6 +360,9 @@
 										<tr v-for="user in users">
 											<td>
 												{{user.id}}
+											</td>
+											<td>
+												{{user.data.username}}
 											</td>
 											<td>
 												{{user.data.registered}}

@@ -76,7 +76,6 @@ sessionState.prototype.getSubject = function() {
 		}
 	}
 
-
 	return null;
 };
 

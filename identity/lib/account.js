@@ -1,4 +1,4 @@
-module.exports = function(db, bcrypt) {
+module.exports = function(db, bcrypt, uuid) {
 	if (!db) {
 		db = require("../../shared/db")();
 	}
@@ -7,22 +7,35 @@ module.exports = function(db, bcrypt) {
 		bcrypt = require("bcrypt");
 	}
 
+	if (!uuid) {
+		uuid = require("uuid").v4;
+	}
+
 	const userDB = new db("User");
 
 	class Account {
-		constructor(id, profile) {
-			this.accountId = id;
+		constructor(username, profile) {
+			this.username = username;
 			this.profile = profile;
+			this.accountId = this.profile.subject || this.username;
 		}
 
 		async claims(use, scope) {
-			return Object.assign(this.profile.claims || {}, {
-				sub : this.accountId
+			let claims = {};
+
+			if (this.profile && this.profile.claims) {
+				claims = this.profile.claims;
+			}
+
+			return userDB.find(this.accountId).then((user) => {
+				return Object.assign(claims, {
+					sub : user && user.subject ? user.subject : this.accountId
+				});
 			});
 		}
 
 		static async findByLogin(login, password) {
-			const user = await userDB.find(login);
+			const user = await userDB.findByUsername(login);
 
 			if (typeof(user) === "undefined" || user === null) {
 				return null;
@@ -33,11 +46,16 @@ module.exports = function(db, bcrypt) {
 				return null;
 			}
 
-			return new Account(login, user);
+			return new Account(user.subject, user);
 		}
 
 		static async findAccount(ctx, id, token) {
 			const user = await userDB.find(id);
+
+			if (user === null || typeof(user) === "undefined") {
+				return null;
+			}
+
 			return new Account(id, user);
 		}
 
@@ -51,7 +69,8 @@ module.exports = function(db, bcrypt) {
 					}
 
 					return {
-						roles : user.claims && user.claims.roles ? user.claims.roles : []
+						roles 	: user.claims && user.claims.roles ? user.claims.roles : [],
+						sub 	: user.subject || this.accountId
 					};
 				}
 
@@ -94,15 +113,17 @@ module.exports = function(db, bcrypt) {
 		}
 
 		static async registerUser(username, password) {
-			const user = await userDB.find(username);
+			const user = await userDB.findByUsername(username);
 
 			if (typeof(user) !== "undefined" && user !== null) {
 				return null;
 			}
 
 			const hashed = await Account.generatePassword(password);
+			const subject = uuid();
 
-			await userDB.upsert(username, {
+			await userDB.upsert(subject, {
+				subject 	: subject,
 				username	: username,
 				password	: hashed,
 				registered	: new Date(),
@@ -111,7 +132,7 @@ module.exports = function(db, bcrypt) {
 				}
 			});
 
-			return await userDB.find(username);
+			return await userDB.find(subject);
 		}
 	}
 

@@ -41,8 +41,11 @@ const handler = function(accountDB, get, uidToGrantId, InvalidGrant, presence, i
 			gty,
 			scope               : ctx.oidc.params.scope,
 			sessionUid          : ctx.oidc.uid,
-			sid                 : ctx.oidc.uid,
+			sid                 : ctx.oidc.uid
 		});
+
+		const acClaims = await accountDB.extraAccessTokenClaims(null)(ctx, at);
+		at.accountId = acClaims.sub;
 
 		if (ctx.oidc.client.tlsClientCertificateBoundAccessTokens) {
 			at.setThumbprint('x5t', cert);

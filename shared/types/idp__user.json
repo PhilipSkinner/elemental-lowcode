@@ -7,12 +7,21 @@
 			"paths" : [
 				"$.id"
 			]
+		},
+		{
+			"type" : "unique",
+			"paths" : [
+				"$.username"
+			]
 		}
 	],
 	"schema" : {
 		"type" : "object",
 		"properties" : {
 			"id" : {
+				"type" : "string"
+			},
+			"username" : {
 				"type" : "string"
 			},
 			"data" : {

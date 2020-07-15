@@ -4,8 +4,9 @@ const
 	account 		= require("../../../identity/lib/account");
 
 const _db = {
-	find : () => {},
-	upsert : () => {}
+	find 			: () => {},
+	findByUsername 	: () => {},
+	upsert 			: () => {}
 };
 
 class db {
@@ -15,6 +16,10 @@ class db {
 
 	async find(name) {
 		return _db.find(name);
+	}
+
+	async findByUsername(name) {
+		return _db.findByUsername(name);
 	}
 
 	async upsert(name, data) {
@@ -70,7 +75,7 @@ const userExistsTest = (done) => {
 	const instance = account(db, bcrypt);
 
 	const dbMock = sinon.mock(_db);
-	dbMock.expects("find").once().withArgs("hello").returns(Promise.resolve(null));
+	dbMock.expects("findByUsername").once().withArgs("hello").returns(Promise.resolve(null));
 
 	instance.findByLogin("hello", "world").then((result) => {
 		expect(result).toBe(null);
@@ -86,7 +91,7 @@ const userPasswordIncorrect = (done) => {
 	const instance = account(db, bcrypt);
 
 	const dbMock = sinon.mock(_db);
-	dbMock.expects("find").once().withArgs("hello").returns(Promise.resolve({
+	dbMock.expects("findByUsername").once().withArgs("hello").returns(Promise.resolve({
 		password : "doot"
 	}));
 
@@ -109,7 +114,7 @@ const userPasswordCorrect = (done) => {
 	const instance = account(db, bcrypt);
 
 	const dbMock = sinon.mock(_db);
-	dbMock.expects("find").once().withArgs("hello").returns(Promise.resolve({
+	dbMock.expects("findByUsername").once().withArgs("hello").returns(Promise.resolve({
 		password : "doot"
 	}));
 
@@ -117,7 +122,7 @@ const userPasswordCorrect = (done) => {
 	bcryptMock.expects("compare").once().withArgs("world", "doot").callsArgWith(2, null, true);
 
 	instance.findByLogin("hello", "world").then((result) => {
-		expect(result.accountId).toEqual("hello");
+		expect(result.profile.password).toEqual("doot");
 
 		dbMock.verify();
 		dbMock.restore();
@@ -132,7 +137,7 @@ const userPasswordErrors = (done) => {
 	const instance = account(db, bcrypt);
 
 	const dbMock = sinon.mock(_db);
-	dbMock.expects("find").once().withArgs("hello").returns(Promise.resolve({
+	dbMock.expects("findByUsername").once().withArgs("hello").returns(Promise.resolve({
 		password : "doot"
 	}));
 
@@ -295,7 +300,7 @@ const registerConflictTest = (done) => {
 	const instance = account(db, bcrypt);
 
 	const dbMock = sinon.mock(_db);
-	dbMock.expects("find").once().withArgs("doot").returns(Promise.resolve("oh dear"));
+	dbMock.expects("findByUsername").once().withArgs("doot").returns(Promise.resolve("oh dear"));
 
 	instance.registerUser("doot").then((result) => {
 		expect(result).toBe(null);
@@ -311,18 +316,19 @@ const registerTest = (done) => {
 	const instance = account(db, bcrypt);
 
 	const dbMock = sinon.mock(_db);
-	dbMock.expects("find").once().withArgs("doot").returns(Promise.resolve(null));
-	dbMock.expects("find").once().withArgs("doot").returns(Promise.resolve({
-		hello : "world"
-	}));
-	dbMock.expects("upsert").once().withArgs("doot", {
+	dbMock.expects("findByUsername").once().withArgs("doot").returns(Promise.resolve(null));
+	dbMock.expects("upsert").once().withArgs(sinon.match.any, {
 		username : "doot",
 		password : "hashed woot",
 		registered : sinon.match.any,
 		claims : {
 			roles : []
-		}
+		},
+		subject : sinon.match.any
 	}).returns(Promise.resolve("nice"));
+	dbMock.expects("find").once().withArgs(sinon.match.any).returns(Promise.resolve({
+		hello : "world"
+	}));
 
 	const bcryptMock = sinon.mock(bcrypt);
 	bcryptMock.expects("hash").once().withArgs("woot", 10).callsArgWith(2, null, "hashed woot");

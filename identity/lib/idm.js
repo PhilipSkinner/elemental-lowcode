@@ -1,10 +1,11 @@
-const idm = function(app, roleCheckHandler, db, bcrypt, tokenHandler) {
+const idm = function(app, roleCheckHandler, db, bcrypt, tokenHandler, uuid) {
 	this.app 				= app;
 	this.roleCheckHandler 	= roleCheckHandler;
 	this.db 				= db;
 	this.userDB 			= new this.db("User");
 	this.bcrypt 			= bcrypt;
 	this.tokenHandler 		= tokenHandler;
+	this.uuid 				= uuid;
 
 	this.connected 			= false;
 
@@ -34,7 +35,7 @@ idm.prototype.getUser = function(req, res, next) {
 
 idm.prototype.createUser = function(req, res, next) {
 	this._connect().then(() => {
-		this.userDB.find(req.body.username);
+		this.userDB.find(req.body.subject);
 	}).then((existing) => {
 		if (typeof(existing) !== 'undefined' && existing !== null) {
 			res.status(409);
@@ -55,9 +56,10 @@ idm.prototype.createUser = function(req, res, next) {
 		});
 	}).then((password) => {
 		req.body.password = password;
-		return this.userDB.upsert(req.body.username, req.body, null);
+		req.body.subject = this.uuid();
+		return this.userDB.upsert(req.body.subject, req.body, null);
 	}).then(() => {
-		res.setHeader("Location", `/api/users/${req.body.username}`);
+		res.setHeader("Location", `/api/users/${req.body.subject}`);
 		res.status(201);
 		res.send("");
 		next();
@@ -125,7 +127,7 @@ idm.prototype.initRoutes = function() {
 	this.app.delete("/api/users/:id",		this.roleCheckHandler.enforceRoles(this.deleteUser.bind(this), 		["user_writer", "user_admin", "system_writer", "system_admin"]));
 };
 
-module.exports = function(app, roleCheckHandler, db, bcrypt, tokenHandler) {
+module.exports = function(app, roleCheckHandler, db, bcrypt, tokenHandler, uuid) {
 	if (!db) {
 		db = require("../../shared/db")();
 	}
@@ -142,5 +144,9 @@ module.exports = function(app, roleCheckHandler, db, bcrypt, tokenHandler) {
 		tokenHandler = require('../../shared/tokenHandler')(process.env.SIG_PUBLIC);
 	}
 
-	return new idm(app, roleCheckHandler, db, bcrypt, tokenHandler);
+	if (!uuid) {
+		uuid = require("uuid").v4;
+	}
+
+	return new idm(app, roleCheckHandler, db, bcrypt, tokenHandler, uuid);
 };
