@@ -28,10 +28,12 @@
 				"type" : "string"
 			},
 			"expiresAt" : {
-				"type" : "datetime"
+				"type" : "string",
+				"format" : "date-time"
 			},
 			"consumedAt" : {
-				"type" : "datetime"
+				"type" : "string",
+				"format" : "date-time"
 			}
 		}
 	}

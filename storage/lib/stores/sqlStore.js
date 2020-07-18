@@ -47,7 +47,7 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
 	});
 };
 
-sqlStore.prototype.determineType = function(type) {
+sqlStore.prototype.determineType = function(type, format) {
 	if (type === "boolean") {
 		return this.sequelize.BOOLEAN;
 	}
@@ -60,7 +60,7 @@ sqlStore.prototype.determineType = function(type) {
 		return this.sequelize.DECIMAL;
 	}
 
-	if (type === "datetime") {
+	if (type === "string" && format === "date-time") {
 		return this.sequelize.DATE;
 	}
 
@@ -100,7 +100,7 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
 
 		if (this.simpleTypes.indexOf(schemaConfig.type) !== -1) {
 			columns.value = {
-				type 		: this.determineType(schemaConfig.type),
+				type 		: this.determineType(schemaConfig.type, schemaConfig.format),
 				allowNull 	: false
 			};
 
@@ -119,7 +119,7 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
 				if (this.simpleTypes.indexOf(schemaConfig.properties[propName].type) !== -1) {
 					//add the column
 					columns[propName] = {
-						type : this.determineType(schemaConfig.properties[propName].type)
+						type : this.determineType(schemaConfig.properties[propName].type, schemaConfig.properties[propName].format)
 					};
 
 					//is it our id?
@@ -262,7 +262,7 @@ sqlStore.prototype.convertToReturnValue = function(result, name) {
 	});
 };
 
-sqlStore.prototype.getResources = function(type, start, count, filters) {
+sqlStore.prototype.getResources = function(type, start, count, filters, orders) {
 	if (!this.isReady) {
 		return new Promise((resolve) => {
 			setTimeout(resolve, 2500);
@@ -280,6 +280,7 @@ sqlStore.prototype.getResources = function(type, start, count, filters) {
 	}
 
 	const where = {};
+	const order = [];
 
 	if (filters && filters.forEach) {
 		filters.forEach((f) => {
@@ -305,8 +306,18 @@ sqlStore.prototype.getResources = function(type, start, count, filters) {
 		});
 	}
 
+	if (orders && orders.forEach) {
+		orders.forEach((o) => {
+			order.push([
+				o.path.slice(2),
+				o.value
+			]);
+		});
+	}
+
 	return this.models[type].findAndCountAll({
 		where 	: where,
+		order 	: order,
 		limit 	: parseInt(count),
 		offset 	: parseInt(start) - 1,
 	}).then((results) => {

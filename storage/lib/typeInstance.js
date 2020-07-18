@@ -56,11 +56,19 @@ typeInstance.prototype.determineIdentifiers = function(req) {
 
 typeInstance.prototype.getHandler = function(req, res) {
 	const filters = [];
+	const orders = [];
 	Object.keys(req.query).forEach((param) => {
 		//filter_$.path.to.variable
 		if (param.indexOf("filter_") === 0) {
 			filters.push({
 				path 	: param.slice(7),
+				value 	: req.query[param]
+			});
+		}
+
+		if (param.indexOf("order_") === 0) {
+			orders.push({
+				path 	: param.slice(6),
 				value 	: req.query[param]
 			});
 		}
@@ -90,7 +98,7 @@ typeInstance.prototype.getHandler = function(req, res) {
 			return;
 		}
 
-		this.store.getResources(toFetch.type, req.query.start, req.query.count, filters).then((data) => {
+		this.store.getResources(toFetch.type, req.query.start, req.query.count, filters, orders).then((data) => {
 			res.json(data);
 			res.end();
 		}).catch((err) => {

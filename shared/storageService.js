@@ -49,7 +49,7 @@ storageService.prototype.detailCollection = function(path, authToken) {
 	});
 };
 
-storageService.prototype.getList = function(path, start, count, filters, authToken) {
+storageService.prototype.getList = function(path, start, count, filters, orders, authToken) {
 	return new Promise((resolve, reject) => {
 		if (authToken) {
 			return resolve(authToken);
@@ -70,8 +70,14 @@ storageService.prototype.getList = function(path, start, count, filters, authTok
 
 		if (typeof(filters) === "object" && filters !== null) {
 			Object.keys(filters).forEach((path) => {
-				qs['filter_' + path] = filters[path];
+				qs[`filter_${path}`] = filters[path];
 			});
+		}
+
+		if (typeof(orders) === "object" && orders !== null) {
+			Object.keys(orders).forEach((path) => {
+				qs[`order_${path}`] = orders[path];
+			})
 		}
 
 		return new Promise((resolve, reject) => {

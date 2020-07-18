@@ -44,8 +44,6 @@ var stringToHTML = function (str) {
 	var dom = document.createElement('html');
 	dom.innerHTML = str;
 
-	console.log("DOM IS", dom);
-
 	return dom;
 
 };
@@ -168,12 +166,14 @@ var addAttributes = function (elem, atts) {
  * @param  {Object} template The new template
  * @param  {Object} existing The existing DOM node
  */
-var diffAtts = function (template, existing) {
-	//reset any user modifiable attributes
-	var modifiable = ["value"];
-	modifiable.forEach((m) => {
-		existing.node[m] = "";
-	});
+var diffAtts = function (template, existing, automatic) {
+	if (!automatic) {
+		//reset any user modifiable attributes
+		var modifiable = ["value"];
+		modifiable.forEach((m) => {
+			existing.node[m] = "";
+		});
+	}
 
   	// Get attributes to remove
 	var remove = existing.atts.filter(function (att) {
@@ -238,8 +238,7 @@ var makeElem = function (elem) {
  * @param  {Array} domMap      A DOM tree map of the existing DOM node
  * @param  {Node}  elem        The element to render content into
  */
-var diff = function (templateMap, domMap, elem) {
-
+var diff = function (templateMap, domMap, elem, automatic) {
 	// If extra elements in domMap, remove them
 	var count = domMap.length - templateMap.length;
 	if (count > 0) {
@@ -264,7 +263,7 @@ var diff = function (templateMap, domMap, elem) {
 		}
 
 		// If attributes are different, update them
-		diffAtts(templateMap[index], domMap[index]);
+		diffAtts(templateMap[index], domMap[index], automatic);
 
 		// If content is different, update it
 		if (templateMap[index].content !== domMap[index].content) {
@@ -281,14 +280,14 @@ var diff = function (templateMap, domMap, elem) {
 		// This uses a document fragment to minimize reflows
 		if (domMap[index].children.length < 1 && node.children.length > 0) {
 			var fragment = document.createDocumentFragment();
-			diff(node.children, domMap[index].children, fragment);
+			diff(node.children, domMap[index].children, fragment, automatic);
 			elem.appendChild(fragment);
 			return;
 		}
 
 		// If there are existing child elements that need to be modified, diff them
 		if (node.children.length > 0) {
-			diff(node.children, domMap[index].children, domMap[index].node);
+			diff(node.children, domMap[index].children, domMap[index].node, automatic);
 		}
 	});
 };

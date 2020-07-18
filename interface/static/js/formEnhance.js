@@ -4,7 +4,13 @@ var submitHandler = function(elem) {
 };
 
 submitHandler.prototype.pollEvent = function() {
-	this.handleSubmit(null);
+	clearTimeout(this.timeout);
+	this.handleSubmit(null).then(() => {
+		const poll = this.elem.attributes["data-poll"];
+		if (poll && poll.value) {
+			this.timeout = setTimeout(this.pollEvent.bind(this), poll.value);
+		}
+	});
 };
 
 submitHandler.prototype.init = function() {
@@ -13,7 +19,8 @@ submitHandler.prototype.init = function() {
 
 	const poll = this.elem.attributes["data-poll"];
 	if (poll && poll.value) {
-		this.timeout = setInterval(this.pollEvent.bind(this), poll.value);
+		clearTimeout(this.timeout);
+		this.timeout = setTimeout(this.pollEvent.bind(this), poll.value);
 	}
 };
 
@@ -87,29 +94,29 @@ submitHandler.prototype.handleSubmit = function(event) {
     		}
     	});
 
-		window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, formData, {
+		return window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, formData, {
 			headers : {
 				"Content-Type": "multipart/form-data"
 			},
 			withCredentials : true
 		}).then((response) => {
-			this.handleResponse(response);
+			this.handleResponse(response, event === null);
 		});
 	} else {
-		window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, JSON.stringify(params), {
+		return window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, JSON.stringify(params), {
 			headers : {
 				"Content-Type": "application/json"
 			},
 			withCredentials : true
 		}).then((response) => {
-			this.handleResponse(response);
+			this.handleResponse(response, event === null);
 		});
 	}
 
 	return false;
 };
 
-submitHandler.prototype.handleResponse = function(response) {
+submitHandler.prototype.handleResponse = function(response, automatic) {
 	if (response.request && response.request.responseURL && location.href !== response.request.responseURL) {
 		//need to rewrite the location
 		history.pushState({}, '', response.request.responseURL);
@@ -117,7 +124,7 @@ submitHandler.prototype.handleResponse = function(response) {
 
 	var newMap = createDOMMap(stringToHTML(response.data));
 	var domMap = createDOMMap(document.querySelector("html"));
-	diff(newMap[1].children, domMap, document.querySelector("html"));
+	diff(newMap[1].children, domMap, document.querySelector("html"), automatic);
 
 	enhanceForms();
 	enhanceLinks();
