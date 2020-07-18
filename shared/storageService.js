@@ -137,7 +137,7 @@ storageService.prototype.getEntity = function(path, id, authToken) {
 					return reject(new Error("Invalid response received when fetching entity"));
 				}
 
-				result.id = id;
+				result.id = result.id || id;
 				return resolve(result);
 			});
 		});

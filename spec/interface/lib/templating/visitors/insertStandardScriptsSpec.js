@@ -35,6 +35,10 @@ const insertionTest = (done) => {
 							},
 							{
 								tag : "script",
+								src : "/_static/js/historyEnhance.js"
+							},
+							{
+								tag : "script",
 								src : "/_static/js/clickEnhance.js"
 							},
 							{
@@ -54,6 +58,10 @@ const insertionTest = (done) => {
 							{
 								tag : "script",
 								src : "/_static/js/diff.js"
+							},
+							{
+								tag : "script",
+								src : "/_static/js/historyEnhance.js"
 							},
 							{
 								tag : "script",

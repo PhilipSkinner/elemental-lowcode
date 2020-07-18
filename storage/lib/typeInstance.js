@@ -405,92 +405,106 @@ typeInstance.prototype.patchHandler = function(req, res) {
 	const toFetch = identifiers.slice(-1)[0];
 
 	let validator = this.ajv.compile(this.schemas[toFetch.type]);
+	let prom = Promise.resolve(true);
+	let parent = null;
 
-	//if the identifier is null just call next
-	if (toFetch.identifier === null && identifiers.length > 1) {
-		//we're finding a single child item
-		const filters = [];
-		const parent = identifiers.slice(-2)[0];
-
-		filters.push({
-			path 	: "$.parent",
-			value 	: parent.identifier
-		});
-
-		this.store.getResources(toFetch.type, 1, 1, filters).then((data) => {
-			if (data === null || data.length === 0) {
-				res.status(404).send("").end();
-				return;
-			}
-
-			let resource = data[0];
-
-			var newResource = Object.assign(resource, req.body);
-
-			//check its schema
-			if (!validator(newResource)) {
-				res.status(422).json({
-					errors : validator.errors
-				}).end();
-				return;
-			}
-
-			//ensure relationships/values are set
-			toFetch.identifier = resource.id;
-			newResource.parent = parent.identifier;
-
-			this.store.updateResource(toFetch.type, toFetch.identifier, newResource).then((success) => {
-				if (!success) {
-					res.status(424).json({
-						errors : [
-							"error updating object"
-						]
-					}).end();
-					return;
-				}
-
-				res.header("Location", req.path);
-				res.status(204);
-				res.send("");
-				res.end();
-				return;
-			});
-		})
-	} else {
-		this.store.getResource(toFetch.type, toFetch.identifier).then((resource) => {
-			if (resource === null || typeof(resource) === "undefined") {
-				res.status(404).send("").end();
-				return;
-			}
-
-			var newResource = Object.assign(resource, req.body);
-
-			//check its schema
-			if (!validator(newResource)) {
-				res.status(422).json({
-					errors : validator.errors
-				}).end();
-				return;
-			}
-
-			this.store.updateResource(toFetch.type, toFetch.identifier, newResource).then((success) => {
-				if (!success) {
-					res.status(424).json({
-						errors : [
-							"error updating object"
-						]
-					}).end();
-					return;
-				}
-
-				res.header("Location", req.path);
-				res.status(204);
-				res.send("");
-				res.end();
-				return;
-			});
-		});
+	if (identifiers.length > 1) {
+		parent = identifiers.slice(-2)[0];
+		prom = this.store.getResource(parent.type, parent.identifier);
 	}
+
+	return prom.then((exists) => {
+		if (!exists) {
+			res.status(404).send("").end();
+			return;
+		}
+
+		//if the identifier is null just call next
+		if (toFetch.identifier === null && identifiers.length > 1) {
+			//we're finding a single child item
+			const filters = [];
+
+			filters.push({
+				path 	: "$.parent",
+				value 	: parent.identifier
+			});
+
+			this.store.getResources(toFetch.type, 1, 1, filters).then((data) => {
+				let resource = {};
+				if (data === null || data.length === 0) {
+					//it needs to be created
+					resource.id = this.uuid();
+				} else {
+					resource = data[0];
+				}
+
+				var newResource = Object.assign(resource, req.body);
+
+				//check its schema
+				if (!validator(newResource)) {
+					res.status(422).json({
+						errors : validator.errors
+					}).end();
+					return;
+				}
+
+				//ensure relationships/values are set
+				toFetch.identifier = resource.id;
+				newResource.parent = parent.identifier;
+
+				this.store.updateResource(toFetch.type, toFetch.identifier, newResource).then((success) => {
+					if (!success) {
+						res.status(424).json({
+							errors : [
+								"error updating object"
+							]
+						}).end();
+						return;
+					}
+
+					res.header("Location", req.path);
+					res.status(204);
+					res.send("");
+					res.end();
+					return;
+				});
+			})
+		} else {
+			this.store.getResource(toFetch.type, toFetch.identifier).then((resource) => {
+				if (resource === null || typeof(resource) === "undefined") {
+					res.status(404).send("").end();
+					return;
+				}
+
+				var newResource = Object.assign(resource, req.body);
+
+				//check its schema
+				if (!validator(newResource)) {
+					res.status(422).json({
+						errors : validator.errors
+					}).end();
+					return;
+				}
+
+				this.store.updateResource(toFetch.type, toFetch.identifier, newResource).then((success) => {
+					if (!success) {
+						res.status(424).json({
+							errors : [
+								"error updating object"
+							]
+						}).end();
+						return;
+					}
+
+					res.header("Location", req.path);
+					res.status(204);
+					res.send("");
+					res.end();
+					return;
+				});
+			});
+		}
+	});
 };
 
 typeInstance.prototype.swaggerGen = function(paths) {

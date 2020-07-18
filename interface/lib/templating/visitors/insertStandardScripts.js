@@ -2,6 +2,7 @@ const insertStandardScripts = function() {
 	this.standardScripts = [
 		"/_static/js/axios.js",
 		"/_static/js/diff.js",
+		"/_static/js/historyEnhance.js",
 		"/_static/js/clickEnhance.js",
 		"/_static/js/formEnhance.js",
 	];
