@@ -42,6 +42,9 @@ websiteService.prototype.init = function(dir) {
 				return this.configReader.readDefinition(this.path.join(dir, "../identity", definition.client_id + ".client.json")).then((client) => {
 					definition.client = client;
 					return Promise.resolve(definition);
+				}).catch((err) => {
+					console.error("Could not load client configuration", err);
+					return Promise.resolve(definition);
 				});
 			}).then((definition) => {
 				let instance = this.websiteInstance(this.app, definition, this.passport);
