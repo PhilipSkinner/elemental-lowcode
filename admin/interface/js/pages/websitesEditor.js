@@ -21,7 +21,142 @@ const _websitesEditorController = function(page) {
 	this.propertyGroups 			= {};
 	this.tagSelected 			 	= false;
 	this.editor 					= null;
+	this.activeRoute 				= null;
+	this.mainNavItems 				= [
+		{
+			name 		: "Config",
+			event 		: this.showConfig.bind(this),
+			selected 	: true
+		},
+		{
+			name 		: "Routes",
+			event 		: this.showRoutes.bind(this),
+			selected 	: false
+		},
+		{
+			name 		: "Tags",
+			event 		: this.showTags.bind(this),
+			selected 	: false
+		},
+		{
+			name 		: "Resources",
+			event 		: this.showResources.bind(this),
+			selected 	: false
+		},
+		{
+			name 		: "View",
+			event 		: this.viewWebsite.bind(this),
+			selected 	: false
+		}
+	];
+	this.editorNavItems = [
+		{
+			name 		: "Interface",
+			event 		: this.showViewEditor.bind(this),
+			selected 	: true
+		},
+		{
+			name 		: "Source",
+			event 		: this.showViewSource.bind(this),
+			selected 	: false
+		},
+		{
+			name 		: "Controller",
+			event 		: this.showControllerEditor.bind(this),
+			selected 	: false
+		},
+		{
+			name 		: "View",
+			event 		: this.viewRoute.bind(this),
+			selected 	: false
+		}
+	];
 };
+
+/* navigation */
+_websitesEditorController.prototype._resetNavState = function() {
+	this.mainNavItems.forEach((i) => {
+		i.selected = false;
+	});
+};
+
+_websitesEditorController.prototype.showConfig = function() {
+	this._resetNavState();
+	this.mainNavItems[0].selected = true;
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.showRoutes = function() {
+	this._resetNavState();
+	this.mainNavItems[1].selected = true;
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.showTags = function() {
+	this._resetNavState();
+	this.mainNavItems[2].selected = true;
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.showResources = function() {
+	this._resetNavState();
+	this.mainNavItems[3].selected = true;
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.viewWebsite = function() {
+	window.open(`${window.hosts.interface}/${this.website.name}/`, '_blank');
+};
+
+_websitesEditorController.prototype._resetEditorNavState = function() {
+	//get our active state!
+	if (this.editorNavItems[0].selected) {
+		this.resources[this.activeResource] = this.getConfigFromEditor();
+	} else {
+		this.resources[this.activeResource] = this.editor.getValue();
+	}
+
+	this.editorNavItems.forEach((i) => {
+		i.selected = false;
+	});
+};
+
+_websitesEditorController.prototype.showControllerEditor = function() {
+	this._resetEditorNavState();
+	if (this.activeRoute) {
+		this.editController(this.activeRoute.controller);
+	}
+	this.editorNavItems[2].selected = true;
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.showViewEditor = function() {
+	this._resetEditorNavState();
+	if (this.activeRoute) {
+		this.editView(this.activeRoute.view);
+	}
+	this.showEditor();
+	this.editorNavItems[0].selected = true;
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.showViewSource = function() {
+	this._resetEditorNavState();
+	if (this.activeRoute) {
+		this.editView(this.activeRoute.view);
+	}
+	this.showSource();
+	this.editorNavItems[1].selected = true;
+	this.refreshState();
+};
+
+_websitesEditorController.prototype.viewRoute = function() {
+	if (this.activeRoute && this.activeRoute.route) {
+		window.open(`${window.hosts.interface}/${this.website.name}${this.activeRoute.route}`, '_blank');
+	}
+};
+
+/* end navigation */
 
 _websitesEditorController.prototype.wipeData = function() {
 	this.website 					= {};
@@ -42,6 +177,22 @@ _websitesEditorController.prototype.wipeData = function() {
 	this.loadedProperties 			= {};
 	this.tagSelected 				= false;
 	this.tagsets 					= {};
+	this._resetNavState();
+	this._resetEditorNavState();
+	this.mainNavItems[0].selected = true;
+	this.editorNavItems[0].selected = true;
+};
+
+_websitesEditorController.prototype.generateNavItems = function() {
+	return this.mainNavItems.map((item) => {
+		return item;
+	});
+};
+
+_websitesEditorController.prototype.generateEditorNavItems = function() {
+	return this.editorNavItems.map((item) => {
+		return item;
+	});
 };
 
 _websitesEditorController.prototype.getData = function() {
@@ -68,7 +219,9 @@ _websitesEditorController.prototype.getData = function() {
 		deleteTagConfirmVisible 	: false,
 		confirmTagDeleteAction 		: () => {},
 		deleteStaticConfirmVisible 	: false,
-		confirmStaticDeleteAction 	: () => {}
+		confirmStaticDeleteAction 	: () => {},
+		mainNavItems  				: this.generateNavItems(),
+		editorNavItems 				: this.generateEditorNavItems(),
 	};
 };
 
@@ -183,7 +336,7 @@ _websitesEditorController.prototype.saveAll = function() {
 	return this.saveWebsite().then(() => {
 		if (this.activeResource) {
 			//make sure our active resource is set
-			if (!this.sourceMode && this.viewEditorVisible) {
+			if (this.editorNavItems[0].selected) {
 				this.resources[this.activeResource] = this.getConfigFromEditor();
  			} else {
  				this.resources[this.activeResource] = this.editor.getValue();
@@ -199,7 +352,6 @@ _websitesEditorController.prototype.saveAll = function() {
 };
 
 _websitesEditorController.prototype.showEditor = function() {
-	this.resources[this.activeResource] = this.editor.getValue();
 	this.activeView = JSON.parse(this.resources[this.activeResource]);
 	this.sourceMode = false;
 	this.activeDefinition = {};
@@ -216,7 +368,7 @@ _websitesEditorController.prototype.showSource = function() {
 	window.selectedTags = [];
 	this.tagSelected = false;
 	setTimeout(() => {
-		this.initEditor("viewEditor", "json", this.getConfigFromEditor());
+		this.initEditor("viewEditor", "json", this.resources[this.activeResource]);
 		this.refreshState();
 	}, 25);
 };
@@ -238,6 +390,8 @@ _websitesEditorController.prototype.refreshState = function() {
 	this.caller.tagSelected = this.tagSelected;
 	this.caller.activeDefinition = this.activeDefinition;
 	this.caller.propertyGroups = this.propertyGroups;
+	this.caller.mainNavItems = this.generateNavItems();
+	this.caller.editorNavItems = this.generateEditorNavItems();
 	this.caller.$forceUpdate();
 };
 
@@ -261,9 +415,31 @@ _websitesEditorController.prototype.loadResource = function(path) {
 	});
 };
 
-_websitesEditorController.prototype.editView = function(path) {
-	this.activeResource = path;
-	this.loadResource(path).then((resource) => {
+_websitesEditorController.prototype.editTag = function(tag) {
+	if (tag) {
+		this.activeRoute = tag;
+	}
+
+	this._resetEditorNavState();
+	this.editorNavItems[0].selected = true;
+
+	this.editView(this.activeRoute.view);
+};
+
+_websitesEditorController.prototype.editRoute = function(route) {
+	if (route) {
+		this.activeRoute = route;
+	}
+
+	this._resetEditorNavState();
+	this.editorNavItems[0].selected = true;
+
+	this.editView(this.activeRoute.view);
+};
+
+_websitesEditorController.prototype.editView = function(viewPath) {
+	this.activeResource = viewPath;
+	this.loadResource(viewPath).then((resource) => {
 		this.mainVisible = false;
 		this.viewEditorVisible = true;
 		this.sourceMode = false;
@@ -344,9 +520,6 @@ _websitesEditorController.prototype.configureCustomTagset = function() {
 _websitesEditorController.prototype.editController = function(path) {
 	this.activeResource = path;
 	this.loadResource(path).then((resource) => {
-		this.mainVisible = false;
-		this.viewEditorVisible = false;
-		this.controllerEditorVisible = true;
 		this.refreshState();
 		setTimeout(() => {
 			this.initEditor("controllerEditor", "javascript", resource);
@@ -695,8 +868,6 @@ _websitesEditorController.prototype.addToArray = function(prop) {
 			this.activeProperties[prop] = [''];
 		}
 	}
-
-	console.log(this.activeProperties[prop]);
 
 	this.refreshState();
 };

@@ -130,6 +130,10 @@
 
 <template id="template-websiteEditor">
 	<div class="websiteEditor">
+		<navigation title="Manage Website" v-if="mainVisible" :navitems="mainNavItems"></navigation>
+
+		<navigation title="Route Editor" v-if="viewEditorVisible || controllerEditorVisible" :navitems="editorNavItems"></navigation>
+
 		<permissions :roles="['website_writer','website_admin','system_writer','system_admin']"></permissions>
 
 		<alert text="Website saved!" v-bind:visible="showAlert"></alert>
@@ -156,21 +160,11 @@
 		></confirm>
 
 		<div class="container-fluid" v-if="viewEditorVisible">
-			<div class="editorSelector" v-bind:class="{ 'sourceMode' : sourceMode }">
-				<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-					<ul class="navbar-nav ml-auto">
-						<li class="nav-item mx-4">
-							<button class="btn" v-bind:class="{ 'btn-primary' : !sourceMode }" v-on:click="_websitesEditorControllerInstance.showEditor();">
-								Editor
-							</button>
-						</li>
-						<li class="nav-item mx-4">
-							<button class="btn" v-bind:class="{ 'btn-primary' : sourceMode }" v-on:click="_websitesEditorControllerInstance.showSource();">
-								Source
-							</button>
-						</li>
-					</ul>
-				</nav>
+			<div class="editorSelector" v-bind:class="{
+				'editorMode' : editorNavItems[0].selected,
+				'sourceMode' : editorNavItems[1].selected,
+				'controllerMode' : editorNavItems[2].selected
+			}">
 				<div class="uiEditor">
 					<div class="uiTags card shadow" id="uiTags">
 						<div class="tagGroup" v-for="(group, name) in tagsets">
@@ -306,22 +300,18 @@
 					</div>
 				</div>
 
-				<div class="editorWrapper">
+				<div class="editorWrapper viewEditorWrapper">
 					<div id="viewEditor" class="editorWindow"></div>
+				</div>
+
+				<div class="editorWrapper controllerEditorWrapper">
+					<div id="controllerEditor" class="editorWindow"></div>
 				</div>
 			</div>
 		</div>
 
-		<div class="container-fluid" v-if="controllerEditorVisible">
-			<div class="editorWrapper">
-				<div id="controllerEditor" class="editorWindow"></div>
-			</div>
-		</div>
-
-		<navigation title="Manage Website" v-if="mainVisible"></navigation>
-
 		<!-- Begin Page Content -->
-		<div class="container-fluid" v-if="mainVisible">
+		<div class="container-fluid" v-if="mainVisible && mainNavItems[0].selected">
 			<div class="row">
 				<div class="col-md-6">
 					<div class="card shadow mb-4">
@@ -356,7 +346,9 @@
 					</div>
 				</div>
 			</div>
+		</div>
 
+		<div class="container-fluid" v-if="mainVisible && mainNavItems[1].selected">
 			<div class="card shadow mb-4">
 				<div class="card-header py-3">
 					<h6 class="m-0 font-weight-bold text-primary">Routes</h6>
@@ -369,8 +361,6 @@
 									<th width="25%">Route</th>
 									<th>Is Secure?</th>
 									<th width="25%">Role</th>
-									<th>View</th>
-									<th>Controller</th>
 									<th>Operations</th>
 								</tr>
 							</thead>
@@ -379,8 +369,6 @@
 									<th>Route</th>
 									<th>Is Secure?</th>
 									<th>Role</th>
-									<th>View</th>
-									<th>Controller</th>
 									<th>Operations</th>
 								</tr>
 							</tfoot>
@@ -401,16 +389,12 @@
 										<input v-if="route.secure" class="form-control" type="text" name="security" v-model="route.roles" />
 									</td>
 									<td>
-										<button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editView(route.view);">
+										<button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editRoute(route);">
 											Modify
 										</button>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editController(route.controller);">
-											Modify
-										</button>
-									</td>
-									<td>
+										<a class="btn btn-sm btn-success" :href="window.hosts.interface + '/' + website.name + route.route" target="_blank">
+											View
+										</a>
 										<button
 											class="btn btn-sm btn-danger"
 											v-on:click="_websitesEditorControllerInstance.removeRoute(index);"
@@ -423,7 +407,9 @@
 					</div>
 				</div>
 			</div>
+		</div>
 
+		<div class="container-fluid" v-if="mainVisible && mainNavItems[2].selected">
 			<!-- Tags Example -->
 			<div class="card shadow mb-4">
 				<div class="card-header py-3">
@@ -438,16 +424,12 @@
 							<thead>
 								<tr>
 									<th>Tag</th>
-									<th>View</th>
-									<th>Controller</th>
 									<th>Operations</th>
 								</tr>
 							</thead>
 							<tfoot>
 								<tr>
 									<th>Tag</th>
-									<th>View</th>
-									<th>Controller</th>
 									<th>Operations</th>
 								</tr>
 							</tfoot>
@@ -462,16 +444,9 @@
 										<input class="form-control" type="text" name="route" v-model="tag.name" />
 									</td>
 									<td>
-										<button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editView(tag.view);">
+										<button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editTag(tag);">
 											Modify
 										</button>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editController(tag.controller);">
-											Modify
-										</button>
-									</td>
-									<td>
 										<button class="btn btn-sm btn-danger" v-on:click="_websitesEditorControllerInstance.removeTag(index);">Remove</button>
 									</td>
 								</tr>
@@ -480,7 +455,9 @@
 					</div>
 				</div>
 			</div>
+		</div>
 
+		<div class="container-fluid" v-if="mainVisible && mainNavItems[3].selected">
 			<!-- static resources -->
 			<div class="card shadow mb-4">
 				<div class="card-header py-3">
@@ -533,9 +510,9 @@
 		<div class="actionButtons">
 			<button v-if="viewEditorVisible" class="rounded-circle border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.mainView();"><i class="fas fa-fw fa-arrow-left"></i></button>
 			<button v-if="controllerEditorVisible" class="rounded-circle border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.mainView();"><i class="fas fa-fw fa-arrow-left"></i></button>
-			<button v-if="mainVisible" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newStaticFile();"><i class="fas fa-fw fa-plus"></i> Static File</button>
-			<button v-if="mainVisible" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newRoute();"><i class="fas fa-fw fa-plus"></i> Route</button>
-			<button v-if="mainVisible" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newTag();"><i class="fas fa-fw fa-plus"></i> Tag</button>
+			<button v-if="mainVisible && mainNavItems[3].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newStaticFile();"><i class="fas fa-fw fa-plus"></i> Static File</button>
+			<button v-if="mainVisible && mainNavItems[1].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newRoute();"><i class="fas fa-fw fa-plus"></i> Route</button>
+			<button v-if="mainVisible && mainNavItems[2].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newTag();"><i class="fas fa-fw fa-plus"></i> Tag</button>
 			<button class="rounded-circle border-0 btn btn-success" v-on:click="_websitesEditorControllerInstance.saveAll();"><i class="fas fa-fw fa-save"></i></button>
 		</div>
 

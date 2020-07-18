@@ -11009,32 +11009,26 @@ body.sidebar-toggled footer.sticky-footer {
 
 .editorWindow, .editorSelector {
   position: absolute;
-  top: 0px;
+  top: 70px;
   left: 0px;
   bottom: 0px;
   right: 0px;
-  overflow: scroll;
 }
 
 .editorSelector .editorWindow {
-  top: 70px;
+  top: 0px;
+}
+
+.editorSelector .uiEditor, .editorSelector .editorWrapper {
   display: none;
 }
 
-.editorSelector.sourceMode .editorWindow {
-  display: inherit;
-}
-
-.editorSelector.queueMode #queueEditor {
-  display: inherit;
-}
-
+.editorSelector.editorMode .uiEditor,
+.editorSelector.sourceMode .viewEditorWrapper,
+.editorSelector.controllerMode .controllerEditorWrapper,
+.editorSelector.queueMode #queueEditor,
 .editorSelector.handlerMode #handlerEditor {
   display: inherit;
-}
-
-.editorSelector nav {
-  padding: 0px 40px 0px 0px;
 }
 
 #content {
@@ -11105,7 +11099,7 @@ div.block {
 
 .uiEditor {
   position: absolute;
-  top: 70px;
+  top: 0px;
   left: 0px;
   right: 0px;
   bottom: 0px;
