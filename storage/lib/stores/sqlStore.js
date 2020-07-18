@@ -283,7 +283,25 @@ sqlStore.prototype.getResources = function(type, start, count, filters) {
 
 	if (filters && filters.forEach) {
 		filters.forEach((f) => {
-			where[f.path.slice(2)] = f.value;
+			if (typeof(f.value) === "object" && f.value !== null) {
+				//composite values
+				if (f.value.fields) {
+					let q = [];
+					Object.keys(f.value.fields).forEach((k) => {
+						let qn = {};
+						qn[k.slice(2)] = f.value.fields[k];
+						q.push(qn);
+
+					});
+					if (f.value.operator === "or") {
+						where[this.sequelize.Op.or] = q;
+					} else {
+						where[this.sequelize.Op.and] = q;
+					}
+				}
+			} else {
+				where[f.path.slice(2)] = f.value;
+			}
 		});
 	}
 
