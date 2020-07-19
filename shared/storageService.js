@@ -23,7 +23,7 @@ storageService.prototype.detailCollection = function(path, authToken) {
 		return resolve("");
 	}).then((token) => {
 		return new Promise((resolve, reject) => {
-			this.request.get(`${this.hostnameResolver.resolveStorage()}/${path}`, {
+			this.request.get(`${this.hostnameResolver.resolveStorage()}/${path}/.details`, {
 				headers : {
 					Authorization : `Bearer ${token}`
 				}
