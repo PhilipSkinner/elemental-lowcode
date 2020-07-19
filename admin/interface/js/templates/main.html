@@ -76,11 +76,48 @@
 	</div>
 </template>
 
+<template id="template-monitor">
+	<div class="monitor">
+		<permissions :roles="['system_reader', 'system_admin']"></permissions>
+
+		<navigation title="Monitor" :navitems="navItems"></navigation>
+
+		<div class="monitorWrapper">
+			<div class="row">
+				<div class="col-md-3 pr-0">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Systems</h6>
+						</div>
+						<div class="card-body">
+							<ul>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('interface.errors');">Website Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('interface.debug');">Website Debug</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('storage.debug');">Data Debug</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-9 pl-0">
+					<div class="monitor" id="monitorContent"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
 <template id="template-home">
 	<div class="home">
 		<permissions :roles="['system_reader', 'system_admin']"></permissions>
 
-		<navigation title="Welcome to Elemental"></navigation>
+		<navigation title="Welcome to Elemental" :navitems="navItems"></navigation>
 
 		<div class="container-fluid">
 			<div class="row">
@@ -91,7 +128,7 @@
 						</div>
 						<div class="card-body">
 							<p>
-								If you are just getting started with Elemental <router-link to="/documentation/tutorial">check out the tutorial</router-link>.
+								If you are just getting started with Elemental <router-link to="/documentation/tutorial">check out the tutorials</router-link>.
 							</p>
 							<p>
 								Alternatively, jump directly into the <router-link to="/documentation">documentation</router-link>.

@@ -11330,3 +11330,53 @@ div.block {
 /*
  * End swagger styling
  */
+
+/*
+ * Monitor styling
+ */
+
+.monitorWrapper .row {
+  position: absolute;
+  right: 0px;
+  top: 70px;
+  bottom: 0px;
+  left: 0px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+}
+
+#monitorContent {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  background: #000;
+  color: #FEFEFE;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 10px;
+}
+
+#monitorContent div {
+  line-height: 22px;
+  display: grid;
+  grid-template-columns: 80px auto;
+}
+
+#monitorContent .number {
+  min-width: 100px;
+  display: inline-block;
+  padding: 0px 5px;
+  color: #EEE;
+}
+
+#monitorContent .message {
+  padding: 0px 5px;
+  display: inline-block;
+  word-break: break-all;
+}
+
+/*
+ * End monitor stying
+ */

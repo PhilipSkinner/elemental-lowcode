@@ -6,7 +6,29 @@ const _homeController = function(page) {
 	this.websites = [];
 	this.clients = [];
 	this.apis = [];
+	this.navItems = [
+		{
+			name : "Home",
+			selected : true,
+			link : "/#/",
+			target : ""
+		},
+		{
+			name : "Monitor",
+			selected : false,
+			link : "/#/monitor",
+			target : ""
+		}
+	];
 };
+
+/* navigation */
+_homeController.prototype.generateNavItems = function() {
+	return this.navItems.map((item) => {
+		return item;
+	});
+};
+/* end */
 
 _homeController.prototype.getData = function() {
 	return {
@@ -16,6 +38,7 @@ _homeController.prototype.getData = function() {
 		websites 		: this.websites,
 		clients 		: this.clients,
 		apis 			: this.apis,
+		navItems 		: this.generateNavItems(),
 	};
 };
 
@@ -102,6 +125,7 @@ _homeController.prototype.refresh = function() {
 	this.caller.websites = this.websites;
 	this.caller.clients = this.clients;
 	this.caller.apis = this.apis;
+	this.caller.navItems = this.generateNavItems();
 	this.caller.$forceUpdate();
 };
 

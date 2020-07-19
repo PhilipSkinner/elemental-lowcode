@@ -61,7 +61,8 @@ window.templates.fetchTemplates().then(() => {
 		"js/pages/nodeModules.js",
 		"js/pages/messaging.js",
 		"js/pages/queueDetails.js",
-		"js/pages/queueEditor.js"
+		"js/pages/queueEditor.js",
+		"js/pages/monitor.js"
 	];
 
 	const loadPage = (file) => {
@@ -95,6 +96,10 @@ window.templates.fetchTemplates().then(() => {
 			{
 				path 		: "/",
 				component 	: window.Home
+			},
+			{
+				path 		: "/monitor",
+				component 	: window.Monitor
 			},
 			/* integrations endpoints */
 			{

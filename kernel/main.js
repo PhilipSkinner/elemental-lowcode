@@ -18,6 +18,7 @@ const
 	indexController 		= require("./controllers/indexController"),
 	serviceController 		= require("./controllers/serviceController"),
 	queueController 		= require("./controllers/queueController"),
+	logsController 			= require("./controllers/logsController"),
 	secretsProvider 		= require("./lib/secrets"),
 	hotreload 				= require("../shared/hotReload")();
 	initialSetup 			= require('./setup')();
@@ -105,6 +106,7 @@ const runApp = function() {
 	apiController(app, directories.api);
 	serviceController(app, directories.services);
 	queueController(app, directories.queues);
+	logsController(app, sourcesDir);
 	indexController(app, sourcesDir);
 
 	app.listen(8001);
