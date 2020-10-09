@@ -1,10 +1,16 @@
 const defineScope = function() {
-
+	this.excluded = [
+		"_controller"
+	];
 };
 
 defineScope.prototype.traverse = function(tags) {
 	return tags.map((tag) => {
 		Object.keys(tag).forEach((prop) => {
+			if (this.excluded.indexOf(prop) !== -1) {
+				return;
+			}
+
 			if (Array.isArray(tag[prop])) {
 				tag[prop] = this.traverse(tag[prop]);
 				return;

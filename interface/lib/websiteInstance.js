@@ -8,7 +8,8 @@ const websiteInstance = function(
 	hostnameResolver,
 	dataResolver,
 	environmentService,
-	sqlSessionStore
+	sqlSessionStore,
+	tagControllers
 ) {
 	this.app 					= app;
 	this.definition 			= definition;
@@ -20,9 +21,11 @@ const websiteInstance = function(
 	this.dataResolver 			= dataResolver;
 	this.environmentService 	= environmentService;
 	this.sqlSessionStore 		= sqlSessionStore;
+	this.tagControllers 		= tagControllers;
 };
 
 websiteInstance.prototype.configureTag = function(tag) {
+	this.tagControllers.registerController(tag.name, tag.controller);
 	this.templateRenderer.registerCustomTag(tag);
 };
 
@@ -34,7 +37,7 @@ websiteInstance.prototype.configureStatic = function() {
 };
 
 websiteInstance.prototype.configureRoute = function(route, passport) {
-	let instance = this.controllerInstance(this.definition.routes[route], this.templateRenderer, this.definition.client, passport);
+	let instance = this.controllerInstance(this.definition.routes[route], this.templateRenderer, this.definition.client, passport, this.tagControllers);
 
 	console.log(`Hosting ${route} on ${this.definition.name} - /${this.definition.name}${route}`);
 	this.app.get(`/${this.definition.name}${route}`, instance.handler.bind(instance));
@@ -146,7 +149,8 @@ module.exports = function(
 	hostnameResolver,
 	dataResolver,
 	environmentService,
-	sqlSessionStore
+	sqlSessionStore,
+	tagControllers
 ) {
 	if (!controllerInstance) {
 		controllerInstance = require("./controllerInstance");
@@ -180,6 +184,10 @@ module.exports = function(
 		sqlSessionStore = require("./sqlSessionStore");
 	}
 
+	if (!tagControllers) {
+		tagControllers = require("./tagControllers")();
+	}
+
 	return new websiteInstance(
 		app,
 		definition,
@@ -190,6 +198,7 @@ module.exports = function(
 		hostnameResolver,
 		dataResolver,
 		environmentService,
-		sqlSessionStore
+		sqlSessionStore,
+		tagControllers
 	);
 };

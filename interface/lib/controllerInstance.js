@@ -1,4 +1,14 @@
-const controllerInstance = function(routeDefinition, path, clientConfig, passport, templateRenderer, fs, controllerState, roleCheckHandler) {
+const controllerInstance = function(
+	routeDefinition,
+	path,
+	clientConfig,
+	passport,
+	tagControllers,
+	templateRenderer,
+	fs,
+	controllerState,
+	roleCheckHandler
+) {
 	this.routeDefinition = routeDefinition;
 	this.path = path;
 	this.passport = passport;
@@ -7,6 +17,7 @@ const controllerInstance = function(routeDefinition, path, clientConfig, passpor
 	this.controllerState = controllerState;
 	this.clientConfig = clientConfig;
 	this.roleCheckHandler = roleCheckHandler;
+	this.tagControllers = tagControllers;
 };
 
 controllerInstance.prototype.loadView = function() {
@@ -40,8 +51,16 @@ controllerInstance.prototype.handler = function(req, res, next) {
 		let stateEngine = this.controllerState(require(module), this.clientConfig);
 		stateEngine.setContext(req, res);
 
-		//ensure our state engine triggers on load
-		Promise.resolve().then(() => {
+		let view = null;
+		this.loadView().then((_view) => {
+			view = _view;
+
+			//we need to scan through the view to work out the tag controllers we need to instantiate
+			let componentInstances = this.tagControllers.determineInstances(view);
+
+			stateEngine.setComponents(componentInstances);
+		}).then(() => {
+			//ensure our state engine triggers on load
 			if (req.method === "POST") {
 				let body = req.body;
 
@@ -129,9 +148,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 			}
 
 			//load the view
-			this.loadView().then((view) => {
-				return this.templateRenderer.renderView(view, stateEngine.getBag());
-			}).then((html) => {
+			this.templateRenderer.renderView(view, stateEngine.getBag()).then((html) => {
 				res.send(html);
 
 				//clear the stateEngine
@@ -207,7 +224,17 @@ controllerInstance.prototype.ensureArrays = function(obj) {
 	return obj;
 };
 
-module.exports = function(routeDefinition, templateRenderer, clientConfig, passport, path, fs, controllerState, roleCheckHandler) {
+module.exports = function(
+	routeDefinition,
+	templateRenderer,
+	clientConfig,
+	passport,
+	tagControllers,
+	path,
+	fs,
+	controllerState,
+	roleCheckHandler
+) {
 	if (!path) {
 		path = require("path");
 	}
@@ -224,5 +251,5 @@ module.exports = function(routeDefinition, templateRenderer, clientConfig, passp
 		roleCheckHandler = require("../../shared/roleCheckHandler")();
 	}
 
-	return new controllerInstance(routeDefinition, path, clientConfig, passport, templateRenderer, fs, controllerState, roleCheckHandler);
+	return new controllerInstance(routeDefinition, path, clientConfig, passport, tagControllers, templateRenderer, fs, controllerState, roleCheckHandler);
 };

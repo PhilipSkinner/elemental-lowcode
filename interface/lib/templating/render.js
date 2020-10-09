@@ -13,6 +13,7 @@ const render = function(fs, path, preProcessor) {
 		"submit",
 		"bind",
 		"_scope",
+		"_controller",
 		"if"
 	];
 	this.requireClosing = [

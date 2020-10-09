@@ -1,6 +1,11 @@
-const expandCustomTag = function(replaceValues, handleLoops) {
-	this.replaceValues = replaceValues;
-	this.handleLoops = handleLoops;
+const expandCustomTag = function(
+	replaceValues,
+	handleLoops,
+	handleControllerEventScope
+) {
+	this.replaceValues 				= replaceValues;
+	this.handleLoops 				= handleLoops;
+	this.handleControllerEventScope = handleControllerEventScope;
 
 	this.tags = {};
 };
@@ -75,6 +80,15 @@ expandCustomTag.prototype.expand = function(view) {
 				data : tag
 			}).view[0];
 
+			//copy over the controller
+			newTag._controller = tag._controller;
+
+			//now we need to scan for events and insert the controller instance ID
+			newTag = this.handleControllerEventScope.applySync({
+				view : [newTag],
+				data : tag
+			}).view[0];
+
 			tag = newTag;
 		}
 
@@ -99,7 +113,11 @@ expandCustomTag.prototype.apply = function(definition) {
 	return Promise.resolve(definition);
 };
 
-module.exports = function(replaceValues, handleLoops) {
+module.exports = function(
+	replaceValues,
+	handleLoops,
+	handleControllerEventScope
+) {
 	if (!replaceValues) {
 		replaceValues = require("./replaceValues")();
 	}
@@ -108,5 +126,9 @@ module.exports = function(replaceValues, handleLoops) {
 		handleLoops = require("./handleLoops")();
 	}
 
-	return new expandCustomTag(replaceValues, handleLoops);
+	if (!handleControllerEventScope) {
+		handleControllerEventScope = require("./handleControllerEventScope")();
+	}
+
+	return new expandCustomTag(replaceValues, handleLoops, handleControllerEventScope);
 };

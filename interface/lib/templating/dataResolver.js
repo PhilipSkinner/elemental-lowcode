@@ -78,7 +78,14 @@ dataResolver.prototype.resolveFunction = function(fn, data) {
 	const stringFormat = this.stringFormat;
 
 	//evaluate and return the value
-	return eval(fn.slice(2).slice(0, -1));
+	let evalStatement = fn.slice(2).slice(0, -1);
+	try {
+		return eval(evalStatement);
+	} catch(e) {
+		console.error(evalStatement, e);
+	}
+
+	return "";
 };
 
 dataResolver.prototype.resolveValue = function(path, data, replaceUndefined) {
@@ -86,6 +93,7 @@ dataResolver.prototype.resolveValue = function(path, data, replaceUndefined) {
 		env : this.environmentService.listEnvironmentVariables()
 	}, data);
 	let parts = path.replace("$.", "").split(".");
+
 	parts.forEach((p) => {
 		if (current) {
 			current = current[p];

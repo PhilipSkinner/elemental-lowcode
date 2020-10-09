@@ -41,6 +41,10 @@ controllerState.prototype.setContext = function(request, response) {
 	});
 };
 
+controllerState.prototype.setComponents = function(componentInstances) {
+	this.componentInstances = componentInstances;
+};
+
 controllerState.prototype.generateResponseHeaders = function() {
 	this.controllerDefinition.sessionState.generateResponseHeaders();
 	this.controllerDefinition.navigationService.generateResponseHeaders();
@@ -80,22 +84,40 @@ controllerState.prototype.cleanValues = function(values) {
 	return values;
 };
 
-controllerState.prototype.triggerEvent = function(name, details) {
-	return new Promise((resolve, reject) => {
-		let result = null;
+controllerState.prototype._triggerComponentEvents = function(name, details) {
+	return Promise.all(this.componentInstances.map((ci) => {
+		if ((details._identifier && ci.identifier === details._identifier) || name === "load") {
+			//we need to trigger the event on this component
+			if (ci.instance.events[name]) {
+				result = ci.instance.events[name].bind(ci.instance)(details);
+			}
 
-		//ensure we clean any nasty values
-		this.cleanValues(details);
+			if (result && result.then) {
+				return result.then(resolve).catch(reject);
+			}
+		}
+
+		return Promise.resolve();
+	}));
+};
+
+controllerState.prototype.triggerEvent = function(name, details) {
+	//ensure we clean any nasty values
+	this.cleanValues(details);
+
+	//trigger our components
+	return this._triggerComponentEvents(name, details).then(() => {
+		let result = null;
 
 		if (this.controllerDefinition.events[name]) {
 			result = this.controllerDefinition.events[name].bind(this.controllerDefinition)(details);
 		}
 
 		if (result && result.then) {
-			return result.then(resolve).catch(reject);
+			return result.then(Promise.resolve).catch(Promise.reject);
 		}
 
-		return resolve();
+		return Promise.resolve();
 	}).catch((err) => {
        	console.error(err);
 		return Promise.resolve();
