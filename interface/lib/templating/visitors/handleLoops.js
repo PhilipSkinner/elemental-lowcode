@@ -64,9 +64,29 @@ handleLoops.prototype.expandNext = function(view, data) {
 	return view;
 };
 
+function refReplacer() {
+  let m = new Map(), v= new Map(), init = null;
+
+  return function(field, value) {
+    let p= m.get(this) + (Array.isArray(this) ? `[${field}]` : '.' + field);
+    let isComplex= value===Object(value)
+
+    if (isComplex) m.set(value, p);
+
+    let pp = v.get(value)||'';
+    let path = p.replace(/undefined\.\.?/,'');
+    let val = pp ? `#REF:${pp[0]=='[' ? '$':'$.'}${pp}` : value;
+
+    !init ? (init=value) : (val===init ? val="#REF:$" : 0);
+    if(!pp && isComplex) v.set(value, path);
+
+    return val;
+  }
+}
+
 handleLoops.prototype.expand = function(view, data) {
 	this.modified = true;
-	let localData = JSON.parse(JSON.stringify(data));
+	let localData = JSON.parse(JSON.stringify(data, refReplacer()));
 	while (this.modified) {
 		view = this.expandNext(view, localData);
 	}

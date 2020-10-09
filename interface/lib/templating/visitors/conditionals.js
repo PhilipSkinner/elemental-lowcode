@@ -1,6 +1,7 @@
 const conditionals = function() {
 	this.ignoredProps = [
-		"_scope"
+		"_scope",
+		"_controller"
 	];
 };
 

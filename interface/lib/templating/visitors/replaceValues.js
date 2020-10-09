@@ -3,7 +3,8 @@ const replaceValues = function(dataResolver) {
 
 	this.ignoredProps = [
 		"repeat",
-		"_scope"
+		"_scope",
+		"_controller"
 	];
 };
 

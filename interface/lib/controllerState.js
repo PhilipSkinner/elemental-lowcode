@@ -88,6 +88,18 @@ controllerState.prototype._triggerComponentEvents = function(name, details) {
 	return Promise.all(this.componentInstances.map((ci) => {
 		if ((details._identifier && ci.identifier === details._identifier) || name === "load") {
 			//we need to trigger the event on this component
+
+			ci.instance.storageService 		= this.controllerDefinition.storageService;
+			ci.instance.sessionState 		= this.controllerDefinition.sessionState;
+			ci.instance.integrationService 	= this.controllerDefinition.integrationService;
+			ci.instance.rulesetService 		= this.controllerDefinition.rulesetService;
+			ci.instance.authClientProvider 	= this.controllerDefinition.authClientProvider;
+			ci.instance.idmService 			= this.controllerDefinition.idmService;
+			ci.instance.navigationService 	= this.controllerDefinition.navigationService;
+			ci.instance.serviceProvider 		= this.controllerDefinition.serviceProvider;
+			ci.instance.messagingService 	= this.controllerDefinition.messagingService;
+			ci.instance.environmentService 	= this.controllerDefinition.environmentService;
+
 			if (ci.instance.events[name]) {
 				result = ci.instance.events[name].bind(ci.instance)(details);
 			}

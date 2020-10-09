@@ -1,5 +1,8 @@
 const bindValues = function() {
-
+	this.ignored = [
+		"_scope",
+		"_controller"
+	];
 };
 
 bindValues.prototype.bindValues = function(view) {
@@ -10,12 +13,14 @@ bindValues.prototype.bindValues = function(view) {
 
 		//check every property to see if we need to bind again
 		Object.keys(tag).forEach((prop) => {
-			if (Array.isArray(tag[prop])) {
-				tag[prop] = this.bindValues(tag[prop]);
-			}
+			if (this.ignored.indexOf(prop) === -1) {
+				if (Array.isArray(tag[prop])) {
+					tag[prop] = this.bindValues(tag[prop]);
+				}
 
-			if (typeof(tag[prop]) === "object" && tag[prop] !== null) {
-				tag[prop] = this.bindValues([tag[prop]])[0];
+				if (typeof(tag[prop]) === "object" && tag[prop] !== null) {
+					tag[prop] = this.bindValues([tag[prop]])[0];
+				}
 			}
 		});
 

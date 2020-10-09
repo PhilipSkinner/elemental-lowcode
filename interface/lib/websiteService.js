@@ -47,7 +47,7 @@ websiteService.prototype.init = function(dir) {
 					return Promise.resolve(definition);
 				});
 			}).then((definition) => {
-				let instance = this.websiteInstance(this.app, definition, this.passport);
+				let instance = this.websiteInstance(this.app, definition);
 				return instance.init();
 			}).then(doNext);
 		};

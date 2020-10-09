@@ -57,6 +57,7 @@ websiteInstance.prototype.init = function() {
 		let passport = null;
 		//setup our security if we have a client defined
 		if (typeof(this.definition.client) !== "undefined" && this.definition.client !== null) {
+			delete require.cache[require.resolve("passport")];
 			const oidc = require("passport-oauth2");
 			passport = require("passport");
 			passport.use(new oidc({
