@@ -169,10 +169,12 @@ const expansionTest = (done) => {
 					},
 					{
 						my : "value",
-						if : "this"
+						if : "this",
+						_controller : undefined
 					},
 					{
 						repeat : "yes please",
+						_controller : undefined,
 						prop : [
 							"one",
 							"two"
