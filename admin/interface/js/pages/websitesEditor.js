@@ -1088,6 +1088,8 @@ function renderTag(tag, scope, expandChildren) {
 	return parts.join("");
 }
 
+window._websiteDragData = {};
+
 window.Vue.component("tagsection", {
 	template : "#template-tagSection",
 	props : [
@@ -1097,6 +1099,7 @@ window.Vue.component("tagsection", {
 		let ret = {
 			droppable 	: false,
 			selected 	: false,
+			draggable 	: false,
 			definition 	: window._websitesEditorControllerInstance.uniqueTags[this.$options.propsData.tag.tag] || {}
 		};
 
@@ -1135,7 +1138,30 @@ window.Vue.component("tagsection", {
 			return true;
 		};
 
+		ret.setDroppableConfig = (event) => {
+			if (this.$options.parent.$options.propsData) {
+				const parent = this.$options.parent;
+				const thisTag = this.$options.propsData;
+				const depId = this.$options.propsData.tag.__ob__.dep.id;
+
+				window._websiteDragData[depId] = {
+					parent 	: parent,
+					thisTag : thisTag
+				};
+
+				event.dataTransfer.setData("text", depId);
+			}
+
+			event.stopPropagation();
+		};
+
 		ret.onClick = (event) => {
+			if (ret.draggable) {
+				event.preventDefault();
+				event.stopPropagation();
+				return true;
+			}
+
 			let shouldSelect = window.selectedTags.indexOf(this) === -1;
 
 			window.selectedTags.forEach((t) => {
@@ -1175,20 +1201,34 @@ window.Vue.component("tagsection", {
 			event.stopPropagation();
 			ret.droppable = false;
 
-			const config = JSON.parse(event.dataTransfer.getData("text"));
+			let config = JSON.parse(event.dataTransfer.getData("text"));
 
-			//construct our object
-			let newTag = {
-				tag 		: config.tag,
-				children 	: null,
-			};
+			if (typeof(config) === "number") {
+				let depId = config + 1 - 1;
+				config = window._websiteDragData[config];
+				let newChildren = [];
+				config.parent.$options.propsData.tag.children.forEach((child) => {
+					if (depId != child.__ob__.dep.id) {
+						newChildren.push(child);
+					}
+				});
+				config.parent.$options.propsData.tag.children = newChildren;
+				this.$options.propsData.tag.children = this.$options.propsData.tag.children || [];
+				this.$options.propsData.tag.children.push(config.thisTag.tag);
+			} else {
+				//construct our object
+				let newTag = {
+					tag 		: config.tag,
+					children 	: null,
+				};
 
-			Object.keys(config.properties).forEach((prop) => {
-				newTag[prop] = null;
-			});
+				Object.keys(config.properties).forEach((prop) => {
+					newTag[prop] = null;
+				});
 
-			this.$options.propsData.tag.children = this.$options.propsData.tag.children || [];
-			this.$options.propsData.tag.children.push(newTag);
+				this.$options.propsData.tag.children = this.$options.propsData.tag.children || [];
+				this.$options.propsData.tag.children.push(newTag);
+			}
 		};
 
 		return ret;

@@ -106,7 +106,12 @@
 </template>
 
 <template id="template-tagSection">
-	<div class="tagSection" v-bind:class="{ 'droppable' : droppable, 'selected' : selected, 'inline' : definition.inline }" v-on:click="onClick">
+	<div
+		class="tagSection"
+		v-bind:class="{ 'draggable' : draggable, 'droppable' : droppable, 'selected' : selected, 'inline' : definition.inline }"
+		v-on:click="onClick"
+		draggable="true" v-on:dragstart="setDroppableConfig"
+	>
 		<div class="tagMenu">
 			<div class="tagMenuToggle">
 				<span>Tag: <strong>{{tag.tag}}</strong></span>
@@ -115,7 +120,7 @@
 			<div class="tagMenuContent">
 				<div>
 					<a v-on:click="deleteTag">
-						× Delete
+						Delete
 					</a>
 				</div>
 			</div>
