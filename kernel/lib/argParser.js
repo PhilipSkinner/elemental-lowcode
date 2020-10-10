@@ -38,7 +38,7 @@ argParser.prototype._merge = function(parent, child) {
 		//merge if they are objects
 		if (parent[name] && typeof(parent[name]) === "object" && typeof(child[name]) === "object") {
 			this._merge(parent[name], child[name]);
-		} else if (!parent[name]) {
+		} else if (!parent.hasOwnProperty(name) && !parent[name]) {
 			//only assign if the parent doesn"t have this property defined yet
 			parent[name] = child[name];
 		} else if (parent[name] && typeof(parent[name]) !== "object" && typeof(child[name]) !== "object") {
