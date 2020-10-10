@@ -4,7 +4,7 @@
 
 The navigation service allows you to redirect users to other routes/urls within your website controllers. This service provides the following methods:
 
-* navigateTo
+*   navigateTo
 
 These methods are covered in more detail below.
 
@@ -12,7 +12,7 @@ These methods are covered in more detail below.
 
 Parameters:
 
-* `url` - string, the URL or path that you want to redirect the user to
+*   `url` - string, the URL or path that you want to redirect the user to
 
 Redirects the users client to the given URL.
 

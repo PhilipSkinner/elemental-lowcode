@@ -4,11 +4,11 @@
 
 Every authentication request to the IdP must be done on behalf of a client, with each client having:
 
-* A unique identifier
-* A secret
-* A list of valid scopes
-* A list of valid grant types
-* A list of valid redirect uris (for auth/code flow)
+*   A unique identifier
+*   A secret
+*   A list of valid scopes
+*   A list of valid grant types
+*   A list of valid redirect uris (for auth/code flow)
 
 ## Scopes
 
@@ -26,10 +26,10 @@ A client can have access to 0 or more scopes, with that configuration provided a
 
 The IdP supports the following grant types:
 
-* `client_credentials`
-* `authorization_code`
-* `refresh_token`
-* `password`
+*   `client_credentials`
+*   `authorization_code`
+*   `refresh_token`
+*   `password`
 
 By default every client will be issued the `client_credentials` and `authorization_code` grants. If you want the system to support the automatic refreshing of tokens then the `refresh_token` grant must be added into your list of supported grants.
 

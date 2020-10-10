@@ -17,8 +17,8 @@ Once the container is up and running you can connect to it by accessing the Elem
 
 The default login details are:
 
-* Username: admin
-* Password: admin
+*   Username: admin
+*   Password: admin
 
 Once you are logged in and able to see the dashboard we can continue with creating the todo list application.
 
@@ -48,9 +48,9 @@ Elemental interfaces allow you to define custom tags that can be re-used within 
 
 We're going to construct three custom tags within the todoList website:
 
-* A header
-* A footer
-* A wrapper
+*   A header
+*   A footer
+*   A wrapper
 
 **Step 1**
 
@@ -301,9 +301,9 @@ Update the default definition so that it matches this:
 
 This definition allows each todo list to have:
 
-* An owner (subject)
-* A name
-* A list of entries, each with a title, description and a flag indicating if it has been completed
+*   An owner (subject)
+*   A name
+*   A list of entries, each with a title, description and a flag indicating if it has been completed
 
 The definition also contains a unique constraint where we specify that each user can only have a unique set of todo lists based upon their name. We have defined our security so that we do not need a specific role claim on the identity making requests into the system, plus we have defined that this data type should use the `filesystem` storage engine.
 
@@ -903,10 +903,10 @@ When you now access your `todoList` website you should have a fully functional t
 
 There are several bits missing from this application that stop it from being good enough, these are:
 
-* Displaying errors to the user
-* A message that displays when there are no lists defined
-* Confirmation of removal of lists & list entries
-* Ability to logout
-* Ability for logged out users to view information about what the website does
+*   Displaying errors to the user
+*   A message that displays when there are no lists defined
+*   Confirmation of removal of lists & list entries
+*   Ability to logout
+*   Ability for logged out users to view information about what the website does
 
 Attempt to take the `todoList` website application further by adding a few of these missing features into it. The [system documentation](/documentation) should contain all of the information you need in order to complete these features.

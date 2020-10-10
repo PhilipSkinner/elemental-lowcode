@@ -105,7 +105,7 @@ _websitesEditorController.prototype.showResources = function() {
 };
 
 _websitesEditorController.prototype.viewWebsite = function() {
-	window.open(`${window.hosts.interface}/${this.website.name}/`, '_blank');
+	window.open(`${window.hosts.interface}/${this.website.name}/`, "_blank");
 };
 
 _websitesEditorController.prototype._resetEditorNavState = function() {
@@ -154,7 +154,7 @@ _websitesEditorController.prototype.showViewSource = function() {
 
 _websitesEditorController.prototype.viewRoute = function() {
 	if (this.activeRoute && this.activeRoute.route) {
-		window.open(`${window.hosts.interface}/${this.website.name}${this.activeRoute.route}`, '_blank');
+		window.open(`${window.hosts.interface}/${this.website.name}${this.activeRoute.route}`, "_blank");
 	}
 };
 
@@ -234,17 +234,17 @@ _websitesEditorController.prototype.autoProvisionClient = function() {
 
 	//generate a default client
 	const client = {
-	    "client_id": `interface-${this.website.name}-client`,
-	    "client_secret": `${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}`,
-	    "scope": "openid roles offline_access",
-	    "grants" : [
-        	"client_credentials",
+		"client_id": `interface-${this.website.name}-client`,
+		"client_secret": `${window.generateGuid().split("-").reverse().join("")}${window.generateGuid().split("-").reverse().join("")}${window.generateGuid().split("-").reverse().join("")}`,
+		"scope": "openid roles offline_access",
+		"grants" : [
+			"client_credentials",
 			"authorization_code",
-        	"refresh_token"
-    	],
-	    "redirect_uris": [
-	        `${window.hosts.interface}/${this.website.name}/_auth`
-	    ]
+			"refresh_token"
+		],
+		"redirect_uris": [
+			`${window.hosts.interface}/${this.website.name}/_auth`
+		]
 	};
 
 	//save the client and set the value
@@ -288,7 +288,7 @@ _websitesEditorController.prototype.initEditor = function(elem, type, value) {
 
 _websitesEditorController.prototype.saveResource = function(path, value) {
 	return new Promise((resolve, reject) => {
-		if (typeof(value) === 'object') {
+		if (typeof(value) === "object") {
 			value = JSON.stringify(value, null, 4);
 		}
 
@@ -340,9 +340,9 @@ _websitesEditorController.prototype.saveAll = function() {
 			//make sure our active resource is set
 			if (this.editorNavItems[0].selected) {
 				this.resources[this.activeResource] = this.getConfigFromEditor();
- 			} else {
- 				this.resources[this.activeResource] = this.editor.getValue();
- 			}
+			} else {
+				this.resources[this.activeResource] = this.editor.getValue();
+			}
 		}
 
 		return Promise.all(Object.keys(this.resources).map((k) => {
@@ -466,11 +466,11 @@ _websitesEditorController.prototype.findProps = function(obj, props) {
 		return props;
 	}
 
-	if (typeof(obj) === 'string') {
-		if (obj.indexOf('$.') !== -1) {
-			let parts = obj.split('$.');
+	if (typeof(obj) === "string") {
+		if (obj.indexOf("$.") !== -1) {
+			let parts = obj.split("$.");
 			parts.forEach((p) => {
-				let name = p.split(' ')[0];
+				let name = p.split(" ")[0];
 				if (name) {
 					props[name] = "";
 				}
@@ -488,7 +488,7 @@ _websitesEditorController.prototype.findProps = function(obj, props) {
 		return props;
 	}
 
-	if (typeof(obj) === 'object') {
+	if (typeof(obj) === "object") {
 		Object.keys(obj).forEach((k) => {
 			props = this.findProps(obj[k], props);
 		});
@@ -502,7 +502,7 @@ _websitesEditorController.prototype.findProps = function(obj, props) {
 
 _websitesEditorController.prototype.configureCustomTagset = function() {
 	this.tagsets.Custom = {
-		name : 'Custom',
+		name : "Custom",
 		tags : []
 	};
 
@@ -771,8 +771,8 @@ _websitesEditorController.prototype.uploadResource = function() {
 	formData.append("resource", imagefile.files[0]);
 	return window.axios.post(`${window.hosts.kernel}/websites/${this.website.name}/staticfiles`, formData, {
 		headers: {
-	  		"Content-Type" : "multipart/form-data",
-	  		Authorization  : `Bearer ${window.getToken()}`
+			"Content-Type" : "multipart/form-data",
+			Authorization  : `Bearer ${window.getToken()}`
 		}
 	}).then(() => {
 		this.newResourceVisible = false;
@@ -817,17 +817,17 @@ _websitesEditorController.prototype._removeResource = function(filename) {
 };
 
 _websitesEditorController.prototype.setDroppableConfig = function(event) {
-	const groupName = event.target.attributes['data-group'].value;
-	const tagName = event.target.attributes['data-tag'].value;
+	const groupName = event.target.attributes["data-group"].value;
+	const tagName = event.target.attributes["data-tag"].value;
 
 	let config = {};
-	_websitesEditorControllerInstance.tagsets[groupName].tags.forEach((t) => {
+	window._websitesEditorControllerInstance.tagsets[groupName].tags.forEach((t) => {
 		if (t.name === tagName) {
 			config = t;
 		}
 	});
 
-	event.dataTransfer.setData('text', JSON.stringify(config));
+	event.dataTransfer.setData("text", JSON.stringify(config));
 };
 
 _websitesEditorController.prototype.clearProperties = function() {
@@ -836,7 +836,7 @@ _websitesEditorController.prototype.clearProperties = function() {
 };
 
 _websitesEditorController.prototype.isExpression = function(val) {
-	return typeof(val) !== 'undefined' && val !== null && !Array.isArray(val) && val.indexOf && val.indexOf('$.') !== -1;
+	return typeof(val) !== "undefined" && val !== null && !Array.isArray(val) && val.indexOf && val.indexOf("$.") !== -1;
 };
 
 _websitesEditorController.prototype.setAsExpression = function(prop) {
@@ -851,7 +851,7 @@ _websitesEditorController.prototype.unsetAsExpression = function(prop) {
 
 _websitesEditorController.prototype.ensureArray = function(prop) {
 	if (!Array.isArray(this.caller.activeProperties[prop])) {
-		if (!(typeof(this.caller.activeProperties[prop]) === 'undefined' || this.caller.activeProperties[prop] === null)) {
+		if (!(typeof(this.caller.activeProperties[prop]) === "undefined" || this.caller.activeProperties[prop] === null)) {
 			this.caller.activeProperties[prop] = [this.caller.activeProperties[prop]];
 		} else {
 			this.caller.activeProperties[prop] = [];
@@ -865,12 +865,12 @@ _websitesEditorController.prototype.addToArray = function(prop) {
 	this.activeProperties = this.caller.activeProperties;
 
 	if (Array.isArray(this.activeProperties[prop])) {
-		this.activeProperties[prop].push('');
+		this.activeProperties[prop].push("");
 	} else {
-		if (!(typeof(this.activeProperties[prop]) === 'undefined' || this.activeProperties[prop] === null)) {
+		if (!(typeof(this.activeProperties[prop]) === "undefined" || this.activeProperties[prop] === null)) {
 			this.activeProperties[prop] = [this.activeProperties[prop]];
 		} else {
-			this.activeProperties[prop] = [''];
+			this.activeProperties[prop] = [""];
 		}
 	}
 
@@ -927,7 +927,7 @@ _websitesEditorController.prototype.getConfigFromEditor = function() {
 };
 
 _websitesEditorController.prototype.keyDownHandler = function(event) {
-	if (event && event.ctrlKey && event.keyCode == 83) {
+	if (event && event.ctrlKey && event.keyCode === 83) {
 		window._websitesEditorControllerInstance.saveAll();
 
 		event.preventDefault();
@@ -943,8 +943,8 @@ window.WebsiteEditor = {
 	mounted  : function() {
 		window._websitesEditorControllerInstance.wipeData();
 
-		document.removeEventListener('keydown', window._websitesEditorControllerInstance.keyDownHandler);
-		document.addEventListener('keydown', window._websitesEditorControllerInstance.keyDownHandler);
+		document.removeEventListener("keydown", window._websitesEditorControllerInstance.keyDownHandler);
+		document.addEventListener("keydown", window._websitesEditorControllerInstance.keyDownHandler);
 
 		if (this.$route.params.name === ".new") {
 			return window._websitesEditorControllerInstance.fetchClients(this).then(() => {
@@ -969,11 +969,27 @@ window.WebsiteEditor = {
 		});
 	},
 	destroyed : function() {
-		document.removeEventListener('keydown', window._websitesEditorControllerInstance.keyDownHandler);
+		document.removeEventListener("keydown", window._websitesEditorControllerInstance.keyDownHandler);
 	}
 };
 
 window.selectedTags = [];
+
+function resolveValue(path, data) {
+	let current = data;
+	let parts = path.replace("$.", "").split(".");
+	parts.forEach((p) => {
+		if (current) {
+			current = current[p];
+		}
+	});
+
+	if (typeof(current) === "undefined") {
+		return path;
+	}
+
+	return current;
+}
 
 function detectValues(string, data) {
 	if (!string || !string.indexOf || string.indexOf("$.") === -1) {
@@ -1010,23 +1026,7 @@ function detectValues(string, data) {
 	});
 
 	return string;
-};
-
-function resolveValue(path, data) {
-	let current = data;
-	let parts = path.replace("$.", "").split(".");
-	parts.forEach((p) => {
-		if (current) {
-			current = current[p];
-		}
-	});
-
-	if (typeof(current) === 'undefined') {
-		return path;
-	}
-
-	return current;
-};
+}
 
 function renderTag(tag, scope, expandChildren) {
 	let parts = [];
@@ -1040,7 +1040,7 @@ function renderTag(tag, scope, expandChildren) {
 		if (["text", "tag", "onclick", "children", "repeat", "submit", "bind", "_scope", "if"].indexOf(k) === -1) {
 			let value = detectValues(tag[k], scope);
 
-			if (!(typeof(value) === 'undefined' || value === null)) {
+			if (!(typeof(value) === "undefined" || value === null)) {
 				if (value === true) {
 					parts.push(` ${k}="${k}" `);
 				}
@@ -1054,7 +1054,7 @@ function renderTag(tag, scope, expandChildren) {
 
 	if (tag.text) {
 		needsEnd = true;
-		parts.push('>');
+		parts.push(">");
 		if (Array.isArray(tag.text)) {
 			parts = parts.concat(tag.text.map((t) => {
 				return detectValues(t, scope);
@@ -1067,7 +1067,7 @@ function renderTag(tag, scope, expandChildren) {
 	if (tag.children && expandChildren) {
 		if (!needsEnd) {
 			needsEnd = true;
-			parts.push('>');
+			parts.push(">");
 		}
 
 		tag.children.forEach((child) => {
@@ -1075,18 +1075,18 @@ function renderTag(tag, scope, expandChildren) {
 		});
 	}
 
-	if (needsEnd || ['textarea'].indexOf(tagName) !== -1) {
+	if (needsEnd || ["textarea"].indexOf(tagName) !== -1) {
 		if (!needsEnd) {
-			parts.push('>');
+			parts.push(">");
 		}
 
 		parts.push(`</${tagName}>`);
 	} else {
-		parts.push('/>');
+		parts.push("/>");
 	}
 
-	return parts.join('');
-};
+	return parts.join("");
+}
 
 window.Vue.component("tagsection", {
 	template : "#template-tagSection",
@@ -1097,7 +1097,7 @@ window.Vue.component("tagsection", {
 		let ret = {
 			droppable 	: false,
 			selected 	: false,
-			definition 	: _websitesEditorControllerInstance.uniqueTags[this.$options.propsData.tag.tag] || {}
+			definition 	: window._websitesEditorControllerInstance.uniqueTags[this.$options.propsData.tag.tag] || {}
 		};
 
 		ret.renderTag = ((tag) => {
@@ -1129,9 +1129,9 @@ window.Vue.component("tagsection", {
 				ret.selected = true;
 				window.selectedTags.push(this);
 
-				_websitesEditorControllerInstance.setProperties(this.$options.propsData.tag);
+				window._websitesEditorControllerInstance.setProperties(this.$options.propsData.tag);
 			} else {
-				_websitesEditorControllerInstance.clearProperties();
+				window._websitesEditorControllerInstance.clearProperties();
 			}
 
 			return true;
@@ -1154,7 +1154,7 @@ window.Vue.component("tagsection", {
 			event.stopPropagation();
 			ret.droppable = false;
 
-			const config = JSON.parse(event.dataTransfer.getData('text'));
+			const config = JSON.parse(event.dataTransfer.getData("text"));
 
 			//construct our object
 			let newTag = {

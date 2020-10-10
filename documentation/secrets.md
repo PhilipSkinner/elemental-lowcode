@@ -9,19 +9,19 @@ to keep them separate from version control.
 
 Secrets can be globally scoped, or can be scoped for a specific application:
 
-* Identity
-* Integrations
-* APIs
-* Messaging
-* Data
-* Websites
-* Rulesets
+*   Identity
+*   Integrations
+*   APIs
+*   Messaging
+*   Data
+*   Websites
+*   Rulesets
 
 Secrets are automatically resolved within the system wherever the config requires a confidental value:
 
-* Data type connection strings
-* Identity storage connection strings
-* Message queue connection strings
+*   Data type connection strings
+*   Identity storage connection strings
+*   Message queue connection strings
 
 In each of these places you can use the `$.secret.name` syntax to resolve the secrets value at runtime.
 

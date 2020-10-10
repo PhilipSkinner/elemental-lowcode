@@ -4,30 +4,30 @@
 
 The data system allows you to create APIs to serve basic resources, providing you with:
 
-* Basic CRUD operations (GET, POST, PUT, DELETE, PATCH)
-* Automatically generated OpenAPI definitions
-* OpenAPI (swagger) browser built into the admin
-* Ability to secure resources
+*   Basic CRUD operations (GET, POST, PUT, DELETE, PATCH)
+*   Automatically generated OpenAPI definitions
+*   OpenAPI (swagger) browser built into the admin
+*   Ability to secure resources
 
 The data system comes with several storage engines, allowing the data to be presisted with different backends. The following backends are supported:
 
-* In memory store
-* File system store
-* Postgres SQL
-* MySQL
-* MariaDB
-* MSSQL
+*   In memory store
+*   File system store
+*   Postgres SQL
+*   MySQL
+*   MariaDB
+*   MSSQL
 
 ## Data types
 
 Each data type is a JSON document that contains:
 
-* The name of the data type
-* The data types keys for filtering (todo)
-* The schema for the data type (JSON Schema document)
-* The roles to authorize access to the data type
-* Keys/constraints defined on the resource
-* The storage engine to back the data onto
+*   The name of the data type
+*   The data types keys for filtering (todo)
+*   The schema for the data type (JSON Schema document)
+*   The roles to authorize access to the data type
+*   Keys/constraints defined on the resource
+*   The storage engine to back the data onto
 
 The following is an example data type definition:
 
@@ -101,9 +101,9 @@ Each data type can be configured to use a storage engine - which allows each typ
 
 The type of storage engine is configured via the `storageEngine` property. The supported values for this are:
 
-* `memory`
-* `filesystem`
-* `sql`
+*   `memory`
+*   `filesystem`
+*   `sql`
 
 Each of these options are covered in more detail below.
 
@@ -127,10 +127,10 @@ This store can be used for direct access to data, but will suffer from potential
 
 The sql backing store allows for the use of:
 
-* Postgres
-* MySQL
-* MariaDB
-* MSSQL
+*   Postgres
+*   MySQL
+*   MariaDB
+*   MSSQL
 
 This storage engine options requires a `connectionString` property to be defined within the data type:
 
@@ -144,19 +144,19 @@ This storage engine options requires a `connectionString` property to be defined
 
 The connection string property is made up of:
 
-* A sql dialect
-* The username
-* The password
-* The servers hostname/IP
-* The servers port
-* The databases name
+*   A sql dialect
+*   The username
+*   The password
+*   The servers hostname/IP
+*   The servers port
+*   The databases name
 
 The following dialects are supported:
 
-* Postgres - `postgres://`
-* MySQL - `mysql://`
-* MariaDB - `mariadb://`
-* MSSQL - `mssql://`
+*   Postgres - `postgres://`
+*   MySQL - `mysql://`
+*   MariaDB - `mariadb://`
+*   MSSQL - `mssql://`
 
 ## Accessing/modifying data
 
@@ -200,17 +200,17 @@ Documentation for the requests & responses for each data type can be found by cl
 
 The roles section within a data type definition document supports the ability for you to define:
 
-* Should the default roles be replaced with a new set of roles
-* What are the extra (or complete) set of roles for operations
-* Is a role required
+*   Should the default roles be replaced with a new set of roles
+*   What are the extra (or complete) set of roles for operations
+*   Is a role required
 
 **Operation Types**
 
 There are three operation types that be carried out on a data type and its entities, these are:
 
-* Read
-* Write
-* Delete
+*   Read
+*   Write
+*   Delete
 
 The roles for each of these can be controlled individually within the configuration, along with if a role is required for the operation and if the system default roles are to be left intact.
 
@@ -218,21 +218,21 @@ The roles for each of these can be controlled individually within the configurat
 
 Each data type comes with a set of default roles that are used to protect its three types of operations:
 
-* Read:
-	- `system_admin`
-	- `system_reader`
-	- `data_reader`
-	- `[typeName]_reader`
-* Write:
-	- `system_admin`
-	- `system_writer`
-	- `data_writer`
-	- `[typeName]_writer`
-* Delete:
-	- `system_admin`
-	- `system_writer`
-	- `data_writer`
-	- `[typeName]_writer`
+*   Read:
+	*   `system_admin`
+	*   `system_reader`
+	*   `data_reader`
+	*   `[typeName]_reader`
+*   Write:
+	*   `system_admin`
+	*   `system_writer`
+	*   `data_writer`
+	*   `[typeName]_writer`
+*   Delete:
+	*   `system_admin`
+	*   `system_writer`
+	*   `data_writer`
+	*   `[typeName]_writer`
 
 ; where `typeName` is automatically taken from your data types name. For example, if your data type is called `pets` then your data type will allow read operations if a token containint the `pets_reader` role is present.
 
@@ -254,9 +254,9 @@ The default roles can be disabled on a data type by using the replace property w
 
 The properties that are available on this replace property object are:
 
-* read
-* write
-* delete
+*   read
+*   write
+*   delete
 
 All three are boolean values. Setting them to true disables the default list of roles for each operation type and the system will rely upon you to specify your own roles for the operations.
 
@@ -264,9 +264,9 @@ All three are boolean values. Setting them to true disables the default list of 
 
 Roles for the operations can be defined in one of three properties on the roles object:
 
-* read
-* write
-* delete
+*   read
+*   write
+*   delete
 
 Each of these properties is an array of string values - those values being the role names you want to use.
 
@@ -306,9 +306,9 @@ If you do not want to protect a data type and its operation with any roles and j
 
 The needsRole object has three properties that can be set:
 
-* read
-* write
-* delete
+*   read
+*   write
+*   delete
 
 Each of these is a boolean. Setting a property to true will enforce a role being present on the token. Setting a property to false will only check if a valid token was presented to the storage API.
 
@@ -316,7 +316,7 @@ Each of these is a boolean. Setting a property to true will enforce a role being
 
 The keys collection on the document allows you to specify constraints within the data. The following constraints are supported:
 
-* unique
+*   unique
 
 **Unique Keys**
 

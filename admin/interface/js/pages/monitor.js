@@ -39,7 +39,7 @@ _monitorController.prototype.setCaller = function(caller) {
 
 _monitorController.prototype._renderLines = function(lines) {
 	const elem = document.querySelectorAll('#monitorContent')[0];
-	const numbers = Object.keys(lines).map((n) => { return parseInt(n); }).sort((a,b) => {return a - b})
+	const numbers = Object.keys(lines).map((n) => { return parseInt(n, 10); }).sort((a,b) => {return a - b})
 	const maxLines = 500;
 	let toRemove = 0;
 	let toAdd = numbers.length;
@@ -93,7 +93,7 @@ _monitorController.prototype._monitorSystem = function() {
 			Authorization : `Bearer ${window.getToken()}`
 		}
 	}).then((lines) => {
-		const numbers = Object.keys(lines.data.lines).map((n) => { return parseInt(n); }).sort((a,b) => {return a - b});
+		const numbers = Object.keys(lines.data.lines).map((n) => { return parseInt(n, 10); }).sort((a,b) => {return a - b});
 		if (numbers.length > 0) {
 			this.lastSeen = numbers.slice(-1)[0];
 

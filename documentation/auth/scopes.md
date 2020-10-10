@@ -8,8 +8,8 @@ A [client](/documentation/auth/clients) must be configured to have access to a p
 
 Scopes are configured with:
 
-* A name
-* A list of claims
+*   A name
+*   A list of claims
 
 When an authentication request is sent to the IdP with a scope, it will restrict the claims issues on the JWT token based upon the claims held within the scope(s) requested.
 

@@ -6,10 +6,10 @@ The integrations service allows you to connect to third party systems and to sur
 
 Each integration defines:
 
-* incoming requests
-* outgoing requests (to the third party system)
-* transformation logic
-* authorization rules
+*   incoming requests
+*   outgoing requests (to the third party system)
+*   transformation logic
+*   authorization rules
 
 Here is an example integration definition:
 
@@ -75,9 +75,9 @@ Here is an example integration definition:
 
 The incoming request definition is taken from the following properties on the integration:
 
-* name - used to generate the URI for the integration
-* method - the HTTP method to be used to call the integration
-* variables - any variables that are required for the integration to be executed
+*   name - used to generate the URI for the integration
+*   method - the HTTP method to be used to call the integration
+*   variables - any variables that are required for the integration to be executed
 
 Clicking on the name of an integration within the integrations section provides automatic documentation on how to call the integration.
 
@@ -87,9 +87,9 @@ The outgoing request definition is held within the `request` property of the int
 
 This object allows for the following confirmation options:
 
-* uri - the URI to call
-* method - the HTTP method to use to call the URI
-* schema - the expected shape of the response data
+*   uri - the URI to call
+*   method - the HTTP method to use to call the URI
+*   schema - the expected shape of the response data
 
 When a request is made to the integration, this configuration is used to call the third party system. If an error occurs, such as a 404 or the response does not match the defined schema then an error is thrown by the integration.
 
@@ -97,7 +97,7 @@ When a request is made to the integration, this configuration is used to call th
 
 The integrations document contains a property named `transformer` which can be used to modify the response from the third party system. This is a simple anonymous javascript function that takes a single parameter:
 
-* input - the response from the third party, matching the defined schema
+*   input - the response from the third party, matching the defined schema
 
 This function is to return a modified version of the response, the simplest transformer is a straight pass through:
 
@@ -113,16 +113,16 @@ The `roles` section of the integration configuration allows you to define how au
 
 By default, each integration will only allow execution if an incoming token contains the following role claims:
 
-* `system_admin`
-* `system_exec`
-* `integration_exec`
-* `[integration_name]_exec`
+*   `system_admin`
+*   `system_exec`
+*   `integration_exec`
+*   `[integration_name]_exec`
 
 Each integration can have its security configured to:
 
-* Replace the existing roles with a new set of roles
-* Append roles to the default set of roles
-* Remove the need for any roles, accept any valid access token as authorization
+*   Replace the existing roles with a new set of roles
+*   Append roles to the default set of roles
+*   Remove the need for any roles, accept any valid access token as authorization
 
 Here is an example `roles` section:
 

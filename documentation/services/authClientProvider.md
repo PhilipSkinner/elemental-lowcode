@@ -4,11 +4,11 @@
 
 The auth client provider allows you to access the users authentication state, and to request access tokens - either user or application. You can access the following methods on this service:
 
-* loginUser
-* logoutUser
-* getAccessToken
-* tokenExpired
-* refreshUserToken
+*   loginUser
+*   logoutUser
+*   getAccessToken
+*   tokenExpired
+*   refreshUserToken
 
 These methods are covered in more detail below.
 
@@ -16,8 +16,8 @@ These methods are covered in more detail below.
 
 Parameters:
 
-* `username` - string, the username of the user
-* `password` - string, the password for the user
+*   `username` - string, the username of the user
+*   `password` - string, the password for the user
 
 Authenticates using the `password` grant.
 

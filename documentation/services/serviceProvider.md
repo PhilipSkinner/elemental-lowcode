@@ -4,8 +4,8 @@
 
 The service provider gives you a mechanism to resolve your custom services within a website controller. It has the following methods available:
 
-* resolveService
-* resolveRequirements
+*   resolveService
+*   resolveRequirements
 
 These methods are covered in more detail below.
 
@@ -13,7 +13,7 @@ These methods are covered in more detail below.
 
 Parameters:
 
-* `name` - string, the name of the service to resolve
+*   `name` - string, the name of the service to resolve
 
 Attempts to resolve the service named with the name parameter. If the system cannot resolve this, or any dependent services, then an exception will be thrown.
 
@@ -34,7 +34,7 @@ module.exports = {
 
 Parameters:
 
-* `fn` - function, the function to resolve the dependencies for
+*   `fn` - function, the function to resolve the dependencies for
 
 Attempts to resolve the dependencies for the function. If the system cannot resolve all of the dependencies then an exception will be thrown.
 

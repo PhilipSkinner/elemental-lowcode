@@ -48,7 +48,7 @@ module.exports = {
 
 There are a number of standard events that can be listened to:
 
-* `load`
+*   `load`
 
 The `load` event is triggered whenever an instance of your controller is loaded and should be used to bootstrap your pages initial state. If you want your page to maintain a persistent state then the `sessionState` injectable should be used.
 
@@ -123,16 +123,16 @@ module.exports = {
 
 The following services are automatically added into each controller:
 
-* [authClientProvider](/documentation/services/authClientProvider)
-* [environmentService](/documentation/services/environmentService)
-* [idmService](/documentation/services/idmService)
-* [integrationService](/documentation/services/integrationService)
-* [messagingService](/documentation/services/messagingService)
-* [navigationService](/documentation/websites/navigationService)
-* [rulesetService](/documentation/services/rulesetService)
-* [serviceProvider](/documentation/services/serviceProvider)
-* [sessionState](/documentation/websites/sessionState)
-* [storageService](/documentation/services/storageService)
+*   [authClientProvider](/documentation/services/authClientProvider)
+*   [environmentService](/documentation/services/environmentService)
+*   [idmService](/documentation/services/idmService)
+*   [integrationService](/documentation/services/integrationService)
+*   [messagingService](/documentation/services/messagingService)
+*   [navigationService](/documentation/websites/navigationService)
+*   [rulesetService](/documentation/services/rulesetService)
+*   [serviceProvider](/documentation/services/serviceProvider)
+*   [sessionState](/documentation/websites/sessionState)
+*   [storageService](/documentation/services/storageService)
 
 Each of these are defined upon the controller instance as a property that can be access, for example:
 

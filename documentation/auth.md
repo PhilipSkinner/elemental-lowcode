@@ -12,9 +12,9 @@ The IdP can be used to issue tokens to services external to elemental, and can b
 
 There are several configuration options for the IdP, these are:
 
-* [Scopes](/documentation/auth/scopes)
-* [Clients](/documentation/auth/clients)
-* [Users](/documentation/auth/users)
-* [Storage](/documentation/auth/storage)
+*   [Scopes](/documentation/auth/scopes)
+*   [Clients](/documentation/auth/clients)
+*   [Users](/documentation/auth/users)
+*   [Storage](/documentation/auth/storage)
 
 Every system within elemental utilises RBAC (role-based access control) on its endpoints, coming with a number of [pre-defined roles](/documentation/auth/defaultRoles).

@@ -5,10 +5,10 @@
 The environment service allows you to fetch values based upon the environment that the system is running in. You can access the following methods
 on this service:
 
-* getEnvironmentalVariable
-* listEnvironmentVariables
-* getSecret
-* listSecrets
+*   getEnvironmentalVariable
+*   listEnvironmentVariables
+*   getSecret
+*   listSecrets
 
 These methods are covered in more detail below.
 
@@ -16,7 +16,7 @@ These methods are covered in more detail below.
 
 Parameters:
 
-* `name` - string, the name of the environmental variable
+*   `name` - string, the name of the environmental variable
 
 Returns the value of the environmental variable, if defined, on the system.
 
@@ -52,7 +52,7 @@ module.exports = {
 
 Parameters:
 
-* `name` - string, the name of the secret as defined within the security center
+*   `name` - string, the name of the secret as defined within the security center
 
 Returns the value of the named secret.
 

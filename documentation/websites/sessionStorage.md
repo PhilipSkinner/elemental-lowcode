@@ -4,9 +4,9 @@
 
 The websites service can be configured to store sessions with one of three mechanisms:
 
-* In memory
-* Filesystem
-* SQL
+*   In memory
+*   Filesystem
+*   SQL
 
 Configuration of these settings can be found within the Websites section, in the Sessions area:
 

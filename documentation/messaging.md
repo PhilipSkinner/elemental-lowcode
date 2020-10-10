@@ -6,19 +6,19 @@ The messaging system allows you to define queues and the handler to process the 
 
 Each queue includes:
 
-* A name
-* Incoming message definition
-* Security configuration
-* A handler
-* Storage configuration
+*   A name
+*   Incoming message definition
+*   Security configuration
+*   A handler
+*   Storage configuration
 
 The messaging system comes with several storage engines, allowing the data to be presisted with different backends. The following backends are supported:
 
-* File system store
-* Postgres SQL
-* MySQL
-* MariaDB
-* MSSQL
+*   File system store
+*   Postgres SQL
+*   MySQL
+*   MariaDB
+*   MSSQL
 
 Each queue will be backed by `filesystem` storage by default.
 
@@ -72,14 +72,14 @@ module.exports = function(message) {
 
 The queue system then hosts an API that allows you to:
 
-* Push messages onto the queue
-* Get the status of a message
-* Delete a message
+*   Push messages onto the queue
+*   Get the status of a message
+*   Delete a message
 
 Each message sent into the queue gets given:
 
-* An ID
-* A status
+*   An ID
+*   A status
 
 An example message looks like:
 
@@ -101,10 +101,10 @@ An example message looks like:
 
 There are 4 message statuses:
 
-* `PENDING`
-* `INPROGRESS`
-* `COMPLETE`
-* `ERROR`
+*   `PENDING`
+*   `INPROGRESS`
+*   `COMPLETE`
+*   `ERROR`
 
 ### Incoming Message Definition
 
@@ -150,16 +150,16 @@ A valid access token must be presented to the messaging service API in order to 
 
 You can control the validation of this token within the queue definition by:
 
-* Configuring if a role is required
-* Overwrite the auto-generated system roles
-* Define your own roles
+*   Configuring if a role is required
+*   Overwrite the auto-generated system roles
+*   Define your own roles
 
 There are a number of default roles that the system sets on these API endpoints, these are:
 
-* `system_admin`
-* `system_writer`
-* `queue_writer`
-* `[queue_name]_writer`
+*   `system_admin`
+*   `system_writer`
+*   `queue_writer`
+*   `[queue_name]_writer`
 
 ; where `[queue_name]` is automatically replaced by the name of your queue.
 
@@ -191,8 +191,8 @@ Each queue can be configured to use a storage engine - which allows each queue t
 
 The type of storage engine is configured via the `storageEngine` property. The supported values for this are:
 
-* `filesystem`
-* `sql`
+*   `filesystem`
+*   `sql`
 
 Each of these options are covered in more detail below.
 
@@ -210,10 +210,10 @@ This store can be used for direct access to messages, but will suffer from poten
 
 The sql backing store allows for the use of:
 
-* Postgres
-* MySQL
-* MariaDB
-* MSSQL
+*   Postgres
+*   MySQL
+*   MariaDB
+*   MSSQL
 
 This storage engine options requires a `connectionString` property to be defined within the data type:
 
@@ -227,16 +227,16 @@ This storage engine options requires a `connectionString` property to be defined
 
 The connection string property is made up of:
 
-* A sql dialect
-* The username
-* The password
-* The servers hostname/IP
-* The servers port
-* The databases name
+*   A sql dialect
+*   The username
+*   The password
+*   The servers hostname/IP
+*   The servers port
+*   The databases name
 
 The following dialects are supported:
 
-* Postgres - `postgres://`
-* MySQL - `mysql://`
-* MariaDB - `mariadb://`
-* MSSQL - `mssql://`
+*   Postgres - `postgres://`
+*   MySQL - `mysql://`
+*   MariaDB - `mariadb://`
+*   MSSQL - `mssql://`

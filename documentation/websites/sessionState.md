@@ -6,16 +6,16 @@ The session state service allows you to store data within a session cookie. This
 
 The service has the following methods:
 
-* saveSession
-* retrieveSession
-* isAuthenticated
-* getSubject
-* getAccessToken
-* setAccessToken
-* getIdentityToken
-* setIdentityToken
-* getRefreshToken
-* setRefreshToken
+*   saveSession
+*   retrieveSession
+*   isAuthenticated
+*   getSubject
+*   getAccessToken
+*   setAccessToken
+*   getIdentityToken
+*   setIdentityToken
+*   getRefreshToken
+*   setRefreshToken
 
 Each of these methods is described in more detail below.
 
@@ -23,7 +23,7 @@ Each of these methods is described in more detail below.
 
 Parameters:
 
-* `sessionData` - any type, the data to be stored within the session cookie
+*   `sessionData` - any type, the data to be stored within the session cookie
 
 This method sets the session data that will be sent to the users client once the current request has completed. This data can be of any type, including complex objects. This method call is synchronous.
 

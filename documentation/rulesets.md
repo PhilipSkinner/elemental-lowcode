@@ -31,8 +31,8 @@ To read more about JSON schema and how to define object structures with it, refe
 
 Each rule contains:
 
-* Zero or more comparitors
-* An output value
+*   Zero or more comparitors
+*   An output value
 
 Rules are defined:
 
@@ -61,16 +61,16 @@ A rule with zero comparitors will always evaluate to true and return its output 
 
 The following comparitor operators are supported.
 
-* Equal - eq
-* Not Equal - ne
-* Contains - contains
-* Does not contain - does not contain
-* Greater than - gt
-* Greater than or equal to - gte
-* Less than - lt
-* Less than or equal to - lte
-* Is null - is null
-* Is not null - is not null
+*   Equal - eq
+*   Not Equal - ne
+*   Contains - contains
+*   Does not contain - does not contain
+*   Greater than - gt
+*   Greater than or equal to - gte
+*   Less than - lt
+*   Less than or equal to - lte
+*   Is null - is null
+*   Is not null - is not null
 
 ### Security
 
@@ -78,10 +78,10 @@ The `roles` section of the ruleset configuration allows you to define how author
 
 By default, each ruleset will only allow execution if an incoming token contains the following role claims:
 
-* `system_admin`
-* `system_exec`
-* `rules_exec`
-* `[ruleset_name]_exec`
+*   `system_admin`
+*   `system_exec`
+*   `rules_exec`
+*   `[ruleset_name]_exec`
 
 Each ruleset can have its security configured to:
 

@@ -4,13 +4,13 @@
 
 The storage service allows you to access data types defined within the storage system. It provides the following methods:
 
-* detailCollection
-* getList
-* getEntity
-* createEntity
-* updateEntity
-* patchEntity
-* deleteEntity
+*   detailCollection
+*   getList
+*   getEntity
+*   createEntity
+*   updateEntity
+*   patchEntity
+*   deleteEntity
 
 Each of these methods is covered in more detail below.
 
@@ -18,8 +18,8 @@ Each of these methods is covered in more detail below.
 
 Parameters:
 
-* `name` - string, the name of the collection to detail
-* `token` - string, the access token to use to access the API *optional*
+*   `name` - string, the name of the collection to detail
+*   `token` - string, the access token to use to access the API *optional*
 
 Returns the JSON response from the relevant .details endpoint on the storage service. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
@@ -47,11 +47,11 @@ module.exports = {
 
 Parameters:
 
-* `path` - string, the root path of the collection to fetch from
-* `start` - integer, the index of the first item to retrieve
-* `count` - integer, the maximum number of items to retrieve
-* `filters` - object, the filters to apply when fetching items
-* `token` - string, the access token to use to access the API *optional*
+*   `path` - string, the root path of the collection to fetch from
+*   `start` - integer, the index of the first item to retrieve
+*   `count` - integer, the maximum number of items to retrieve
+*   `filters` - object, the filters to apply when fetching items
+*   `token` - string, the access token to use to access the API *optional*
 
 Returns a paginated list of entities from the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
@@ -86,9 +86,9 @@ module.exports = {
 
 Parameters:
 
-* `path` - string, the root path of the collection to fetch from
-* `id` - guid (string), the id of the entity to retrieve
-* `token` - string, the access token to use to access the API *optional*
+*   `path` - string, the root path of the collection to fetch from
+*   `id` - guid (string), the id of the entity to retrieve
+*   `token` - string, the access token to use to access the API *optional*
 
 Returns a single entity from the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
@@ -117,9 +117,9 @@ module.exports = {
 
 Parameters:
 
-* `path` - string, the root path of the collection to create the entity in
-* `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will be used to create the new entity
-* `token` - string, the access token to use to access the API *optional*
+*   `path` - string, the root path of the collection to create the entity in
+*   `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will be used to create the new entity
+*   `token` - string, the access token to use to access the API *optional*
 
 Creates a new entity within the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
@@ -150,10 +150,10 @@ module.exports = {
 
 Parameters:
 
-* `path` - string, the root path of the collection to update an entity in
-* `id` - guid, the id of the entity to update
-* `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will replace the entity with the given id
-* `token` - string, the access token to use to access the API *optional*
+*   `path` - string, the root path of the collection to update an entity in
+*   `id` - guid, the id of the entity to update
+*   `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will replace the entity with the given id
+*   `token` - string, the access token to use to access the API *optional*
 
 Updates an entity within the collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
@@ -185,10 +185,10 @@ module.exports = {
 
 Parameters:
 
-* `path` - string, the root path of the collection to update an entity in
-* `id` - guid, the id of the entity to update
-* `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will replace the entity with the given id
-* `token` - string, the access token to use to access the API *optional*
+*   `path` - string, the root path of the collection to update an entity in
+*   `id` - guid, the id of the entity to update
+*   `entity` - object, an object that matches the definition of entities within the named collection, the contents of which will replace the entity with the given id
+*   `token` - string, the access token to use to access the API *optional*
 
 Partially updates an entity within the collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 
@@ -220,9 +220,9 @@ module.exports = {
 
 Parameters:
 
-* `path` - string, the root path of the collection to delete from
-* `id` - guid (string), the id of the entity to delete
-* `token` - string, the access token to use to access the API *optional*
+*   `path` - string, the root path of the collection to delete from
+*   `id` - guid (string), the id of the entity to delete
+*   `token` - string, the access token to use to access the API *optional*
 
 Deletes an entity from the named collection. More details on this response payload can be found within the [storage system documentation](/documentation/data).
 

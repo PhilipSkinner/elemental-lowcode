@@ -8,8 +8,8 @@ Most systems allow these roles to be configured by either replacing them, adding
 
 Each of these systems default roles can be found within their documentation:
 
-* [APIs](/documentation/apis/routes)
-* [Integrations](/documentation/integrations)
-* [Data Types](/documentation/data)
-* [Messaging](/documentation/messaging)
-* [Rulesets](/documentation/rulesets)
+*   [APIs](/documentation/apis/routes)
+*   [Integrations](/documentation/integrations)
+*   [Data Types](/documentation/data)
+*   [Messaging](/documentation/messaging)
+*   [Rulesets](/documentation/rulesets)

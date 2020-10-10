@@ -318,8 +318,8 @@ sqlStore.prototype.getResources = function(type, start, count, filters, orders) 
 	return this.models[type].findAndCountAll({
 		where 	: where,
 		order 	: order,
-		limit 	: parseInt(count),
-		offset 	: parseInt(start) - 1,
+		limit 	: parseInt(count, 10),
+		offset 	: parseInt(start, 10) - 1,
 	}).then((results) => {
 		return Promise.all(results.rows.map((r) => {
 			return this.convertToReturnValue(r, type);
