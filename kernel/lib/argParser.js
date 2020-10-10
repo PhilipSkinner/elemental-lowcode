@@ -36,16 +36,18 @@ argParser.prototype._parseArg = function(raw) {
 argParser.prototype._merge = function(parent, child) {
 	Object.keys(child).forEach((name) => {
 		//merge if they are objects
-		if (parent[name] && typeof(parent[name]) === "object" && typeof(child[name]) === "object") {
-			this._merge(parent[name], child[name]);
-		} else if (!parent.hasOwnProperty(name) && !parent[name]) {
-			//only assign if the parent doesn"t have this property defined yet
-			parent[name] = child[name];
-		} else if (parent[name] && typeof(parent[name]) !== "object" && typeof(child[name]) !== "object") {
-			parent[name] = [
-				parent[name],
-				child[name]
-			];
+		if (child.hasOwnProperty(name)) {
+			if (parent[name] && typeof(parent[name]) === "object" && typeof(child[name]) === "object") {
+				this._merge(parent[name], child[name]);
+			} else if (!parent.hasOwnProperty(name) && !parent[name]) {
+				//only assign if the parent doesn"t have this property defined yet
+				parent[name] = child[name];
+			} else if (parent[name] && typeof(parent[name]) !== "object" && typeof(child[name]) !== "object") {
+				parent[name] = [
+					parent[name],
+					child[name]
+				];
+			}
 		}
 	});
 };
