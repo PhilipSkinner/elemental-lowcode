@@ -368,13 +368,26 @@ _apiEditorController.prototype._removeRoute = function(name) {
 	this.refreshState();
 };
 
+_apiEditorController.prototype.keyDownHandler = function(event) {
+	if (event && event.ctrlKey && event.keyCode == 83) {
+		window._apiEditorControllerInstance.saveAll();
+
+		event.preventDefault();
+		event.stopPropagation();
+	}
+};
+
 window.apiEditor = {
 	template : "#template-api-editor",
-	data 	 : () => {
+	data 	 : function() {
 		return window._apiEditorControllerInstance.getData();
 	},
 	mounted  : function() {
 		window._apiEditorControllerInstance.setCaller(this);
+
+		document.removeEventListener('keydown', window._apiEditorControllerInstance.keyDownHandler);
+		document.addEventListener('keydown', window._apiEditorControllerInstance.keyDownHandler);
+
 		if (this.$route.params.name === ".new") {
 			window._apiEditorControllerInstance.api = {};
 			return window._apiEditorControllerInstance.fetchClients();
@@ -383,6 +396,9 @@ window.apiEditor = {
 			window._apiEditorControllerInstance.fetchApi(this.$route.params.name),
 			window._apiEditorControllerInstance.fetchClients()
 		]);
+	},
+	destroyed : function() {
+		document.removeEventListener('keydown', window._apiEditorControllerInstance.keyDownHandler);
 	}
 };
 

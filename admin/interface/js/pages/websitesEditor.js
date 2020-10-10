@@ -921,6 +921,15 @@ _websitesEditorController.prototype.getConfigFromEditor = function() {
 	return JSON.stringify(this.activeView, null, 4);
 };
 
+_websitesEditorController.prototype.keyDownHandler = function(event) {
+	if (event && event.ctrlKey && event.keyCode == 83) {
+		window._websitesEditorControllerInstance.saveAll();
+
+		event.preventDefault();
+		event.stopPropagation();
+	}
+};
+
 window.WebsiteEditor = {
 	template : "#template-websiteEditor",
 	data 	 : () => {
@@ -928,6 +937,9 @@ window.WebsiteEditor = {
 	},
 	mounted  : function() {
 		window._websitesEditorControllerInstance.wipeData();
+
+		document.removeEventListener('keydown', window._websitesEditorControllerInstance.keyDownHandler);
+		document.addEventListener('keydown', window._websitesEditorControllerInstance.keyDownHandler);
 
 		if (this.$route.params.name === ".new") {
 			return window._websitesEditorControllerInstance.fetchClients(this).then(() => {
@@ -950,6 +962,9 @@ window.WebsiteEditor = {
 			//fetch our global properties
 			return window._websitesEditorControllerInstance.fetchProperties("global");
 		});
+	},
+	destroyed : function() {
+		document.removeEventListener('keydown', window._websitesEditorControllerInstance.keyDownHandler);
 	}
 };
 
