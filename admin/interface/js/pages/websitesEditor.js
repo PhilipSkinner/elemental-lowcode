@@ -1114,6 +1114,27 @@ window.Vue.component("tagsection", {
 			ret.selected = false;
 		};
 
+		ret.deleteTag = (event) => {
+			window.selectedTags.forEach((t) => {
+				t.removeSelection();
+			});
+			window.selectedTags = [];
+
+			event.preventDefault();
+			event.stopPropagation();
+
+			//set our value to null
+			let newChildren = [];
+			this.$options.parent.$options.propsData.tag.children.forEach((child) => {
+				if (this.$options.propsData.tag.__ob__.dep.id !== child.__ob__.dep.id) {
+					newChildren.push(child);
+				}
+			});
+			this.$options.parent.$options.propsData.tag.children = newChildren;
+
+			return true;
+		};
+
 		ret.onClick = (event) => {
 			let shouldSelect = window.selectedTags.indexOf(this) === -1;
 

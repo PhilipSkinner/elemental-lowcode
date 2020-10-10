@@ -11148,13 +11148,6 @@ div.block {
   padding: 10px;
 }
 
-.uiPreview .tagSection .tagInfo {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  opacity: 0.5;
-}
-
 .uiPreview .tagSection:hover {
   border: 2px solid #4e73df;
 }
@@ -11198,6 +11191,8 @@ div.block {
 
 .tagSection.inline {
   display: inline-block;
+  min-width: 110px;
+  padding-top: 25px;
 }
 
 .tagSection.inline .tagChildren, .tagSection.inline .tagRender {
@@ -11384,4 +11379,42 @@ div.block {
 
 /*
  * End monitor stying
+ */
+
+/*
+ * Tag menu
+ */
+
+.tagMenu {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 10px;
+  z-index: 10;
+}
+
+.tagMenu .tagMenuContent {
+  display: none;
+  position: relative;
+  z-index: 11;
+  background: #DDD;
+  box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+}
+
+.tagMenu .tagMenuContent > div {
+  padding: 2px 5px;
+}
+
+.tagMenu:hover .tagMenuContent {
+  display: block;
+}
+
+.tagMenuToggle {
+  background: #CCC;
+  padding: 2px 5px;
+  box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+}
+
+/*
+ * End of tag menu
  */
