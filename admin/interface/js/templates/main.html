@@ -91,14 +91,68 @@
 						</div>
 						<div class="card-body">
 							<ul>
+								<!-- website logs -->
 								<li>
 									<a v-on:click="_monitorControllerInstance.monitorSystem('interface.errors');">Website Errors</a>
 								</li>
 								<li>
 									<a v-on:click="_monitorControllerInstance.monitorSystem('interface.debug');">Website Debug</a>
 								</li>
+
+								<!-- data logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('storage.errors');">Data Errors</a>
+								</li>
 								<li>
 									<a v-on:click="_monitorControllerInstance.monitorSystem('storage.debug');">Data Debug</a>
+								</li>
+
+								<!-- admin logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('admin.errors');">Admin Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('admin.debug');">Admin Debug</a>
+								</li>
+
+								<!-- api logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('api.errors');">API Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('api.debug');">API Debug</a>
+								</li>
+
+								<!-- identity logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('identity.errors');">Identity Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('identity.debug');">Identity Debug</a>
+								</li>
+
+								<!-- integration logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('integration.errors');">Integration Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('integration.debug');">Integration Debug</a>
+								</li>
+
+								<!-- messaging logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('messaging.errors');">Messaging Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('messaging.debug');">Messaging Debug</a>
+								</li>
+
+								<!-- rules logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('rules.errors');">Ruleset Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('rules.debug');">Ruleset Debug</a>
 								</li>
 							</ul>
 						</div>

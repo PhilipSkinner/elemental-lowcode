@@ -40,7 +40,7 @@ _monitorController.prototype.setCaller = function(caller) {
 _monitorController.prototype._renderLines = function(lines) {
 	const elem = document.querySelectorAll('#monitorContent')[0];
 	const numbers = Object.keys(lines).map((n) => { return parseInt(n); }).sort((a,b) => {return a - b})
-	const maxLines = 1000;
+	const maxLines = 500;
 	let toRemove = 0;
 	let toAdd = numbers.length;
 
@@ -76,7 +76,8 @@ _monitorController.prototype._renderLines = function(lines) {
 
 	for (var i = numbers[totalNew - toAdd]; i <= numbers.slice(-1)[0]; i++) {
 		var lm = document.createElement("div");
-		lm.innerHTML = `<span class="number">${i}</span><span class="message">${lines[i]}</span>`;
+		var corrected = lines[i].replace(/[\r\n]/g, '');
+		lm.innerHTML = `<span class="number">${i}</span><span class="message"><pre>${corrected}</pre></span>`;
 		elem.appendChild(lm);
 	}
 
@@ -87,7 +88,7 @@ _monitorController.prototype._monitorSystem = function() {
 	clearTimeout(this.timeout);
 
 	//fetch the last lines
-	window.axios.get(`${window.hosts.kernel}/logs/${this.system}?from=${this.lastSeen}`, {
+	window.axios.get(`${window.hosts.kernel}/logs/${this.system}?from=${this.lastSeen + 1}`, {
 		headers : {
 			Authorization : `Bearer ${window.getToken()}`
 		}

@@ -162,6 +162,7 @@ a {
   color: #4e73df;
   text-decoration: none;
   background-color: transparent;
+  cursor: pointer;
 }
 
 a:hover {
@@ -11354,7 +11355,7 @@ div.block {
   background: #000;
   color: #FEFEFE;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
   padding: 10px 10px;
 }
 
@@ -11375,6 +11376,10 @@ div.block {
   padding: 0px 5px;
   display: inline-block;
   word-break: break-all;
+}
+
+#monitorContent pre {
+  margin-bottom: 0px;
 }
 
 /*
