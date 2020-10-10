@@ -16,9 +16,7 @@
 						Export your current workspace as a tarball by pressing the export button below.
 					</p>
 
-					<p>
-						<button type="button" class="btn btn-primary" v-on:click="_packagerControllerInstance.export()">Export</button>
-					</p>
+					<button type="button" class="btn btn-primary" v-on:click="_packagerControllerInstance.export()">Export</button>
 				</div>
 			</div>
 
@@ -31,11 +29,12 @@
 						Import a tarball into your workspace by selecting the file then pressing the import button.
 					</p>
 
-					<input type='file' name='importFile'>
+					<div class="form-group">
+						<label>Package:</label>
+						<input type='file' name='importFile' class="form-control"/>
+					</div>
 
-					<p>
-						<button type="button" class="btn btn-primary" v-on:click="_packagerControllerInstance.import()">Import</button>
-					</p>
+					<button type="button" class="btn btn-primary" v-on:click="_packagerControllerInstance.import()">Import</button>
 				</div>
 			</div>
 		</div>
