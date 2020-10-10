@@ -509,7 +509,6 @@
 
 		<div class="actionButtons">
 			<button v-if="viewEditorVisible" class="rounded-circle border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.mainView();"><i class="fas fa-fw fa-arrow-left"></i></button>
-			<button v-if="controllerEditorVisible" class="rounded-circle border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.mainView();"><i class="fas fa-fw fa-arrow-left"></i></button>
 			<button v-if="mainVisible && mainNavItems[3].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newStaticFile();"><i class="fas fa-fw fa-plus"></i> Static File</button>
 			<button v-if="mainVisible && mainNavItems[1].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newRoute();"><i class="fas fa-fw fa-plus"></i> Route</button>
 			<button v-if="mainVisible && mainNavItems[2].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newTag();"><i class="fas fa-fw fa-plus"></i> Tag</button>

@@ -109,11 +109,13 @@ _websitesEditorController.prototype.viewWebsite = function() {
 };
 
 _websitesEditorController.prototype._resetEditorNavState = function() {
-	//get our active state!
-	if (this.editorNavItems[0].selected) {
-		this.resources[this.activeResource] = this.getConfigFromEditor();
-	} else {
-		this.resources[this.activeResource] = this.editor.getValue();
+	if (this.activeResource) {
+		//get our active state!
+		if (this.editorNavItems[0].selected) {
+			this.resources[this.activeResource] = this.getConfigFromEditor();
+		} else {
+			this.resources[this.activeResource] = this.editor.getValue();
+		}
 	}
 
 	this.editorNavItems.forEach((i) => {
@@ -519,6 +521,7 @@ _websitesEditorController.prototype.configureCustomTagset = function() {
 
 _websitesEditorController.prototype.editController = function(path) {
 	this.activeResource = path;
+	this.controllerEditorVisible = true;
 	this.loadResource(path).then((resource) => {
 		this.refreshState();
 		setTimeout(() => {
@@ -529,7 +532,9 @@ _websitesEditorController.prototype.editController = function(path) {
 
 _websitesEditorController.prototype.mainView = function() {
 	//save our active resource
-	if (!this.sourceMode && this.viewEditorVisible) {
+	if (this.controllerEditorVisible) {
+		this.resources[this.activeResource] = this.editor.getValue();
+	} else if (!this.sourceMode && this.viewEditorVisible) {
 		this.resources[this.activeResource] = this.getConfigFromEditor();
 	} else {
 		this.resources[this.activeResource] = this.editor.getValue();
