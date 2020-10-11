@@ -108,7 +108,7 @@
 <template id="template-tagSection">
 	<div
 		class="tagSection"
-		v-bind:class="{ 'draggable' : draggable, 'droppable' : droppable, 'selected' : selected, 'inline' : definition.inline }"
+		v-bind:class="{ 'draggable' : draggable, 'droppable' : droppable, 'selected' : selected, 'inline' : definition().inline }"
 		v-on:click="onClick"
 		draggable="true" v-on:dragstart="setDroppableConfig"
 	>
@@ -118,6 +118,12 @@
 				<i class="fas fa-fw fa-chevron-down"></i>
 			</div>
 			<div class="tagMenuContent">
+				<div>
+					<a v-on:click="moveUp">Move up</a>
+				</div>
+				<div>
+					<a v-on:click="moveDown">Move down</a>
+				</div>
 				<div>
 					<a v-on:click="deleteTag">
 						Delete

@@ -1101,7 +1101,9 @@ window.Vue.component("tagsection", {
 			droppable 	: false,
 			selected 	: false,
 			draggable 	: false,
-			definition 	: window._websitesEditorControllerInstance.uniqueTags[this.$options.propsData.tag.tag] || {}
+			definition 	: () => {
+				return window._websitesEditorControllerInstance.uniqueTags[this.$options.propsData.tag.tag] || {};
+			}
 		};
 
 		ret.renderTag = ((tag) => {
@@ -1154,6 +1156,84 @@ window.Vue.component("tagsection", {
 			}
 
 			event.stopPropagation();
+		};
+
+		ret.moveUp = (event) => {
+			if (this.$options.parent.$options.propsData) {
+				window.selectedTags.forEach((t) => {
+					t.removeSelection();
+				});
+				window.selectedTags = [];
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				let newChildren = [];
+				let i = null;
+				this.$options.parent.$options.propsData.tag.children.forEach((child, index) => {
+					if (this.$options.propsData.tag.__ob__.dep.id === child.__ob__.dep.id) {
+						i = index;
+					}
+				});
+
+				if (i > 0) {
+					//get the previous item
+					let previous = this.$options.parent.$options.propsData.tag.children[i-1];
+					let current = this.$options.parent.$options.propsData.tag.children[i];
+					let newChildren = [];
+
+					this.$options.parent.$options.propsData.tag.children.forEach((child, index) => {
+						if (index === i) {
+							newChildren.push(previous);
+						} else if (index === i - 1) {
+							newChildren.push(current);
+						} else {
+							newChildren.push(child);
+						}
+					});
+
+					this.$options.parent.$options.propsData.tag.children = newChildren;
+				}
+			}
+		};
+
+		ret.moveDown = (event) => {
+			if (this.$options.parent.$options.propsData) {
+				window.selectedTags.forEach((t) => {
+					t.removeSelection();
+				});
+				window.selectedTags = [];
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				let newChildren = [];
+				let i = null;
+				this.$options.parent.$options.propsData.tag.children.forEach((child, index) => {
+					if (this.$options.propsData.tag.__ob__.dep.id === child.__ob__.dep.id) {
+						i = index;
+					}
+				});
+
+				if (i < this.$options.parent.$options.propsData.tag.children.length - 1) {
+					//get the previous item
+					let previous = this.$options.parent.$options.propsData.tag.children[i+1];
+					let current = this.$options.parent.$options.propsData.tag.children[i];
+					let newChildren = [];
+
+					this.$options.parent.$options.propsData.tag.children.forEach((child, index) => {
+						if (index === i) {
+							newChildren.push(previous);
+						} else if (index === i + 1) {
+							newChildren.push(current);
+						} else {
+							newChildren.push(child);
+						}
+					});
+
+					this.$options.parent.$options.propsData.tag.children = newChildren;
+				}
+			}
 		};
 
 		ret.onClick = (event) => {
