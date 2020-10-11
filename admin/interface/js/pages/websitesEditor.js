@@ -12,6 +12,7 @@ const _websitesEditorController = function(page) {
 	this.resources 					= {};
 	this.staticfiles 				= [];
 	this.tagsets 					= {};
+	this.filteredTagsets 			= {};
 	this.activeView 				= {};
 	this.loadedTagsets 				= {};
 	this.activeDefinition 			= {};
@@ -22,6 +23,7 @@ const _websitesEditorController = function(page) {
 	this.tagSelected 			 	= false;
 	this.editor 					= null;
 	this.activeRoute 				= null;
+	this.tagSearchTerms 			= "";
 	this.mainNavItems 				= [
 		{
 			name 		: "Config",
@@ -179,10 +181,50 @@ _websitesEditorController.prototype.wipeData = function() {
 	this.loadedProperties 			= {};
 	this.tagSelected 				= false;
 	this.tagsets 					= {};
+	this.filteredTagsets 			= {};
+	this.tagSearchTerms 			= "";
 	this._resetNavState();
 	this._resetEditorNavState();
 	this.mainNavItems[0].selected = true;
 	this.editorNavItems[0].selected = true;
+};
+
+_websitesEditorController.prototype.filterTags = function(event) {
+	//get the keywords
+	_websitesEditorControllerInstance.tagSearchTerms = event.target.value;
+
+	//refresh
+	_websitesEditorControllerInstance.refreshState();
+};
+
+_websitesEditorController.prototype._filteredTagsets = function() {
+	if (this.tagSearchTerms.replace(/ /g, "") === "") {
+		return this.tagsets;
+	}
+
+	var filteredTagsets = {};
+	var terms = this.tagSearchTerms.toLowerCase();
+	Object.keys(this.tagsets).forEach((setName) => {
+		let tags = this.tagsets[setName].tags;
+
+		tags.forEach((tag) => {
+			if (
+				tag.tag.toLowerCase().indexOf(terms) !== -1
+				|| tag.name.toLowerCase().indexOf(terms) !== -1
+			) {
+				if (!filteredTagsets[setName]) {
+					filteredTagsets[setName] = {
+						tags : [],
+						name : setName
+					};
+				}
+
+				filteredTagsets[setName].tags.push(tag);
+			}
+		});
+	});
+
+	return filteredTagsets;
 };
 
 _websitesEditorController.prototype.generateNavItems = function() {
@@ -211,6 +253,7 @@ _websitesEditorController.prototype.getData = function() {
 		sourceMode 					: this.sourceMode,
 		staticfiles 				: this.staticfiles,
 		tagsets 					: this.tagsets,
+		filteredTagsets 			: this._filteredTagsets(),
 		activeView 					: this.activeView,
 		activeProperties 			: this.activeProperties,
 		allProperties 				: this.propertyGroups,
@@ -224,6 +267,7 @@ _websitesEditorController.prototype.getData = function() {
 		confirmStaticDeleteAction 	: () => {},
 		mainNavItems  				: this.generateNavItems(),
 		editorNavItems 				: this.generateEditorNavItems(),
+		tagSearchTerms 				: this.tagSearchTerms
 	};
 };
 
@@ -376,6 +420,9 @@ _websitesEditorController.prototype.showSource = function() {
 };
 
 _websitesEditorController.prototype.refreshState = function() {
+	//filter our tags
+	this.filteredTagsets = this._filteredTagsets();
+
 	this.caller.website = this.website;
 	this.caller.clients = this.clients;
 	this.caller.routes = this.routes;
@@ -387,6 +434,7 @@ _websitesEditorController.prototype.refreshState = function() {
 	this.caller.staticfiles = this.staticfiles;
 	this.caller.sourceMode = this.sourceMode;
 	this.caller.tagsets = this.tagsets;
+	this.caller.filteredTagsets = this.filteredTagsets;
 	this.caller.activeView = this.activeView;
 	this.caller.activeProperties = this.activeProperties;
 	this.caller.tagSelected = this.tagSelected;

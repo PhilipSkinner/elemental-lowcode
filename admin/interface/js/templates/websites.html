@@ -188,7 +188,13 @@
 			}">
 				<div class="uiEditor">
 					<div class="uiTags card shadow" id="uiTags">
-						<div class="tagGroup" v-for="(group, name) in tagsets">
+						<div class="tagSearch">
+							<label>
+								Search:
+							</label>
+							<input type="text" v-model="tagSearchTerms" v-on:keyup="_websitesEditorControllerInstance.filterTags" />
+						</div>
+						<div class="tagGroup" v-for="(group, name) in filteredTagsets">
 							<div class="card-header">
 								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" :data-target="'#tags_' + name.replace(' ', '').replace('/', '')" aria-expanded="false" :aria-controls="'tags_' + name.replace(' ', '').replace('/', '')">
 									{{name}}

@@ -11113,6 +11113,18 @@ div.block {
   bottom: 0px;
   width: 250px;
   overflow: auto;
+  border-radius: 0px;
+}
+
+.uiTags .tagSearch {
+  padding: 0.75rem 1.25rem;
+  background: #4e73df;
+  color: #FFF;
+  font-weight: bold;
+}
+
+.uiTags .tagSearch input {
+  width: 100%;
 }
 
 .uiEditor .uiProperties {
