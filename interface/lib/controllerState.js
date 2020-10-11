@@ -31,6 +31,7 @@ controllerState.prototype.setContext = function(request, response) {
 	this.controllerDefinition.sessionState.setContext(this.request, this.response);
 	this.controllerDefinition.navigationService.setContext(this.request, this.response);
 	this.controllerDefinition.authClientProvider.setSessionState(this.controllerDefinition.sessionState);
+	this.controllerDefinition.serviceProvider.setContext(this.controllerDefinition.sessionState, this.request, this.response, this.controllerDefinition.navigationService);
 
 	//set this within all of the services
 	Object.keys(this.controllerDefinition).forEach((prop) => {
@@ -105,7 +106,7 @@ controllerState.prototype._triggerComponentEvents = function(name, details) {
 			}
 
 			if (result && result.then) {
-				return result.then(resolve).catch(reject);
+				return result;
 			}
 		}
 

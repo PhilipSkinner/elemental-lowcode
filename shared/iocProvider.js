@@ -6,12 +6,20 @@ const services = {
 	rulesetService 		: require("./ruleService")(),
 	idmService 			: require("./idmService")(),
 	authClientProvider 	: require("./authClientProvider")(),
-	messagingService 	: require("./messagingService")()
+	messagingService 	: require("./messagingService")(),
+	sessionState 		: require("../interface/lib/sessionState")(),
+	navigationService 	: null
 };
 
 const iocProvider = function(services, path) {
 	this.services = services;
 	this.path = path;
+};
+
+iocProvider.prototype.setContext = function(sessionState, request, response, navigationService) {
+	services.authClientProvider.setSessionState(sessionState);
+	services.sessionState.setContext(request, response);
+	services.navigationService = navigationService;
 };
 
 iocProvider.prototype._getRequires = function(fnString) {
@@ -49,7 +57,12 @@ iocProvider.prototype.resolveRequirements = function(fn) {
 
 	let params = [];
 	requires.forEach((r) => {
-		let resolvedRequirement = this.resolveService(r);
+		let resolvedRequirement = null;
+		if (services[r]) {
+			resolvedRequirement = services[r];
+		} else {
+			resolvedRequirement = this.resolveService(r);
+		}
 
 		if (!resolvedRequirement) {
 			throw new Error(`Could not resolve dependency ${r}! It could not be found.`);
@@ -75,9 +88,9 @@ iocProvider.prototype.resolveRequirements = function(fn) {
 };
 
 iocProvider.prototype.resolveService = function(name) {
-	if (!this.services[name]) {
-		this.services[name] = require(this.path.join(process.cwd(), this.path.dirname(process.env.DIR), "services", name));
-	}
+	let module = this.path.join(process.cwd(), this.path.dirname(process.env.DIR), "services", name);
+	delete require.cache[require.resolve(module)];
+	this.services[name] = require(module);
 
 	return this.resolveRequirements(this.services[name]);
 };

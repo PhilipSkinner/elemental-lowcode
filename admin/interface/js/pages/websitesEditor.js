@@ -970,6 +970,7 @@ window.WebsiteEditor = {
 	},
 	destroyed : function() {
 		document.removeEventListener("keydown", window._websitesEditorControllerInstance.keyDownHandler);
+		window._websitesEditorControllerInstance.wipeData();
 	}
 };
 
