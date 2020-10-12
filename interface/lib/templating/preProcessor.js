@@ -41,6 +41,7 @@ preProcessor.prototype.process = function(definition, data, customTags) {
 		.then(this.visitors.bindValues.apply.bind(this.visitors.bindValues))
 		.then(this.visitors.replaceValues.apply.bind(this.visitors.replaceValues))
 		.then(this.visitors.expandCustomTags.apply.bind(this.visitors.expandCustomTags))
+		.then(this.visitors.handleLoops.apply.bind(this.visitors.handleLoops))
 		.then(this.visitors.replaceValues.apply.bind(this.visitors.replaceValues))
 		.then(this.visitors.conditionals.apply.bind(this.visitors.conditionals))
 		.then(this.visitors.insertStandardScripts.apply.bind(this.visitors.insertStandardScripts))
