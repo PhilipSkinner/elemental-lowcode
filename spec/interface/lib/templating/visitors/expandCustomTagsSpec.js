@@ -22,6 +22,22 @@ const expansionTest = (done) => {
 	replaceMock.expects('applySync').once().withArgs({
 		view : [
 			{
+				tag : "custom",
+				if : "this"
+			}
+		],
+		data : {}
+	}).returns({
+		view : [
+			{
+				tag : "custom",
+				if : "this"
+			}
+		]
+	});
+	replaceMock.expects('applySync').once().withArgs({
+		view : [
+			{
 				hello : "world",
 				if : "this"
 			}
@@ -35,6 +51,31 @@ const expansionTest = (done) => {
 			{
 				my : "value",
 				if : "this"
+			}
+		]
+	});
+
+	replaceMock.expects('applySync').once().withArgs({
+		view : [
+			{
+				tag : "expander",
+				repeat : "yes please",
+				items : [
+					"one",
+					"two"
+				]
+			}
+		],
+		data : {}
+	}).returns({
+		view : [
+			{
+				tag : "expander",
+				repeat : "yes please",
+				items : [
+					"one",
+					"two"
+				]
 			}
 		]
 	});
