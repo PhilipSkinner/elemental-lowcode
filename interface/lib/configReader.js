@@ -1,6 +1,6 @@
 const configReader = function(fs, path) {
-	this.fs = fs;
-	this.path = path;
+	this.fs 	= fs;
+	this.path 	= path;
 };
 
 configReader.prototype.readDefinition = function(file) {

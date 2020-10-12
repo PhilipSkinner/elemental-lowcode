@@ -141,10 +141,15 @@ render.prototype.loadView = function(name) {
 };
 
 render.prototype.registerCustomTag = function(customTag) {
-	this.loadView(customTag.view).then((definition) => {
-		customTag.definition = definition;
+	if (customTag.raw) {
+		customTag.definition = JSON.parse(customTag.view);
 		this.customTags[customTag.name] = customTag;
-	});
+	} else {
+		this.loadView(customTag.view).then((definition) => {
+			customTag.definition = definition;
+			this.customTags[customTag.name] = customTag;
+		});
+	}
 };
 
 render.prototype.renderTagWithProperties = function(tag, properties, data) {

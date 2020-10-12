@@ -12,7 +12,8 @@ const templateProvider = function() {
 		"js/templates/packager.html",
 		"js/templates/services.html",
 		"js/templates/nodeModules.html",
-		"js/templates/messaging.html"
+		"js/templates/messaging.html",
+		"js/templates/tagsets.html"
 	];
 
 	this.initWrapper();

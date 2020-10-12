@@ -18,12 +18,49 @@ websiteService.prototype.findDefinitions = function(dir) {
 	});
 };
 
+websiteService.prototype.findTagsets = function(dir) {
+	return new Promise((resolve, reject) => {
+		this.glob(this.path.join(dir, "tagsets/**/*.json"), (err, tagsets) => {
+			if (err) {
+				return reject(err);
+			}
+
+			return resolve(tagsets);
+		});
+	});
+};
+
 websiteService.prototype.init = function(dir) {
 	let mainConfig = {};
+	let tagsets = [];
 	return this.configReader.readMainConfig().then((_mainConfig) => {
 		mainConfig = _mainConfig;
 
-		return this.findDefinitions(dir);
+		return this.findTagsets(dir);
+	}).then((_tagsets) => {
+		if (_tagsets.length === 0) {
+			return Promise.resolve();
+		}
+
+		const doNext = () => {
+			if (_tagsets.length === 0) {
+				return Promise.resolve();
+			}
+
+			const next = _tagsets.pop();
+
+			return this.configReader.readDefinition(next).then((tagset) => {
+				tagset.forEach((group) => {
+					group.tags.forEach((tag) => {
+						tagsets.push(tag);
+					});
+				});
+			}).then(doNext);
+		};
+
+		return doNext().then(() => {
+			return this.findDefinitions(dir);
+		});
 	}).then((definitions) => {
 		const doNext = () => {
 			if (definitions.length === 0) {
@@ -32,7 +69,8 @@ websiteService.prototype.init = function(dir) {
 
 			const next = definitions.pop();
 			return this.configReader.readDefinition(next).then((definition) => {
-				definition.__main = mainConfig;
+				definition.__main 	= mainConfig;
+				definition.tagsets 	= tagsets;
 
 				if (typeof(definition.client_id) === "undefined" || definition.client_id === null || definition.client_id === "") {
 					return Promise.resolve(definition);

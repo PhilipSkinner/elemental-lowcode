@@ -25,7 +25,7 @@ const websiteInstance = function(
 };
 
 websiteInstance.prototype.configureTag = function(tag) {
-	this.tagControllers.registerController(tag.name, tag.controller);
+	this.tagControllers.registerController(tag.name, tag.controller, tag.raw);
 	this.templateRenderer.registerCustomTag(tag);
 };
 
@@ -48,6 +48,16 @@ websiteInstance.prototype.init = function() {
 	return new Promise((resolve, reject) => {
 		//setup our static hosting
 		this.configureStatic();
+
+		//setup our shared tags
+		this.definition.tagsets.forEach((t) => {
+			this.configureTag({
+				name 		: t.tag,
+				controller 	: t.controller,
+				view 		: t.view,
+				raw 		: true
+			});
+		});
 
 		//setup our custom tags
 		this.definition.tags.forEach((t) => {
@@ -186,6 +196,7 @@ module.exports = function(
 	}
 
 	if (!tagControllers) {
+		delete require.cache[require.resolve("./tagControllers")];
 		tagControllers = require("./tagControllers")();
 	}
 
