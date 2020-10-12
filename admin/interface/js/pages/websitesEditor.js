@@ -113,7 +113,9 @@ _websitesEditorController.prototype.viewWebsite = function() {
 _websitesEditorController.prototype._resetEditorNavState = function() {
 	if (this.activeResource) {
 		//get our active state!
-		if (this.editorNavItems[0].selected) {
+		if (this.controllerEditorVisible) {
+			this.resources[this.activeResource] = this.editor.getValue();
+		} else if (this.editorNavItems[0].selected) {
 			this.resources[this.activeResource] = this.getConfigFromEditor();
 		} else {
 			this.resources[this.activeResource] = this.editor.getValue();
@@ -352,6 +354,9 @@ _websitesEditorController.prototype.saveResource = function(path, value) {
 
 _websitesEditorController.prototype.saveWebsite = function() {
 	return new Promise((resolve, reject) => {
+		if (typeof(this.website.name) === 'undefined') {
+			return reject(new Error('Cannot save website without name'));
+		}
 
 		//update our website object
 		this.website.routes = this.routes.reduce((s, a) => {
@@ -382,7 +387,9 @@ _websitesEditorController.prototype.saveAll = function() {
 	return this.saveWebsite().then(() => {
 		if (this.activeResource) {
 			//make sure our active resource is set
-			if (this.editorNavItems[0].selected) {
+			if (this.controllerEditorVisible) {
+				this.resources[this.activeResource] = this.editor.getValue();
+			} else if (this.editorNavItems[0].selected) {
 				this.resources[this.activeResource] = this.getConfigFromEditor();
 			} else {
 				this.resources[this.activeResource] = this.editor.getValue();
