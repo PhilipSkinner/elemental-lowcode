@@ -170,8 +170,11 @@ var diffAtts = function (template, existing, automatic) {
 	if (!automatic) {
 		//reset any user modifiable attributes
 		var modifiable = ["value"];
+		var ignoreType = ["radio", "checkbox", "submit", "button"];
 		modifiable.forEach((m) => {
-			existing.node[m] = "";
+			if (ignoreType.indexOf(existing.node.type) === -1) {
+				existing.node[m] = "";
+			}
 		});
 	}
 

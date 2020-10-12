@@ -26,9 +26,9 @@ submitHandler.prototype.init = function() {
 
 submitHandler.prototype.resetForm = function() {
 	this.elem.querySelectorAll("input, select, textarea").forEach((field) => {
-		if (field.type !== "file") {
+		if (field.type !== "file" && field.type !== "radio" && field.type !== "checkbox") {
 			field.value = field.getAttribute("value");
-		} else {
+		} else if (field.type === "file") {
 			field.value = null;
 		}
 	});
