@@ -20,6 +20,15 @@ handleLoops.prototype.expandNext = function(view, data) {
 			var arr = this.dataResolver.resolveValue(parts[2], data, tag._scope ? tag._scope.data : {});
 			var dataPropName = parts[0].replace("$.", "");
 
+			if (typeof(arr) === "number") {
+				//generate the array
+				let newArr = [];
+				for (var i = 0; i < arr; i++) {
+					newArr.push(i+1);
+				}
+				arr = newArr;
+			}
+
 			//ok, for each child decorate it with our new scoped data and then copy
 			var base = JSON.stringify(tag);
 			var generated = [];
