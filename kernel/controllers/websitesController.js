@@ -90,9 +90,41 @@ websitesController.prototype.deleteStaticFile = function(req, res, next) {
  * Tagset controllers
  */
 
+websitesController.prototype.getTagsets = function(req, res, next) {
+	this.fileLister.executeGlob(this.path.join(this.dir, 'tagsets/**/*.json')).then((results) => {
+		res.json(results.map((r) => {
+			return r;
+		}));
+		next();
+	});
+};
+
 websitesController.prototype.getPossibleTags = function(req, res, next) {
 	this.fileLister.readFile(this.path.join(__dirname, '../resources/tagsets'), `${req.params.name}.json`).then((data) => {
 		res.send(data);
+		next();
+	}).catch((err) => {
+		return this.fileLister.readFile(this.dir, `tagsets/${req.params.name}.json`).then((data) => {
+			res.send(data);
+			next();
+		});
+	});
+};
+
+websitesController.prototype.saveTagset = function(req, res, next) {
+	this.fileLister.ensureDir(this.path.join(this.dir, "tagsets")).then(() => {
+		this.fileLister.writeFile(this.dir, this.path.join("tagsets", `${req.params.name}.json`), JSON.stringify(req.body, null, 4)).then(() => {
+			res.status(204);
+			res.send("");
+			next();
+		});
+	});
+};
+
+websitesController.prototype.deleteTagset = function(req, res, next) {
+	this.fileLister.deleteFile(this.dir, this.path.join("tagsets", `${req.params.name}.json`)).then(() => {
+		res.status(204);
+		res.send("");
 		next();
 	});
 };
@@ -132,7 +164,10 @@ websitesController.prototype.initEndpoints = function() {
 	}
 
 	this.app.get("/properties/:name", 							this.roleCheckHandler.enforceRoles(this.getProperties.bind(this), 			["website_reader", "website_admin", "system_reader", "system_admin"]));
+	this.app.get("/tags/", 										this.roleCheckHandler.enforceRoles(this.getTagsets.bind(this), 				["website_reader", "website_admin", "system_reader", "system_admin"]));
 	this.app.get("/tags/:name", 								this.roleCheckHandler.enforceRoles(this.getPossibleTags.bind(this), 		["website_reader", "website_admin", "system_reader", "system_admin"]));
+	this.app.put("/tags/:name", 								this.roleCheckHandler.enforceRoles(this.saveTagset.bind(this), 				["website_writer", "website_admin", "system_writer", "system_admin"]));
+	this.app.delete("/tags/:name", 								this.roleCheckHandler.enforceRoles(this.deleteTagset.bind(this), 			["website_writer", "website_admin", "system_writer", "system_admin"]));
 
 	this.app.get("/websitesConfig", 							this.roleCheckHandler.enforceRoles(this.getConfig.bind(this), 				["website_reader", "website_admin", "system_reader", "system_admin"]));
 	this.app.put("/websitesConfig", 							this.roleCheckHandler.enforceRoles(this.saveConfig.bind(this), 				["website_writer", "website_admin", "system_writer", "system_admin"]));

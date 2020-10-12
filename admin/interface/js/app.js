@@ -62,7 +62,8 @@ window.templates.fetchTemplates().then(() => {
 		"js/pages/messaging.js",
 		"js/pages/queueDetails.js",
 		"js/pages/queueEditor.js",
-		"js/pages/monitor.js"
+		"js/pages/monitor.js",
+		"js/pages/tagsetEditor.js"
 	];
 
 	const loadPage = (file) => {
@@ -155,6 +156,11 @@ window.templates.fetchTemplates().then(() => {
 				name		: "websiteEditor",
 				path 		: "/websites/editor/:name",
 				component 	: window.WebsiteEditor
+			},
+			{
+				name 		: "tagsetEditor",
+				path 		: "/websites/tagsets/editor/:name",
+				component 	: window.TagsetEditor
 			},
 			/* documentation endpoints */
 			{

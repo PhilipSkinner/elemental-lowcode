@@ -3,17 +3,22 @@ const tagControllers = function(path) {
 	this.controllers = {};
 };
 
-tagControllers.prototype.registerController = function(name, controller) {
+tagControllers.prototype.registerController = function(name, controller, raw) {
 	this.controllers[name] = {
 		controller 	: controller,
-		name 		: name
+		name 		: name,
+		raw 		: raw
 	};
 };
 
 tagControllers.prototype.provideInstance = function(name) {
-	let module = this.path.join(process.cwd(), process.env.DIR, this.controllers[name].controller);
-	delete require.cache[require.resolve(module)];
-	return require(module);
+	if (this.controllers[name].raw) {
+		return eval(this.controllers[name].controller);
+	} else {
+		let module = this.path.join(process.cwd(), process.env.DIR, this.controllers[name].controller);
+		delete require.cache[require.resolve(module)];
+		return require(module);
+	}
 };
 
 tagControllers.prototype.determineInstances = function(view) {

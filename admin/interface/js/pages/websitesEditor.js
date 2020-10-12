@@ -703,6 +703,22 @@ _websitesEditorController.prototype.fetchTagset = function(name) {
 	});
 };
 
+_websitesEditorController.prototype.fetchTagsets = function() {
+	return window.axios.get(`${window.hosts.kernel}/tags`, {
+		headers : {
+			Authorization : `Bearer ${window.getToken()}`
+		}
+	}).then((response) => {
+		return Promise.all(
+			response.data.map((tagset) => {
+				return this.fetchTagset(tagset.name);
+			})
+		);
+	}).then(() => {
+		this.refreshState();
+	});
+};
+
 _websitesEditorController.prototype.fetchWebsite = function(caller, name) {
 	this.caller = caller;
 	return window.axios
@@ -1008,6 +1024,9 @@ window.WebsiteEditor = {
 			}).then(() => {
 				//fetch our global properties
 				return window._websitesEditorControllerInstance.fetchProperties("global");
+			}).then(() => {
+				//fetch our user defined tagsets
+				return window._websitesEditorControllerInstance.fetchTagsets();
 			});
 		}
 
@@ -1021,6 +1040,9 @@ window.WebsiteEditor = {
 		}).then(() => {
 			//fetch our global properties
 			return window._websitesEditorControllerInstance.fetchProperties("global");
+		}).then(() => {
+			//fetch our user defined tagsets
+			return window._websitesEditorControllerInstance.fetchTagsets();
 		});
 	},
 	destroyed : function() {
@@ -1358,9 +1380,11 @@ window.Vue.component("tagsection", {
 					children 	: null,
 				};
 
-				Object.keys(config.properties).forEach((prop) => {
-					newTag[prop] = null;
-				});
+				if (typeof(config.properties) !== 'undefined' && config.properties !== null) {
+					Object.keys(config.properties).forEach((prop) => {
+						newTag[prop] = null;
+					});
+				}
 
 				this.$options.propsData.tag.children = this.$options.propsData.tag.children || [];
 				this.$options.propsData.tag.children.push(newTag);

@@ -1,7 +1,9 @@
 const _websitesController = function(page) {
 	this._page = page;
 	this.websites = [];
+	this.tagsets = [];
 	this.websitesVisible = true;
+	this.tagsetsVisible = false;
 	this.sessionConfigVisible = false;
 	this.config = {};
 	this.showAlert = false;
@@ -16,6 +18,11 @@ _websitesController.prototype.setNav = function() {
 			selected 	: this.websitesVisible
 		},
 		{
+			name 		: "Tagsets",
+			event 		: this.showTagsets.bind(this),
+			selected 	: this.tagsetsVisible
+		},
+		{
 			name 		: "Sessions",
 			event 		: this.showSessionsConfig.bind(this),
 			selected 	: this.sessionConfigVisible
@@ -25,6 +32,7 @@ _websitesController.prototype.setNav = function() {
 
 _websitesController.prototype.showWebsites = function() {
 	this.websitesVisible = true;
+	this.tagsetsVisible = false;
 	this.sessionConfigVisible = false;
 	this.setNav();
 	this.forceRefresh();
@@ -32,18 +40,29 @@ _websitesController.prototype.showWebsites = function() {
 
 _websitesController.prototype.showSessionsConfig = function() {
 	this.websitesVisible = false;
+	this.tagsetsVisible = false;
 	this.sessionConfigVisible = true;
 	this.setNav();
 	this.forceRefresh();
 };
 
+_websitesController.prototype.showTagsets = function() {
+	this.websitesVisible = false;
+	this.tagsetsVisible = true;
+	this.sessionConfigVisible = false;
+	this.setNav();
+	this.forceRefresh();
+};
+
 _websitesController.prototype.forceRefresh = function() {
-	this.caller.websites = this.websites;
-	this.caller.websitesVisible = this.websitesVisible;
-	this.caller.sessionConfigVisible = this.sessionConfigVisible;
-	this.caller.navitems = this.navitems;
-	this.caller.config = this.config;
-	this.caller.showAlert = this.showAlert;
+	this.caller.websites 				= this.websites;
+	this.caller.tagsets 				= this.tagsets;
+	this.caller.websitesVisible 		= this.websitesVisible;
+	this.caller.tagsetsVisible 			= this.tagsetsVisible;
+	this.caller.sessionConfigVisible 	= this.sessionConfigVisible;
+	this.caller.navitems 				= this.navitems;
+	this.caller.config 					= this.config;
+	this.caller.showAlert 				= this.showAlert;
 
 	this.caller.$forceUpdate();
 };
@@ -55,8 +74,10 @@ _websitesController.prototype.setCaller = function(caller) {
 _websitesController.prototype.getWebsites = function() {
 	return {
 		websites 				: this.websites,
+		tagsets 				: this.tagsets,
 		navitems 				: this.navitems,
 		websitesVisible 		: this.websitesVisible,
+		tagsetsVisible 			: this.tagsetsVisible,
 		sessionConfigVisible 	: this.sessionConfigVisible,
 		config 					: this.config,
 		showAlert 				: this.showAlert,
@@ -81,6 +102,27 @@ _websitesController.prototype.fetchWebsites = function() {
 			this.websites = response.data;
 			this.forceRefresh();
 		});
+};
+
+_websitesController.prototype.fetchTagsets = function() {
+	return window.axios.get(`${window.hosts.kernel}/tags/`, {
+		headers : {
+			Authorization : `Bearer ${window.getToken()}`
+		}
+	}).then((response) => {
+		this.tagsets = response.data;
+		this.forceRefresh();
+	});
+};
+
+_websitesController.prototype.deleteTagset = function(name) {
+	return window.axios.delete(`${window.hosts.kernel}/tags/${name}`, {
+		headers : {
+			Authorization : `Bearer ${window.getToken()}`
+		}
+	}).then((response) => {
+		return this.fetchTagsets();
+	});
 };
 
 _websitesController.prototype.deleteWebsite = function(name) {
@@ -144,6 +186,8 @@ window.Websites = {
 		window._websitesControllerInstance.setCaller(this);
 		return window._websitesControllerInstance.fetchWebsites().then(() => {
 			return window._websitesControllerInstance.loadConfig();
+		}).then(() => {
+			return window._websitesControllerInstance.fetchTagsets();
 		});
 	}
 };

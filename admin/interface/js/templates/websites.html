@@ -11,6 +11,50 @@
 			v-bind:on-confirm="confirmDeleteAction"
 		></confirm>
 
+		<div class="container-fluid" v-if="tagsetsVisible">
+			<p class="mb-4">Tagsets allow you to share custom tags between website instances.</p>
+
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Current Tagsets</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="tagsets.length === 0">
+									<td colspan="2" class="no-results">
+										No tagsets exist.
+									</td>
+								</tr>
+								<tr v-for="item in tagsets">
+									<td>
+										{{item.name}}
+									</td>
+									<td>
+										<router-link class="btn btn-sm btn-primary" :to="{ name : 'tagsetEditor', params : { name : item.name } }">Modify</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_websitesControllerInstance.deleteTagset(item.name);">Remove</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="container-fluid" v-if="sessionConfigVisible">
 			<div class="row">
 				<div class="col-md-6">
@@ -89,7 +133,7 @@
 											View
 										</a>
 										<router-link class="btn btn-sm btn-primary" :to="{ name : 'websiteEditor', params : { name : item.name } }">Modify</router-link>
-										<button class="btn btn-sm btn-danger" v-on:click="_websitesControllerInstance.deleteWebsite(item.name);">Remove</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_websitesControllerInstance.deleteWebsite(item.name);">Remove</button>
 									</td>
 								</tr>
 							</tbody>
@@ -100,7 +144,16 @@
 		</div>
 
 		<div class="actionButtons">
-			<router-link to="/websites/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+			<router-link
+				to="/websites/editor/.new"
+				v-if="websitesVisible"
+				class="rounded-circle border-0 btn btn-primary"
+			><i class="fas fa-fw fa-plus"></i></router-link>
+			<router-link
+				to="/websites/tagsets/editor/.new"
+				v-if="tagsetsVisible"
+				class="rounded-circle border-0 btn btn-primary"
+			><i class="fas fa-fw fa-plus"></i></router-link>
 		</div>
 	</div>
 </template>
