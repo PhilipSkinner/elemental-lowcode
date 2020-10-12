@@ -70,6 +70,12 @@ expandCustomTag.prototype.expand = function(view) {
 				replacement.if = tag.if;
 			}
 
+			//ensure any values are replaced within the source tag
+			this.replaceValues.applySync({
+				view : [tag],
+				data : tag._scope && tag._scope.data ? tag._scope.data : {}
+			});
+
 			let newTag = this.replaceValues.applySync({
 				view : [replacement],
 				data : tag
