@@ -22,6 +22,11 @@ const controllerState = function(
 	this.controllerDefinition.serviceProvider 		= servicesProvider;
 	this.controllerDefinition.messagingService 		= messagingService;
 	this.controllerDefinition.environmentService 	= environmentService;
+	this.controllerDefinition.mergeBag 				= this.mergeBag.bind(this);
+};
+
+controllerState.prototype.mergeBag = function(bag) {
+	this.controllerDefinition.bag = Object.assign(this.controllerDefinition.bag || {}, bag || {});
 };
 
 controllerState.prototype.setContext = function(request, response) {
@@ -101,6 +106,7 @@ controllerState.prototype._triggerComponentEvents = function(name, details) {
 			ci.instance.serviceProvider 	= this.controllerDefinition.serviceProvider;
 			ci.instance.messagingService 	= this.controllerDefinition.messagingService;
 			ci.instance.environmentService 	= this.controllerDefinition.environmentService;
+			ci.instance.parent 				= this.controllerDefinition;
 
 			if (ci.instance.events[name]) {
 				result = ci.instance.events[name].bind(ci.instance)(details);
