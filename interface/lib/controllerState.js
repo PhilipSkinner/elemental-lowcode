@@ -88,8 +88,9 @@ controllerState.prototype.cleanValues = function(values) {
 controllerState.prototype._triggerComponentEvents = function(name, details) {
 	return Promise.all(this.componentInstances.map((ci) => {
 		if ((details._identifier && ci.identifier === details._identifier) || name === "load") {
-			//we need to trigger the event on this component
+			let result = null;
 
+			//we need to trigger the event on this component
 			ci.instance.storageService 		= this.controllerDefinition.storageService;
 			ci.instance.sessionState 		= this.controllerDefinition.sessionState;
 			ci.instance.integrationService 	= this.controllerDefinition.integrationService;
@@ -97,7 +98,7 @@ controllerState.prototype._triggerComponentEvents = function(name, details) {
 			ci.instance.authClientProvider 	= this.controllerDefinition.authClientProvider;
 			ci.instance.idmService 			= this.controllerDefinition.idmService;
 			ci.instance.navigationService 	= this.controllerDefinition.navigationService;
-			ci.instance.serviceProvider 		= this.controllerDefinition.serviceProvider;
+			ci.instance.serviceProvider 	= this.controllerDefinition.serviceProvider;
 			ci.instance.messagingService 	= this.controllerDefinition.messagingService;
 			ci.instance.environmentService 	= this.controllerDefinition.environmentService;
 

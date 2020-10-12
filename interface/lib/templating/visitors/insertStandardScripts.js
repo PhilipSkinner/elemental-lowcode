@@ -21,7 +21,7 @@ insertStandardScripts.prototype.traverse = function(object) {
 
 		return object;
 	} else {
-		object.children = object.children ? object.children.map((child) => {
+		object.children = object.children && object.children.map ? object.children.map((child) => {
 			return this.traverse(child);
 		}) : null;
 	}

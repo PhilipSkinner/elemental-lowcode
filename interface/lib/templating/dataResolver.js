@@ -79,6 +79,13 @@ dataResolver.prototype.resolveFunction = function(fn, data) {
 
 	//evaluate and return the value
 	let evalStatement = fn.slice(2).slice(0, -1);
+
+	//does it contain another function?
+	if (evalStatement.indexOf('$(') !== -1) {
+		//we need to evaluate the inner statement first
+		evalStatement = this.detectValues(evalStatement, data, {}, false);
+	}
+
 	try {
 		return eval(evalStatement);
 	} catch(e) {
