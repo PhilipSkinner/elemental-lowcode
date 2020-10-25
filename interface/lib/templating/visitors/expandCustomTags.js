@@ -86,7 +86,7 @@ expandCustomTag.prototype.expand = function(view) {
 				data : tag
 			}).view[0];
 
-			//copy over the controller
+			//we need to create a new controller, register it within the instance and trigger any events etc
 			newTag._controller = tag._controller;
 
 			//now we need to scan for events and insert the controller instance ID

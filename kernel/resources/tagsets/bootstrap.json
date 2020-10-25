@@ -1,0 +1,469 @@
+[
+	{
+		"name" : "Bootstrap_Includes",
+		"tags" : [
+			{
+				"name" : "CSS",
+				"tag" : "CSS",
+				"view" : {
+					"tag" : "link",
+					"rel" : "stylesheet",
+					"href" : "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
+					"integrity" : "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm",
+					"crossorigin" : "anonymous"
+				}
+			},
+			{
+				"name" : "JS",
+				"tag" : "JS",
+				"view" : {
+					"tag" : "div",
+					"children" : [
+						{
+							"tag" : "script",
+							"src" : "https://code.jquery.com/jquery-3.2.1.slim.min.js",
+							"integrity" : "sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN",
+							"crossorigin" : "anonymous"
+						},
+						{
+							"tag" : "script",
+							"src" : "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js",
+							"integrity" : "sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q",
+							"crossorigin" : "anonymous"
+						},
+						{
+							"tag" : "script",
+							"src" : "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js",
+							"integrity" : "sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl",
+							"crossorigin" : "anonymous"
+						}
+					]
+				}
+			}
+		]
+	},
+	{
+		"name" : "Bootstrap_Layout",
+		"tags" : [
+			{
+				"name" : "Container",
+				"tag" : "container",
+				"view" : {
+					"tag" : "div",
+					"class" : "container",
+					"children" : []
+				}
+			},
+			{
+				"name" : "Fluid Container",
+				"tag" : "container-fluid",
+				"view" : {
+					"tag" : "div",
+					"class" : "container-fluid",
+					"children" : []
+				}
+			}
+		]
+	},
+	{
+		"name" : "Bootstrap_Alerts",
+		"tags" : [
+			{
+				"name" : "Primary alert",
+				"tag" : "primary-alert",
+				"view" : {
+					"tag" : "div",
+					"class" : "alert alert-primary",
+					"role" : "alert",
+					"children" : []
+				}
+			},
+			{
+				"name" : "Secondary alert",
+				"tag" : "secondary-alert",
+				"view" : {
+					"tag" : "div",
+					"class" : "alert alert-secondary",
+					"role" : "alert",
+					"children" : []
+				}
+			},
+			{
+				"name" : "Success alert",
+				"tag" : "success-alert",
+				"view" : {
+					"tag" : "div",
+					"class" : "alert alert-success",
+					"role" : "alert",
+					"children" : []
+				}
+			},
+			{
+				"name" : "Danger alert",
+				"tag" : "danger-alert",
+				"view" : {
+					"tag" : "div",
+					"class" : "alert alert-danger",
+					"role" : "alert",
+					"children" : []
+				}
+			},
+			{
+				"name" : "Warning alert",
+				"tag" : "warning-alert",
+				"view" : {
+					"tag" : "div",
+					"class" : "alert alert-warning",
+					"role" : "alert",
+					"children" : []
+				}
+			},
+			{
+				"name" : "Info alert",
+				"tag" : "info-alert",
+				"view" : {
+					"tag" : "div",
+					"class" : "alert alert-info",
+					"role" : "alert",
+					"children" : []
+				}
+			},
+			{
+				"name" : "Light alert",
+				"tag" : "light-alert",
+				"view" : {
+					"tag" : "div",
+					"class" : "alert alert-light",
+					"role" : "alert",
+					"children" : []
+				}
+			},
+			{
+				"name" : "Dark alert",
+				"tag" : "dark-alert",
+				"view" : {
+					"tag" : "div",
+					"class" : "alert alert-dark",
+					"role" : "alert",
+					"children" : []
+				}
+			}
+		]
+	},
+	{
+		"name" : "Bootstrap_Badges",
+		"tags" : [
+			{
+				"name" : "Primary badge",
+				"tag" : "primary-badge",
+				"view" : {
+					"tag" : "span",
+					"class" : "badge badge-primary",
+					"text" : ""
+				}
+			},
+			{
+				"name" : "Secondary badge",
+				"tag" : "secondary-badge",
+				"view" : {
+					"tag" : "span",
+					"class" : "badge badge-secondary",
+					"text" : ""
+				}
+			},
+			{
+				"name" : "Success badge",
+				"tag" : "success-badge",
+				"view" : {
+					"tag" : "span",
+					"class" : "badge badge-success",
+					"text" : ""
+				}
+			},
+			{
+				"name" : "Danger badge",
+				"tag" : "danger-badge",
+				"view" : {
+					"tag" : "span",
+					"class" : "badge badge-danger",
+					"text" : ""
+				}
+			},
+			{
+				"name" : "Warning badge",
+				"tag" : "warning-badge",
+				"view" : {
+					"tag" : "span",
+					"class" : "badge badge-warning",
+					"text" : ""
+				}
+			},
+			{
+				"name" : "Info badge",
+				"tag" : "info-badge",
+				"view" : {
+					"tag" : "span",
+					"class" : "badge badge-info",
+					"text" : ""
+				}
+			},
+			{
+				"name" : "Light badge",
+				"tag" : "light-badge",
+				"view" : {
+					"tag" : "span",
+					"class" : "badge badge-light",
+					"text" : ""
+				}
+			},
+			{
+				"name" : "Dark badge",
+				"tag" : "dark-badge",
+				"view" : {
+					"tag" : "span",
+					"class" : "badge badge-dark",
+					"text" : ""
+				}
+			}
+		]
+	},
+	{
+		"name" : "Bootstrap_Breadcrumb",
+		"tags" : [
+			{
+				"name" : "Breadcrumb bar",
+				"tag" : "wrapper",
+				"view" : {
+					"tag" : "nav",
+					"aria-label" : "breadcrumb",
+					"children" : [
+						{
+							"tag" : "ol",
+							"class" : "breadcrumb",
+							"children" : [
+								{
+									"tag" : "li",
+									"class" : "breadcrumb-item",
+									"children" : [
+										{
+											"tag" : "a",
+											"href" : "#",
+											"text" : "Item 1"
+										}
+									]
+								},
+								{
+									"tag" : "li",
+									"class" : "breadcrumb-item",
+									"children" : [
+										{
+											"tag" : "a",
+											"href" : "#",
+											"text" : "Item 2"
+										}
+									]
+								},
+								{
+									"tag" : "li",
+									"class" : "breadcrumb-item active",
+									"aria-current" : "page",
+									"text" : "Item 3"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name" : "Link",
+				"tag" : "link",
+				"view" : {
+					"tag" : "li",
+					"class" : "breadcrumb-item",
+					"children" : [
+						{
+							"tag" : "a",
+							"href" : "#",
+							"text" : "Breadcrumb link"
+						}
+					]
+				}
+			},
+			{
+				"name" : "Current item",
+				"tag" : "current-item",
+				"view" : {
+					"tag" : "li",
+					"class" : "breadcrumb-item active",
+					"aria-current" : "page",
+					"text" : "Current Page"
+				}
+			}
+		]
+	},
+	{
+		"name" : "Bootstrap_Buttons",
+		"tags" : [
+			{
+				"name" : "Group",
+				"tag" : "button-group",
+				"view" : {
+					"tag" : "div",
+					"class" : "btn-group",
+					"role" : "group",
+					"aria-label" : "Button group",
+					"children" : [
+						{
+							"tag" : "button",
+							"type" : "button",
+							"class" : "btn btn-primary",
+							"text" : "Button"
+						}
+					]
+				}
+			},
+			{
+				"name" : "Toolbar",
+				"tag" : "button-toolbar",
+				"view" : {
+					"tag" : "div",
+					"class" : "btn-toolbar",
+					"role" : "toolbar",
+					"aria-label" : "Button toolbar",
+					"children" : [
+						{
+							"tag" : "div",
+							"class" : "btn-group",
+							"role" : "group",
+							"aria-label" : "Button group",
+							"children" : [
+								{
+									"tag" : "button",
+									"type" : "button",
+									"class" : "btn btn-primary",
+									"text" : "Button"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name" : "Primary button",
+				"tag" : "primary-button",
+				"view" : {
+					"tag" : "button",
+					"type" : "button",
+					"class" : "btn btn-primary",
+					"text" : "Button"
+				}
+			},
+			{
+				"name" : "Secondary button",
+				"tag" : "secondary-button",
+				"view" : {
+					"tag" : "button",
+					"type" : "button",
+					"class" : "btn btn-secondary",
+					"text" : "Button"
+				}
+			},
+			{
+				"name" : "Success button",
+				"tag" : "success-button",
+				"view" : {
+					"tag" : "button",
+					"type" : "button",
+					"class" : "btn btn-success",
+					"text" : "Button"
+				}
+			},
+			{
+				"name" : "Danger button",
+				"tag" : "danger-button",
+				"view" : {
+					"tag" : "button",
+					"type" : "button",
+					"class" : "btn btn-danger",
+					"text" : "Button"
+				}
+			},
+			{
+				"name" : "Warning button",
+				"tag" : "warning-button",
+				"view" : {
+					"tag" : "button",
+					"type" : "button",
+					"class" : "btn btn-warning",
+					"text" : "Button"
+				}
+			},
+			{
+				"name" : "Info button",
+				"tag" : "info-button",
+				"view" : {
+					"tag" : "button",
+					"type" : "button",
+					"class" : "btn btn-info",
+					"text" : "Button"
+				}
+			},
+			{
+				"name" : "Light button",
+				"tag" : "light-button",
+				"view" : {
+					"tag" : "button",
+					"type" : "button",
+					"class" : "btn btn-light",
+					"text" : "Button"
+				}
+			},
+			{
+				"name" : "Dark button",
+				"tag" : "dark-button",
+				"view" : {
+					"tag" : "button",
+					"type" : "button",
+					"class" : "btn btn-dark",
+					"text" : "Button"
+				}
+			},
+			{
+				"name" : "Link button",
+				"tag" : "link-button",
+				"view" : {
+					"tag" : "button",
+					"type" : "button",
+					"class" : "btn btn-link",
+					"text" : "Button"
+				}
+			}
+		]
+	},
+	{
+		"name" : "Bootstrap_Components",
+		"tags" : [
+			{
+				"name" : "Jumbotron",
+				"tag" : "jumbotron",
+				"view" : {
+					"tag" : "div",
+					"class" : "jumbotron",
+					"children" : [
+						{
+							"tag" : "h1",
+							"class" : "display-4",
+							"text" : "Hello, world!"
+						},
+						{
+							"tag" : "p",
+							"class" : "lead",
+							"text" : "This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information."
+						}
+					]
+				},
+				"properties" : {}
+			}
+		]
+	}
+]

@@ -11178,6 +11178,19 @@ div.block {
   opacity: 1;
 }
 
+/*
+ * UI Preview child style overrides
+ */
+
+.uiPreview .alert {
+  position: relative !important;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  margin-bottom: 0px;
+  z-index: 1;
+}
+
 .tagChildren {
   border: 2px dotted rgba(0,0,0,0.1);
   padding: 10px 5px;
@@ -11413,6 +11426,7 @@ div.block {
   top: 5px;
   right: 10px;
   font-size: 10px;
+  z-index: 11;
 }
 
 .tagMenu .tagMenuContent {

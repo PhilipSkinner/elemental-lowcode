@@ -354,6 +354,11 @@ _websitesEditorController.prototype.saveResource = function(path, value) {
 
 _websitesEditorController.prototype.saveWebsite = function() {
 	return new Promise((resolve, reject) => {
+		//ensure we refresh our state from the caller
+		this.website.name = this.caller.website.name;
+		this.website.tagset = this.caller.website.tagset;
+		this.website.client_id = this.caller.website.client_id;
+
 		if (typeof(this.website.name) === 'undefined') {
 			return reject(new Error('Cannot save website without name'));
 		}
@@ -675,6 +680,8 @@ _websitesEditorController.prototype.fetchProperties = function(name) {
 };
 
 _websitesEditorController.prototype.fetchTagset = function(name) {
+	console.log(name);
+
 	if (this.loadedTagsets[name]) {
 		return Promise.resolve();
 	}
@@ -972,6 +979,8 @@ _websitesEditorController.prototype.setProperties = function(properties) {
 
 	//generate our misc properties group if required
 	let includedProps = [];
+	this.activeDefinition.propertyGroups = this.activeDefinition.propertyGroups || [];
+
 	Object.keys(this.activeDefinition.propertyGroups).forEach((groupName) => {
 		includedProps = includedProps.concat(this.activeDefinition.propertyGroups[groupName].properties);
 	});
@@ -1040,6 +1049,15 @@ window.WebsiteEditor = {
 		}).then(() => {
 			//fetch our global properties
 			return window._websitesEditorControllerInstance.fetchProperties("global");
+		}).then(() => {
+			//fetch our predefined tagset
+			let tagset = window._websitesEditorControllerInstance.website.tagset;
+
+			if (tagset) {
+				return window._websitesEditorControllerInstance.fetchTagset(tagset);
+			}
+
+			return Promise.resolve();
 		}).then(() => {
 			//fetch our user defined tagsets
 			return window._websitesEditorControllerInstance.fetchTagsets();
@@ -1115,7 +1133,10 @@ function renderTag(tag, scope, expandChildren) {
 	parts.push(`<${tagName}`);
 
 	Object.keys(tag).forEach((k) => {
-		if (["text", "tag", "onclick", "children", "repeat", "submit", "bind", "_scope", "if"].indexOf(k) === -1) {
+		if (
+			["text", "tag", "onclick", "children", "repeat", "submit", "bind", "_scope", "if"].indexOf(k) === -1
+			&& (["link", "script"].indexOf(tag) === -1 && ["href", "src"].indexOf(k) === -1)
+		) {
 			let value = detectValues(tag[k], scope);
 
 			if (!(typeof(value) === "undefined" || value === null)) {
@@ -1379,6 +1400,10 @@ window.Vue.component("tagsection", {
 					tag 		: config.tag,
 					children 	: null,
 				};
+
+				if (config.view) {
+					newTag = config.view;
+				}
 
 				if (typeof(config.properties) !== 'undefined' && config.properties !== null) {
 					Object.keys(config.properties).forEach((prop) => {
