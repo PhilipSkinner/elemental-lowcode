@@ -17,8 +17,15 @@ handleLoops.prototype.expandNext = function(view, data) {
 		if (tag.repeat) {
 			//we are going to repeat this tag, get our enumeration
 			var parts = tag.repeat.split(" ");
-			var arr = this.dataResolver.resolveValue(parts[2], data, tag._scope ? tag._scope.data : {});
+			var arr = this.dataResolver.resolveValue(parts[2], data || {}, tag._scope ? tag._scope.data : {});
 			var dataPropName = parts[0].replace("$.", "");
+
+			if (typeof(arr) === "string" && arr !== parts[2] && arr !== '') {
+				parts[2] = arr;
+				tag.repeat = parts.join(" ");
+				this.modified = true;
+				return tag;
+			}
 
 			if (typeof(arr) === "number") {
 				//generate the array
@@ -32,6 +39,7 @@ handleLoops.prototype.expandNext = function(view, data) {
 			//ok, for each child decorate it with our new scoped data and then copy
 			var base = JSON.stringify(tag);
 			var generated = [];
+
 			if (Array.isArray(arr)) {
 				generated = arr.map((item, index) => {
 					var copy = JSON.parse(base);

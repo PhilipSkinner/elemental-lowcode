@@ -178,7 +178,7 @@ controllerInstance.prototype.parseQuery = function(obj) {
 	const ret = {};
 
 	Object.keys(obj).forEach((key) => {
-		const parts = key.split("__");
+		let parts = key.split("__");
 
 		let current = ret;
 		parts.forEach((p, index) => {
@@ -196,6 +196,20 @@ controllerInstance.prototype.parseQuery = function(obj) {
 				current = current[p];
 			}
 		});
+
+		//get the path version
+		parts = key.split("$$_$$");
+		for (var i = 0; i < parts.length; i++) {
+			if (i === parts.length - 1) {
+				current[parts[i]] = obj[key];
+			} else {
+				if (!current[parts[i]]) {
+					current[parts[i]] = {};
+				}
+
+				current = current[parts[i]];
+			}
+		}
 	});
 
 	return ret;

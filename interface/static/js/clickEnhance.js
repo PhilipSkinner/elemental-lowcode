@@ -17,15 +17,49 @@ clickHandler.prototype.pollEvent = function() {
 };
 
 clickHandler.prototype.handleClick = function(event) {
+	console.log(event);
+
 	if (event) {
 		event.preventDefault();
 		event.stopPropagation();
 		event.cancelBubble = true;
 	}
 
-	//load the response
-	const href = this.elem.attributes["href"];
-	window.axios.get(`${location.pathname}${href.value}`, {
+	const params = {};
+	const files = {};
+	let doMultipart = false;
+	document.querySelectorAll("input, select, textarea").forEach((field) => {
+		let name = field.name;
+		let value = field.value;
+
+		if ((field.type === "radio" || field.type === "checkbox") && !field.checked) {
+			// do nothing
+		} else {
+			if (!params[name]) {
+				params[name] = value;
+			} else {
+				if (!Array.isArray(params[name])) {
+					params[name] = [params[name]];
+				}
+
+				params[name].push(value);
+			}
+		}
+	});
+
+	var url = `${location.pathname}${this.elem.attributes["href"].value}`;
+
+	Object.keys(params).forEach((k) => {
+		if (Array.isArray(params[k])) {
+			params[k].forEach((v) => {
+				url = `${url}&${encodeURIComponent(k)}=${encodeURIComponent(v)}`;
+			});
+		} else {
+			url = `${url}&${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`;
+		}
+	});
+
+	window.axios.get(url, {
 		withCredentials : true
 	}).then((response) => {
 		this.handleResponse(response);
