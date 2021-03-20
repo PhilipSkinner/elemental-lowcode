@@ -3,7 +3,7 @@ MAINTAINER me@philip-skinner.co.uk
 
 #dependencies
 RUN apt-get update
-RUN apt-get install xz-utils wget -y
+RUN apt-get install xz-utils wget sqlite3 -y
 
 #set dir
 WORKDIR /var/elemental

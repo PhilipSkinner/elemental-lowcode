@@ -461,7 +461,17 @@ const fetchConfigTest = (done) => {
 			],
         	jwks : 'keystore',
         	cookies : {
-        		keys : [jasmine.any(String)]
+        		keys : [jasmine.any(String)],
+        		long : {
+					httpOnly: true,
+					overwrite: true,
+					sameSite: 'lax'
+				},
+				short : {
+					httpOnly: true,
+					overwrite: true,
+					sameSite: 'lax'
+				}
         	},
         	adapter : {
         		connect : jasmine.any(Function)

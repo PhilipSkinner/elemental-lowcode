@@ -146,7 +146,17 @@ configProvider.prototype.addCookies = function() {
 		let secretOne = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join("").replace(/[^a-z]+/g, "");
 
 		return resolve({
-			keys : [secretOne]
+			keys : [secretOne],
+			long : {
+				httpOnly: true,
+				overwrite: true,
+				sameSite: 'lax'
+			},
+			short : {
+				httpOnly: true,
+				overwrite: true,
+				sameSite: 'lax'
+			}
 		});
 	});
 };
