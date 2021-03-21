@@ -26,7 +26,12 @@ authClientProvider.prototype.loginUser = function(username, password) {
 
 			if (res.statusCode === 200) {
 				//parse the payload
-				const payload = JSON.parse(body);
+				let payload = null;
+				try {
+					payload = JSON.parse(body);
+				} catch(e) {
+					return reject(new Error('Error parsing token response'));
+				}
 
 				//set our sessions access token
 				this.sessionState.setAccessToken(payload.access_token);
@@ -51,6 +56,14 @@ authClientProvider.prototype.logoutUser = function() {
 };
 
 authClientProvider.prototype.tokenExpired = function(token) {
+	if (token === null || typeof(token) === "undefined" || token.replace(/ /g, "") === "") {
+		return true;
+	}
+
+	if (token.split(".").length != 3) {
+		return true;
+	}
+
 	let claims = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString("utf8"));
 
 	if (typeof(claims.exp) !== 'undefined' && claims.exp !== null && claims.exp > 0) {
@@ -86,31 +99,35 @@ authClientProvider.prototype.refreshUserToken = function() {
 			}
 		}, (err, response, body) => {
 			if (err) {
-				return reject(new Error("Error refreshing user access token"));
+				return reject(err);
 			}
 
-			let data = null;
-			try {
-				data = JSON.parse(body);
-			} catch(e) {
-				return reject(new Error("Error parsing refresh token response"));
+			if (response.statusCode === 200) {
+				let data = null;
+				try {
+					data = JSON.parse(body);
+				} catch(e) {
+					return reject(new Error("Error parsing refresh token response"));
+				}
+
+				if (data) {
+					if (data.access_token) {
+						this.sessionState.setAccessToken(data.access_token);
+					}
+
+					if (data.id_token) {
+						this.sessionState.setIdentityToken(data.id_token);
+					}
+
+					if (data.access_token) {
+						this.sessionState.setRefreshToken(data.refresh_token);
+					}
+				}
+
+				return resolve(this.sessionState.getAccessToken());
 			}
 
-			if (data) {
-				if (data.access_token) {
-					this.sessionState.setAccessToken(data.access_token);
-				}
-
-				if (data.id_token) {
-					this.sessionState.setIdentityToken(data.id_token);
-				}
-
-				if (data.access_token) {
-					this.sessionState.setRefreshToken(data.refresh_token);
-				}
-			}
-
-			return resolve(this.sessionState.getAccessToken());
+			return reject(new Error("Error refreshing user access token"));
 		});
 	});
 };
@@ -141,19 +158,22 @@ authClientProvider.prototype.getAccessToken = function() {
 			}
 		}, (err, response, body) => {
 			if (err) {
-				return reject(new Error("Error fetching client token"));
+				return reject(err);
 			}
 
-			let data = null;
-			try {
-				data = JSON.parse(body);
-			} catch(e) {
-				return reject(new Error("Error parsing token response"));
+			if (response.statusCode === 200) {
+				let data = null;
+				try {
+					data = JSON.parse(body);
+				} catch(e) {
+					return reject(new Error("Error parsing token response"));
+				}
+
+				if (data && data.access_token) {
+					return resolve(data.access_token);
+				}
 			}
 
-			if (data && data.access_token) {
-				return resolve(data.access_token);
-			}
 
 			return resolve("");
 		});
