@@ -38,12 +38,12 @@ certProvider.prototype._fetchSigningKeypair = function() {
 		//and persist
 		this.fs.writeFileSync(this.path.join(process.cwd(), "signing-private.key"), ret.privateKey);
 		this.fs.writeFileSync(this.path.join(process.cwd(), "signing-public.key"), ret.publicKey);
-	}	
+	}
 
 	return ret;
 };
 
-certProvider.prototype.fetchPulicSigningKey = function() {
+certProvider.prototype.fetchPublicSigningKey = function() {
 	return this._fetchSigningKeypair().publicKey;
 };
 

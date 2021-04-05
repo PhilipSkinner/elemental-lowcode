@@ -50,7 +50,7 @@ const reload = function() {
 
 const startServices = function() {
 	let keys = {
-		public 	: certProvider.fetchPulicSigningKey(),
+		public 	: certProvider.fetchPublicSigningKey(),
 		private : certProvider.fetchPrivateSigningKey(),
 	};
 
@@ -76,7 +76,7 @@ const runApp = function() {
 	const app = express();
 
 	let keys = {
-		public 	: certProvider.fetchPulicSigningKey(),
+		public 	: certProvider.fetchPublicSigningKey(),
 		private : certProvider.fetchPrivateSigningKey(),
 	};
 
