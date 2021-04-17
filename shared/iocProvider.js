@@ -88,11 +88,15 @@ iocProvider.prototype.resolveRequirements = function(fn) {
 };
 
 iocProvider.prototype.resolveService = function(name) {
-	let module = this.path.join(process.cwd(), this.path.dirname(process.env.DIR), "services", name);
-	delete require.cache[require.resolve(module)];
-	this.services[name] = require(module);
+	try {
+		let module = this.path.join(process.cwd(), this.path.dirname(process.env.DIR), "services", name);
+		delete require.cache[require.resolve(module)];
+		this.services[name] = require(module);
 
-	return this.resolveRequirements(this.services[name]);
+		return this.resolveRequirements(this.services[name]);
+	} catch(e) {}
+
+	return null;
 };
 
 module.exports = function(path) {
