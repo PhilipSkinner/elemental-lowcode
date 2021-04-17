@@ -37,10 +37,14 @@ idmService.prototype.getUsers = function(authToken) {
 				}
 
 				if (res.statusCode === 200) {
-					return resolve(JSON.parse(body));
+					try {
+						return resolve(JSON.parse(body));
+					} catch(e) {
+						return reject(new Error("Invalid JSON response"));
+					}
 				}
 
-				return reject(body);
+				return reject(new Error(`Invalid status code received - ${res.statusCode}`));
 			});
 		});
 	});
@@ -61,10 +65,17 @@ idmService.prototype.registerUser = function(user, authToken) {
 				}
 
 				if (res.statusCode === 201) {
-					return this.getUser(res.headers.location.split('/').slice(-1)[0], authToken).then(resolve).catch(reject);
+					let id = null;
+					try {
+						id = res.headers.location.split('/').slice(-1)[0];
+					} catch(e) {
+						return reject(new Error(`Could not parse location header`));
+					}
+
+					return this.getUser(id, authToken).then(resolve).catch(reject);
 				}
 
-				return reject(body);
+				return reject(new Error(`Invalid status code received - ${res.statusCode}`));
 			});
 		});
 	});
@@ -83,10 +94,14 @@ idmService.prototype.getUser = function(user, authToken) {
 				}
 
 				if (res.statusCode === 200) {
-					return resolve(JSON.parse(body));
+					try {
+						return resolve(JSON.parse(body));
+					} catch(e) {
+						return reject(new Error("Invalid JSON response"));
+					}
 				}
 
-				return reject(body);
+				return reject(new Error(`Invalid status code received - ${res.statusCode}`));
 			});
 		});
 	});
@@ -114,7 +129,7 @@ idmService.prototype.updateUser = function(username, password, claims, authToken
 					return resolve();
 				}
 
-				return reject(body);
+				return reject(new Error(`Invalid status code received - ${res.statusCode}`));
 			});
 		});
 	})
