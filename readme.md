@@ -1,5 +1,5 @@
 <a href="https://elementalsystem.org">
-	<img src="https://elementalsystem.org/documentation/images/logo.png" alt="Elemental logo" title="Elemental" align="right" height="60"/>
+	<img src="https://elementalsystem.org/src/support.documentation/images/logo.png" alt="Elemental logo" title="Elemental" align="right" height="60"/>
 </a>
 
 # Elemental low-code platform
@@ -161,9 +161,9 @@ Elemental supports persistence of:
 
 Documentation is available within Elemental:
 
-![In app documentation](https://elementalsystem.org/documentation/images/documentation-screenshot.png)
+![In app documentation](https://elementalsystem.org/src/support.documentation/images/documentation-screenshot.png)
 
-; or you can read it on the [Elemental Documentation](https://elementalsystem.org/documentation) website.
+; or you can read it on the [Elemental Documentation](https://elementalsystem.org/src/support.documentation) website.
 
 ## Examples
 
