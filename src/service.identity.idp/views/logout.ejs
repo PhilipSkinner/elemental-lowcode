@@ -1,0 +1,33 @@
+<div class="ui-columns ui-columns--half">
+    <div class="ui-half ui-half--highlight">
+        <div class="ui-logo">
+            Elemental
+        </div>
+        <div class="ui-feature">
+            <div class="ui-feature-image ui-feature-image--logout"></div>
+        </div>
+    </div>
+    <div class="ui-half">
+        <div class="ui-restricted--thin">
+            <div class="ui-header">
+                <h1 class="ui-header-text">Logout</h1>
+            </div>
+
+            <div class="ui-intro">
+                <p class="ui-intro-text">
+                    Do you want to sign out of your account?
+                </p>
+            </div>
+
+            <%- form %>
+
+            <div class="ui-button-wrapper">
+                <button autofocus type="submit" form="op.logoutForm" value="yes" name="logout" class="ui-button ui-button--primary">Yes, sign me out</button>
+            </div>
+
+            <div class="ui-button-wrapper">
+                <button type="submit" form="op.logoutForm" class="ui-button ui-button--default">No, stay signed in</button>
+            </div>
+        </div>
+    </div>
+</div>

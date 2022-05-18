@@ -1,9 +1,9 @@
-const systemHelpers = require("../helpers/systemHelpers");
+const systemHelpers = require('../helpers/systemHelpers');
 
 before(() => {
-	return systemHelpers.init();
+    return systemHelpers.init();
 });
 
 after(() => {
-	return systemHelpers.terminate();
+    return systemHelpers.terminate();
 });

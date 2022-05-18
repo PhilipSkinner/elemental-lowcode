@@ -1,0 +1,209 @@
+.uiEditor {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+
+    .uiTags {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        bottom: 0px;
+        width: 250px;
+        overflow: auto;
+        border-radius: 0px;
+
+        .tagSearch {
+            padding: 0.75rem 1.25rem;
+            background: #4e73df;
+            color: #FFF;
+            font-weight: bold;
+            input {
+                width: 100%;
+            }
+        }
+
+        .tagEntry {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+            padding: 0.75rem 1.25rem;
+
+            &:hover {
+                background: #4e73df;
+                color: #FFF;
+                border-radius: 5px;
+            }
+        }
+    }
+
+    .uiProperties {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        width: 350px;
+        overflow: auto;
+
+        .propGroup {
+            &:last-of-type {
+                padding-bottom: 80px;
+            }
+        }
+
+        .expression-input {
+            background: rgb(20,20,20);
+            color: rgb(255,255,255);
+
+            &:focus {
+                background: rgb(20,20,20);
+                color: rgb(255,255,255);
+            }
+        }
+
+        .array-input {
+            .add-entry {
+                display: block;
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+        .array-input-item {
+            position: relative;
+            padding-bottom: 5px;
+
+            input {
+                padding-right: 40px;
+            }
+
+            button {
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+            }
+        }
+
+        .prop-group {
+            position: relative;
+
+            .expression-button {
+                position: absolute;
+                top: 5px;
+                right: 0px;
+            }
+        }
+
+        .nothing-selected {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            text-align: center;
+            div {
+                position: absolute;
+                left: 0px;
+                right: 0px;
+                top: 50%;
+                margin-top: -12px;
+            }
+        }
+    }
+
+    .uiPreview {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 250px;
+        right: 350px;
+        overflow: auto;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .uiPreview {
+        .tagSection {
+            border: 2px rgba(0,0,0,0.2) dashed;
+            position: relative;
+            margin: 2px;
+            transition: all 0.2s ease;
+
+            .tagRender {
+                padding: 10px;
+            }
+
+            .tagChildren {
+                border: 2px dotted rgba(0,0,0,0.1);
+                padding: 10px 5px;
+                margin: 10px 5px;
+                transition: all 0.2s ease;
+            }
+
+            &:hover {
+                border: 2px solid #4e73df;
+
+                >.tagInfo {
+                    opacity: 1;
+                }
+            }
+
+            &.selected {
+                border: 2px solid #1cc88a;
+
+                >.tagInfo {
+                    opacity: 1;
+                }
+            }
+
+            &.droppable {
+                >.tagInfo {
+                    opacity: 1;
+                }
+                >.tagChildren {
+                    border: 2px solid #e74a3b;
+                    padding: 10px;
+                }
+            }
+
+            &.draggable {
+                border: 2px solid #f6c23e !important;
+                cursor: move;
+            }
+
+            &.inline {
+                display: inline-block;
+                min-width: 110px;
+                padding-top: 25px;
+
+                .tagChildren {
+                    display: inline-block;
+                }
+
+                .tagRender {
+                    display: inline-block;
+                }
+            }
+        }
+
+        .alert {
+            position: relative !important;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            margin-bottom: 0px;
+            z-index: 1;
+        }
+    }
+}

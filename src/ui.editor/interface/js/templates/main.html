@@ -1,0 +1,258 @@
+<template id="template-alert">
+	<div class="alert card alert-primary" v-if="visible">
+		{{text}}
+	</div>
+</template>
+
+<template id="template-confirm">
+	<div class="modal" v-if="visible">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">{{title}}</h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close" v-on:click="_onCancel">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>
+						{{message}}
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default" type="button" data-dismiss="modal" v-on:click="_onCancel">Cancel</button>
+					<button class="btn btn-danger" type="button" data-dismiss="modal" v-on:click="_onConfirm">Confirm</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="template-permissions">
+	<div v-if="missingRoles" class="overlay">
+		<div class="alert alert-danger alert-permissions">
+			<h2>Incorrect permissions</h2>
+
+			<p>
+				You do not have the required level of authorization to access this section. You must have one of the following roles
+				issued to your user to access this area:
+			</p>
+
+			<ul>
+				<li v-for="role in roles">
+					{{role}}
+				</li>
+			</ul>
+		</div>
+	</div>
+</template>
+
+<template id="template-swagger-def">
+	<div class="swagger-def">
+		<div id="swagger-ui"></div>
+	</div>
+</template>
+
+<template id="template-modal-error">
+	<div v-if="visible">
+		<div class="modal">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">{{title}}</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close" v-on:click="visible=false">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<slot></slot>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-primary" type="button" data-dismiss="modal" v-on:click="visible=false">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="template-monitor">
+	<div class="monitor">
+		<permissions :roles="['system_reader', 'system_admin']"></permissions>
+
+		<navigation title="Monitor" :navitems="navItems"></navigation>
+
+		<div class="monitorWrapper">
+			<div class="row">
+				<div class="col-md-3 pr-0">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Systems</h6>
+						</div>
+						<div class="card-body">
+							<ul>
+								<!-- website logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('interface.errors');">Website Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('interface.debug');">Website Debug</a>
+								</li>
+
+								<!-- data logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('storage.errors');">Data Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('storage.debug');">Data Debug</a>
+								</li>
+
+								<!-- admin logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('admin.errors');">Admin Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('admin.debug');">Admin Debug</a>
+								</li>
+
+								<!-- api logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('api.errors');">API Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('api.debug');">API Debug</a>
+								</li>
+
+								<!-- identity logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('identity.errors');">Identity Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('identity.debug');">Identity Debug</a>
+								</li>
+
+								<!-- integration logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('integration.errors');">Integration Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('integration.debug');">Integration Debug</a>
+								</li>
+
+								<!-- messaging logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('messaging.errors');">Messaging Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('messaging.debug');">Messaging Debug</a>
+								</li>
+
+								<!-- rules logs -->
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('rules.errors');">Ruleset Errors</a>
+								</li>
+								<li>
+									<a v-on:click="_monitorControllerInstance.monitorSystem('rules.debug');">Ruleset Debug</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-9 pl-0">
+					<div class="monitor" id="monitorContent"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="template-home">
+	<div class="home">
+		<permissions :roles="['system_reader', 'system_admin']"></permissions>
+
+		<navigation title="Welcome!" :navitems="navItems"></navigation>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Getting started</h6>
+						</div>
+						<div class="card-body">
+							<p>
+								If you are just getting started <router-link to="/documentation/tutorial">check out the tutorials</router-link>.
+							</p>
+							<p>
+								Alternatively, jump directly into the <router-link to="/documentation">documentation</router-link>.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">System Status</h6>
+						</div>
+						<div class="card-body">
+							<div class="status">
+								<h5 class="font-weight-bold">Integrations</h5>
+								<p>
+									Total: <router-link to="/integrations">{{ integrations.length }}</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">APIs</h5>
+								<p>
+									Total: <router-link to="/apis">{{ apis.length }}</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">Databases</h5>
+								<p>
+									Total: <router-link to="/data">{{ datatypes.length }}</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">Websites</h5>
+								<p>
+									Total: <router-link to="/websites">{{ websites.length }}</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">Rulesets</h5>
+								<p>
+									Total: <router-link to="/rulesets">{{ rules.length }}</router-link>
+								</p>
+							</div>
+							<div class="status">
+								<h5 class="font-weight-bold">OIDC Clients</h5>
+								<p>
+									Total: <router-link to="/security">{{ clients.length }}</router-link>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-9">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Information</h6>
+						</div>
+						<div class="card-body">
+							<p>
+								Version: 0.0.1
+							</p>
+							<p>
+								Uptime: 0 hours 0 minutes 0 seconds
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>

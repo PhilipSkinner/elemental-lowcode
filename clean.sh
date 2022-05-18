@@ -1,28 +1,30 @@
 #!/usr/bin/env bash
 
 #remove all deps
-cd ./admin && rm -rf node_modules
-cd ..
-cd ./api && rm -rf node_modules
-cd ..
-cd ./integration && rm -rf node_modules
-cd ..
-cd ./interface && rm -rf node_modules
-cd ..
-cd ./kernel && rm -rf node_modules
-cd ..
-cd ./storage && rm -rf node_modules
-cd ..
-cd ./rules && rm -rf node_modules
-cd ..
-cd ./processes && rm -rf node_modules
-cd ..
-cd ./identity && rm -rf node_modules
-cd ..
-cd ./messaging && rm -rf node_modules
-cd ..
-cd ./shared && rm -rf node_modules
-cd ../
+cd ./src/ui.editor && rm -rf node_modules
+cd ../..
+cd ./src/service.api && rm -rf node_modules
+cd ../..
+cd ./src/service.integration && rm -rf node_modules
+cd ../..
+cd ./src/service.interface && rm -rf node_modules
+cd ../..
+cd ./src/service.kernel && rm -rf node_modules
+cd ../..
+cd ./src/service.data && rm -rf node_modules
+cd ../..
+cd ./src/service.rules && rm -rf node_modules
+cd ../..
+cd ./src/service.processes && rm -rf node_modules
+cd ../..
+cd ./src/service.identity.idp && rm -rf node_modules
+cd ../..
+cd ./src/service.identity.idm && rm -rf node_modules
+cd ../..
+cd ./src/service.messaging && rm -rf node_modules
+cd ../..
+cd ./src/support.lib && rm -rf node_modules
+cd ../..
 rm -rf node_modules
 rm -rf .nyc_output
 rm -rf coverage

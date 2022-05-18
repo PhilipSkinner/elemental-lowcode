@@ -1,0 +1,9 @@
+*.key
+.sources
+.secrets
+.sessions
+.queues
+.project-sources
+logs/
+.store
+~

@@ -1,0 +1,118 @@
+<div class="ui-columns ui-columns--half">
+    <div class="ui-half ui-half--highlight">
+        <div class="ui-logo">
+            Elemental
+        </div>
+        <div class="ui-feature">
+            <div class="ui-feature-image ui-feature-image--login"></div>
+        </div>
+    </div>
+    <div class="ui-half">
+        <div class="ui-restricted--thin">
+            <div class="ui-header">
+                <h1 class="ui-header-text">Welcome Back!</h1>
+            </div>
+
+            <div class="ui-intro">
+                <p class="ui-intro-text">
+                    Lets build something great
+                </p>
+            </div>
+
+            <% if (newAccount) { %>
+                <div class="ui-alert ui-alert--success">
+                    Your account has been created successfully! Please login to your account now.
+                </div>
+            <% } %>
+
+            <% if (usernameError && passwordError) { %>
+                <div class="ui-alert ui-alert--error">
+                    You must enter your login details.
+                </div>
+            <% } else if (usernameError) { %>
+                <div class="ui-alert ui-alert--error">
+                    You must provide your email address.
+                </div>
+            <% } else if (passwordError) { %>
+                <div class="ui-alert ui-alert--error">
+                    You must provide a password.
+                </div>
+            <% } else if (authError) { %>
+                <div class="ui-alert ui-alert--error">
+                    That username and password were not correct, please try again.
+                </div>
+            <% } %>
+
+            <form autocomplete="off" action="/interaction/<%= uid %>/login" method="post">
+                <div class="ui-input-field">
+                    <label class="ui-input-field-label" for="username">
+                        Email address
+                    </label>
+
+                    <input
+                        class="ui-input-field-input"
+                        id="username"
+                        type="text"
+                        name="login"
+                        placeholder="Enter your email address"
+                        <% if (!params.login_hint) { %>autofocus="on"<% } else { %> value="<%= params.login_hint %>" <% } %>
+                    >
+                </div>
+
+                <div class="ui-input-field">
+                    <label class="ui-input-field-label" for="password">
+                        Password
+                    </label>
+
+                    <input
+                        class="ui-input-field-input"
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Enter password"
+                        <% if (params.login_hint) { %>autofocus="on"<% } %>
+                    >
+                </div>
+
+                <div class="ui-button-wrapper">
+                    <button type="submit" class="ui-button ui-button--primary">Sign In</button>
+                </div>
+            </form>
+
+            <% if (resetEnabled) { %>
+                <div class="ui-text ui-text--center">
+                    <p>
+                        <a href="/interaction/<%= uid %>/forgotten">
+                            Forgot Password?
+                        </a>
+                    </p>
+                </div>
+            <% } %>
+
+            <% if (registrationEnabled) { %>
+                <div class="ui-text ui-text--center">
+                    Don't have an account? <a href="/interaction/<%= uid %>/register">Create one now!</a>
+                </div>
+            <% } %>
+
+            <% if (client.features) { %>
+                <% if (client.features.terms && client.features.terms.document && client.features.privacy && client.features.privacy.document) { %>
+                    <div class="ui-text ui-text--center ui-text--anchor-bottom">
+                        See our
+                        <a href="<%= client.features.terms.document %>" target="_blank">Terms of Service</a>
+                        and our
+                        <a href="<%= client.features.privacy.document %>" target="_blank">Privacy Policy</a>.
+                    </div>
+                <% } else if (client.features.terms && client.features.terms.document) { %>
+                    <div class="ui-text ui-text--center ui-text--anchor-bottom">
+                        See our <a href="<%= client.features.terms.document %>" target="_blank">Terms of Service</a>.
+                    </div>
+                <% } else if (client.features.privacy && client.features.privacy.document) { %>
+                    <div class="ui-text ui-text--center ui-text--anchor-bottom">
+                        See our <a href="<%= client.features.privacy.document %>" target="_blank">Privacy Policy</a>.
+                    </div>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+</div>

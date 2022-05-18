@@ -1,0 +1,24 @@
+.editorWindow, .editorSelector {
+  position: absolute;
+  top: 70px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+}
+
+.editorSelector .editorWindow {
+  top: 0px;
+}
+
+.editorSelector .uiEditor, .editorSelector .editorWrapper, .errorHandlersWrapper {
+  display: none;
+}
+
+.editorSelector.editorMode .uiEditor,
+.editorSelector.sourceMode .viewEditorWrapper,
+.editorSelector.controllerMode .controllerEditorWrapper,
+.editorSelector.handlerMode .errorHandlersWrapper,
+.editorSelector.queueMode #queueEditor,
+.editorSelector.handlerMode #handlerEditor {
+  display: inherit;
+}

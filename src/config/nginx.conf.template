@@ -1,0 +1,183 @@
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '${DOLLAR}remote_addr - ${DOLLAR}remote_user [${DOLLAR}time_local] "${DOLLAR}request" '
+                      '${DOLLAR}status ${DOLLAR}body_bytes_sent "${DOLLAR}http_referer" '
+                      '"${DOLLAR}http_user_agent" "${DOLLAR}http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    include /etc/nginx/conf.d/*.conf;
+
+    # Admin
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  ${ADMIN_HOST};
+        root         /usr/share/nginx/html;
+
+    	location ~ / {
+    		proxy_pass http://127.0.0.1:8002;
+    		proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header X-Forwarded-Proto "${DEFAULT_PROTOCOL}";
+    	}
+
+        include /etc/nginx/default.d/*.conf;
+    }
+
+    # API
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  ${API_HOST};
+        root         /usr/share/nginx/html;
+
+    	location ~ / {
+    		proxy_pass http://127.0.0.1:8003;
+    		proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header X-Forwarded-Proto "${DEFAULT_PROTOCOL}";
+    	}
+
+        include /etc/nginx/default.d/*.conf;
+    }
+
+    # Integration
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  ${INTEGRATION_HOST};
+        root         /usr/share/nginx/html;
+
+    	location ~ / {
+    		proxy_pass http://127.0.0.1:8004;
+    		proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header X-Forwarded-Proto "${DEFAULT_PROTOCOL}";
+    	}
+
+        include /etc/nginx/default.d/*.conf;
+    }
+
+    # Interface
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  ${INTERFACE_HOST};
+        root         /usr/share/nginx/html;
+
+    	location ~ / {
+    		proxy_pass http://127.0.0.1:8005;
+    		proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header X-Forwarded-Proto "${DEFAULT_PROTOCOL}";
+    	}
+
+        include /etc/nginx/default.d/*.conf;
+    }
+
+    # Storage
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  ${STORAGE_HOST};
+        root         /usr/share/nginx/html;
+
+    	location ~ / {
+    		proxy_pass http://127.0.0.1:8006;
+    		proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header X-Forwarded-Proto "${DEFAULT_PROTOCOL}";
+    	}
+
+        include /etc/nginx/default.d/*.conf;
+    }
+
+    # Rules
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  ${RULES_HOST};
+        root         /usr/share/nginx/html;
+
+    	location ~ / {
+    		proxy_pass http://127.0.0.1:8007;
+    		proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header X-Forwarded-Proto "${DEFAULT_PROTOCOL}";
+    	}
+
+        include /etc/nginx/default.d/*.conf;
+    }
+
+    # Identity
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  ${IDENTITY_HOST};
+        root         /usr/share/nginx/html;
+
+    	location ~ / {
+    		proxy_pass http://127.0.0.1:8008;
+    		proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header X-Forwarded-Proto "${DEFAULT_PROTOCOL}";
+    	}
+
+        include /etc/nginx/default.d/*.conf;
+    }
+
+    # Kernel
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  ${KERNEL_HOST};
+        root         /usr/share/nginx/html;
+
+    	location ~ / {
+    		proxy_pass http://127.0.0.1:8001;
+    		proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header X-Forwarded-Proto "${DEFAULT_PROTOCOL}";
+    	}
+
+        include /etc/nginx/default.d/*.conf;
+    }
+
+    # Queues
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  ${QUEUE_HOST};
+        root         /usr/share/nginx/html;
+
+        location ~ / {
+            proxy_pass http://127.0.0.1:8009;
+            proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header X-Forwarded-Proto "${DEFAULT_PROTOCOL}";
+        }
+
+        include /etc/nginx/default.d/*.conf;
+    }
+}
+

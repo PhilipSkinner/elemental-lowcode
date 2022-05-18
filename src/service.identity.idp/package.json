@@ -1,0 +1,28 @@
+{
+	"name": "service.identity.idp",
+	"version": "0.0.1",
+	"dependencies": {
+		"bcrypt": "^5.0.0",
+		"cors": "^2.8.5",
+		"email-validator": "^2.0.4",
+		"express": "^4.17.1",
+		"express-compile-sass": "^4.0.0",
+		"glob": "^7.1.6",
+		"jose": "^1.22.2",
+		"node-sass": "^7.0.1",
+		"notp": "^2.0.3",
+		"oidc-provider": "6.20.1",
+		"totp-generator": "^0.0.13",
+		"uuid": "^8.3.2"
+	},
+	"devDependencies": {
+		"npm-watch": "^0.11.0"
+	},
+	"watch": {
+		"main": "**/*.js"
+	},
+	"scripts": {
+		"main": "node main.js",
+		"watch": "./node_modules/.bin/npm-watch"
+	}
+}

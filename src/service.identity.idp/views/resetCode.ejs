@@ -1,0 +1,59 @@
+<div class="ui-columns ui-columns--half">
+    <div class="ui-half ui-half--highlight">
+        <div class="ui-logo">
+            Elemental
+        </div>
+        <div class="ui-feature">
+            <div class="ui-feature-image ui-feature-image--password"></div>
+        </div>
+    </div>
+    <div class="ui-half">
+        <div class="ui-restricted--thin">
+            <div class="ui-header">
+                <h1 class="ui-header-text">Password Reset</h1>
+            </div>
+
+            <% if (client.features.reset.mechanism === 'totp') { %>
+                <div class="ui-intro">
+                    <p class="ui-intro-text">
+                        A code has been sent to your registered email address. Enter that code in the form
+                        below to reset your password.
+                    </p>
+                </div>
+
+                <% if (codeError) { %>
+                    <div class="ui-alert ui-alert--error">
+                        <%= codeError %>
+                    </div>
+                <% } %>
+
+                <form autocomplete="off" action="/interaction/<%= uid %>/code" method="post">
+                    <div class="ui-input-field">
+                        <label class="ui-input-field-label" for="code">
+                            Code
+                        </label>
+
+                        <input
+                            class="ui-input-field-input"
+                            id="code"
+                            type="text"
+                            name="code"
+                            placeholder="Enter code"
+                            autofocus="on"
+                        >
+                    </div>
+
+                    <div class="ui-button-wrapper">
+                        <button type="submit" class="ui-button ui-button--primary">
+                            Verify
+                        </button>
+                    </div>
+                </form>
+            <% } else { %>
+                <div class="ui-alert ui-alert--success">
+                    An email has been sent to the address provided with a reset link.
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>

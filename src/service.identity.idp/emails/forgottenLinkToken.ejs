@@ -1,0 +1,23 @@
+<p>
+    You have been sent this email as you have requested that your password be reset for the account with username <strong><%= username %></strong>
+</p>
+
+<p>
+    To reset your password you must open this link in the same browser you started the password reset process with:
+</p>
+
+<p>
+    <a href="<%= idpHost %>/interaction/<%= uid %>/code?code=<%= code %>">Reset password</a>
+</p>
+
+<p>
+    If you cannot open the link above then copy and paste this into your browser: <%= idpHost %>/interaction/<%= uid %>/code?code=<%= code %>
+</p>
+
+<p>
+    There is a time limit for how long this link is valid for - if that time limit expires then you must start the password reset process again.
+</p>
+
+<p>
+    <em>If you did not request your password to be reset then please ignore this email.</em>
+</p>

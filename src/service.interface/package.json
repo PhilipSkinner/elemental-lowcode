@@ -1,0 +1,20 @@
+{
+	"name": "service.interface",
+	"version": "0.0.1",
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"chokidar": "^3.3.1",
+		"cookie-parser": "^1.4.4",
+		"elemental-string-format": "0.1.0",
+		"express": "^4.17.1",
+		"express-fileupload": "^1.1.7-alpha.3",
+		"express-session": "^1.17.0",
+		"glob": "^7.1.6",
+		"memorystore": "^1.6.2",
+		"passport": "^0.4.1",
+		"passport-oauth2": "^1.5.0",
+		"session-file-store": "^1.4.0",
+		"temp": "^0.9.1",
+		"uuid": "^3.4.0"
+	}
+}

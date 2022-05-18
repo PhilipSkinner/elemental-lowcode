@@ -1,0 +1,27 @@
+<div class="ui-columns ui-columns--half">
+    <div class="ui-half ui-half--highlight">
+        <div class="ui-logo">
+            Elemental
+        </div>
+        <div class="ui-feature">
+            <div class="ui-feature-image ui-feature-image--error"></div>
+        </div>
+    </div>
+    <div class="ui-half">
+        <div class="ui-restricted--thin">
+            <div class="ui-header">
+                <h1 class="ui-header-text">Error</h1>
+            </div>
+
+            <div class="ui-intro">
+                <p class="ui-intro-text">
+                    There was an error attempting to process your request. Further information is available below:
+                </p>
+            </div>
+
+            <div class="ui-alert ui-alert--error">
+                <%= error.toString() %>
+            </div>
+        </div>
+    </div>
+</div>

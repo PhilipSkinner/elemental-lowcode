@@ -1,0 +1,25 @@
+{
+	"all" : true,
+	"check-coverage": true,
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 65,
+	"exclude" : [
+		"coverage/lcov-report",
+		"src/ui.editor/**/*.js",
+		"spec/**/*.js",
+		"**/main.js",
+		"src/service.kernel/.*/**/*",
+		"coverage/**/*.js",
+		"src/service.interface/static/**/*.js",
+		"**/*.map",
+		"**/*.eslintrc.js",
+		"src/service.projects/**/*.js"
+	],
+	"cwd" : "..",
+	"reporter" : [
+		"lcov",
+		"text"
+	]
+}

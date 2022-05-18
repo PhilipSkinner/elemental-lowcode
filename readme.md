@@ -46,19 +46,54 @@ Installation can done using the prebuilt docker image or using the latest code f
 
 ### Docker
 
-You can pull down the latest docker image from dockerhub:
+To use the docker image you'll need to boot a SQL server and configure the system:
 
 ```
-$> sudo docker pull philipskinner/elemental:master
-$> sudo docker run -d -p 80:80 --name elemental philipskinner/elemental:master
+services:
+  elemental:
+    image: philipskinner/elemental:upcoming
+    environment:
+      MYSQL_CONNECTION_STRING: "mysql://root:password@mysql:3306/db"
+      INITIAL_CLIENT_ID: admin
+      INITIAL_CLIENT_SECRET: admin-secret
+      INITIAL_CLIENT_SCOPES: "openid roles offline_access"
+      INITIAL_CLIENT_AUTH_REDIRECT: http://admin.elementalsystem.org/auth
+      INITIAL_CLIENT_LOGOUT_REDIRECT: http://admin.elementalsystem.org
+      INITIAL_ROLES: "system_admin"
+      INITIAL_USER_USERNAME: admin@elementalsystem.org
+      INITIAL_USER_PASSWORD: Password1!
+      INITIAL_USER_ROLE: system_admin
+      ADMIN_CLIENT_ID: admin
+      ADMIN_CLIENT_SECRET: admin-secret
+    ports:
+      - 80:80
+    depends_on:
+      - mysql      
+    networks:
+      - all  
+
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - all
+
+networks:
+  all:
 ```
 
 ; then open a browser and point it at (http://admin.elementalsystem.org).
 
-The default administration login details are:
+The default administration login details are configurable using the `INITIAL_USER_USERNAME` and `INITIAL_USER_PASSWORD` env vars. If you used the docker-compose setup above you'll want to use:
 
-* Username: admin
-* Password: admin
+* Username: admin@elementalsystem.org
+* Password: Password1!
 
 The docker image uses several pre-defined hostnames for the service, each of which resolves to 127.0.0.1:
 
@@ -85,7 +120,7 @@ $> ./start.sh
 You can directly run the kernel by executing the main.js file within the kernel directory:
 
 ```
-$> cd kernel
+$> cd src/service.kernel
 $> node main.js
 ```
 
@@ -99,11 +134,10 @@ Options:
                                         source code lives.
 ```
 
-**Note:** If this is the first time you have run Elemental with a sources directory you will be prompted to enter an initial admin users credentials:
+The admin interface will attempt to open on http://localhost:8002. Use the following default credentials:
 
-![First time run](https://elementalsystem.org/documentation/images/first-time.png)
-
-; then open the admin interface on [http://localhost:8002](http://localhost:8002). Each example comes with an admin user with the following credentials:
+* Username: admin@elementalsystem.org
+* Password: Password1!
 
 ### Database support
 
@@ -114,10 +148,8 @@ Elemental supports persistence of:
 * Message queues
 * Website session state
 
-; with many storage options. These storage options are:
+; with a selection of storage options. These storage options are:
 
-* In-memory
-* Filesystem
 * SQL:
 	* sqlite
 	* postgres
@@ -161,27 +193,20 @@ FROM philipskinner/elemental:master
 #set dir
 WORKDIR /var/elemental
 
-#copy our files
-COPY api /var/elemental/kernel/.sources/api
-COPY data /var/elemental/kernel/.sources/data
-COPY identity /var/elemental/kernel/.sources/identity
-COPY integration /var/elemental/kernel/.sources/integration
-COPY queues /var/elemental/kernel/.sources/queues
-COPY rules /var/elemental/kernel/.sources/rules
-COPY services /var/elemental/kernel/.sources/services
-COPY website /var/elemental/kernel/.sources/website
+#copy our project sources
+COPY my-sources /var/elemental/service.kernel/.sources
 
 #set environment
 COPY nginx.conf /etc/nginx
-ENV ELEMENTAL_KERNEL_HOST="http://kernel.mysite.com"
-ENV ELEMENTAL_ADMIN_HOST="http://admin.mysite.com"
-ENV ELEMENTAL_API_HOST="http://api.mysite.com"
-ENV ELEMENTAL_INTEGRATION_HOST="http://integration.mysite.com"
-ENV ELEMENTAL_INTERFACE_HOST="http://interface.mysite.com"
-ENV ELEMENTAL_STORAGE_HOST="http://storage.mysite.com"
-ENV ELEMENTAL_RULES_HOST="http://rules.mysite.com"
-ENV ELEMENTAL_IDENTITY_HOST="http://identity.mysite.com"
-ENV ELEMENTAL_QUEUE_HOST="http://queues.mysite.com"
+ENV KERNEL_HOST="http://kernel.mysite.com"
+ENV ADMIN_HOST="http://admin.mysite.com"
+ENV API_HOST="http://api.mysite.com"
+ENV INTEGRATION_HOST="http://integration.mysite.com"
+ENV INTERFACE_HOST="http://interface.mysite.com"
+ENV STORAGE_HOST="http://storage.mysite.com"
+ENV RULES_HOST="http://rules.mysite.com"
+ENV IDENTITY_HOST="http://identity.mysite.com"
+ENV QUEUE_HOST="http://queues.mysite.com"
 
 #run our app
 CMD ["./docker-start.sh"]
@@ -189,15 +214,15 @@ CMD ["./docker-start.sh"]
 
 If you want to run the system outside of a docker container you must set the following environmental variables on your system:
 
-* ELEMENTAL_KERNEL_HOST
-* ELEMENTAL_ADMIN_HOST
-* ELEMENTAL_API_HOST
-* ELEMENTAL_INTEGRATION_HOST
-* ELEMENTAL_INTERFACE_HOST
-* ELEMENTAL_STORAGE_HOST
-* ELEMENTAL_RULES_HOST
-* ELEMENTAL_IDENTITY_HOST
-* ELEMENTAL_QUEUE_HOST
+* KERNEL_HOST
+* ADMIN_HOST
+* API_HOST
+* INTEGRATION_HOST
+* INTERFACE_HOST
+* STORAGE_HOST
+* RULES_HOST
+* IDENTITY_HOST
+* QUEUE_HOST
 
 Each of these needs to be a valid hostname that resolves to the relevant Elemental service.
 
@@ -229,7 +254,7 @@ To contribute a code change:
 
 1. Fork the master branch
 2. Carry out your code changes
-3. Run the unit tests - `nyc jasmine`
+3. Run the unit tests - `./test.sh`
 4. Submit a pull request following pull request template
 
 To contribute a none code change raise a ticket on the [original repository](https://github.com/PhilipSkinner/elemental-lowcode).

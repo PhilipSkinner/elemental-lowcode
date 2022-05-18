@@ -1,0 +1,18 @@
+.swagger-def .information-container,
+.swagger-def .scheme-container,
+.swagger-def .opblock-tag {
+  display: none;
+}
+
+.swagger-def .wrapper {
+  max-width: 999999px;
+  padding-top: 20px;
+}
+
+.swagger-def .markdown p:first-of-type {
+  margin-top: 0px;
+}
+
+.swagger-def .markdown p:last-of-type {
+  margin-bottom: 0px;
+}

@@ -1,0 +1,118 @@
+/*
+ * The styles are a bit of a mess, we need to follow
+ * the secondary schema pattern better here.
+ */
+
+@import 'components/tagMenu';
+@import 'components/uiEditor';
+@import 'components/editor';
+@import 'components/swagger';
+@import 'components/monitor';
+
+
+#content {
+  position: relative;
+}
+
+.actionButtons {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.actionButtons button, .actionButtons a {
+  padding: 20px;
+  border-radius: 100%;
+}
+
+.alert {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  width: 200px;
+  z-index: 45000;
+  text-align: center;
+  font-size: 14px;
+}
+
+.documentationWrapper {
+  padding: 20px;
+  color: #000;
+}
+
+.documentationWrapper code {
+  display: inline;
+}
+
+.documentationWrapper img {
+  width: 100%;
+}
+
+.noResults {
+  text-align: center;
+  padding: 50px 0px;
+  font-style: italic;
+}
+
+code.inline {
+  display: inline;
+}
+
+div.block {
+  border-radius: 0.25rem;
+  background: rgba(0,0,0,0.05);
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.no-results {
+  padding: 2rem 0rem !important;
+  text-align: center;
+  font-style: italic;
+}
+
+.documentation-menu {
+    div {
+        >div {
+            padding-left: 15px;
+        }
+    }
+}
+
+.editor-form {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    width: 268px;
+    z-index: 100;
+    background: #FFF;
+    padding: 20px;
+}
+.editorWindow--withform {
+    right: 268px;
+}
+.editorWindow--withHeader {
+    top: 70px;
+}
+.scrollable {
+    max-height: 200px;
+    overflow-x: scroll;
+}
+.overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background: rgba(0,0,0,0.6);
+    z-index: 20000;
+    .alert {
+        width: 400px;
+        margin-left: -200px;
+        left: 50%;
+        top: 200px;
+        text-align: left;
+    }
+}

@@ -1,0 +1,75 @@
+<div class="ui-columns ui-columns--half">
+    <div class="ui-half ui-half--highlight">
+        <div class="ui-logo">
+            Elemental
+        </div>
+        <div class="ui-feature">
+            <div class="ui-feature-image ui-feature-image--consents"></div>
+        </div>
+    </div>
+    <div class="ui-half">
+        <div class="ui-restricted--thin">
+            <div class="ui-header">
+                <h1 class="ui-header-text">Consents</h1>
+            </div>
+
+            <div class="ui-intro">
+                <p class="ui-intro-text">
+                    You must consent to the following before you can access this application.
+                </p>
+            </div>
+
+            <% if ([details.scopes.accepted, details.scopes.rejected, details.claims.accepted, details.claims.rejected].every(({ length }) => length === 0)) { %>
+                <div class="ui-alert ui-alert--warning">
+                    You have not provided this level of access before. Ensure you are completely happy with the list of permissions being requested.
+                </div>
+            <% } %>
+
+            <% if (params.scope && params.scope.includes('offline_access')) { %>
+                <div class="ui-alert ui-alert--info">
+                    The application is requesting the ability to refresh your session automatically on your behalf.
+                </div>
+            <% } %>
+
+            <% if ([details.scopes.new, details.claims.new].every(({ length }) => length === 0)) { %>
+                <div class="ui-alert ui-alert--info">
+                    You have already provided this level of access to this application!
+                </div>
+            <% } %>
+
+            <% newScopes = new Set(details.scopes.new); newScopes.delete('openid'); newScopes.delete('offline_access') %>
+            <% if (newScopes.size) { %>
+                <p>
+                    You consent to the following scopes:
+                </p>
+                <div class="ui-list">
+                    <ul class="ui-list-items">
+                        <% newScopes.forEach((scope) => { %>
+                            <li class="ui-list-item"><%= scope %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+
+            <% newClaims = new Set(details.claims.new); ['sub', 'sid', 'auth_time', 'acr', 'amr', 'iss'].forEach(Set.prototype.delete.bind(newClaims)) %>
+            <% if (newClaims.size) { %>
+                <p>
+                    You consent to sharing the following information:
+                </p>
+                <div class="ui-list">
+                    <ul class="ui-list-items">
+                        <% newClaims.forEach((claim) => { %>
+                            <li class="ui-list-item"><%= claim %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+
+            <form autocomplete="off" action="/interaction/<%= uid %>/confirm" method="post">
+                <div class="ui-button-wrapper">
+                    <button autofocus type="submit" class="ui-button ui-button--primary">Continue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

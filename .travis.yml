@@ -8,13 +8,10 @@ jobs:
   include:
     - stage: build and test
       script:
-        - ./setup.sh
-        - npm run test
+        - ./test.sh        
     - stage: docker push
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - ./clean.sh
-        - docker pull philipskinner/elemental:master
-        - docker build -t philipskinner/elemental:master .
-        - docker push philipskinner/elemental:master
-      if: branch = master
+        - ./clean.sh        
+        - docker build -t philipskinner/elemental:latest -f docker/core.dockerfile src/
+        - docker push philipskinner/elemental:latest    

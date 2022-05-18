@@ -1,0 +1,697 @@
+<template id="template-websites">
+	<div class="websites">
+		<permissions :roles="['website_reader','website_admin','system_reader','system_admin']"></permissions>
+
+		<navigation title="Websites" :navitems="navitems"></navigation>
+
+		<confirm
+			title="Confirmation"
+			message="Are you sure you want to delete this website?"
+			v-bind:visible="deleteConfirmVisible"
+			v-bind:on-confirm="confirmDeleteAction"
+		></confirm>
+
+		<div class="container-fluid" v-if="tagsetsVisible">
+			<p class="mb-4">Tagsets allow you to share custom tags between website instances.</p>
+
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Current Tagsets</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="tagsets.length === 0">
+									<td colspan="2" class="no-results">
+										No tagsets exist.
+									</td>
+								</tr>
+								<tr v-for="item in tagsets">
+									<td>
+										{{item.name}}
+									</td>
+									<td>
+										<router-link class="btn btn-sm btn-primary" :to="{ name : 'tagsetEditor', params : { name : item.name } }">Modify</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_websitesControllerInstance.deleteTagset(item.name);">Remove</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Begin Page Content -->
+		<div class="container-fluid" v-if="websitesVisible">
+
+			<!-- Page Heading -->
+			<p class="mb-4">Websites allow you to provide interactive interfaces to your users. To create a new website press the plus button in the bottom right.</p>
+
+			<!-- DataTales Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Current Websites</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="websites.length === 0">
+									<td colspan="2" class="no-results">
+										No websites exist.
+									</td>
+								</tr>
+								<tr v-for="item in websites">
+									<td>
+										<a :href="item.url" target="_blank">{{item.name}}</a>
+									</td>
+									<td>
+										<a class="btn btn-sm btn-success" :href="item.url" target="_blank">
+											View
+										</a>
+										<router-link class="btn btn-sm btn-primary" :to="{ name : 'websiteEditor', params : { name : item.name } }">Modify</router-link>
+										<button class="btn btn-sm btn-danger" v-on:click="_websitesControllerInstance.deleteWebsite(item.name);">Remove</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="actionButtons">
+			<router-link
+				to="/websites/editor/.new"
+				v-if="websitesVisible"
+				class="rounded-circle border-0 btn btn-primary"
+			><i class="fas fa-fw fa-plus"></i></router-link>
+			<router-link
+				to="/websites/tagsets/editor/.new"
+				v-if="tagsetsVisible"
+				class="rounded-circle border-0 btn btn-primary"
+			><i class="fas fa-fw fa-plus"></i></router-link>
+		</div>
+	</div>
+</template>
+
+<template id="template-tagSection">
+	<div
+		class="tagSection"
+		v-bind:class="{ 'draggable' : draggable, 'droppable' : droppable, 'selected' : selected, 'inline' : definition().inline }"
+		v-on:click="onClick"
+		draggable="true" v-on:dragstart="setDroppableConfig"
+	>
+		<div class="tagMenu">
+			<div class="tagMenuToggle">
+				<span>Tag: <strong>{{tag.tag}}</strong></span>
+				<i class="fas fa-fw fa-chevron-down"></i>
+			</div>
+			<div class="tagMenuContent">
+				<div>
+					<a v-on:click="moveUp">Move up</a>
+				</div>
+				<div>
+					<a v-on:click="moveDown">Move down</a>
+				</div>
+				<div>
+					<a v-on:click="deleteTag">
+						Delete
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="tagRender" v-html="renderTag(tag)"></div>
+		<div
+		 	v-if="_websitesEditorControllerInstance.uniqueTags[tag.tag].hasChildren !== false && (Array.isArray(tag.children) || tag.children === null || tag.children === '' || typeof(tag.children) === 'undefined')"
+			class="tagChildren"
+			v-on:dragover="onDragOver"
+			v-on:dragleave="onDragLeave"
+			v-on:dragenter="onDragEnter"
+			v-on:drop="onDrop"
+			@drop.stop.prevent
+		>
+			<tagSection v-for="child in tag.children" :tag="child" />
+		</div>
+		<div class="evaluatedValue" v-if="_websitesEditorControllerInstance.uniqueTags[tag.tag].hasChildren !== false && (!Array.isArray(tag.children) && tag.children !== null && tag.children !== '' && typeof(tag.children) !== 'undefined')">
+			<code class="inline">Children: {{tag.children}}</code>
+		</div>
+	</div>
+</template>
+
+<template id="template-websiteEditor">
+	<div class="websiteEditor">
+		<navigation title="Manage Website" v-if="mainVisible" :navitems="mainNavItems"></navigation>
+
+		<navigation title="Editor" v-if="viewEditorVisible || controllerEditorVisible" :navitems="editorNavItems"></navigation>
+
+		<permissions :roles="['website_writer','website_admin','system_writer','system_admin']"></permissions>
+
+		<alert text="Website saved!" v-bind:visible="showAlert"></alert>
+
+		<confirm
+			title="Confirmation"
+			message="Are you sure you want to delete this route?"
+			v-bind:visible="deleteRouteConfirmVisible"
+			v-bind:on-confirm="confirmRouteDeleteAction"
+            v-bind:on-cancel="_websitesEditorControllerInstance.resetPopupFlags.bind(_websitesEditorControllerInstance)"
+		></confirm>
+
+		<confirm
+			title="Confirmation"
+			message="Are you sure you want to delete this tag?"
+			v-bind:visible="deleteTagConfirmVisible"
+			v-bind:on-confirm="confirmTagDeleteAction"
+            v-bind:on-cancel="_websitesEditorControllerInstance.resetPopupFlags.bind(_websitesEditorControllerInstance)"
+		></confirm>
+
+		<confirm
+			title="Confirmation"
+			message="Are you sure you want to delete this static file?"
+			v-bind:visible="deleteStaticConfirmVisible"
+			v-bind:on-confirm="confirmStaticDeleteAction"
+            v-bind:on-cancel="_websitesEditorControllerInstance.resetPopupFlags.bind(_websitesEditorControllerInstance)"
+		></confirm>
+
+        <confirm
+            title="Confirmation"
+            message="Are you sure you want to delete this error handler?"
+            v-bind:visible="deleteErrorHandlerConfirmVisible"
+            v-bind:on-confirm="confirmErrorHandlerDeleteAction"
+            v-bind:on-cancel="_websitesEditorControllerInstance.resetPopupFlags.bind(_websitesEditorControllerInstance)"
+        ></confirm>
+
+		<div class="container-fluid" v-if="viewEditorVisible">
+			<div class="editorSelector" v-bind:class="{
+				'editorMode'        : editorNavItems[0].selected,
+				'sourceMode'        : editorNavItems[1].selected,
+				'controllerMode'    : editorNavItems[2].selected,
+                'handlerMode'       : editorNavItems[4].selected
+			}">
+				<div class="uiEditor">
+					<div class="uiTags card shadow" id="uiTags">
+						<div class="tagSearch">
+							<label>
+								Search:
+							</label>
+							<input type="text" v-model="tagSearchTerms" v-on:keyup="_websitesEditorControllerInstance.filterTags" />
+						</div>
+						<div class="tagGroup" v-for="(group, name) in filteredTagsets">
+							<div class="card-header">
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" :data-target="'#tags_' + name.replace(' ', '').replace('/', '')" aria-expanded="false" :aria-controls="'tags_' + name.replace(' ', '').replace('/', '')">
+									{{name}}
+								</button>
+							</div>
+							<div class="card-body p-0 collapse" :id="'tags_' + name.replace(' ', '').replace('/', '')" :aria-labelledby="'tags_' + name.replace(' ', '').replace('/', '')" data-parent="#uiTags">
+								<div :data-group="name" :data-tag="tag.name" class="tagEntry" v-for="tag in group.tags" draggable="true" v-on:dragstart="_websitesEditorControllerInstance.setDroppableConfig">
+									{{ tag.name }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="uiPreview">
+						<tagSection :tag="activeView" />
+					</div>
+					<div class="uiProperties card shadow" id="uiProperties">
+						<div class="nothing-selected" v-if="!tagSelected">
+							<div>Select an element to view properties.</div>
+						</div>
+						<div class="propGroup" v-if="tagSelected && activeDefinition && activeDefinition.events">
+							<div class="card-header">
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">
+									Events
+								</button>
+							</div>
+							<div class="card-body collapse" id="events" aria-labelledby="events" data-parent="#uiProperties">
+								<div class="form-group" v-if="activeDefinition.events.click">
+									<label for="eventName">Event Name</label>
+
+									<input type="text" id="eventName" class="form-control" v-model="activeProperties.onclick.eventName" />
+								</div>
+							</div>
+						</div>
+						<div class="propGroup" v-if="tagSelected">
+							<div class="card-header">
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" data-target="#conditionals" aria-expanded="false" aria-controls="conditional">
+									Conditionals
+								</button>
+							</div>
+							<div class="card-body collapse" id="conditionals" aria-labelledby="conditionals" data-parent="#uiProperties">
+								<div class="form-group">
+									<div v-for="conditional in activeProperties.if">
+										<label for="statement">Statement</label>
+										<input type="text" id="statement" class="form-control" v-model="conditional.statement" />
+
+										<label for="operator">Operator</label>
+										<select id="operator" class="form-control" v-model="conditional.logicalOperator">
+											<option value="and">and</option>
+											<option value="or">or</option>
+										</select>
+									</div>
+
+									<button v-on:click="(activeProperties.if = activeProperties.if || []) && activeProperties.if.push({statement:'',logicalOperator:''}) && _websitesEditorControllerInstance.refreshState();" class="btn btn-xs btn-primary">Add Conditional</button>
+								</div>
+							</div>
+						</div>
+						<div class="propGroup" v-if="tagSelected">
+							<div class="card-header">
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" data-target="#loops" aria-expanded="false" aria-controls="loops">
+									Looping
+								</button>
+							</div>
+							<div class="card-body collapse" id="loops" aria-labelledby="loops" data-parent="#uiProperties">
+								<div class="form-group">
+									<label for="repeat">Repeat</label>
+
+									<input type="text" id="repeat" class="form-control" v-model="activeProperties.repeat" />
+								</div>
+							</div>
+						</div>
+						<div class="propGroup" v-if="tagSelected && activeDefinition" v-for="group in activeDefinition.propertyGroups" v-if="activeDefinition">
+							<div class="card-header">
+								<button class="btn btn-link m-0 font-weight-bold" data-toggle="collapse" :data-target="'#prop_' + group.name.replace(' ', '').replace('/', '')" aria-expanded="false" :aria-controls="'prop_' + group.name.replace(' ', '').replace('/', '')">
+									{{group.name}}
+								</button>
+							</div>
+							<div class="card-body collapse" :id="'prop_' + group.name.replace(' ', '').replace('/', '')" :aria-labelledby="'prop_' + group.name.replace(' ', '').replace('/', '')" data-parent="#uiProperties">
+								<div class="form-group prop-group" v-for="prop in group.properties">
+									<label :for="'prop_' + prop">{{activeDefinition.properties[prop].name}}:</label>
+
+									<div class="propToggleWrapper">
+										<div v-if="!_websitesEditorControllerInstance.isExpression(activeProperties[prop]) || activeDefinition.properties[prop].type === 'string'">
+											<!-- single string -->
+											<input :id="'prop_' + prop" type="text" v-bind:class="{'form-control' : true, 'expression-input' : _websitesEditorControllerInstance.isExpression(activeProperties[prop]) }" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'string' && activeDefinition.properties[prop].multiline !== true"/>
+
+											<!-- integer -->
+											<input :id="'prop_' + prop" type="number" step="1" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'integer'"/>
+
+											<!-- string array -->
+											<div class="array-input" v-if="activeDefinition.properties[prop].type === 'stringArray'">
+												<div class="array-input-item" v-for="(val, index) in _websitesEditorControllerInstance.ensureArray(prop)">
+													<input :id="'prop_' + prop + (index === 0 ? '' : '_' + index)" type="text" v-bind:class="{'form-control' : true, 'expression-input' : _websitesEditorControllerInstance.isExpression(activeProperties[prop][index]) }" v-model="activeProperties[prop][index]" />
+													<button class="btn btn-warning" v-on:click="activeProperties[prop].splice(index, 1) && _websitesEditorControllerInstance.refreshState();">X</button>
+												</div>
+												<button v-on:click="_websitesEditorControllerInstance.addToArray(prop);" class="btn btn-success add-entry">Add Entry</button>
+											</div>
+
+											<!-- multiline string -->
+											<textarea :id="'prop_' + prop" type="text" v-bind:class="{'form-control' : true, 'expression-input' : _websitesEditorControllerInstance.isExpression(activeProperties[prop]) }" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'string' && activeDefinition.properties[prop].multiline === true"></textarea>
+
+											<!-- enumerations -->
+											<select :id="'prop_' + prop" class="form-control" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'enum'">
+												<option value="">Select a value</option>
+												<option :value="v" v-for="v in activeDefinition.properties[prop].values">{{v}}</option>
+											</select>
+
+											<!-- booleans -->
+											<input :id="'prop_' + prop" type="checkbox" v-model="activeProperties[prop]" v-if="activeDefinition.properties[prop].type === 'boolean'"/>
+
+											<!-- expression buttons -->
+											<button class="btn btn-xs btn-primary expression-button" v-if="activeDefinition.properties[prop].type !== 'string'" v-on:click="_websitesEditorControllerInstance.setAsExpression(prop);">Expression</button>
+
+
+										</div>
+
+										<!-- expression -->
+										<input :id="'prop_' + prop" class="form-control expression-input" type="text" v-model="activeProperties[prop]" v-if="_websitesEditorControllerInstance.isExpression(activeProperties[prop]) && activeDefinition.properties[prop].type !== 'string'" />
+
+										<button
+											class="btn btn-xs btn-primary expression-button"
+											v-if="_websitesEditorControllerInstance.isExpression(activeProperties[prop])"
+											v-on:click="_websitesEditorControllerInstance.unsetAsExpression(prop);"
+										>
+											Cancel
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="editorWrapper viewEditorWrapper">
+					<div id="viewEditor" class="editorWindow"></div>
+				</div>
+
+				<div class="editorWrapper controllerEditorWrapper">
+					<div id="controllerEditor" class="editorWindow"></div>
+				</div>
+
+                <div class="errorHandlersWrapper" v-if="activeRoute.handles">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Error Code Handlers</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>
+                                Select the error codes that this handler is to be used for.
+                            </p>
+
+                            <div class="row">
+                                <div class="col-3" v-for="code in errorCodes">
+                                    <label>
+                                        {{code.code }} - {{code.error}}
+                                        <br />
+                                        <button
+                                            class="btn btn-sm btn-success"
+                                            v-if="activeRoute.handles.indexOf(code.code) === -1"
+                                            v-on:click="_websitesEditorControllerInstance.addHandlerCode(activeRoute.name, code.code)"
+                                        >
+                                            Add
+                                        </button>
+                                        <button
+                                            class="btn btn-sm btn-danger"
+                                            v-if="activeRoute.handles.indexOf(code.code) !== -1"
+                                            v-on:click="_websitesEditorControllerInstance.removeHandlerCode(activeRoute.name, code.code)"
+                                        >
+                                            Remove
+                                        </button>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+
+		<!-- Begin Page Content -->
+		<div class="container-fluid" v-if="mainVisible && mainNavItems[0].selected">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Properties</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Name:</label>
+								<input type="text" class="form-control" name="name" v-model="website.name" />
+							</div>
+
+							<div class="form-group">
+								<label>Tagset:</label>
+								<select class="form-control" name="tagset" v-model="website.tagset">
+									<option value="">None</option>
+									<option value="bootstrap">Boostrap</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Security</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Client:</label>
+								<select name="client_id" v-model="website.client_id" class="form-control">
+									<option value="">None</option>
+									<option v-for="client in clients" v-bind:value="client.client_id">{{client.client_id}}</option>
+								</select>
+							</div>
+							<div class="form-group" v-if="!website.client_id">
+								<button class="btn btn-success" v-on:click="_websitesEditorControllerInstance.autoProvisionClient()">Auto-provision</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" v-if="mainVisible && mainNavItems[1].selected">
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Routes</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th width="25%">Route</th>
+									<th>Is Secure?</th>
+									<th width="25%">Role</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Route</th>
+									<th>Is Secure?</th>
+									<th>Role</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="routes.length === 0">
+									<td colspan="6" class="no-results">
+										No routes have been defined.
+									</td>
+								</tr>
+								<tr v-for="(route, index) in routes" :key="index">
+									<td>
+										<input class="form-control" type="text" name="route" v-model="route.route" />
+									</td>
+									<td>
+										<input class="form-control form-control-checkbox" type="checkbox" name="isSecure" v-model="route.secure" />
+									</td>
+									<td>
+										<input v-if="route.secure" class="form-control" type="text" name="security" v-model="route.roles" />
+									</td>
+									<td>
+										<button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editRoute(route);">
+											Modify
+										</button>
+										<a class="btn btn-sm btn-success" :href="window.hosts.interface + '/' + website.name + route.route" target="_blank">
+											View
+										</a>
+										<button
+											class="btn btn-sm btn-danger"
+											v-on:click="_websitesEditorControllerInstance.removeRoute(index);"
+											v-if="routes.length > 1"
+										>Remove</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" v-if="mainVisible && mainNavItems[2].selected">
+			<!-- Tags Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Custom Tags</h6>
+				</div>
+				<div class="card-body">
+					<p>
+						Tags allow you to define reusable includes/partials.
+					</p>
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Tag</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Tag</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="tags.length === 0">
+									<td colspan="4" class="no-results">
+										No tags have been defined.
+									</td>
+								</tr>
+								<tr v-for="(tag, index) in tags" :key="index">
+									<td>
+										<input class="form-control" type="text" name="route" v-model="tag.name" />
+									</td>
+									<td>
+										<button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editTag(tag);">
+											Modify
+										</button>
+										<button class="btn btn-sm btn-danger" v-on:click="_websitesEditorControllerInstance.removeTag(index);">Remove</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" v-if="mainVisible && mainNavItems[3].selected">
+			<!-- static resources -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Static files</h6>
+				</div>
+				<div class="card-body">
+					<p>
+						Static files can be referenced within your interfaces & custom tags and can be any type of file.
+					</p>
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Filename</th>
+									<th>Path</th>
+									<th>Operations</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Filename</th>
+									<th>Path</th>
+									<th>Operations</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr v-if="staticfiles.length === 0">
+									<td colspan="3" class="no-results">
+										No static files have been uploaded.
+									</td>
+								</tr>
+								<tr v-for="(resource, index) in staticfiles" :key="index">
+									<td>
+										{{resource.basename}}
+									</td>
+									<td>
+										<a :href="window.hosts.interface + resource.absolutePath" target="_blank">{{resource.absolutePath}}</a>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-danger" v-on:click="_websitesEditorControllerInstance.removeResource(resource.basename);">Remove</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- error pages -->
+        <div class="container-fluid" v-if="mainVisible && mainNavItems[4].selected">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Error Handlers</h6>
+                </div>
+                <div class="card-body">
+                    <p>
+                        You can create error handlers that display when there is an error on your website.
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Errors</th>
+                                    <th>Operations</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Errors</th>
+                                    <th>Operations</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr v-if="errorhandlers.length === 0">
+                                    <td colspan="3" class="no-results">
+                                        No error handlers have been defined.
+                                    </td>
+                                </tr>
+                                <tr v-for="(handler, index) in errorhandlers" :key="index">
+                                    <td>
+                                        <input class="form-control" type="text" name="route" v-model="handler.name" />
+                                    </td>
+                                    <td>
+                                        {{handler.handles.join(', ')}}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" v-on:click="_websitesEditorControllerInstance.editErrorHandler(handler);">
+                                            Modify
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" v-on:click="_websitesEditorControllerInstance.removeErrorHandler(handler.name);">
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<div class="actionButtons">
+			<button v-if="viewEditorVisible" class="rounded-circle border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.mainView();"><i class="fas fa-fw fa-arrow-left"></i></button>
+			<button v-if="mainVisible && mainNavItems[3].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newStaticFile();"><i class="fas fa-fw fa-plus"></i> Static File</button>
+			<button v-if="mainVisible && mainNavItems[1].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newRoute();"><i class="fas fa-fw fa-plus"></i> Route</button>
+			<button v-if="mainVisible && mainNavItems[2].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newTag();"><i class="fas fa-fw fa-plus"></i> Tag</button>
+            <button v-if="mainVisible && mainNavItems[4].selected" class="rounded-pill border-0 btn btn-primary" v-on:click="_websitesEditorControllerInstance.newErrorHandler();"><i class="fas fa-fw fa-plus"></i> Error Handler</button>
+			<button class="rounded-circle border-0 btn btn-success" v-on:click="_websitesEditorControllerInstance.saveAll();"><i class="fas fa-fw fa-save"></i></button>
+		</div>
+
+		<div v-if="newResourceVisible">
+			<div class="modal">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Upload Static File</h5>
+							<button class="close" type="button" data-dismiss="modal" aria-label="Close" v-on:click="_websitesEditorControllerInstance.closeUploader()">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<slot>
+								<input type="file" id="file" class="form-control" />
+							</slot>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" type="button" data-dismiss="modal" v-on:click="_websitesEditorControllerInstance.closeUploader()">Cancel</button>
+							<button class="btn btn-primary" type="button" data-dismiss="modal" v-on:click="_websitesEditorControllerInstance.uploadResource();">Upload</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>

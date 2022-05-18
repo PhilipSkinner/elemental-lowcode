@@ -1,0 +1,108 @@
+<div class="ui-columns ui-columns--half">
+    <div class="ui-half ui-half--highlight">
+        <div class="ui-logo">
+            Elemental
+        </div>
+        <div class="ui-feature">
+            <div class="ui-feature-image ui-feature-image--terms"></div>
+        </div>
+    </div>
+    <div class="ui-half">
+        <div class="ui-restricted--thin">
+            <div class="ui-header">
+                <h1 class="ui-header-text">
+                     <% if (termsRequired && privacyRequired) { %>
+                        Agreements
+                     <% } else if (termsRequired) { %>
+                        Terms and Conditions
+                     <% } else { %>
+                        Privacy Policy
+                     <% } %>
+                </h1>
+            </div>
+
+            <div class="ui-intro">
+                <p class="ui-intro-text">
+                    You must review the following before you can continue.
+                </p>
+            </div>
+
+            <form autocomplete="off" action="/interaction/<%= uid %>/terms" method="post">
+                <% if (termsRequired) { %>
+                    <% if (client.features.terms.required) { %>
+                        <div class="ui-alert ui-alert--warning">
+                            You must accept the terms and conditions before continuing.
+                        </div>
+                    <% } else { %>
+                        <div class="ui-alert ui-alert--info">
+                            Do you want to accept the terms and conditions before you login?
+                        </div>
+                    <% } %>
+
+                    <% if (client.features.terms.document) { %>
+                        <div class="ui-text">
+                            <p>
+                                Please <a href="<%= client.features.terms.document %>" target="_blank">read the terms and conditions</a> before accepting them.
+                            </p>
+                        </div>
+                    <% } %>
+
+                    <% if (termsError) { %>
+                        <div class="ui-alert ui-alert--error">
+                            You must accept the terms!
+                        </div>
+                    <% } %>
+
+                    <div class="ui-input-field">
+                        <label class="ui-input-field-label">
+                            <input type="checkbox" name="terms" class="ui-input-field-checkbox">
+                            I accept the terms and conditions.
+                        </label>
+                    </div>
+                <% } %>
+
+                <% if (privacyRequired) { %>
+                    <% if (client.features.privacy.required) { %>
+                        <div class="ui-alert ui-alert--warning">
+                            You must confirm that you have read the privacy policy before continuing.
+                        </div>
+                    <% } else { %>
+                        <div class="ui-alert ui-alert--info">
+                            Do you want to confirm that you have read the privacy policy?
+                        </div>
+                    <% } %>
+
+                    <% if (client.features.privacy.document) { %>
+                        <div class="ui-text">
+                            <p>
+                                Please <a href="<%= client.features.privacy.document %>" target="_blank">read the privacy policy</a> before continuing.
+                            </p>
+                        </div>
+                    <% } %>
+
+                    <% if (privacyError) { %>
+                        <div class="ui-alert ui-alert--error">
+                            You must confirm that you have ready the privacy policy!
+                        </div>
+                    <% } %>
+
+
+                    <div class="ui-input-field">
+                        <label class="ui-input-field-label">
+                            <input type="checkbox" name="privacy" class="ui-input-field-checkbox">
+                            I have read and understood the privacy policy
+                        </label>
+                    </div>
+                <% } %>
+
+                <div class="ui-button-wrapper">
+                    <button type="submit" class="ui-button ui-button--primary">Continue</button>
+                </div>
+            </form>
+
+            <div class="ui-text ui-text--center">
+                If you do not wish to accept, you may <a href="/interaction/<%= uid %>/abort">cancel and abort</a>.
+            </div>
+        </div>
+    </div>
+</div>
