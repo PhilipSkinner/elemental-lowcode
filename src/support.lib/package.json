@@ -7,7 +7,7 @@
 		"jsonpath": "^1.0.2",
 		"jsonwebtoken": "^8.5.1",
 		"jwk-to-pem": "^2.0.5",
-		"log4js": "^6.3.0",
+		"log4js": "^6.4.0",
 		"mariadb": "^2.4.0",
 		"mysql2": "^1.5.2",
 		"nodemailer": "^6.7.2",
