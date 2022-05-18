@@ -1,4 +1,4 @@
-[Back to Authentication & Authorization](/documentation/auth)
+[Back to Authentication & Authorization](/src/support.documentation/auth)
 
 # Default Roles
 
@@ -8,8 +8,8 @@ Most systems allow these roles to be configured by either replacing them, adding
 
 Each of these systems default roles can be found within their documentation:
 
-*   [APIs](/documentation/apis/routes)
-*   [Integrations](/documentation/integrations)
-*   [Data Types](/documentation/data)
-*   [Messaging](/documentation/messaging)
-*   [Rulesets](/documentation/rulesets)
+*   [APIs](/src/support.documentation/apis/routes)
+*   [Integrations](/src/support.documentation/integrations)
+*   [Data Types](/src/support.documentation/data)
+*   [Messaging](/src/support.documentation/messaging)
+*   [Rulesets](/src/support.documentation/rulesets)

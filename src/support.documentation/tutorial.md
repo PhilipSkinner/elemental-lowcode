@@ -4,4 +4,4 @@
 
 The following tutorials are available for you to follow:
 
-*   [Todo app](/documentation/tutorials/todo)
+*   [Todo app](/src/support.documentation/tutorials/todo)

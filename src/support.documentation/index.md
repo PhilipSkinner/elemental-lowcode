@@ -17,17 +17,17 @@ The following links contain useful information about these standards:
 
 Further documentation relating to the runtimes held within Elemental can be found in the topics menu to the right. Important topics include:
 
-*   [Authentication & Authorization](/documentation/auth)
-*   [APIs](/documentation/apis)
-*   [Websites](/documentation/websites)
-*   [Integrations](/documentation/integrations)
-*   [Data](/documentation/data)
-*   [Messaging](/documentation/messaging)
-*   [Rulesets](/documentation/rulesets)
-*   [Services](/documentation/services)
-*   [Node Modules](/documentation/nodeModules)
+*   [Authentication & Authorization](/src/support.documentation/auth)
+*   [APIs](/src/support.documentation/apis)
+*   [Websites](/src/support.documentation/websites)
+*   [Integrations](/src/support.documentation/integrations)
+*   [Data](/src/support.documentation/data)
+*   [Messaging](/src/support.documentation/messaging)
+*   [Rulesets](/src/support.documentation/rulesets)
+*   [Services](/src/support.documentation/services)
+*   [Node Modules](/src/support.documentation/nodeModules)
 
-[Tutorials can be found here](/documentation/tutorial).
+[Tutorials can be found here](/src/support.documentation/tutorial).
 
 ### Help & Bugs
 

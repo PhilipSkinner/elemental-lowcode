@@ -1,4 +1,4 @@
-[Back to Websites](/documentation/websites)
+[Back to Websites](/src/support.documentation/websites)
 
 # Views
 
@@ -153,7 +153,7 @@ Functions can access the [elemental-string-format](https://github.com/PhilipSkin
 }
 ```
 
-All available formats can be found on the [number formats](/documentation/websites/numberFormats) and [date formats](/documentation/websites/dateFormats) documentation pages.
+All available formats can be found on the [number formats](/src/support.documentation/websites/numberFormats) and [date formats](/src/support.documentation/websites/dateFormats) documentation pages.
 
 ## Standard Tag Object Properties
 
@@ -161,7 +161,7 @@ The following properties are special - any other properties are used to render a
 
 ### tag - *required*
 
-This is the tag that is to be used to render the element within the DOM. This can be any valid HTML tag or [custom tag](/documentation/websites/tags).
+This is the tag that is to be used to render the element within the DOM. This can be any valid HTML tag or [custom tag](/src/support.documentation/websites/tags).
 
 This property is required.
 
@@ -480,4 +480,4 @@ module.exports = {
 }
 ```
 
-[Continue to Controllers](/documentation/websites/controllers)
+[Continue to Controllers](/src/support.documentation/websites/controllers)

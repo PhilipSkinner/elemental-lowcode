@@ -6,11 +6,11 @@ Websites allows you to build simple web applications.
 
 Each website is constructed of:
 
-*   [Routes](/documentation/websites/routes)
-*   [Views](/documentation/websites/views)
-*   [Controllers](/documentation/websites/controllers)
-*   [Tags](/documentation/websites/tags)
-*   [Session Storage](/documentation/websites/sessionStorage)
+*   [Routes](/src/support.documentation/websites/routes)
+*   [Views](/src/support.documentation/websites/views)
+*   [Controllers](/src/support.documentation/websites/controllers)
+*   [Tags](/src/support.documentation/websites/tags)
+*   [Session Storage](/src/support.documentation/websites/sessionStorage)
 
 The websites (or interface) runtime hosts each website on a path that equals the websites name.
 

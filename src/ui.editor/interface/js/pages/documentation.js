@@ -5,7 +5,7 @@ const loadPage = function(name, obj) {
         obj.html = converter.makeHtml(content.data);
 
         //quickly replace any /documentation links
-        obj.html = obj.html.replace(/"\/documentation/g, '"#/documentation');
+        obj.html = obj.html.replace(/"\/src\/support\.documentation/g, '"#/documentation');
 
         //scroll to the top
         window.scrollTo(0, 0);

@@ -25,6 +25,6 @@ Secrets are automatically resolved within the system wherever the config require
 
 In each of these places you can use the `$.secret.name` syntax to resolve the secrets value at runtime.
 
-The [environment service](/documentation/services/environmentService) provides a mechanism for accessing these values from within your code.
+The [environment service](/src/support.documentation/services/environmentService) provides a mechanism for accessing these values from within your code.
 
 *Note:* When a secret is updated all systems are restarted to refresh it within them.

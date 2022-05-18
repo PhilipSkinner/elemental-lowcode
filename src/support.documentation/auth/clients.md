@@ -1,4 +1,4 @@
-[Back to Authentication & Authorization](/documentation/auth)
+[Back to Authentication & Authorization](/src/support.documentation/auth)
 
 # Clients
 
@@ -12,7 +12,7 @@ Every authentication request to the IdP must be done on behalf of a client, with
 
 ## Scopes
 
-A [scope](/documentation/auth/scopes) allows you to request a group of claims to be included on the JWT token.
+A [scope](/src/support.documentation/auth/scopes) allows you to request a group of claims to be included on the JWT token.
 
 A client can have access to 0 or more scopes, with that configuration provided as a space separated list of scopes:
 
@@ -33,7 +33,7 @@ The IdP supports the following grant types:
 
 By default every client will be issued the `client_credentials` and `authorization_code` grants. If you want the system to support the automatic refreshing of tokens then the `refresh_token` grant must be added into your list of supported grants.
 
-You can construct your own authentication/registration flow within your application by using the `password` grant to issue tokens. Once this is done the system will automatically manage the users session for you. See the [authClientProvider](/documentation/services/authClientProvider) service for more details on how to use these features.
+You can construct your own authentication/registration flow within your application by using the `password` grant to issue tokens. Once this is done the system will automatically manage the users session for you. See the [authClientProvider](/src/support.documentation/services/authClientProvider) service for more details on how to use these features.
 
 *Note:* It is recommended that you do not use the `password` grant unless absolutely necessary as it can cause the leaking of credentials.
 

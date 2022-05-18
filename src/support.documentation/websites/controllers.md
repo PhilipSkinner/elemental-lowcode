@@ -1,4 +1,4 @@
-[Back to Websites](/documentation/websites)
+[Back to Websites](/src/support.documentation/websites)
 
 # Controllers
 
@@ -123,16 +123,16 @@ module.exports = {
 
 The following services are automatically added into each controller:
 
-*   [authClientProvider](/documentation/services/authClientProvider)
-*   [environmentService](/documentation/services/environmentService)
-*   [idmService](/documentation/services/idmService)
-*   [integrationService](/documentation/services/integrationService)
-*   [messagingService](/documentation/services/messagingService)
-*   [navigationService](/documentation/websites/navigationService)
-*   [rulesetService](/documentation/services/rulesetService)
-*   [serviceProvider](/documentation/services/serviceProvider)
-*   [sessionState](/documentation/websites/sessionState)
-*   [storageService](/documentation/services/storageService)
+*   [authClientProvider](/src/support.documentation/services/authClientProvider)
+*   [environmentService](/src/support.documentation/services/environmentService)
+*   [idmService](/src/support.documentation/services/idmService)
+*   [integrationService](/src/support.documentation/services/integrationService)
+*   [messagingService](/src/support.documentation/services/messagingService)
+*   [navigationService](/src/support.documentation/websites/navigationService)
+*   [rulesetService](/src/support.documentation/services/rulesetService)
+*   [serviceProvider](/src/support.documentation/services/serviceProvider)
+*   [sessionState](/src/support.documentation/websites/sessionState)
+*   [storageService](/src/support.documentation/services/storageService)
 
 Each of these are defined upon the controller instance as a property that can be access, for example:
 
@@ -146,4 +146,4 @@ module.exports = {
 }
 ```
 
-[Continue to Tags](/documentation/websites/tags)
+[Continue to Tags](/src/support.documentation/websites/tags)

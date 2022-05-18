@@ -135,14 +135,14 @@ If the promise has a rejection, either intended or otherwise, the error will be 
 
 You can use the following services within your handler code:
 
-* [authClientProvider](/documentation/services/authClientHandler)
-* [environmentService](/documentation/services/environmentService)
-* [idmService](/documentation/services/idmService)
-* [integrationService](/documentation/services/integrationService)
-* [messagingService](/documentation/services/messagingService)
-* [rulesetService](/documentation/services/rulesetService)
-* [serviceProvider](/documentation/services/serviceProvider)
-* [storageService](/documentation/services/storageService)
+* [authClientProvider](/src/support.documentation/services/authClientHandler)
+* [environmentService](/src/support.documentation/services/environmentService)
+* [idmService](/src/support.documentation/services/idmService)
+* [integrationService](/src/support.documentation/services/integrationService)
+* [messagingService](/src/support.documentation/services/messagingService)
+* [rulesetService](/src/support.documentation/services/rulesetService)
+* [serviceProvider](/src/support.documentation/services/serviceProvider)
+* [storageService](/src/support.documentation/services/storageService)
 
 ### Security
 

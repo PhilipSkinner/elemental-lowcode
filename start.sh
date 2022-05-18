@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 exec_sql() {
-  return $(mysql -h "mysql" -P 3306 --password="password" -u "root" --raw --batch -s -e "${1}" >> /dev/null 2>&1)
+  return $(mysql -h "127.0.0.1" -P 3306 --password="password" -u "root" --raw --batch -s -e "${1}" >> /dev/null 2>&1)
 }
 
-export MYSQL_CONNECTION_STRING="mysql://root:password@mysql:3306/db"
+export MYSQL_CONNECTION_STRING="mysql://root:password@127.0.0.1:3306/db"
 export INITIAL_CLIENT_ID=admin
 export INITIAL_CLIENT_SECRET=admin-secret
 export INITIAL_CLIENT_SCOPES="openid roles offline_access"

@@ -271,6 +271,10 @@ window.templates.fetchTemplates().then(window.fetchRoles).then(() => {
                 path 		: '/documentation/*',
                 component	: window.Documentation,
             },
+            {
+                path        : '/src/support.documentation/*',
+                component   : window.Documentation,
+            },
             /* ruleset endpoints */
             {
                 path 		: '/rulesets',

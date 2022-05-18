@@ -1,3 +1,3 @@
-[Back to Tutorials](/documentation/tutorial)
+[Back to Tutorials](/src/support.documentation/tutorial)
 
 # Ticketing System

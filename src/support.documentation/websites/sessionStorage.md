@@ -1,4 +1,4 @@
-[Back to Websites](/documentation/websites)
+[Back to Websites](/src/support.documentation/websites)
 
 # Session Storage
 
@@ -14,4 +14,4 @@ Configuration of these settings can be found within the Websites section, in the
 
 Any [Sequalize supported dialect](https://sequelize.org/v5/manual/dialects.html) can be configured as a data source.
 
-The [secrets store](/documentation/secrets) can be used to hold these connection strings.
+The [secrets store](/src/support.documentation/secrets) can be used to hold these connection strings.

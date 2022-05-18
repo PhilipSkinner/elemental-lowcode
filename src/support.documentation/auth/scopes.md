@@ -1,10 +1,10 @@
-[Back to Authentication & Authorization](/documentation/auth)
+[Back to Authentication & Authorization](/src/support.documentation/auth)
 
 # Scopes
 
 Scopes are used to configure the group of claims that should be returned with a request.
 
-A [client](/documentation/auth/clients) must be configured to have access to a particular scope - if it does not then there will be an error when an authentication request is attempted.
+A [client](/src/support.documentation/auth/clients) must be configured to have access to a particular scope - if it does not then there will be an error when an authentication request is attempted.
 
 Scopes are configured with:
 

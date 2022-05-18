@@ -1,4 +1,4 @@
-[Back to APIs](/documentation/apis)
+[Back to APIs](/src/support.documentation/apis)
 
 # Routes
 
@@ -50,4 +50,4 @@ The `system_admin` role always allows access on any method endpoint.
 
 Where the value `[api_name]` will be replaced with the name of your API.
 
-[Continue to Controllers](/documentation/apis/controllers)
+[Continue to Controllers](/src/support.documentation/apis/controllers)
