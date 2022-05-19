@@ -48,18 +48,18 @@ controllerInstance.prototype.handler = function(req, res, next) {
         //load our controller into its state machine
         let module = this.path.join(process.cwd(), process.env.DIR, this.routeDefinition.controller);
         delete require.cache[require.resolve(module)];
-        let stateEngine = this.controllerState(require(module), this.clientConfig);
-        stateEngine.setContext(req, res);
+        let stateEngine = this.controllerState(require(module), this.clientConfig);        
+        stateEngine.setContext(req, res);        
 
         let view = null;
         this.loadView().then((_view) => {
-            view = _view;
+            view = _view;            
 
             //we need to scan through the view to work out the tag controllers we need to instantiate
             let componentInstances = this.tagControllers.determineInstances(view);
 
             stateEngine.setComponents(componentInstances);
-        }).then(() => {
+        
             //ensure our state engine triggers on load
             if (req.method === 'POST') {
                 let body = req.body;
@@ -115,7 +115,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 
             if (req.method === 'GET') {
                 //do we have an event to trigger?
-                if (req.query.event) {
+                if (req.query && req.query.event) {
                     return stateEngine.triggerEvent(req.query.event, this.parseQuery(req.query));
                 }
             }
@@ -126,7 +126,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
                 return Promise.resolve();
             }
 
-            return stateEngine.triggerEvent('load', Object.assign(req.query, req.params));
+            return stateEngine.triggerEvent('load', Object.assign(req.query || {}, req.params || {}));
         }).then(() => {
             stateEngine.generateResponseHeaders();
 
@@ -159,7 +159,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
 
     if (this.routeDefinition.secure && this.passport) {
         //reload the session first
-        if (!(req.session && req.session.passport && req.session.passport.user && req.session.passport.user.accessToken)) {
+        if (!req.session || !req.session.passport || !req.session.passport.user || !req.session.passport.user.accessToken) {
             return this.passport.authenticate('oauth2')(req, res, next);
         } else if (this.routeDefinition.roles) {
             return this.roleCheckHandler.enforceRoles(handleRequest.bind(this), this.routeDefinition.roles.split(','))(req, res, next);
@@ -175,36 +175,45 @@ controllerInstance.prototype.parseQuery = function(obj) {
     Object.keys(obj).forEach((key) => {
         let parts = key.split('__');
 
-        let current = ret;
-        parts.forEach((p, index) => {
-            if (index + 1 === parts.length) {
-                current[p] = obj[key];
-            } else {
-                let isArray = (parseInt(parts[index + 1]) + '') === parts[index + 1];
-
-                if (isArray) {
-                    current[p] = current[p] || [];
+        if (parts.length > 1) {
+            let current = ret;
+            parts.forEach((p, index) => {            
+                if (index + 1 === parts.length) {                                
+                    current[p] = obj[key];
                 } else {
-                    current[p] = current[p] || {};
+                    let isArray = (parseInt(parts[index + 1]) + '') === parts[index + 1];
+
+                    if (isArray) {
+                        current[p] = current[p] || [];
+                    } else {
+                        current[p] = current[p] || {};
+                    }
+
+                    current = current[p];
                 }
+            });        
+        }        
 
-                current = current[p];
-            }
-        });
+        if (parts.length === 1) {
+            //get the path version
+            let current = ret;
+            parts = key.split('$$_$$');            
+            parts.forEach((p, index) => {            
+                if (index + 1 === parts.length) {                                
+                    current[p] = obj[key];
+                } else {
+                    let isArray = (parseInt(parts[index + 1]) + '') === parts[index + 1];
 
-        //get the path version
-        parts = key.split('$$_$$');
-        for (var i = 0; i < parts.length; i++) {
-            if (i === parts.length - 1) {
-                current[parts[i]] = obj[key];
-            } else {
-                if (!current[parts[i]]) {
-                    current[parts[i]] = {};
+                    if (isArray) {
+                        current[p] = current[p] || [];
+                    } else {
+                        current[p] = current[p] || {};
+                    }
+
+                    current = current[p];
                 }
-
-                current = current[parts[i]];
-            }
-        }
+            });      
+        }        
     });
 
     return ret;
