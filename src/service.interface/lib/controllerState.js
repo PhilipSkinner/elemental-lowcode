@@ -7,7 +7,7 @@ const controllerState = function(
     authClientProvider,
     idmService,
     navigationService,
-    servicesProvider,
+    serviceProvider,
     messagingService,
     environmentService
 ) {
@@ -19,7 +19,7 @@ const controllerState = function(
     this.controllerDefinition.authClientProvider    = authClientProvider;
     this.controllerDefinition.idmService            = idmService;
     this.controllerDefinition.navigationService     = navigationService;
-    this.controllerDefinition.serviceProvider       = servicesProvider;
+    this.controllerDefinition.serviceProvider       = serviceProvider;
     this.controllerDefinition.messagingService      = messagingService;
     this.controllerDefinition.environmentService    = environmentService;
     this.controllerDefinition.mergeBag              = this.mergeBag.bind(this);
@@ -52,19 +52,27 @@ controllerState.prototype.setComponents = function(componentInstances) {
 };
 
 controllerState.prototype.generateResponseHeaders = function() {
-    this.controllerDefinition.sessionState.generateResponseHeaders();
-    this.controllerDefinition.navigationService.generateResponseHeaders();
+    if (this.controllerDefinition.sessionState && this.controllerDefinition.sessionState.generateResponseHeaders) {
+        this.controllerDefinition.sessionState.generateResponseHeaders();    
+    }
+    
+    if (this.controllerDefinition.navigationService && this.controllerDefinition.navigationService.generateResponseHeaders) {
+        this.controllerDefinition.navigationService.generateResponseHeaders();    
+    }    
 };
 
 controllerState.prototype.deallocate = function() {
-    this.controllerDefinition.sessionState.deallocate();
+    if (this.controllerDefinition.sessionState && this.controllerDefinition.sessionState.deallocate) {
+        this.controllerDefinition.sessionState.deallocate();    
+    }
+    
     this.controllerDefinition = null;
     this.request = null;
     this.response = null;
 };
 
 controllerState.prototype.getBag = function() {
-    return this.controllerDefinition.bag;
+    return typeof(this.controllerDefinition.bag) === 'undefined' || this.controllerDefinition.bag === null ? {} : this.controllerDefinition.bag;
 };
 
 controllerState.prototype.cleanValues = function(values) {
@@ -91,30 +99,36 @@ controllerState.prototype.cleanValues = function(values) {
 };
 
 controllerState.prototype._triggerComponentEvents = function(name, details) {
-    return Promise.all(this.componentInstances.map((ci) => {
+    return Promise.all((this.componentInstances || []).map((ci) => {
         if ((details._identifier && ci.identifier === details._identifier) || name === 'load') {
-            let result = null;
+            try {
+                let result = null;
 
-            //we need to trigger the event on this component
-            ci.instance.storageService      = this.controllerDefinition.storageService;
-            ci.instance.sessionState        = this.controllerDefinition.sessionState;
-            ci.instance.integrationService  = this.controllerDefinition.integrationService;
-            ci.instance.rulesetService      = this.controllerDefinition.rulesetService;
-            ci.instance.authClientProvider  = this.controllerDefinition.authClientProvider;
-            ci.instance.idmService          = this.controllerDefinition.idmService;
-            ci.instance.navigationService   = this.controllerDefinition.navigationService;
-            ci.instance.serviceProvider     = this.controllerDefinition.serviceProvider;
-            ci.instance.messagingService    = this.controllerDefinition.messagingService;
-            ci.instance.environmentService  = this.controllerDefinition.environmentService;
-            ci.instance.parent              = this.controllerDefinition;
+                //we need to trigger the event on this component
+                ci.instance.storageService      = this.controllerDefinition.storageService;
+                ci.instance.sessionState        = this.controllerDefinition.sessionState;
+                ci.instance.integrationService  = this.controllerDefinition.integrationService;
+                ci.instance.rulesetService      = this.controllerDefinition.rulesetService;
+                ci.instance.authClientProvider  = this.controllerDefinition.authClientProvider;
+                ci.instance.idmService          = this.controllerDefinition.idmService;
+                ci.instance.navigationService   = this.controllerDefinition.navigationService;
+                ci.instance.serviceProvider     = this.controllerDefinition.serviceProvider;
+                ci.instance.messagingService    = this.controllerDefinition.messagingService;
+                ci.instance.environmentService  = this.controllerDefinition.environmentService;
+                ci.instance.parent              = this.controllerDefinition;
 
-            if (ci.instance.events[name]) {
-                result = ci.instance.events[name].bind(ci.instance)(details);
-            }
+                if (ci.instance.events[name]) {
+                    result = ci.instance.events[name].bind(ci.instance)(details);
+                }
 
-            if (result && result.then) {
-                return result;
-            }
+                if (result && result.then) {
+                    return result;
+                } else {
+                    return Promise.resolve(result);
+                }
+            } catch(e) {
+                return Promise.reject(e);
+            }         
         }
 
         return Promise.resolve();
@@ -135,9 +149,9 @@ controllerState.prototype.triggerEvent = function(name, details) {
 
         if (result && result.then) {
             return result;
-        }
+        }    
 
-        return Promise.resolve();
+        return Promise.resolve(result);        
     }).catch((err) => {
         return Promise.reject(err);
     });
@@ -153,7 +167,7 @@ module.exports = function(
     authClientProvider,
     idmService,
     navigationService,
-    servicesProvider,
+    serviceProvider,
     messagingService,
     environmentService
 ) {
@@ -185,8 +199,8 @@ module.exports = function(
         navigationService = require('../../support.lib/navigationService')();
     }
 
-    if (!servicesProvider) {
-        servicesProvider = require('../../support.lib/iocProvider')();
+    if (!serviceProvider) {
+        serviceProvider = require('../../support.lib/iocProvider')();
     }
 
     if (!messagingService) {
@@ -206,7 +220,7 @@ module.exports = function(
         authClientProvider,
         idmService,
         navigationService,
-        servicesProvider,
+        serviceProvider,
         messagingService,
         environmentService
     );
