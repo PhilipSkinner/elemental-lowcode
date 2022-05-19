@@ -31,7 +31,7 @@ handleControllerScope.prototype.expand = function(view, data) {
             if (data !== null && typeof(tag._scope) !== 'undefined' && tag._scope !== null) {
                 tag._scope.data = tag._scope.data || {};
                 tag._scope.data.bag = tag._scope.data.bag || {};
-                Object.assign(tag._scope.data.bag, data.instance.bag || {});
+                Object.assign(tag._scope.data.bag, data.instance.bag);
             }
 
             Object.keys(tag).forEach((k) => {
@@ -54,7 +54,9 @@ handleControllerScope.prototype.apply = function(definition) {
 };
 
 handleControllerScope.prototype.applySync = function(definition) {
-    definition.view = this.expand(definition.view, definition.data);
+    definition.view = this.expand(definition.view, {
+        instance : definition.data    
+    });
 
     return definition;
 };
