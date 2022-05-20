@@ -4,6 +4,10 @@ const tagControllers = function(path) {
 };
 
 tagControllers.prototype.registerController = function(name, controller, raw) {
+    if (typeof(name) === 'undefined' || name === null || name === '') {
+        throw new Error('Registering a controller requires a name');
+    }
+
     this.controllers[name] = {
         controller 	: controller,
         name 		: name,
