@@ -12,11 +12,11 @@ const controllerInstance = {
 };
 
 const templateRenderer = {
-
+    registerCustomTag : () => {}
 };
 
 const tagControllers = {
-
+    registerController : () => {}
 };
 
 const express = {
@@ -360,6 +360,35 @@ const errorHandlerDefaultTest = (done) => {
     }, 1);
 };
 
+const registerTagTest = (done) => {
+    const tagControllersMock = sinon.mock(tagControllers);
+    tagControllersMock.expects('registerController').once().withArgs('name', 'controller', 'raw');
+
+    const templateRendererMock = sinon.mock(templateRenderer);
+    templateRendererMock.expects('registerCustomTag').once().withArgs({
+        name : 'name',
+        controller : 'controller',
+        raw : 'raw'
+    });
+
+    const instance = websiteInstance(app, {}, controllerInstance.main, templateRenderer, express, path, hostnameResolver, dataResolver, environmentService, sqlSessionStore, tagControllers);
+
+    instance.configureTag({
+        name : 'name',
+        controller : 'controller',
+        raw : 'raw'
+    });
+
+    tagControllersMock.verify();
+    templateRendererMock.verify();
+
+    done();
+};
+
+const instanceInitTest = (done) => {
+    done();
+};
+
 describe('A website instance', () => {
     it('defaults its constructor arguments', constructorTest);
 
@@ -372,5 +401,13 @@ describe('A website instance', () => {
         it('supports other errors', errorHandlerTest);
         it('supports other errors, using statusCode', errorHandlerStatusCodeTest);
         it('defaults to 500 with no error', errorHandlerDefaultTest);
+    });
+
+    describe('configure tag', () => {
+        it('registers tags correctly', registerTagTest);
+    });
+
+    describe('init', () => {
+        it('can configure the instance', instanceInitTest);
     });
 });

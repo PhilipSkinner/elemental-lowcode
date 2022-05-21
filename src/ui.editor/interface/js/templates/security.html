@@ -455,8 +455,106 @@
 	<div class="securityClientEditor">
 		<permissions :roles="['security_writer','security_admin','system_writer','system_admin']"></permissions>
 
-		<div class="entityWrapper">
+		<navigation title="Scope Editor" :navitems="navitems"></navigation>
+
+		<div v-bind:class="{ 'entityWrapper' : true, 'hidden' : !editorVisible }">
 			<div id="scopeEditor" class="editorWindow"></div>
+		</div>
+		
+		<div v-bind:class="{ 'container-fluid' : true, 'hidden' : !formVisible }">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Details</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Name:</label>
+								<input type="text" class="form-control" name="name" v-model="scope.name" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Claims</h6>
+                        </div>
+                        <div class="card-body" v-if="addingClaim">
+                            <p>
+                                Enter the claim below.
+                            </p>
+
+                            <div class="form-group">
+                                <label>Claim:</label>
+                                <input type="text" class="form-control" name="name" v-model="currentClaim" />
+                            </div>
+
+                            <div class="float-left">
+                                <button class="btn btn-default" v-on:click="window._securityScopeEditorControllerInstance.cancelAddClaim()">
+                                    Cancel
+                                </button>
+                            </div>
+
+                            <div class="float-right">
+                                <button class="btn btn-success" v-on:click="window._securityScopeEditorControllerInstance.saveClaim()">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body" v-if="!addingClaim">
+                            <div class="float-right">
+                                <button class="btn btn-sm btn-primary" v-on:click="window._securityScopeEditorControllerInstance.addClaim()">
+                                    Add Claim
+                                </button>
+                            </div>
+
+                            <p>
+                                These claims will be issued when a client requests this scope.
+                            </p>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="scope.claims.length === 0">
+                                            <td colspan="2">
+                                                <div class="noResults">
+                                                    No claims
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="claim in scope.claims">
+                                            <td>
+                                                {{claim}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="window._securityScopeEditorControllerInstance.removeClaim(claim)">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>        
 		</div>
 		<div class="actionButtons">
 			<router-link to="/security" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
