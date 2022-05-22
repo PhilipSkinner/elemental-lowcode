@@ -7,6 +7,7 @@
 		"email-validator": "^2.0.4",
 		"express": "^4.17.1",
 		"express-compile-sass": "^4.0.0",
+		"express-rate-limit": "^6.4.0",
 		"glob": "^7.1.6",
 		"jose": "^1.22.2",
 		"node-sass": "^7.0.1",

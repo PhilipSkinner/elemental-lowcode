@@ -11,12 +11,17 @@ const
     hostnameResolver    = require('../support.lib/hostnameResolver')(),
     passwordGrant       = require('./lib/passwordGrant')(),
     sass                = require('express-compile-sass'),
-    hotreload           = require('../support.lib/hotReload')();
+    hotreload           = require('../support.lib/hotReload')(),
+    rateLimit           = require('express-rate-limit');
 
 const { PORT = 3000, ISSUER = `${hostnameResolver.resolveIdentity()}` } = process.env;
 let app = null;
 let server = null;
 let restarting = false;
+const limiter = rateLimit({
+    windowMs: process.env.RATE_LIMIT_WINDOW_MILLISECONDS  || 200,
+    max: process.env.RATE_LIMIT_MAX_REQUESTS_IN_WINDOW    || 50
+});
 
 if (!process.env.DIR) {
     throw new Error('Require dir to load configuration from.');
@@ -26,6 +31,7 @@ const startup = () => {
     return new Promise((resolve, reject) => {
         app = express();
 
+        app.use(limiter);
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'ejs');
         app.use(bodyParser.json());
