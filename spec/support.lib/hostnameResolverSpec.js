@@ -6,7 +6,18 @@ const kernelDefaultTest = () => {
     const instance = hostnameResolver();
 
     process.env['KERNEL_HOST'] = null;
+    expect(instance.resolveKernel()).toEqual('http://localhost:8001');
 
+    process.env['KERNEL_HOST'] = 'null';
+    expect(instance.resolveKernel()).toEqual('http://localhost:8001');
+
+    process.env['KERNEL_HOST'] = '';
+    expect(instance.resolveKernel()).toEqual('http://localhost:8001');
+
+    process.env['KERNEL_HOST'] = undefined;
+    expect(instance.resolveKernel()).toEqual('http://localhost:8001');
+
+    process.env['KERNEL_HOST'] = 'undefined';
     expect(instance.resolveKernel()).toEqual('http://localhost:8001');
 };
 
@@ -22,7 +33,18 @@ const adminDefaultTest = () => {
     const instance = hostnameResolver();
 
     process.env['ADMIN_HOST'] = null;
+    expect(instance.resolveAdmin()).toEqual('http://localhost:8002');
 
+    process.env['ADMIN_HOST'] = 'null';
+    expect(instance.resolveAdmin()).toEqual('http://localhost:8002');
+
+    process.env['ADMIN_HOST'] = '';
+    expect(instance.resolveAdmin()).toEqual('http://localhost:8002');
+
+    process.env['ADMIN_HOST'] = undefined;
+    expect(instance.resolveAdmin()).toEqual('http://localhost:8002');
+
+    process.env['ADMIN_HOST'] = 'undefined';
     expect(instance.resolveAdmin()).toEqual('http://localhost:8002');
 };
 
@@ -38,7 +60,18 @@ const apiDefaultTest = () => {
     const instance = hostnameResolver();
 
     process.env['API_HOST'] = null;
+    expect(instance.resolveAPI()).toEqual('http://localhost:8003');
 
+    process.env['API_HOST'] = 'null';
+    expect(instance.resolveAPI()).toEqual('http://localhost:8003');
+
+    process.env['API_HOST'] = '';
+    expect(instance.resolveAPI()).toEqual('http://localhost:8003');
+
+    process.env['API_HOST'] = undefined;
+    expect(instance.resolveAPI()).toEqual('http://localhost:8003');
+
+    process.env['API_HOST'] = 'undefined';
     expect(instance.resolveAPI()).toEqual('http://localhost:8003');
 };
 
@@ -54,7 +87,18 @@ const integrationDefaultTest = () => {
     const instance = hostnameResolver();
 
     process.env['INTEGRATION_HOST'] = null;
+    expect(instance.resolveIntegration()).toEqual('http://localhost:8004');
 
+    process.env['INTEGRATION_HOST'] = 'null';
+    expect(instance.resolveIntegration()).toEqual('http://localhost:8004');
+
+    process.env['INTEGRATION_HOST'] = '';
+    expect(instance.resolveIntegration()).toEqual('http://localhost:8004');
+
+    process.env['INTEGRATION_HOST'] = undefined;
+    expect(instance.resolveIntegration()).toEqual('http://localhost:8004');
+
+    process.env['INTEGRATION_HOST'] = 'undefined';
     expect(instance.resolveIntegration()).toEqual('http://localhost:8004');
 };
 
@@ -70,7 +114,18 @@ const interfaceDefaultTest = () => {
     const instance = hostnameResolver();
 
     process.env['INTERFACE_HOST'] = null;
+    expect(instance.resolveInterface()).toEqual('http://localhost:8005');
 
+    process.env['INTERFACE_HOST'] = 'null';
+    expect(instance.resolveInterface()).toEqual('http://localhost:8005');
+
+    process.env['INTERFACE_HOST'] = '';
+    expect(instance.resolveInterface()).toEqual('http://localhost:8005');
+
+    process.env['INTERFACE_HOST'] = undefined;
+    expect(instance.resolveInterface()).toEqual('http://localhost:8005');
+
+    process.env['INTERFACE_HOST'] = 'undefined';
     expect(instance.resolveInterface()).toEqual('http://localhost:8005');
 };
 
@@ -86,7 +141,18 @@ const storageDefaultTest = () => {
     const instance = hostnameResolver();
 
     process.env['STORAGE_HOST'] = null;
+    expect(instance.resolveStorage()).toEqual('http://localhost:8006');
 
+    process.env['STORAGE_HOST'] = 'null';
+    expect(instance.resolveStorage()).toEqual('http://localhost:8006');
+
+    process.env['STORAGE_HOST'] = '';
+    expect(instance.resolveStorage()).toEqual('http://localhost:8006');
+
+    process.env['STORAGE_HOST'] = undefined;
+    expect(instance.resolveStorage()).toEqual('http://localhost:8006');
+
+    process.env['STORAGE_HOST'] = 'undefined';
     expect(instance.resolveStorage()).toEqual('http://localhost:8006');
 };
 
@@ -102,7 +168,18 @@ const rulesDefaultTest = () => {
     const instance = hostnameResolver();
 
     process.env['RULES_HOST'] = null;
+    expect(instance.resolveRules()).toEqual('http://localhost:8007');
 
+    process.env['RULES_HOST'] = 'null';
+    expect(instance.resolveRules()).toEqual('http://localhost:8007');
+
+    process.env['RULES_HOST'] = '';
+    expect(instance.resolveRules()).toEqual('http://localhost:8007');
+
+    process.env['RULES_HOST'] = undefined;
+    expect(instance.resolveRules()).toEqual('http://localhost:8007');
+
+    process.env['RULES_HOST'] = 'undefined';
     expect(instance.resolveRules()).toEqual('http://localhost:8007');
 };
 
@@ -118,7 +195,18 @@ const identityDefaultTest = () => {
     const instance = hostnameResolver();
 
     process.env['IDENTITY_HOST'] = null;
+    expect(instance.resolveIdentity()).toEqual('http://localhost:8008');
 
+    process.env['IDENTITY_HOST'] = 'null';
+    expect(instance.resolveIdentity()).toEqual('http://localhost:8008');
+
+    process.env['IDENTITY_HOST'] = '';
+    expect(instance.resolveIdentity()).toEqual('http://localhost:8008');
+
+    process.env['IDENTITY_HOST'] = undefined;
+    expect(instance.resolveIdentity()).toEqual('http://localhost:8008');
+
+    process.env['IDENTITY_HOST'] = 'undefined';
     expect(instance.resolveIdentity()).toEqual('http://localhost:8008');
 };
 
@@ -134,7 +222,18 @@ const queueDefaultTest = () => {
     const instance = hostnameResolver();
 
     process.env['QUEUE_HOST'] = null;
+    expect(instance.resolveQueue()).toEqual('http://localhost:8009');
 
+    process.env['QUEUE_HOST'] = 'null';
+    expect(instance.resolveQueue()).toEqual('http://localhost:8009');
+
+    process.env['QUEUE_HOST'] = '';
+    expect(instance.resolveQueue()).toEqual('http://localhost:8009');
+
+    process.env['QUEUE_HOST'] = undefined;
+    expect(instance.resolveQueue()).toEqual('http://localhost:8009');
+
+    process.env['QUEUE_HOST'] = 'undefined';
     expect(instance.resolveQueue()).toEqual('http://localhost:8009');
 };
 

@@ -22,8 +22,6 @@ const
     hotreload 				= require('../support.lib/hotReload')(),
     initialSetup 			= require('./setup')();
 
-const serviceIdentityHost = process.env.IDENTITY_HOST;
-const externalIdentityHost = process.env.EXTERNAL_IDENTITY_HOST;
 const args = argParser.fetch();
 let restarting = false;
 let sourcesDir = args.sources || process.env.SOURCES_DIR || '.sources';

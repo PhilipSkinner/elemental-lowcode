@@ -10,6 +10,23 @@ const _queueEditorController = function(page) {
         visible : false
     };
     this.showAlert = false;
+    this.navitems = [
+        {
+            name        : 'Auto-provision client',
+            event       : this.autoProvisionClient.bind(this),
+            selected    : false
+        },
+        {
+            name        : "Queue",
+            event       : this.showQueueEditor.bind(this),
+            selected    : true
+        },
+        {
+            name        : "Handler",
+            event       : this.showHandlerEditor.bind(this),
+            selected    : false
+        }
+    ];
 };
 
 _queueEditorController.prototype.autoProvisionClient = function() {
@@ -48,11 +65,17 @@ _queueEditorController.prototype.autoProvisionClient = function() {
 };
 
 _queueEditorController.prototype.showHandlerEditor = function() {
-    this.queueMode = false;
+    this.navitems[0].selected = false;
+    this.navitems[1].selected = false;
+    this.navitems[2].selected = true;
+    this.queueMode = false;    
     this.refreshState();
 };
 
-_queueEditorController.prototype.showQueueEditor = function() {
+_queueEditorController.prototype.showQueueEditor = function() {    
+    this.navitems[0].selected = false;
+    this.navitems[1].selected = true;
+    this.navitems[2].selected = false;
     this.queueMode = true;
     this.refreshState();
 };
@@ -133,7 +156,8 @@ _queueEditorController.prototype.getData = function() {
         queue 		: this.queue,
         error 		: this.error,
         showAlert 	: this.showAlert,
-        queueMode 	: this.queueMode
+        queueMode 	: this.queueMode,
+        navitems    : this.navitems
     };
 };
 
@@ -142,6 +166,7 @@ _queueEditorController.prototype.refreshState = function() {
     this.caller.error 		= this.error;
     this.caller.showAlert 	= this.showAlert;
     this.caller.queueMode 	= this.queueMode;
+    this.caller.navitems    = this.navitems;
     this.caller.$forceUpdate();
 };
 

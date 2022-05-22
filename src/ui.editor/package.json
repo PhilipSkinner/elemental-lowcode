@@ -5,6 +5,7 @@
 		"cookie-parser": "^1.4.4",
 		"express": "^4.17.1",
 		"express-compile-sass": "^4.0.0",
+		"express-rate-limit": "^6.4.0",
 		"handlebars": "^4.7.6",
 		"node-sass": "^7.0.1",
 		"simple-oauth2": "^3.3.0"

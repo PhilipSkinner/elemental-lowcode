@@ -6,7 +6,8 @@ hostnameResolver.prototype._defaultValue = function(val, def) {
     return val === ''
 		|| val === null
 		|| val === 'null'
-		|| typeof(val) === 'undefined' ? def : val;
+		|| typeof(val) === 'undefined'
+        || val === 'undefined' ? def : val;
 };
 
 hostnameResolver.prototype._protocolPrefix = function(hostname) {

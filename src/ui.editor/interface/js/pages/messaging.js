@@ -1,6 +1,6 @@
 const _messagingController = function(page) {
     this._page = page;
-    this.queues = [];
+    this.queues = [];    
 };
 
 _messagingController.prototype.getQueues = function() {

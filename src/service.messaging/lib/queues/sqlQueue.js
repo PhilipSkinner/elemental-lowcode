@@ -35,7 +35,7 @@ const sqlQueue = function(connectionString, sqlStore) {
 };
 
 sqlQueue.prototype.insertMessage = function(queueName, uuid, message) {
-    message.request = JSON.stringify(message.request);
+    message.request = JSON.stringify(message.request);    
     return this.sqlStore.createResource(this.name, uuid, message);
 };
 

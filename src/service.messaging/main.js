@@ -2,13 +2,18 @@ const
     express 		= require('express'),
     path 			= require('path'),
     tokenHandler 	= require('../support.lib/tokenHandler'),
-    hotreload 		= require('../support.lib/hotReload')();
-bodyParser 		= require('body-parser');
+    hotreload 		= require('../support.lib/hotReload')(),
+    bodyParser 		= require('body-parser'),
+    rateLimit       = require('express-rate-limit');
 
 let app = null;
 let server = null;
 let restarting = false;
-let tHandler = tokenHandler();
+const tHandler = tokenHandler();
+const limiter = rateLimit({
+  windowMs: process.env.RATE_LIMIT_WINDOW_MILLISECONDS  || 200,
+  max: process.env.RATE_LIMIT_MAX_REQUESTS_IN_WINDOW    || 50
+});
 
 if (!process.env.DIR) {
     throw new Error('Require dir to load configuration from.');
@@ -25,15 +30,16 @@ const startup = () => {
 
     queueService = require('./lib/queueService')(app);
 
+    app.use(limiter);
     app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended : false }));
-    app.use(tHandler.tokenCheck.bind(tHandler));
+    app.use(bodyParser.urlencoded({ extended : false }));    
+    app.use(tHandler.tokenCheck.bind(tHandler));    
 
-    queueService.init(process.env.DIR).then(() => {
-        console.log('Hotreload complete');
-        console.log(process.env.PORT);
-        server = app.listen(process.env.PORT);
-        restarting = false;
+    queueService.init(process.env.DIR).then(() => {        
+        server = app.listen(process.env.PORT, () => {
+            console.log('Hotreload complete');        
+            restarting = false;
+        });        
     });
 };
 

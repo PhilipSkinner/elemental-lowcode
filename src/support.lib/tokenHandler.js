@@ -35,6 +35,8 @@ tokenHandler.prototype.getJwksEndpoint = function(uri) {
 tokenHandler.prototype.fetchPublicKeys = function(uri) {
     return this.getJwksEndpoint(uri).then((endpoint) => {
         return new Promise((resolve, reject) => {
+            console.log(endpoint);
+
             if (endpoint === null) {
                 setTimeout(() => {
                     this.fetchPublicKeys(uri).then(resolve).catch(reject);
@@ -43,6 +45,8 @@ tokenHandler.prototype.fetchPublicKeys = function(uri) {
             }
 
             this.request.get(endpoint, (err, response, body) => {
+                console.log(body);
+
                 let done = false;
                 try {
                     const payload = JSON.parse(body);

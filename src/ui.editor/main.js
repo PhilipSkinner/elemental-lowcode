@@ -6,7 +6,8 @@ const
     auth 				= require('simple-oauth2'),
     handlebars 			= require('handlebars'),
     sass                = require('express-compile-sass'),
-    hostnameResolver 	= require('../support.lib/hostnameResolver')();
+    hostnameResolver 	= require('../support.lib/hostnameResolver')(),
+    rateLimit           = require('express-rate-limit');
 
 const proto = process.env.DEFAULT_PROTOCOL ? process.env.DEFAULT_PROTOCOL : 'http';
 
@@ -36,6 +37,7 @@ const apiProxyHandler = require('../support.lib/apiProxyHandler')({
 
 const oauth2 = auth.create(credentials);
 const app = express();
+
 app.use(apiProxyHandler.rawBodyHandler);
 app.use(cookieParser());
 
@@ -46,6 +48,14 @@ app.use(sass({
     watchFiles: true,
     logToConsole: true
 }));
+
+const limiter = rateLimit({
+  windowMs: process.env.RATE_LIMIT_WINDOW_MILLISECONDS  || 200,
+  max: process.env.RATE_LIMIT_MAX_REQUESTS_IN_WINDOW    || 50
+});
+
+// apply rate limiter to all requests
+app.use(limiter);
 
 app.get('/', (req, res) => {
     if (req.cookies.session && req.cookies.session !== 'undefined') {

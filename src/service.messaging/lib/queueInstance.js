@@ -47,7 +47,7 @@ const queueInstance = function(
     this.ajv                    = ajv;
 };
 
-queueInstance.prototype.queueMessage = function(req, res) {
+queueInstance.prototype.queueMessage = function(req, res) {    
     let validator = this.ajv.compile(this.definition.incoming.schema);
 
     if (!validator(req.body)) {
