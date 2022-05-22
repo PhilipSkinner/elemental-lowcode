@@ -190,8 +190,9 @@ configProvider.prototype.addCookies = function() {
         let secretOne = process.env.COOKIE_KEY;
 
         if (!secretOne) {
-            secretOne = [1,1,1,1,1,1,1].map(() => {
-                return Math.random().toString(36); 
+            const crypto = require('node:crypto');
+            secretOne = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1].map(() => { 
+                return crypto.randomInt(1000).toString(36); 
             }).join('').replace(/[^a-z]+/g, '');
         }
 

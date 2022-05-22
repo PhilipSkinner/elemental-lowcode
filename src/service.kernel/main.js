@@ -21,7 +21,8 @@ const
     secretsProvider 		= require('./lib/secrets'),
     hotreload 				= require('../support.lib/hotReload')(),
     initialSetup 			= require('./setup')(),
-    rateLimit               = require('express-rate-limit');
+    rateLimit               = require('express-rate-limit'),
+    crypto                  = require('node:crypto');
 
 const args = argParser.fetch();
 let restarting = false;
@@ -62,7 +63,7 @@ const reload = function() {
 };
 
 const startServices = function() {
-    const secret = [1,1,1,1,1,1,1].map(() => { return Math.random().toString(36); }).join('').replace(/[^a-z]+/g, '');
+    const secret = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1].map(() => { return crypto.randomInt(1000).toString(36); }).join('').replace(/[^a-z]+/g, '');
 
     //load our secrets and scope per app
     secretsProvider(directories.secrets, directories.secretStore).initSecrets(secret).then((secrets) => {
