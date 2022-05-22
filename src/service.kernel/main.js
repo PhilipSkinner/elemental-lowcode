@@ -20,7 +20,8 @@ const
     logsController 			= require('./controllers/logsController'),
     secretsProvider 		= require('./lib/secrets'),
     hotreload 				= require('../support.lib/hotReload')(),
-    initialSetup 			= require('./setup')();
+    initialSetup 			= require('./setup')(),
+    rateLimit               = require('express-rate-limit');
 
 const args = argParser.fetch();
 let restarting = false;
@@ -81,11 +82,15 @@ const startServices = function() {
 
 const runApp = function() {
     const app = express();
-
-    //swap the details around
+    
     const tHandler = tokenHandler();
+    const limiter = rateLimit({
+      windowMs: process.env.RATE_LIMIT_WINDOW_MILLISECONDS  || 200,
+      max: process.env.RATE_LIMIT_MAX_REQUESTS_IN_WINDOW    || 50
+    });
 
     //middleware
+    app.use(limiter);
     app.use(cors({
         methods : 'GET,HEAD,PUT,PATCH,POST,DELETE'
     }));

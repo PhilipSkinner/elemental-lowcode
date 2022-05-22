@@ -3,15 +3,20 @@ const
     cors 			= require('cors'),
     bodyParser 		= require('body-parser'),
     tokenHandler 	= require('../support.lib/tokenHandler'),
-    hotreload 		= require('../support.lib/hotReload')();
+    hotreload 		= require('../support.lib/hotReload')(),
+    rateLimit       = require('express-rate-limit');
 
 let app = null;
 let server = null;
 let restarting = false;
-let tHandler = tokenHandler({
+const tHandler = tokenHandler({
     ignore : [
         /\/\w+\/.definition/i
     ]
+});
+const limiter = rateLimit({
+    windowMs: process.env.RATE_LIMIT_WINDOW_MILLISECONDS  || 200,
+    max: process.env.RATE_LIMIT_MAX_REQUESTS_IN_WINDOW    || 50
 });
 
 if (!process.env.DIR) {
@@ -20,10 +25,8 @@ if (!process.env.DIR) {
 
 
 const startup = () => {
-    app = express();
-
-    const storageEngine = require('./lib/storageEngine')(app);
-
+    app = express();    
+    app.use(limiter);
     app.use(cors({
         exposedHeaders : [
             'location',
@@ -32,12 +35,10 @@ const startup = () => {
         ]
     }));
     app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended : false }));
-    app.use((res, req, next) => {
-        console.log('Request on', res.path);
-        next();
-    });
+    app.use(bodyParser.urlencoded({ extended : false }));    
     app.use(tHandler.tokenCheck.bind(tHandler));
+
+    const storageEngine = require('./lib/storageEngine')(app);
 
     storageEngine.init(process.env.DIR).then(() => {
         console.log('Hotreload complete');

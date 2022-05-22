@@ -7,6 +7,7 @@
 		"cors": "^2.8.5",
 		"express": "^4.17.1",
 		"express-fileupload": "^1.1.6",
+		"express-rate-limit": "^6.4.0",
 		"glob": "^7.1.6",
 		"inquirer": "^7.1.0",
 		"jose": "^1.22.2",
