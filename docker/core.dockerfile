@@ -2,16 +2,16 @@ FROM nginx:latest
 
 #dependencies
 RUN apt-get update
-RUN apt-get install xz-utils wget sqlite3 python3 python3-pip -y
+RUN apt-get install xz-utils wget sqlite3 libsqlite3-dev python3 python3-dev -y
 
 #set dir
 WORKDIR /var/elemental
 
 #install node
-RUN wget -nv https://nodejs.org/dist/v12.16.1/node-v12.16.1-linux-x64.tar.xz
-RUN tar -xf node-v12.16.1-linux-x64.tar.xz
-RUN rm -rf node-v12.16.1-linux-x64.tar.xz
-ENV PATH="/var/elemental/node-v12.16.1-linux-x64/bin:${PATH}"
+RUN wget -nv https://nodejs.org/dist/v16.15.0/node-v16.15.0-linux-x64.tar.xz
+RUN tar -xf node-v16.15.0-linux-x64.tar.xz
+RUN rm -rf node-v16.15.0-linux-x64.tar.xz
+ENV PATH="/var/elemental/node-v16.15.0-linux-x64/bin:${PATH}"
 
 #copy our files
 COPY ui.editor /var/elemental/ui.editor

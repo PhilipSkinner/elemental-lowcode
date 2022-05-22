@@ -1,7 +1,7 @@
 dist: bionic
 language: node_js
 node_js:
-  - 12
+  - 16
 services:
   - docker
 jobs:
@@ -13,5 +13,6 @@ jobs:
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - ./clean.sh        
+        - docker pull nginx:latest
         - docker build -t philipskinner/elemental:latest -f docker/core.dockerfile src/
         - docker push philipskinner/elemental:latest    

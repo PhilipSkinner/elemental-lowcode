@@ -51,7 +51,7 @@ To use the docker image you'll need to boot a SQL server and configure the syste
 ```
 services:
   elemental:
-    image: philipskinner/elemental:upcoming
+    image: philipskinner/elemental:latest
     environment:
       MYSQL_CONNECTION_STRING: "mysql://root:password@mysql:3306/db"
       INITIAL_CLIENT_ID: admin

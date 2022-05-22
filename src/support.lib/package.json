@@ -15,7 +15,7 @@
 		"pg-hstore": "^2.3.3",
 		"request": "^2.88.0",
 		"sequelize": "^5.21.4",
-		"sqlite3": "^4.1.1",
+		"sqlite3": "^5.0.8",
 		"tedious": "^6.0.0",
 		"uuid": "^3.4.0"
 	}
