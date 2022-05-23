@@ -197,9 +197,11 @@ _securityScopeEditorController.prototype.save = function() {
                     this.caller.$forceUpdate();
                 }, 1500);
             }).catch((err) => {
-                this.error.visible = true;
-                this.error.title = 'Error saving scope';
-                this.error.description = err.toString();
+                this.error = {
+                    visible : true,
+                    title : 'Error saving scope',
+                    description : err.toString()
+                };                
 
                 this.forceRefresh();                
             });
@@ -213,20 +215,22 @@ _securityScopeEditorController.prototype.save = function() {
             .then((response) => {
                 this.name = this.scope.name;
                 location.href = `/#/security/scope/${this.name}`;
-                this.caller.showAlert = true;
-                this.caller.$forceUpdate();
 
+                this.showAlert = true;
+                this.forceRefresh();
+                
                 setTimeout(() => {
-                    this.caller.showAlert = false;
-                    this.caller.$forceUpdate();
+                    this.showAlert = false;
+                    this.forceRefresh();
                 }, 1500);
             }).catch((err) => {
-                this.data.error.visible = true;
-                this.data.error.title = 'Error saving scope';
-                this.data.error.description = err.toString();
-
-                this.caller.error = this.getData().error;
-                this.caller.$forceUpdate();
+                this.error = {
+                    visible : true,
+                    title : 'Error saving scope',
+                    description : err.toString()
+                };
+                
+                this.forceRefresh();
             });
     }
 };

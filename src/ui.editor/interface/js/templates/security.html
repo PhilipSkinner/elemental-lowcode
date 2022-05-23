@@ -571,15 +571,146 @@
 	<div class="securityClientEditor">
 		<permissions :roles="['security_writer','security_admin','system_writer','system_admin']"></permissions>
 
-		<div class="entityWrapper">
+		<navigation title="User Editor" :navitems="navitems"></navigation>
+
+		<div v-bind:class="{ 'container-fluid' : true, 'hidden' : !formVisible }">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Authentication</h6>
+						</div>
+						<div class="card-body">							
+							<div class="form-group">
+								<label>Username:</label>
+								<input type="text" class="form-control" name="username" v-model="user.username" />
+							</div>
+							<div class="form-group">								
+								<label>Password:</label>
+								<div class="row">
+									<div class="col-md-9">
+										<input type="password" :disabled="!enteringPassword" class="form-control" name="password" v-model="user.password"/>								
+									</div>
+									<div class="col-md-3">
+	                                	<button :disabled="enteringPassword" class="btn btn-warning float-right" v-on:click="window._securityUserEditorControllerInstance.clearPassword()">
+	                                    	Reset Password
+	                                	</button>
+	                            	</div>
+								</div>								
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Details</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Subject:</label>
+								<input type="text" disabled class="form-control" name="subject" v-model="user.subject" />
+							</div>
+							<div class="form-group">
+								<label>Registered on:</label>
+								<input type="text" disabled class="form-control" name="registered" v-model="user.registered" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="card shadow my-3">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Claims</h6>
+						</div>
+						<div class="card-body" v-if="addingClaim">
+                            <p>
+                                Enter the claim below.
+                            </p>
+
+                            <div class="form-group">
+                                <label>Name:</label>
+                                <input type="text" class="form-control" name="name" v-model="currentClaim.name" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Value:</label>
+                                <input type="text" class="form-control" name="name" v-model="currentClaim.value" />
+                            </div>
+
+                            <div class="float-left">
+                                <button class="btn btn-default" v-on:click="window._securityUserEditorControllerInstance.cancelAddClaim()">
+                                    Cancel
+                                </button>
+                            </div>
+
+                            <div class="float-right">
+                                <button class="btn btn-success" v-on:click="window._securityUserEditorControllerInstance.saveClaim()">
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body" v-if="!addingClaim">
+							<div class="float-right pb-3">
+                                <button class="btn btn-sm btn-primary" v-on:click="_securityUserEditorControllerInstance.addClaim();">
+                                    Add Claim
+                                </button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="Object.keys(user.claims || {}).length === 0">
+                                            <td colspan="2">
+                                                <div class="noResults">
+                                                    No claims
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="claim in _securityUserEditorControllerInstance.userClaims()">
+                                            <td>
+                                                {{claim.name}}
+                                            </td>
+                                            <td>
+                                            	{{claim.value}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="_securityUserEditorControllerInstance.removeClaim(claim.name, claim.value);">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                        	<th>Name</th>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div v-bind:class="{ 'entityWrapper' : true, 'hidden' : formVisible }">
 			<div id="userEditor" class="editorWindow"></div>
 		</div>
 		<div class="actionButtons">
 			<router-link to="/security" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
 			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_securityUserEditorControllerInstance.save();"><i class="fas fa-fw fa-save"></i></button>
 		</div>
-		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
-			{{error.description}}
+		<modal-error v-bind:title="error.title" v-bind:visible="error.visible" v-bind:onclose="_securityUserEditorControllerInstance.closeError">
+			<div v-html="error.description"></div>
 		</modal-error>
 		<alert text="User saved!" v-bind:visible="showAlert"></alert>
 	</div>

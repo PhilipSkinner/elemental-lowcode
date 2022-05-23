@@ -132,6 +132,9 @@ window.axiosProxy = {
         config.data = data;
 
         return window.axios.request(config);
+    },
+    generateErrorMessage : (response) => {
+        return `<ul><li>${response.errors.join('</li><li>')}</li></ul>`;
     }
 };
 
@@ -352,8 +355,17 @@ window.templates.fetchTemplates().then(window.fetchRoles).then(() => {
             template : '#template-modal-error',
             props : [
                 'title',
-                'visible'
-            ]
+                'visible',
+                'onclose'
+            ],
+            methods : {
+                _onClose : function() {                    
+                    if (this._props.onclose && typeof(this._props.onclose) === 'function') {
+                        this._props.onclose();
+                    }
+                    this.visible = false;
+                }
+            }
         });
 
         window.Vue.component('alert', {
