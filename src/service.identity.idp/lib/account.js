@@ -88,7 +88,7 @@ module.exports = function(db, bcrypt, uuid) {
                     //get the claims from the client
                     return clients.reduce((claims, client) => {
                         if (client.client_id === token.clientId) {
-                            claims.roles = client.roles;
+                            claims = Object.assign(client.claims || {}, claims);
                         }
                         return claims;
                     }, {});

@@ -409,7 +409,7 @@
 												{{user.data.registered}}
 											</td>
 											<td>
-												<span v-for="role in (user.data.claims && user.data.claims.roles ? user.data.claims.roles : [])" class="btn btn-xs btn-primary ml-1">
+												<span v-for="role in (user.data.claims && user.data.claims.roles ? user.data.claims.roles : []).concat(user.data.claims && user.data.claims.role ? user.data.claims.role : [])" class="btn btn-xs btn-primary ml-1">
 													{{role}}
 												</span>
 											</td>
@@ -437,9 +437,633 @@
 	<div class="securityClientEditor">
 		<permissions :roles="['security_writer','security_admin','system_writer','system_admin']"></permissions>
 
-		<div class="entityWrapper">
+		<navigation title="Client Editor" :navitems="navitems"></navigation>
+
+		<div v-bind:class="{ 'container-fluid' : true, 'hidden' : sectionVisible !== 'details' }">
+			<div class="row">
+				<div class="col-md-6 py-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Details</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Identifier:</label>
+								<input type="text" class="form-control" name="id" v-model="client.client_id" />
+							</div>
+							<div class="form-group">
+								<label>Secret:</label>
+								<input type="text" class="form-control" name="secret" v-model="client.client_secret" />
+							</div>
+							<div class="form-group">
+								<label>Send emails from:</label>
+								<input type="email" class="form-control" name="email_from" v-model="client.features.email_from" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 py-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Grant types</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Client Credentials</label>
+								<input type="checkbox" class="form-control" name="client_credentials" v-model="grantTypes.client_credentials">
+							</div>
+
+							<div class="form-group">
+								<label>Authorization Code</label>
+								<input type="checkbox" class="form-control" name="authorization_code" v-model="grantTypes.authorization_code">
+							</div>
+
+							<div class="form-group">
+								<label>Refresh Token</label>
+								<input type="checkbox" class="form-control" name="refresh_token" v-model="grantTypes.refresh_token">
+							</div>
+
+							<div class="form-group">
+								<label>Password</label>
+								<input type="checkbox" class="form-control" name="password" v-model="grantTypes.password">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 py-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Scopes</h6>
+						</div>
+						<div class="card-body" v-if="addingScope">
+							<div class="form-group">
+								<label>Scope</label>
+								<select v-model="newScope" class="form-control">
+									<option v-for="scope in allScopes" :value="scope.name" v-if="client.scope.indexOf(scope.name) === -1">
+										{{scope.name}}
+									</option>
+								</select>
+							</div>
+
+							<div class="float-right">
+                                <button class="btn btn-success" v-on:click="window._securityClientEditorControllerInstance.saveScope()">
+                                    Add
+                                </button>
+                            </div>
+
+                            <div class="float-left">
+                                <button class="btn btn-danger" v-on:click="window._securityClientEditorControllerInstance.cancelAddScope()">
+                                    Cancel
+                                </button>
+                            </div>
+						</div>
+						<div class="card-body" v-if="!addingScope">
+							<div class="float-right">
+                                <button class="btn btn-sm btn-primary" v-on:click="window._securityClientEditorControllerInstance.addScope()">
+                                    Add Scope
+                                </button>
+                            </div>
+
+                            <div class="table-responsive py-3">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="client.scope.length === 0">
+                                            <td colspan="2">
+                                                <div class="noResults">
+                                                    No scopes
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="client.scope.length > 0 && scope.length > 0" v-for="scope in client.scope.split(' ')">
+                                            <td>
+                                                {{scope}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="window._securityClientEditorControllerInstance.removeScope(scope)">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 py-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Redirect URIs</h6>
+						</div>
+						<div class="card-body" v-if="addingRedirectUri">
+							<div class="form-group">
+								<label>URI</label>
+								<input type="uri" class="form-control" name="new_uri" v-model="newRedirectUri">
+							</div>
+
+							<div class="float-right">
+                                <button class="btn btn-success" v-on:click="window._securityClientEditorControllerInstance.saveRedirectUri()">
+                                    Add
+                                </button>
+                            </div>
+
+                            <div class="float-left">
+                                <button class="btn btn-danger" v-on:click="window._securityClientEditorControllerInstance.cancelAddingRedirectUri()">
+                                    Cancel
+                                </button>
+                            </div>
+						</div>
+						<div class="card-body" v-if="!addingRedirectUri">
+							<div class="float-right">
+                                <button class="btn btn-sm btn-primary" v-on:click="window._securityClientEditorControllerInstance.addRedirectUri()">
+                                    Add URI
+                                </button>
+                            </div>
+
+                            <div class="table-responsive py-3">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>URI</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="client.redirect_uris.length === 0">
+                                            <td colspan="2">
+                                                <div class="noResults">
+                                                    No redirect URIs
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="client.redirect_uris.length > 0" v-for="uri in client.redirect_uris">
+                                            <td>
+                                                {{uri}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="window._securityClientEditorControllerInstance.removeRedirectUri(uri)">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>URI</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div v-bind:class="{ 'container-fluid' : true, 'hidden' : sectionVisible !== 'claims' }">
+			<div class="row">
+				<div class="col-md-6 pb-3">
+					<div class="card shadow">
+						<div class="card-header">
+							<div class="float-right">
+                                <button class="btn btn-sm btn-primary" v-on:click="window._securityClientEditorControllerInstance.addClientClaim()">
+                                    Add Client Claim
+                                </button>
+                            </div>
+							<h6 class="m-0 font-weight-bold text-primary">Client Claims</h6>
+						</div>
+						<div class="card-body">
+							<div v-if="addingClientClaim">
+								<div class="form-group">
+									<label>Name</label>
+									<input type="text" class="form-control" name="claim_name" v-model="newClaimName" />
+								</div>
+
+								<div class="form-group">
+									<label>Value</label>
+									<input type="text" class="form-control" name="claim_value" v-model="newClaimValue" />
+								</div>
+
+								<div class="float-right">
+	                                <button class="btn btn-success" v-on:click="window._securityClientEditorControllerInstance.saveClientClaim()">
+	                                    Add
+	                                </button>
+	                            </div>
+
+	                            <div class="float-left">
+	                                <button class="btn btn-danger" v-on:click="window._securityClientEditorControllerInstance.cancelAddClientClaim()">
+	                                    Cancel
+	                                </button>
+	                            </div>
+							</div>
+
+							<div class="table-responsive" v-if="!addingClientClaim">
+								<table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="Object.keys(client.claims || {}).length === 0">
+                                            <td colspan="3">
+                                                <div class="noResults">
+                                                    No claims
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="claim in _securityClientEditorControllerInstance.clientClaims()">
+                                            <td>
+                                                {{claim.name}}
+                                            </td>
+                                            <td>
+                                            	{{claim.value}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="_securityClientEditorControllerInstance.removeClientClaim(claim.name, claim.value);">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                        	<th>Name</th>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div v-bind:class="{ 'container-fluid' : true, 'hidden' : sectionVisible !== 'registration' }">
+			<div class="row">
+				<div class="col-md-6 pb-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Registration</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Enabled</label>
+								<input type="checkbox" class="form-control" name="registration_enabled" v-model="client.features.registration.enabled" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 pb-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Password Reset</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Enabled</label>
+								<input type="checkbox" class="form-control" name="reset_enabled" v-model="client.features.reset.enabled" />
+							</div>
+							<div class="form-group">
+								<label>Mechanism</label>
+								<select class="form-control" name="reset_mechanism" v-model="client.features.reset.mechanism">
+									<option value="link-token">Link token</option>
+									<option value="totp">TOTP</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 pb-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">TOTP</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Window time (seconds)</label>
+								<input type="number" min="5" class="form-control" name="totp_time" v-model="client.features.totp.time" />
+							</div>
+							<div class="form-group">
+								<label>Validity period (windows)</label>
+								<input type="number" min="20" class="form-control" name="totp_window" v-model="client.features.totp.window" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div v-bind:class="{ 'container-fluid' : true, 'hidden' : sectionVisible !== 'passwords' }">
+			<div class="row">
+				<div class="col-md-6 pb-3">
+					<div class="card shadow">
+						<div class="card-header">
+							<div class="float-right">
+                                <button class="btn btn-sm btn-primary" v-on:click="window._securityClientEditorControllerInstance.addBannedPassword()">
+                                    Add Banned Password
+                                </button>
+                            </div>
+							<h6 class="m-0 font-weight-bold text-primary">Banned Passwords</h6>
+						</div>
+						<div class="card-body">
+							<div v-if="addingBannedPassword">
+								<div class="form-group">
+									<label>Name</label>
+									<input type="text" class="form-control" name="terms_consent" v-model="newBannedPassword" />
+								</div>
+
+								<div class="float-right">
+	                                <button class="btn btn-success" v-on:click="window._securityClientEditorControllerInstance.saveBannedPassword()">
+	                                    Add
+	                                </button>
+	                            </div>
+
+	                            <div class="float-left">
+	                                <button class="btn btn-danger" v-on:click="window._securityClientEditorControllerInstance.cancelAddBannedPassword()">
+	                                    Cancel
+	                                </button>
+	                            </div>
+							</div>
+
+							<div class="table-responsive" v-if="!addingBannedPassword">
+								<table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Password</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="client.features.banned_passwords.length === 0">
+                                            <td colspan="2">
+                                                <div class="noResults">
+                                                    No banned passwords
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="client.features.banned_passwords.length > 0" v-for="password in client.features.banned_passwords">
+                                            <td>
+                                                {{password}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="window._securityClientEditorControllerInstance.removeBannedPassword(password)">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Password</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 pb-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Password Rules</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Minimum length</label>
+								<input type="number" min="6" class="form-control" name="password_min" v-model="client.features.password.min_length" />
+							</div>
+							<div class="form-group">
+								<label>Maximum length</label>
+								<input type="number" max="999" class="form-control" name="password_max" v-model="client.features.password.max_length" />
+							</div>
+							<div class="form-group">
+								<label>Error message</label>
+								<input type="text" class="form-control" name="password_error" v-model="client.features.password.error" />
+							</div>
+							<div class="form-group">
+								<label>Minimum alpha characters</label>
+								<input type="number" min="0" class="form-control" name="password_min_alpha" v-model="client.features.password.rules.alpha" />
+							</div>
+							<div class="form-group">
+								<label>Minimum numeric characters</label>
+								<input type="number" min="0" class="form-control" name="password_min_numeric" v-model="client.features.password.rules.numeric" />
+							</div>
+							<div class="form-group">
+								<label>Minimum symbol characters</label>
+								<input type="number" min="0" class="form-control" name="password_min_symbol" v-model="client.features.password.rules.symbols" />
+							</div>
+							<div class="form-group">
+								<label>Require mixed case</label>
+								<input type="checkbox" class="form-control" name="password_mixed_case" v-model="client.features.password.rules.mixed_case" />
+							</div>
+							<div class="form-group">
+								<label>Validation regex</label>
+								<input type="text" class="form-control" name="password_validation_regex" v-model="client.features.password.validation_regex" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div v-bind:class="{ 'container-fluid' : true, 'hidden' : sectionVisible !== 'terms' }">
+			<div class="row">
+				<div class="col-md-6 py-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Terms and Conditions</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Required</label>
+								<input type="checkbox" class="form-control" name="terms_required" v-model="client.features.terms.required" />
+							</div>
+							<div class="form-group">
+								<label>URL</label>
+								<input type="uri" class="form-control" name="terms_url" v-model="client.features.terms.document" />
+							</div>
+							<div class="form-group">
+								<label>Version</label>
+								<input type="text" class="form-control" name="terms_version" v-model="client.features.terms.version" />
+							</div>
+							<div class="form-group">
+								<label>Issue to</label>
+								<input type="text" class="form-control" name="terms_claim" v-model="client.features.terms.issue_to" />
+							</div>
+							<div v-if="addingTermsImplicitConsent">
+								<div class="form-group">
+									<label>Name</label>
+									<input type="text" class="form-control" name="terms_consent" v-model="newTermsImplicitConsent" />
+								</div>
+
+								<div class="float-right">
+	                                <button class="btn btn-success" v-on:click="window._securityClientEditorControllerInstance.saveTermsImplicitConsent()">
+	                                    Add
+	                                </button>
+	                            </div>
+
+	                            <div class="float-left">
+	                                <button class="btn btn-danger" v-on:click="window._securityClientEditorControllerInstance.cancelAddTermsImplicitConsent()">
+	                                    Cancel
+	                                </button>
+	                            </div>
+                            </div>
+							<div class="table-responsive" v-if="!addingTermsImplicitConsent">
+								<div class="float-right">
+	                                <button class="btn btn-sm btn-primary" v-on:click="window._securityClientEditorControllerInstance.addTermsImplicitConsent()">
+	                                    Add Implicit Consent
+	                                </button>
+	                            </div>
+
+								<label>Implicit consents</label>
+								<table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="client.features.terms.implicit_consents.length === 0">
+                                            <td colspan="2">
+                                                <div class="noResults">
+                                                    No implicit consents
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="client.features.terms.implicit_consents.length > 0" v-for="consent in client.features.terms.implicit_consents">
+                                            <td>
+                                                {{consent}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="window._securityClientEditorControllerInstance.removeTermsImplicitConsent(consent)">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 py-3">
+					<div class="card shadow">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Privacy Policy</h6>
+						</div>
+						<div class="card-body">
+							<div class="form-group">
+								<label>Required</label>
+								<input type="checkbox" class="form-control" name="terms_required" v-model="client.features.privacy.required" />
+							</div>
+							<div class="form-group">
+								<label>URL</label>
+								<input type="uri" class="form-control" name="terms_url" v-model="client.features.privacy.document" />
+							</div>
+							<div class="form-group">
+								<label>Version</label>
+								<input type="text" class="form-control" name="terms_version" v-model="client.features.privacy.version" />
+							</div>
+							<div class="form-group">
+								<label>Issue to</label>
+								<input type="text" class="form-control" name="terms_claim" v-model="client.features.privacy.issue_to" />
+							</div>
+							<div v-if="addingPrivacyImplicitConsent">
+								<div class="form-group">
+									<label>Name</label>
+									<input type="text" class="form-control" name="terms_consent" v-model="newPrivacyImplicitConsent" />
+								</div>
+
+								<div class="float-right">
+	                                <button class="btn btn-success" v-on:click="window._securityClientEditorControllerInstance.savePrivacyImplicitConsent()">
+	                                    Add
+	                                </button>
+	                            </div>
+
+	                            <div class="float-left">
+	                                <button class="btn btn-danger" v-on:click="window._securityClientEditorControllerInstance.cancelAddPrivacyImplicitConsent()">
+	                                    Cancel
+	                                </button>
+	                            </div>
+                            </div>
+							<div class="table-responsive" v-if="!addingPrivacyImplicitConsent">
+								<div class="float-right">
+	                                <button class="btn btn-sm btn-primary" v-on:click="window._securityClientEditorControllerInstance.addPrivacyImplicitConsent()">
+	                                    Add Implicit Consent
+	                                </button>
+	                            </div>
+
+								<label>Implicit consents</label>
+								<table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="client.features.privacy.implicit_consents.length === 0">
+                                            <td colspan="2">
+                                                <div class="noResults">
+                                                    No implicit consents
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="client.features.privacy.implicit_consents.length > 0" v-for="consent in client.features.privacy.implicit_consents">
+                                            <td>
+                                                {{consent}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="window._securityClientEditorControllerInstance.removePrivacyImplicitConsent(consent)">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div v-bind:class="{ 'entityWrapper' : true, 'hidden' : sectionVisible !== 'editor' }">
 			<div id="clientEditor" class="editorWindow"></div>
 		</div>
+
 		<div class="actionButtons">
 			<router-link to="/security" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
 			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_securityClientEditorControllerInstance.save();"><i class="fas fa-fw fa-save"></i></button>
@@ -668,7 +1292,7 @@
                                     </thead>
                                     <tbody>
                                         <tr v-if="Object.keys(user.claims || {}).length === 0">
-                                            <td colspan="2">
+                                            <td colspan="3">
                                                 <div class="noResults">
                                                     No claims
                                                 </div>

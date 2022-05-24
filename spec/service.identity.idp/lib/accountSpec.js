@@ -217,13 +217,17 @@ const extraClaimsClientTest = (done) => {
     instance.extraAccessTokenClaims([
         {
             client_id : 'doot',
-            roles : ['hello', 'world']
+            claims : {
+                hello : 'world'
+            }
         }
     ])(null, {
         clientId : 'doot',
         kind : 'ClientCredentials'
     }).then((result) => {
-        expect(result.roles).toEqual(['hello', 'world']);
+        expect(result).toEqual({
+            hello : 'world'
+        });
 
         done();
     });
@@ -235,7 +239,9 @@ const extraClaimsClientNotFound = (done) => {
     instance.extraAccessTokenClaims([
         {
             client_id : 'doot',
-            roles : ['hello', 'world']
+            claims : {
+                hello : 'world'
+            }
         }
     ])(null, {
         clientId : 'woot',

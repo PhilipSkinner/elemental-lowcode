@@ -90,7 +90,7 @@ _securityUserEditorController.prototype.userClaims = function() {
             return { name : key, value : m } 
         })); 
     }, []);
-}
+};
 
 _securityUserEditorController.prototype.showForm = function() {
     this.navitems[0].selected = true;
