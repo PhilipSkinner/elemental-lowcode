@@ -46,6 +46,7 @@
 										<router-link :to="{ name : 'apiDetails', params : { name : item.name } }">{{item.name}}</router-link>
 									</td>
 									<td>
+										<router-link class="btn btn-sm btn-success" :to="{ name : 'apiDetails', params : { name : item.name } }">View Docs</router-link>
 										<router-link class="btn btn-sm btn-primary" :to="{ name : 'apiEditor', params : { name : item.name } }">Modify</router-link>
 										<button class="btn btn-sm btn-danger" v-on:click="_apisControllerInstance.deleteApi(item.name);">Remove</router-link>
 									</td>

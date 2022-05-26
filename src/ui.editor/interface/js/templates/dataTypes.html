@@ -51,6 +51,7 @@
 										{{item.count || '0'}} Items
 									</td>
 									<td>
+										<router-link class="btn btn-sm btn-success" :to="{ name : 'dataTypeDetails', params : { type : item.name } }">View Docs</router-link>
 										<router-link class="btn btn-sm btn-primary" :to="{ name : 'dataTypeEditor', params : { type : item.name } }">Modify</router-link>
 										<button class="btn btn-sm btn-danger" v-on:click="_dataControllerInstance.deleteType(item.name);">Remove</button>
 									</td>

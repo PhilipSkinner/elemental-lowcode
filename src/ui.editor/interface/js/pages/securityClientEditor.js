@@ -531,7 +531,7 @@ _securityClientEditorController.prototype.fetchClient = function(name) {
 };
 
 _securityClientEditorController.prototype.save = function() {
-    if (this.formVisible) {
+    if (this.sectionVisible !== 'editor') {
         this.refreshEditorState();
     } else {
         this.refreshInternalState();
