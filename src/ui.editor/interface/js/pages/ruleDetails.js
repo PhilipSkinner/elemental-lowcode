@@ -9,6 +9,18 @@ const _ruleDetailController = function(page) {
     };
     this.examplePostBody = null;
     this.navitems = [];
+    this.loading = true;
+};
+
+_ruleDetailController.prototype.setLoading = function() {
+    this.loading = true;
+};
+
+_ruleDetailController.prototype.setLoaded = function() {
+    setTimeout(() => {
+        this.loading = false;
+        this.forceRefresh();
+    }, 10);
 };
 
 _ruleDetailController.prototype.setCaller = function(caller) {
@@ -20,14 +32,17 @@ _ruleDetailController.prototype.getData = function() {
         name            : this.name,
         ruleset         : this.ruleset,
         examplePostBody : this.examplePostBody,
-        navitems        : this.navitems
+        navitems        : this.navitems,
+        loading         : this.loading
     };
 };
 
 _ruleDetailController.prototype.forceRefresh = function() {
-    this.caller.ruleset = this.ruleset;
+    this.caller.ruleset         = this.ruleset;
     this.caller.examplePostBody = this.examplePostBody;
-    this.caller.navitems = this.navitems;
+    this.caller.navitems        = this.navitems;
+    this.caller.name            = this.name;
+    this.caller.loading         = this.loading;
 
     this.caller.$forceUpdate();
 };
@@ -64,6 +79,7 @@ _ruleDetailController.prototype.fetchRule = function(name) {
             this.ruleset = response.data;
             this.examplePostBody = JSON.stringify(window.JSONSchemaFaker.generate(this.ruleset.facts), null, 4);
 
+            this.setLoaded();
             this.forceRefresh();
         });
 };
@@ -74,8 +90,11 @@ window.RuleDetails = {
         return window._ruleDetailInstance.getData();
     },
     mounted  : function() {
-        window._ruleDetailInstance.setCaller(this);
         return window._ruleDetailInstance.fetchRule(this.$route.params.name);
+    },
+    beforeCreate : function() {
+        window._ruleDetailInstance.setCaller(this);
+        window._ruleDetailInstance.setLoading();
     }
 };
 

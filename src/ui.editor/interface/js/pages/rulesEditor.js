@@ -9,6 +9,18 @@ const _rulesEditorController = function(page) {
         visible : false
     };
     this.navitems = [];
+    this.loading = true;
+};
+
+_rulesEditorController.prototype.setLoading = function() {
+    this.loading = true;
+};
+
+_rulesEditorController.prototype.setLoaded = function() {
+    setTimeout(() => {
+        this.loading = false;
+        this.forceRefresh();
+    }, 10);
 };
 
 _rulesEditorController.prototype.initEditor = function() {
@@ -70,6 +82,7 @@ _rulesEditorController.prototype.initBlankType = function() {
     this.editor.setValue(JSON.stringify(this.ruleset, null, 4));
 
     this.navitems = [];
+    this.setLoaded();
     this.forceRefresh();
 };
 
@@ -83,7 +96,8 @@ _rulesEditorController.prototype.getData = function() {
         ruleset         : this.ruleset,
         showAlert       : this.showAlert,
         error           : this.error,
-        navitems        : this.navitems
+        navitems        : this.navitems,
+        loading         : this.loading,
     }
 };
 
@@ -93,6 +107,7 @@ _rulesEditorController.prototype.forceRefresh = function() {
     this.caller.showAlert   = this.showAlert;
     this.caller.error       = this.error;
     this.caller.navitems    = this.navitems;
+    this.caller.loading     = this.loading;
 
     this.caller.$forceUpdate();
 };
@@ -129,11 +144,14 @@ _rulesEditorController.prototype.fetchType = function(name) {
             this.ruleset = response.data;
             this.editor.setValue(JSON.stringify(response.data, null, 4));
 
+            this.setLoaded();
             this.forceRefresh();
         });
 };
 
 _rulesEditorController.prototype.saveRule = function() {
+    this.setLoading();
+
     var parsed = JSON.parse(this.editor.getValue());
 
     this.ruleset = parsed;
@@ -155,6 +173,7 @@ _rulesEditorController.prototype.saveRule = function() {
                     this.setNavItems();
                 }
 
+                this.setLoaded();
                 this.forceRefresh();
 
                 setTimeout(() => {
@@ -168,6 +187,7 @@ _rulesEditorController.prototype.saveRule = function() {
                     description : err.toString(),
                 };
 
+                this.setLoaded();
                 this.forceRefresh();
             });
     } else {
@@ -185,6 +205,7 @@ _rulesEditorController.prototype.saveRule = function() {
 
                 this.error.visible = false;
                 this.showAlert = true;
+                this.setLoaded();
                 this.forceRefresh();
 
                 setTimeout(() => {
@@ -198,6 +219,7 @@ _rulesEditorController.prototype.saveRule = function() {
                     description : err.toString(),
                 };
 
+                this.setLoaded();
                 this.forceRefresh();
             });
     }
@@ -209,7 +231,6 @@ window.RulesEditor = {
         return _rulesEditorInstance.getData();
     },
     mounted  : function() {
-        window._rulesEditorInstance.setCaller(this);
         window._rulesEditorInstance.initEditor();
         if (this.$route.params.name === '.new') {
             window._rulesEditorInstance.initBlankType();
@@ -217,6 +238,10 @@ window.RulesEditor = {
         }
 
         return window._rulesEditorInstance.fetchType(this.$route.params.name);
+    },
+    beforeCreate : function() {
+        window._rulesEditorInstance.setCaller(this);
+        window._rulesEditorInstance.setLoading();
     }
 };
 

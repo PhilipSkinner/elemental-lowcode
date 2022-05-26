@@ -2,66 +2,72 @@
 	<div class="rules">
 		<permissions :roles="['rule_reader','rule_admin','system_reader','system_admin']"></permissions>
 
-		<navigation title="Rulesets"></navigation>
+		<div v-bind:class="{ 'hidden' : !loading }">
+			<loading message="Loading rulesets..."></loading>
+		</div>
 
-		<confirm
-			title="Confirmation"
-			message="Are you sure you want to delete this ruleset?"
-			v-bind:visible="deleteConfirmVisible"
-			v-bind:on-confirm="confirmDeleteAction"
-		></confirm>
+		<div v-bind:class="{ 'hidden' : loading }">
+			<navigation title="Rulesets"></navigation>
 
-		<!-- Begin Page Content -->
-		<div class="container-fluid">
+			<confirm
+				title="Confirmation"
+				message="Are you sure you want to delete this ruleset?"
+				v-bind:visible="deleteConfirmVisible"
+				v-bind:on-confirm="confirmDeleteAction"
+			></confirm>
 
-			<!-- Page Heading -->
-			<p class="mb-4">Rules are a simple form of decision table. You can define multiple rules within a ruleset, which can match against zero or more values within the given facts collection. Each ruleset has a JSON schema definition for its input facts.</p>
+			<!-- Begin Page Content -->
+			<div class="container-fluid">
 
-			<!-- DataTales Example -->
-			<div class="card shadow mb-4">
-				<div class="card-header py-3">
-					<h6 class="m-0 font-weight-bold text-primary">Current Rulesets</h6>
-				</div>
-				<div class="card-body">
-					<div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-							<thead>
-								<tr>
-									<th>Name</th>
-									<th>Operations</th>
-								</tr>
-							</thead>
-							<tfoot>
-								<tr>
-									<th>Name</th>
-									<th>Operations</th>
-								</tr>
-							</tfoot>
-							<tbody>
-								<tr v-if="rules.length === 0">
-									<td colspan="2" class="no-results">
-										There are no rulesets defined.
-									</td>
-								</tr>
-								<tr v-for="item in rules">
-									<td>
-										<router-link :to="{ name : 'rulesetDetails', params : { name : item.name } }">{{item.name}}</router-link>
-									</td>
-									<td>
-										<router-link class="btn btn-sm btn-success" :to="{ name : 'rulesetDetails', params : { name : item.name } }">View Docs</router-link>
-										<router-link class="btn btn-sm btn-primary" :to="{ name : 'rulesetEditor', params : { name : item.name } }">Modify</router-link>
-										<button class="btn btn-sm btn-danger" v-on:click="_rulesControllerInstance.removeRule(item.name);">Remove</button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+				<!-- Page Heading -->
+				<p class="mb-4">Rules are a simple form of decision table. You can define multiple rules within a ruleset, which can match against zero or more values within the given facts collection. Each ruleset has a JSON schema definition for its input facts.</p>
+
+				<!-- DataTales Example -->
+				<div class="card shadow mb-4">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">Current Rulesets</h6>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Operations</th>
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<th>Name</th>
+										<th>Operations</th>
+									</tr>
+								</tfoot>
+								<tbody>
+									<tr v-if="rules.length === 0">
+										<td colspan="2" class="no-results">
+											There are no rulesets defined.
+										</td>
+									</tr>
+									<tr v-for="item in rules">
+										<td>
+											<router-link :to="{ name : 'rulesetDetails', params : { name : item.name } }">{{item.name}}</router-link>
+										</td>
+										<td>
+											<router-link class="btn btn-sm btn-success" :to="{ name : 'rulesetDetails', params : { name : item.name } }">View Docs</router-link>
+											<router-link class="btn btn-sm btn-primary" :to="{ name : 'rulesetEditor', params : { name : item.name } }">Modify</router-link>
+											<button class="btn btn-sm btn-danger" v-on:click="_rulesControllerInstance.removeRule(item.name);">Remove</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="actionButtons">
-			<router-link to="/rulesets/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+			<div class="actionButtons">
+				<router-link to="/rulesets/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+			</div>
 		</div>
 	</div>
 </template>
@@ -70,62 +76,68 @@
 	<div class="ruleDetails">
 		<permissions :roles="['rule_reader','rule_admin','system_reader','system_admin']"></permissions>
 
-		<navigation :title="ruleset.name" :navitems="navitems"></navigation>
+		<div v-if="loading">
+			<loading message="Loading ruleset..."></loading>
+		</div>
 
-		<div class="container-fluid">
-			<p class="mb-4">The following HTTP endpoint can be used to execute this ruleset. All facts required to trigger the rules held within the ruleset are documented.</p>
+		<div v-if="!loading">
+			<navigation :title="ruleset.name" :navitems="navitems"></navigation>
 
-			<div class="card shadow mb-4">
-				<div class="card-header py-3">
-					<h6 class="m-0 font-weight-bold text-primary">
-						POST {{window.hosts.rules}}/{{ruleset.name}}
-					</h6>
-				</div>
-				<div class="card-body">
-					<div class="block">
-						<p><strong>Request Headers</strong></p>
+			<div class="container-fluid">
+				<p class="mb-4">The following HTTP endpoint can be used to execute this ruleset. All facts required to trigger the rules held within the ruleset are documented.</p>
 
-						<p>
-							<code class="inline">Authorization: Bearer [token]</code>
-						</p>
-						<p>
-							A bearer token issued by the Identity Provider.
-						</p>
-						<p v-if="ruleset.roles.needsRole.exec">
-							Atleast one of these roles must be present to access this endpoint:
-						</p>
-						<ul class="mb-0" v-if="ruleset.roles.needsRole.exec">
-							<li><code class="inline">system_admin</code></li>
-							<li v-if="!ruleset.roles.replace.exec"><code class="inline">system_exec</code></li>
-							<li v-if="!ruleset.roles.replace.exec"><code class="inline">rules_exec</code></li>
-							<li v-if="!ruleset.roles.replace.exec"><code class="inline">{{ruleset.name}}_exec</code></li>
-							<li v-for="role in ruleset.roles.exec"><code class="inline">{{role}}</code></li>
-						</ul>
-
-						<br v-if="ruleset.roles.needsRole.exec"/>
-
-						<p>
-							<code class="inline">Content-Type: application/json</code>
-						</p>
-						<p>
-							Tells the receiving service that you are sending a JSON document in the body.
-						</p>
+				<div class="card shadow mb-4">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">
+							POST {{window.hosts.rules}}/{{ruleset.name}}
+						</h6>
 					</div>
+					<div class="card-body">
+						<div class="block">
+							<p><strong>Request Headers</strong></p>
 
-					<div class="block">
-						<p><strong>Request Body</strong></p>
+							<p>
+								<code class="inline">Authorization: Bearer [token]</code>
+							</p>
+							<p>
+								A bearer token issued by the Identity Provider.
+							</p>
+							<p v-if="ruleset.roles.needsRole.exec">
+								Atleast one of these roles must be present to access this endpoint:
+							</p>
+							<ul class="mb-0" v-if="ruleset.roles.needsRole.exec">
+								<li><code class="inline">system_admin</code></li>
+								<li v-if="!ruleset.roles.replace.exec"><code class="inline">system_exec</code></li>
+								<li v-if="!ruleset.roles.replace.exec"><code class="inline">rules_exec</code></li>
+								<li v-if="!ruleset.roles.replace.exec"><code class="inline">{{ruleset.name}}_exec</code></li>
+								<li v-for="role in ruleset.roles.exec"><code class="inline">{{role}}</code></li>
+							</ul>
 
-						<p>
-							This endpoint requires facts to be presented to it that the ruleset will be executed upon. The structure of these facts is defined by the following JSON schema:
-						</p>
+							<br v-if="ruleset.roles.needsRole.exec"/>
 
-						<pre>{{JSON.stringify(ruleset.facts, null, 4)}}</pre>
+							<p>
+								<code class="inline">Content-Type: application/json</code>
+							</p>
+							<p>
+								Tells the receiving service that you are sending a JSON document in the body.
+							</p>
+						</div>
 
-						<p>
-							These facts are to be posted to the endpoint as the request body, here is an example of some facts for this endpoint:
-						</p>
+						<div class="block">
+							<p><strong>Request Body</strong></p>
 
-						<pre>{{examplePostBody}}</pre>
+							<p>
+								This endpoint requires facts to be presented to it that the ruleset will be executed upon. The structure of these facts is defined by the following JSON schema:
+							</p>
+
+							<pre>{{JSON.stringify(ruleset.facts, null, 4)}}</pre>
+
+							<p>
+								These facts are to be posted to the endpoint as the request body, here is an example of some facts for this endpoint:
+							</p>
+
+							<pre>{{examplePostBody}}</pre>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -137,18 +149,24 @@
 	<div class="rulesEditor">
 		<permissions :roles="['rule_writer','rule_admin','system_writer','system_admin']"></permissions>
 
-		<navigation :title="ruleset.name" :navitems="navitems"></navigation>
+		<div v-bind:class="{ 'hidden' : !loading }">
+			<loading message="Loading ruleset..."></loading>
+		</div>
 
-		<div class="entityWrapper">
-			<div id="ruleEditor" class="editorWindow"></div>
+		<div v-bind:class="{ 'hidden' : loading }">
+			<navigation :title="ruleset.name" :navitems="navitems"></navigation>
+
+			<div class="entityWrapper">
+				<div id="ruleEditor" class="editorWindow"></div>
+			</div>
+			<div class="actionButtons">
+				<router-link to="/rulesets" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+				<button class="rounded-circle border-0 btn btn-primary" v-on:click="_rulesEditorInstance.saveRule();"><i class="fas fa-fw fa-save"></i></button>
+			</div>
+			<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+				{{error.description}}
+			</modal-error>
+			<alert text="Ruleset saved!" v-bind:visible="showAlert"></alert>
 		</div>
-		<div class="actionButtons">
-			<router-link to="/rulesets" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
-			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_rulesEditorInstance.saveRule();"><i class="fas fa-fw fa-save"></i></button>
-		</div>
-		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
-			{{error.description}}
-		</modal-error>
-		<alert text="Ruleset saved!" v-bind:visible="showAlert"></alert>
 	</div>
 </template>

@@ -351,6 +351,13 @@ window.templates.fetchTemplates().then(window.fetchRoles).then(() => {
             }
         ];
 
+        window.Vue.component('loading', {
+            template : '#template-loading',
+            props : [
+                'message'
+            ]
+        });
+
         window.Vue.component('modal-error', {
             template : '#template-modal-error',
             props : [

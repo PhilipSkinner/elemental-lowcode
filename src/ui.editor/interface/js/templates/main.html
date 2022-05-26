@@ -4,6 +4,25 @@
 	</div>
 </template>
 
+<template id="template-loading">
+	<div class="loading">
+		<div class="loading-wrapper">
+			<div class="loading-animation">
+				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;display:block;" width="120px" height="120px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+					<circle cx="50" cy="50" r="30" stroke="#4e73df" stroke-width="10" fill="none"></circle>
+					<circle cx="50" cy="50" r="30" stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none">
+					  <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="2.0408163265306123s" values="0 50 50;180 50 50;720 50 50" keyTimes="0;0.5;1"></animateTransform>
+					  <animate attributeName="stroke-dasharray" repeatCount="indefinite" dur="2.0408163265306123s" values="18.84955592153876 169.64600329384882;94.2477796076938 94.24777960769377;18.84955592153876 169.64600329384882" keyTimes="0;0.5;1"></animate>
+					</circle>
+				</svg>
+			</div>
+			<div class="loading-message">
+				{{message}}
+			</div>
+		</div>
+	</div>
+</template>
+
 <template id="template-confirm">
 	<div class="modal" v-if="visible">
 		<div class="modal-dialog modal-dialog-centered" role="document">

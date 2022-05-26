@@ -1,14 +1,38 @@
 const _rulesController = function(page) {
     this._page = page;
     this.rules = [];
+    this.loading = true;
+    this.deleteConfirmVisible = false;
+    this.confirmDeleteAction = () => {};
 };
 
-_rulesController.prototype.getRules = function() {
+_rulesController.prototype.setLoading = function() {
+    this.loading = true;
+};
+
+_rulesController.prototype.setLoaded = function() {
+    setTimeout(() => {
+        this.loading = false;
+        this.forceRefresh();
+    }, 10);
+};
+
+_rulesController.prototype.getData = function() {
     return {
         rules 					: this.rules,
-        deleteConfirmVisible 	: false,
-        confirmDeleteAction 	: () => {}
+        deleteConfirmVisible    : this.deleteConfirmVisible,
+        confirmDeleteAction     : this.confirmDeleteAction,
+        loading                 : this.loading,
     };
+};
+
+_rulesController.prototype.forceRefresh = function() {
+    this.caller.rules                   = this.rules;
+    this.caller.deleteConfirmVisible    = this.deleteConfirmVisible;
+    this.caller.confirmDeleteAction     = this.confirmDeleteAction;
+    this.caller.loading                 = this.loading;
+
+    this.caller.$forceUpdate();
 };
 
 _rulesController.prototype.setCaller = function(caller) {
@@ -25,22 +49,25 @@ _rulesController.prototype.fetchRules = function() {
             });
 
             this.rules = response.data;
-            this.caller.rules = response.data;
-            this.caller.$forceUpdate();
+            this.setLoaded();
+            this.forceRefresh();
         });
 };
 
 _rulesController.prototype.removeRule = function(rule) {
-    this.caller.deleteConfirmVisible = true;
-    this.caller.confirmDeleteAction = () => {
-        this.caller.deleteConfirmVisible = false;
+    this.deleteConfirmVisible = true;
+    this.confirmDeleteAction = () => {
+        this.deleteConfirmVisible = false;
         return this._removeRule(rule);
     };
-    this.caller.$forceUpdate();
+    this.forceRefresh();
     return;
 };
 
 _rulesController.prototype._removeRule = function(rule) {
+    this.setLoading();
+    this.forceRefresh();
+
     return window.axiosProxy
         .delete(`${window.hosts.kernel}/rules/${rule}`)
         .then((response) => {
@@ -51,11 +78,14 @@ _rulesController.prototype._removeRule = function(rule) {
 window.Rules = {
     template : '#template-rules',
     data 	 : () => {
-        return window._rulesControllerInstance.getRules();
+        return window._rulesControllerInstance.getData();
     },
     mounted  : function() {
-        window._rulesControllerInstance.setCaller(this);
         return window._rulesControllerInstance.fetchRules();
+    },
+    beforeCreate : function() {
+        window._rulesControllerInstance.setCaller(this);
+        window._rulesControllerInstance.setLoading();
     }
 };
 
