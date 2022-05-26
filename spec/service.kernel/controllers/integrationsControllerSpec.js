@@ -148,12 +148,16 @@ const getSingularTest = (done) => {
 
 const updateValidationErrorTest = (done) => {
     const validatorMock = sinon.mock(typeValidator);
-    validatorMock.expects('validate').once().withArgs('integration', 'my-body').returns(Promise.reject(['not good']));
+    validatorMock.expects('validate').once().withArgs('integration', {
+        name : 'my-name'
+    }).returns(Promise.reject(['not good']));
 
     const instance = controller(app, 'my-dir', fileLister, path, roleCheckHandler, typeValidator);
 
     instance.update({
-        body : 'my-body',
+        body : {
+            name : 'my-name'
+        },
         params : {
             name : 'my-name'
         }
@@ -178,7 +182,9 @@ const updateValidationErrorTest = (done) => {
 
 const updateFileWriteErrorTest = (done) => {
     const validatorMock = sinon.mock(typeValidator);
-    validatorMock.expects('validate').once().withArgs('integration', 'my-body').returns(Promise.resolve());
+    validatorMock.expects('validate').once().withArgs('integration', {
+        name : 'my-name'
+    }).returns(Promise.resolve());
 
     const fileMock = sinon.mock(fileLister);
     fileMock.expects('writeFile').once().withArgs('my-dir', 'my-name.json').returns(Promise.reject(new Error('really not good')));
@@ -186,7 +192,9 @@ const updateFileWriteErrorTest = (done) => {
     const instance = controller(app, 'my-dir', fileLister, path, roleCheckHandler, typeValidator);
 
     instance.update({
-        body : 'my-body',
+        body : {
+            name : 'my-name'
+        },
         params : {
             name : 'my-name'
         }
@@ -212,7 +220,9 @@ const updateFileWriteErrorTest = (done) => {
 
 const updateTest = (done) => {
     const validatorMock = sinon.mock(typeValidator);
-    validatorMock.expects('validate').once().withArgs('integration', 'my-body').returns(Promise.resolve());
+    validatorMock.expects('validate').once().withArgs('integration', {
+        name : 'my-name'
+    }).returns(Promise.resolve());
 
     const fileMock = sinon.mock(fileLister);
     fileMock.expects('writeFile').once().withArgs('my-dir', 'my-name.json').returns(Promise.resolve());
@@ -220,7 +230,9 @@ const updateTest = (done) => {
     const instance = controller(app, 'my-dir', fileLister, path, roleCheckHandler, typeValidator);
 
     instance.update({
-        body : 'my-body',
+        body : {
+            name : 'my-name'
+        },
         params : {
             name : 'my-name'
         }
@@ -236,6 +248,39 @@ const updateTest = (done) => {
         }
     });
 };
+
+const updateRenameTest = (done) => {
+    const validatorMock = sinon.mock(typeValidator);
+    validatorMock.expects('validate').once().withArgs('integration', {
+        name : 'my-name'
+    }).returns(Promise.resolve());
+
+    const fileMock = sinon.mock(fileLister);
+    fileMock.expects('deleteFile').once().withArgs('my-dir', 'my-name.json').returns(Promise.resolve());
+    fileMock.expects('writeFile').once().withArgs('my-dir', 'new-name.json').returns(Promise.resolve());
+
+    const instance = controller(app, 'my-dir', fileLister, path, roleCheckHandler, typeValidator);
+
+    instance.update({
+        body : {
+            name : 'new-name'
+        },
+        params : {
+            name : 'my-name'
+        }
+    }, {
+        status : (code) => {
+            expect(code).toEqual(204);
+        },
+        end : () => {
+            validatorMock.verify();
+            fileMock.verify();
+
+            done();
+        }
+    });
+};
+
 
 const deleteErrorTest = (done) => {
     const fileMock = sinon.mock(fileLister);
@@ -408,6 +453,7 @@ describe('An integrations controller', () => {
         it('handles validation errors', updateValidationErrorTest);
         it('handles file write errors', updateFileWriteErrorTest);
         it('works', updateTest);
+        it('works when renaming', updateRenameTest);
     });
 
     describe('delete', () => {

@@ -1,9 +1,26 @@
 const _integrationDetailController = function(page) {
     this._page = page;
     this.caller = null;
-    this.data = {
-        integration 	: {}
+    this.integration = {
+        method : '',
+        roles : {
+            needsRole : false
+        },
+        variables : {}
     };
+    this.loading = true;
+    this.navitems = [];
+};
+
+_integrationDetailController.prototype.setLoading = function() {
+    this.loading = true;
+};
+
+_integrationDetailController.prototype.setLoaded = function() {
+    setTimeout(() => {
+        this.loading = false;
+        this.forceRefresh();
+    }, 10);
 };
 
 _integrationDetailController.prototype.setCaller = function(caller) {
@@ -12,18 +29,55 @@ _integrationDetailController.prototype.setCaller = function(caller) {
 
 _integrationDetailController.prototype.getData = function() {
     return {
-        integration : this.data.integration
+        integration : this.integration,
+        loading     : this.loading,
+        navitems    : this.navitems,
+        name        : this.name
     };
+};
+
+_integrationDetailController.prototype.forceRefresh = function() {
+    this.caller.integration = this.integration;
+    this.caller.loading     = this.loading;
+    this.caller.navitems    = this.navitems;
+    this.caller.name        = this.name;
+
+    this.caller.$forceUpdate();
+};
+
+_integrationDetailController.prototype.setNavItems = function() {
+    this.navitems = [
+        {
+            name            : 'Documentation',
+            selected        : true,
+            route_name      : 'integrationDetails',
+            route_params    : {
+                name : this.name
+            }
+        },
+        {
+            name            : 'Modify',
+            selected        : false,
+            route_name      : 'integrationEditor',
+            route_params    : {
+                name : this.name
+            }
+        }
+    ];
 };
 
 _integrationDetailController.prototype.fetchType = function(name) {
     this.name = name;
+
+    this.setNavItems();
+
     return window.axiosProxy
         .get(`${window.hosts.kernel}/integrations/${name}`)
         .then((response) => {
-            this.data.integration = response.data;
-            this.caller.integration = response.data;
-            this.caller.$forceUpdate();
+            this.integration = response.data;
+
+            this.setLoaded();
+            this.forceRefresh();
         });
 };
 
@@ -33,8 +87,11 @@ window.IntegrationDetails = {
         return window._integrationDetailInstance.getData();
     },
     mounted  : function() {
-        window._integrationDetailInstance.setCaller(this);
         return window._integrationDetailInstance.fetchType(this.$route.params.name);
+    },
+    beforeCreate : function() {
+        window._integrationDetailInstance.setCaller(this);
+        window._integrationDetailInstance.setLoading();
     }
 };
 

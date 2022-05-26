@@ -1,39 +1,66 @@
 const _integrationsController = function(page) {
     this._page = page;
     this.integrations = [];
+    this.loading = true;
+    this.deleteConfirmVisible = false;
+    this.confirmDeleteAction = () => {};
+};
+
+_integrationsController.prototype.setLoading = function() {
+    this.loading = true;
+};
+
+_integrationsController.prototype.setLoaded = function() {
+    setTimeout(() => {
+        this.loading = false;
+        this.forceRefresh();
+    }, 10);
 };
 
 _integrationsController.prototype.getData = function() {
     return {
         integrations 			: this.integrations,
-        deleteConfirmVisible 	: false,
-        confirmDeleteAction 	: () => {}
+        deleteConfirmVisible 	: this.deleteConfirmVisible,
+        confirmDeleteAction 	: this.confirmDeleteAction,
+        loading                 : this.loading,
     };
 };
 
-_integrationsController.prototype.fetchIntegrations = function(caller) {
-    this.caller = caller;
+_integrationsController.prototype.forceRefresh = function() {
+    this.caller.integrations            = this.integrations;
+    this.caller.deleteConfirmVisible    = this.deleteConfirmVisible
+    this.caller.confirmDeleteAction     = this.confirmDeleteAction;
+    this.caller.loading                 = this.loading;
 
+    this.caller.$forceUpdate();
+};
+
+_integrationsController.prototype.setCaller = function(caller) {
+    this.caller = caller;
+}
+
+_integrationsController.prototype.fetchIntegrations = function() {
     return window.axiosProxy
         .get(`${window.hosts.kernel}/integrations`)
         .then((response) => {
             this.integrations = response.data;
-            this.caller.integrations = response.data;
-            this.caller.$forceUpdate();
+            this.setLoaded();
+            this.forceRefresh();
         });
 };
 
 _integrationsController.prototype.removeIntegration = function(name) {
-    this.caller.deleteConfirmVisible = true;
-    this.caller.confirmDeleteAction = () => {
-        this.caller.deleteConfirmVisible = false;
+    this.deleteConfirmVisible = true;
+    this.confirmDeleteAction = () => {
+        this.deleteConfirmVisible = false;
         this._removeIntegration(name);
     };
-    this.caller.$forceUpdate();
-    return;
+    this.forceRefresh();
 };
 
 _integrationsController.prototype._removeIntegration = function(name) {
+    this.setLoading();
+
     return window.axiosProxy
         .delete(`${window.hosts.kernel}/integrations/${name}`)
         .then((response) => {
@@ -47,7 +74,11 @@ window.Integrations = {
         return window._integrationsControllerInstance.getData();
     },
     mounted  : function() {
-        return window._integrationsControllerInstance.fetchIntegrations(this);
+        return window._integrationsControllerInstance.fetchIntegrations();
+    },
+    beforeCreate : function() {
+        window._integrationsControllerInstance.setCaller(this);
+        window._integrationsControllerInstance.setLoading();
     }
 };
 

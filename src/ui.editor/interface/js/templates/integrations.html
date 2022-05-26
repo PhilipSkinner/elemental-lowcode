@@ -11,9 +11,12 @@
 			v-bind:on-confirm="confirmDeleteAction"
 		></confirm>
 
-		<!-- Begin Page Content -->
-		<div class="container-fluid">
+		<div v-bind:class="{ 'hidden' : !loading }">
+			<loading message="Loading integrations..."></loading>
+		</div>
 
+		<!-- Begin Page Content -->
+		<div v-bind:class="{ 'hidden' : loading, 'container-fluid' : true }">
 			<!-- Page Heading -->
 			<p class="mb-4">Integrations allow you to wrap an existing API/Service with a RESTful API that follows the standard security model.</p>
 
@@ -69,50 +72,56 @@
 	<div class="integrationDetails">
 		<permissions :roles="['integration_reader','integration_admin','system_reader','system_admin']"></permissions>
 
-		<navigation :title="integration.name"></navigation>
+		<div v-bind:class="{ 'hidden' : !loading }">
+			<loading message="Loading integration..."></loading>
+		</div>
 
-		<div class="container-fluid">
-			<p class="mb-4">
-				This integration can be communicated with using the following details.
-			</p>
+		<div v-bind:class="{ 'hidden' : loading }">
+			<navigation :title="integration.name" :navitems="navitems"></navigation>
 
-			<div class="card shadow mb-4">
-				<div class="card-header py-3">
-					<h6 class="m-0 font-weight-bold text-primary">
-						{{integration.method.toUpperCase()}} {{window.hosts.integration}}/{{integration.name}}
-					</h6>
-				</div>
-				<div class="card-body">
-					<p>
-						{{integration.description}}
-					</p>
+			<div class="container-fluid">
+				<p class="mb-4">
+					This integration can be communicated with using the following details.
+				</p>
 
-					<div class="block">
-						<b>Header: <code class="inline">Authorization : Bearer [token]</code></b>
-						<br/>
-							A bearer token issued by the Identity Provider.
-						<br/>
-						<span v-if="integration.roles.needsRole.exec">
-							Atleast one of these roles must be present to access required to access:
-						</span>
-						<ul class="mb-0" v-if="integration.roles.needsRole.exec">
-							<li><code class="inline">system_admin</code></li>
-							<li v-if="!integration.roles.replace.exec"><code class="inline">system_exec</code></li>
-							<li v-if="!integration.roles.replace.exec"><code class="inline">integration_exec</code></li>
-							<li v-if="!integration.roles.replace.exec"><code class="inline">{{integration.name}}_exec</code></li>
-							<li v-for="role in integration.roles.exec"><code class="inline">{{role}}</code></li>
-						</ul>
+				<div class="card shadow mb-4">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">
+							{{integration.method.toUpperCase()}} {{window.hosts.integration}}/{{integration.name}}
+						</h6>
 					</div>
+					<div class="card-body">
+						<p>
+							{{integration.description}}
+						</p>
 
-					<p v-if="integration.variables.length === 0">
-						This integration can be called with no parameters.
-					</p>
-					<div class="block" v-for="variable in integration.variables">
-						<b>Parameter:</b> <code class="inline">{{variable.name}}</code>
-						<br/>
-						<b>Type:</b> <code class="inline">{{variable.type}}</code>
-						<br/>
-						<b>Description:</b> {{variable.description}}
+						<div class="block">
+							<b>Header: <code class="inline">Authorization : Bearer [token]</code></b>
+							<br/>
+								A bearer token issued by the Identity Provider.
+							<br/>
+							<span v-if="integration.roles.needsRole.exec">
+								Atleast one of these roles must be present to access required to access:
+							</span>
+							<ul class="mb-0" v-if="integration.roles.needsRole.exec">
+								<li><code class="inline">system_admin</code></li>
+								<li v-if="!integration.roles.replace.exec"><code class="inline">system_exec</code></li>
+								<li v-if="!integration.roles.replace.exec"><code class="inline">integration_exec</code></li>
+								<li v-if="!integration.roles.replace.exec"><code class="inline">{{integration.name}}_exec</code></li>
+								<li v-for="role in integration.roles.exec"><code class="inline">{{role}}</code></li>
+							</ul>
+						</div>
+
+						<p v-if="integration.variables.length === 0">
+							This integration can be called with no parameters.
+						</p>
+						<div class="block" v-for="variable in integration.variables">
+							<b>Parameter:</b> <code class="inline">{{variable.name}}</code>
+							<br/>
+							<b>Type:</b> <code class="inline">{{variable.type}}</code>
+							<br/>
+							<b>Description:</b> {{variable.description}}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -124,16 +133,24 @@
 	<div class="integrationsEditor">
 		<permissions :roles="['integration_writer','integration_admin','system_writer','system_admin']"></permissions>
 
-		<div class="entityWrapper">
-			<div id="integrationEditor" class="editorWindow"></div>
+		<div v-bind:class="{ 'hidden' : !loading }">
+			<loading message="Loading integration..."></loading>
 		</div>
-		<div class="actionButtons">
-			<router-link to="/integrations" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
-			<button class="rounded-circle border-0 btn btn-primary" v-on:click="_integrationsEditorInstance.saveIntegration();"><i class="fas fa-fw fa-save"></i></button>
+
+		<div v-bind:class="{ 'hidden' : loading }">
+			<navigation :title="integration.name" :navitems="navitems"></navigation>
+
+			<div class="entityWrapper">
+				<div id="integrationEditor" class="editorWindow"></div>
+			</div>
+			<div class="actionButtons">
+				<router-link to="/integrations" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+				<button class="rounded-circle border-0 btn btn-primary" v-on:click="_integrationsEditorInstance.saveIntegration();"><i class="fas fa-fw fa-save"></i></button>
+			</div>
+			<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+				{{error.description}}
+			</modal-error>
+			<alert text="Integration type saved!" v-bind:visible="showAlert"></alert>
 		</div>
-		<modal-error v-bind:title="error.title" v-bind:visible="error.visible">
-			{{error.description}}
-		</modal-error>
-		<alert text="Integration type saved!" v-bind:visible="showAlert"></alert>
 	</div>
 </template>

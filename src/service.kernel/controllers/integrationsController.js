@@ -46,6 +46,12 @@ integrationsController.prototype.getSingular = function(req, res) {
 integrationsController.prototype.update = function(req, res) {
     //validate the JSON
     this.typeValidator.validate('integration', req.body).then(() => {
+        if (req.params.name !== req.body.name) {
+            return this.fileLister.deleteFile(this.dir, req.params.name + '.json').then(() => {
+                return this.fileLister.writeFile(this.dir, req.body.name + '.json', JSON.stringify(req.body));
+            });
+        }
+
         return this.fileLister.writeFile(this.dir, req.params.name + '.json', JSON.stringify(req.body));
     }).then(() => {
         res.status(204);
