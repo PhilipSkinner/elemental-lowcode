@@ -67,6 +67,7 @@ window.DataTypeDetails = {
             {
                 name 		: 'Definition',
                 link		: `${window.hosts.storage}/${this.$route.params.type}/.definition`,
+                target      : '_blank',
                 selected	: false
             }
         ];
