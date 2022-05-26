@@ -45,6 +45,12 @@ rulesController.prototype.getSingular = function(req, res) {
 
 rulesController.prototype.update = function(req, res) {
     this.typeValidator.validate('ruleset', req.body).then(() => {
+        if (req.params.name !== req.body.name) {
+            return this.fileLister.deleteFile(this.dir, req.params.name + '.json').then(() => {
+                return this.fileLister.writeFile(this.dir, req.body.name + '.json', JSON.stringify(req.body));
+            });
+        }
+
         return this.fileLister.writeFile(this.dir, req.params.name + '.json', JSON.stringify(req.body));
     }).then(() => {
         res.status(204);

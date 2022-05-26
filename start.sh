@@ -23,4 +23,4 @@ docker-compose up core_services
 exec_sql "CREATE DATABASE IF NOT EXISTS db"
 
 xdg-open http://localhost:8002
-cd ./src/service.kernel && node main.js
+cd ./src/service.kernel && nodemon main.js

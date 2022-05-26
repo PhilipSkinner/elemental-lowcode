@@ -70,7 +70,7 @@
 	<div class="ruleDetails">
 		<permissions :roles="['rule_reader','rule_admin','system_reader','system_admin']"></permissions>
 
-		<navigation :title="ruleset.name"></navigation>
+		<navigation :title="ruleset.name" :navitems="navitems"></navigation>
 
 		<div class="container-fluid">
 			<p class="mb-4">The following HTTP endpoint can be used to execute this ruleset. All facts required to trigger the rules held within the ruleset are documented.</p>
@@ -136,6 +136,8 @@
 <template id="template-rulesEditor">
 	<div class="rulesEditor">
 		<permissions :roles="['rule_writer','rule_admin','system_writer','system_admin']"></permissions>
+
+		<navigation :title="ruleset.name" :navitems="navitems"></navigation>
 
 		<div class="entityWrapper">
 			<div id="ruleEditor" class="editorWindow"></div>

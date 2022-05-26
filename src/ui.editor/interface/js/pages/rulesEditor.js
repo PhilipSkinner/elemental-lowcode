@@ -1,16 +1,14 @@
 const _rulesEditorController = function(page) {
     this._page = page;
-    this.rule = {};
+    this.ruleset = {};
     this.caller = null;
     this.name = null;
     this.editor = null;
-    this.data = {
-        integration 	: this.rule,
-        showAlert 		: false,
-        error 	 		: {
-            visible 	: false
-        }
+    this.showAlert = false;
+    this.error = {
+        visible : false
     };
+    this.navitems = [];
 };
 
 _rulesEditorController.prototype.initEditor = function() {
@@ -35,39 +33,44 @@ _rulesEditorController.prototype.initEditor = function() {
 _rulesEditorController.prototype.initBlankType = function() {
     this.name = null;
 
-    //set the example
-    this.editor.setValue(JSON.stringify({
-        'name' : 'basic',
-        'roles' : {
-            'replace' : {
-                'exec' : false
+    this.ruleset = {
+        name : 'untitled',
+        roles : {
+            replace : {
+                exec : false
             },
-            'exec' : [],
-            'needsRole' : {
-                'exec' : true
+            exec : [],
+            needsRole : {
+                exec : true
             }
         },
-        'facts' : {
-            'type' : 'object',
-            'properties' : {
-                'value' : {
-                    'type' : 'string'
+        facts : {
+            type : 'object',
+            properties : {
+                value : {
+                    type : 'string'
                 }
             }
         },
-        'rules' : [
+        rules : [
             {
-                'comparitors' : [
+                comparitors : [
                     {
-                        'input' : '$.value',
-                        'operator' : 'eq',
-                        'value' : 'hello'
+                        input : '$.value',
+                        operator : 'eq',
+                        value : 'hello'
                     }
                 ],
-                'output' : 'world'
+                output : 'world'
             }
         ]
-    }, null, 4));
+    };
+
+    //set the example
+    this.editor.setValue(JSON.stringify(this.ruleset, null, 4));
+
+    this.navitems = [];
+    this.forceRefresh();
 };
 
 _rulesEditorController.prototype.setCaller = function(caller) {
@@ -75,24 +78,65 @@ _rulesEditorController.prototype.setCaller = function(caller) {
 };
 
 _rulesEditorController.prototype.getData = function() {
-    return this.data;
+    return {
+        name            : this.name,
+        ruleset         : this.ruleset,
+        showAlert       : this.showAlert,
+        error           : this.error,
+        navitems        : this.navitems
+    }
+};
+
+_rulesEditorController.prototype.forceRefresh = function() {
+    this.caller.name        = this.name;
+    this.caller.ruleset     = this.ruleset;
+    this.caller.showAlert   = this.showAlert;
+    this.caller.error       = this.error;
+    this.caller.navitems    = this.navitems;
+
+    this.caller.$forceUpdate();
+};
+
+_rulesEditorController.prototype.setNavItems = function() {
+    this.navitems = [
+        {
+            name            : 'Documentation',
+            selected        : false,
+            route_name      : 'rulesetDetails',
+            route_params    : {
+                name : this.name
+            }
+        },
+        {
+            name            : 'Modify',
+            selected        : true,
+            route_name      : 'rulesetEditor',
+            route_params    : {
+                name : this.name
+            }
+        }
+    ];
 };
 
 _rulesEditorController.prototype.fetchType = function(name) {
     this.name = name;
+
+    this.setNavItems();
+
     return window.axiosProxy
         .get(`${window.hosts.kernel}/rules/${name}`)
         .then((response) => {
-            this.rule = response.data;
-            this.caller.rule = response.data;
-            this.caller.$forceUpdate();
-
+            this.ruleset = response.data;
             this.editor.setValue(JSON.stringify(response.data, null, 4));
+
+            this.forceRefresh();
         });
 };
 
 _rulesEditorController.prototype.saveRule = function() {
     var parsed = JSON.parse(this.editor.getValue());
+
+    this.ruleset = parsed;
 
     if (this.name) {
         return window.axiosProxy
@@ -102,21 +146,29 @@ _rulesEditorController.prototype.saveRule = function() {
                 }
             })
             .then((response) => {
-                this.data.error.visible = false;
-                this.caller.showAlert = true;
-                this.caller.$forceUpdate();
+                this.error.visible = false;
+                this.showAlert = true;
+
+                if (this.name !== this.ruleset.name) {
+                    location.href = '/#/rulesets/editor/' + this.ruleset.name;
+                    this.name = this.ruleset.name;
+                    this.setNavItems();
+                }
+
+                this.forceRefresh();
 
                 setTimeout(() => {
-                    this.caller.showAlert = false;
-                    this.caller.$forceUpdate();
+                    this.showAlert = false;
+                    this.forceRefresh();
                 }, 1500);
             }).catch((err) => {
-                this.data.error.visible = true;
-                this.data.error.title = 'Error saving ruleset';
-                this.data.error.description = err.toString();
+                this.error = {
+                    visible     : true,
+                    title       : 'Error saving ruleset',
+                    description : err.toString(),
+                };
 
-                this.caller.error = this.getData().error;
-                this.caller.$forceUpdate();
+                this.forceRefresh();
             });
     } else {
         return window.axiosProxy
@@ -129,25 +181,26 @@ _rulesEditorController.prototype.saveRule = function() {
                 //set our name
                 this.name = parsed.name;
                 location.href = '/#/rulesets/editor/' + this.name;
+                this.setNavItems();
 
-                this.data.error.visible = false;
-                this.caller.showAlert = true;
-                this.caller.$forceUpdate();
+                this.error.visible = false;
+                this.showAlert = true;
+                this.forceRefresh();
 
                 setTimeout(() => {
-                    this.caller.showAlert = false;
-                    this.caller.$forceUpdate();
+                    this.showAlert = false;
+                    this.forceRefresh();
                 }, 1500);
             }).catch((err) => {
-                this.data.error.visible = true;
-                this.data.error.title = 'Error saving ruleset';
-                this.data.error.description = err.toString();
+                this.error = {
+                    visible     : true,
+                    title       : 'Error saving ruleset',
+                    description : err.toString(),
+                };
 
-                this.caller.error = this.getData().error;
-                this.caller.$forceUpdate();
+                this.forceRefresh();
             });
     }
-
 };
 
 window.RulesEditor = {
