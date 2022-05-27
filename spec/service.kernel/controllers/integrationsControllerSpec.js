@@ -252,7 +252,7 @@ const updateTest = (done) => {
 const updateRenameTest = (done) => {
     const validatorMock = sinon.mock(typeValidator);
     validatorMock.expects('validate').once().withArgs('integration', {
-        name : 'my-name'
+        name : 'new-name'
     }).returns(Promise.resolve());
 
     const fileMock = sinon.mock(fileLister);
