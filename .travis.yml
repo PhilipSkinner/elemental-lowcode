@@ -10,6 +10,7 @@ jobs:
       script:
         - ./test.sh        
     - stage: docker push
+      if: branch = master
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - ./clean.sh        
