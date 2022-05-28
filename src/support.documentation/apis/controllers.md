@@ -15,13 +15,15 @@ module.exports = function() {
 
 Controllers have access to numerous injected services, including:
 
-*   [authClientProvider](/src/support.documentation/services/authClientProvider)
-*   [environmentService](/src/support.documentation/services/environmentService)
-*   [idmService](/src/support.documentation/services/idmService)
-*   [integrationService](/src/support.documentation/services/integrationService)
-*   [rulesetService](/src/support.documentation/services/rulesetService)
-*   [serviceProvider](/src/support.documentation/services/serviceProvider)
-*   [storageService](/src/support.documentation/services/storageService)
+* [authClientProvider](/src/support.documentation/services/authClientProvider)
+* [environmentService](/src/support.documentation/services/environmentService)
+* [idmService](/src/support.documentation/services/idmService)
+* [integrationService](/src/support.documentation/services/integrationService)
+* [rulesetService](/src/support.documentation/services/rulesetService)
+* [serviceProvider](/src/support.documentation/services/serviceProvider)
+* [storageService](/src/support.documentation/services/storageService)
+* [locationService](/src/support.documentation/services/locationService)
+* [blobService](/src/support.documentation/services/blobService)
 
 Each of these are defined upon the controller instance as a property that can be access, for example:
 

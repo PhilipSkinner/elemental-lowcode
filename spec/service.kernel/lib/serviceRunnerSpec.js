@@ -14,7 +14,8 @@ const childProcess = {
 };
 
 const path = {
-    dirname : () => {}
+    dirname : () => {},
+    join : () => {}
 };
 
 const logger = {
@@ -42,7 +43,8 @@ const killTest = (done) => {
 
 const startServiceTest = (done) => {
     const pathMock = sinon.mock(path);
-    pathMock.expects('dirname').once().withArgs('this-script').returns('the-dirname');
+    pathMock.expects('dirname').twice().withArgs('this-script').returns('the-dirname');
+    pathMock.expects('join').once().withArgs('the-dirname', '../support.lib').returns('lib-path');
 
     const stdoutMock = sinon.mock(childProcess.stdout);
     stdoutMock.expects('on').once().withArgs('data').callsArgWith(1, 'some logs\n\n');
@@ -54,6 +56,8 @@ const startServiceTest = (done) => {
     processMock.expects('spawn').once().withArgs('./node_modules/.bin/nodemon', [
         '--watch',
         'the-dirname',
+        '--watch',
+        'lib-path',
         'this-script'
     ]).returns(childProcess);
     processMock.expects('on').once().withArgs('error').callsArgWith(1, 'hello');
@@ -73,7 +77,8 @@ const startServiceTest = (done) => {
 
 const startServiceKillTest = (done) => {
     const pathMock = sinon.mock(path);
-    pathMock.expects('dirname').once().withArgs('this-script').returns('the-dirname');
+    pathMock.expects('dirname').twice().withArgs('this-script').returns('the-dirname');
+    pathMock.expects('join').once().withArgs('the-dirname', '../support.lib').returns('lib-path');
 
     const stdoutMock = sinon.mock(childProcess.stdout);
     stdoutMock.expects('on').once().withArgs('data').callsArgWith(1, 'some logs\n\n');
@@ -85,6 +90,8 @@ const startServiceKillTest = (done) => {
     processMock.expects('spawn').once().withArgs('./node_modules/.bin/nodemon', [
         '--watch',
         'the-dirname',
+        '--watch',
+        'lib-path',
         'this-script'
     ]).returns(childProcess);
     processMock.expects('on').once().withArgs('error').callsArgWith(1, 'hello');

@@ -193,7 +193,7 @@ const rawBodyHandlerTest = (done) => {
     };
 
     instance.rawBodyHandler(req, null, () => {
-        expect(req.rawBody).toEqual('helloworld');
+        expect(req.rawBody.toString('utf8')).toEqual('helloworld');
 
         done();
     });

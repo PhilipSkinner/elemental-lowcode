@@ -700,13 +700,13 @@ const handlerResultTest = (done) => {
 
     instance.setupHandler();
 
-    setImmediate(() => {
+    setTimeout(() => {
         sqlProviderMock.verify();
 
         instance.terminate();
 
         done();
-    });
+    }, 1);
 };
 
 const handlerErrorTest = (done) => {
@@ -741,13 +741,13 @@ const handlerErrorTest = (done) => {
 
     instance.setupHandler();
 
-    setImmediate(() => {
+    setTimeout(() => {
         sqlProviderMock.verify();
 
         instance.terminate();
 
         done();
-    });
+    }, 1);
 };
 
 describe('A messaging queue instance', () => {

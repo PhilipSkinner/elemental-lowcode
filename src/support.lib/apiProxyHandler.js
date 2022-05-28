@@ -73,9 +73,10 @@ apiProxyHandler.prototype.getRoles = function(oauthProvider, scope) {
 };
 
 apiProxyHandler.prototype.rawBodyHandler = function(req, res, next) {
-    var data = "";
+    var data = Buffer.alloc(0);
+    req.rawBody = "";
     req.on("data", function(chunk) {
-        data += chunk;
+        data = Buffer.concat([data, Buffer.from(chunk)]);
     });
     req.on("end", function() {
         req.rawBody = data;
@@ -100,10 +101,9 @@ apiProxyHandler.prototype.handler = function(oauthProvider, scope) {
             });
             outgoingHeaders["Authorization"] = `Bearer ${token}`;
 
-            //now we construct and send our request
             this.request[req.method.toLowerCase()](`${this.determineHostname(req.headers["x-forward-to"])}${req.headers["x-forward-path"]}`, {
                 headers : outgoingHeaders,
-                body : req.rawBody,
+                body : req.rawBody && req.rawBody.length > 0 ? req.rawBody : undefined,
                 encoding: null
             }, (err, response, body) => {
                 if (err) {

@@ -10,7 +10,8 @@ const controllerState = function(
     serviceProvider,
     messagingService,
     environmentService,
-    locationService
+    locationService,
+    blobService
 ) {
     this.controllerDefinition                       = controllerDefinition;
     this.controllerDefinition.storageService        = storageService;
@@ -24,6 +25,7 @@ const controllerState = function(
     this.controllerDefinition.messagingService      = messagingService;
     this.controllerDefinition.environmentService    = environmentService;
     this.controllerDefinition.locationService       = locationService;
+    this.controllerDefinition.blobService           = blobService;
     this.controllerDefinition.mergeBag              = this.mergeBag.bind(this);
 };
 
@@ -187,7 +189,8 @@ module.exports = function(
     serviceProvider,
     messagingService,
     environmentService,
-    locationService
+    locationService,
+    blobService
 ) {
     if (!storageService) {
         storageService = require("../../support.lib/storageService")();
@@ -233,6 +236,10 @@ module.exports = function(
         locationService = require("../../support.lib/locationService")();
     }
 
+    if (!blobService) {
+        blobService = require("../../support.lib/blobService")();
+    }
+
     return new controllerState(
         controllerDefinition,
         storageService,
@@ -245,6 +252,7 @@ module.exports = function(
         serviceProvider,
         messagingService,
         environmentService,
-        locationService
+        locationService,
+        blobService
     );
 };

@@ -32,7 +32,8 @@ const apiProxyHandler = require("../support.lib/apiProxyHandler")({
     "service.storage"     : hostnameResolver.resolveStorage(),
     "service.rules"       : hostnameResolver.resolveRules(),
     "service.identity"    : hostnameResolver.resolveIdentity(),
-    "service.messaging"   : hostnameResolver.resolveQueue()
+    "service.messaging"   : hostnameResolver.resolveQueue(),
+    "service.blob"        : hostnameResolver.resolveBlob(),
 });
 
 const oauth2 = auth.create(credentials);
@@ -71,7 +72,8 @@ app.get("/", (req, res) => {
                 storage 	: hostnameResolver.resolveStorage(),
                 rules 		: hostnameResolver.resolveRules(),
                 identity 	: hostnameResolver.resolveIdentity(),
-                messaging 	: hostnameResolver.resolveQueue()
+                messaging 	: hostnameResolver.resolveQueue(),
+                blob        : hostnameResolver.resolveBlob(),
             }
         }));
         res.end();

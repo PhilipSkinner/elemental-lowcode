@@ -11,7 +11,8 @@
 				storage 	: "{{hosts.storage}}",
 				rules 		: "{{hosts.rules}}",
 				identity 	: "{{hosts.identity}}",
-				queue 		: "{{hosts.messaging}}"
+				queue 		: "{{hosts.messaging}}",
+				blob 		: "{{hosts.blob}}",
 			};
 		</script>
 
@@ -100,6 +101,14 @@
 						<router-link to="/rulesets" class="nav-link">
 							<i class="fas fa-fw fa-list-ul"></i>
 							<span>Rulesets</span>
+						</router-link>
+					</li>
+
+					<!-- Nav Item - Blob -->
+					<li class="nav-item">
+						<router-link to="/blob" class="nav-link">
+							<i class="fas fa-fw fa-cubes"></i>
+							<span>Blob storage</span>
 						</router-link>
 					</li>
 

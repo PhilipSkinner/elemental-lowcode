@@ -26,6 +26,7 @@ const loggingTest = (done) => {
     logMock.expects('getLogger').once().withArgs('rules').returns(loggingInstance());
     logMock.expects('getLogger').once().withArgs('identity').returns(loggingInstance());
     logMock.expects('getLogger').once().withArgs('messaging').returns(loggingInstance());
+    logMock.expects('getLogger').once().withArgs('blob').returns(loggingInstance());
     logMock.expects('getLogger').once().withArgs('default').returns(loggingInstance());
 
     const instance = logger(log4js);
@@ -38,6 +39,7 @@ const loggingTest = (done) => {
     expect(instance.loggers.rules.level).toEqual('debug');
     expect(instance.loggers.identity.level).toEqual('debug');
     expect(instance.loggers.messaging.level).toEqual('debug');
+    expect(instance.loggers.blob.level).toEqual('debug');
     expect(instance.loggers.default.level).toEqual('debug');
 
     instance.logStartup('admin');
@@ -58,7 +60,7 @@ const loggingTest = (done) => {
     instance.debug('admin', 'admin logs');
     instance.debug('unknown', 'unknown logs');
 
-    //warng
+    //warning
     instance.warn('admin', 'admin logs');
     instance.warn('unknown', 'unknown logs');
 

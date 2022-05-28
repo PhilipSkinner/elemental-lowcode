@@ -23,5 +23,7 @@ cd ./src/service.identity.idm && npm i --unsafe-perm=true --allow-root
 cd ../..
 cd ./src/service.messaging && npm i --unsafe-perm=true --allow-root
 cd ../..
+cd ./src/service.blob && npm i --unsafe-perm=true --allow-root
+cd ../..
 cd ./src/support.lib && npm i --unsafe-perm=true --allow-root
 cd ../..

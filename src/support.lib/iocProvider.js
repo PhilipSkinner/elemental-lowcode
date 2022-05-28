@@ -8,6 +8,7 @@ const services = {
     authClientProvider 	: require("./authClientProvider")(),
     messagingService 	: require("./messagingService")(),
     sessionState 		: require("../service.interface/lib/sessionState")(),
+    blobService         : require("./blobService")(),
     navigationService 	: null
 };
 

@@ -54,6 +54,10 @@ hostnameResolver.prototype.resolveQueue = function() {
     return this._protocolPrefix(this._defaultValue(process.env.QUEUE_HOST, "localhost:8009"));
 };
 
+hostnameResolver.prototype.resolveBlob = function() {
+    return this._protocolPrefix(this._defaultValue(process.env.BLOB_HOST, 'localhost:8010'));
+};
+
 module.exports = function() {
     return new hostnameResolver();
 };

@@ -11,6 +11,7 @@ const logger = function(log4js) {
         rules 		: log4js.getLogger("rules"),
         identity 	: log4js.getLogger("identity"),
         messaging 	: log4js.getLogger("messaging"),
+        blob        : log4js.getLogger("blob"),
         default 	: log4js.getLogger("default"),
     };
 

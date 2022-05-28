@@ -119,6 +119,19 @@
       "type": "logLevelFilter",
       "level": "error",
       "appender": "messagingFileErrors"
+    },
+    "blobFileErrors" : {
+      "type" : "file",
+      "filename" : "logs/blob.errors.log"
+    },
+    "blobFileDebug" : {
+      "type" : "file",
+      "filename" : "logs/blob.debug.log"
+    },
+    "blobErrorsFilter": {
+      "type": "logLevelFilter",
+      "level": "error",
+      "appender": "blobFileErrors"
     }
   },
   "categories": {
@@ -191,6 +204,14 @@
         "stdout",
         "messagingFileDebug",
         "messagingErrorsFilter"
+      ],
+      "level": "DEBUG"
+    },
+    "blob": {
+      "appenders": [
+        "stdout",
+        "blobFileDebug",
+        "blobErrorsFilter"
       ],
       "level": "DEBUG"
     }
