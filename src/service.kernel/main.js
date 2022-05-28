@@ -17,6 +17,7 @@ const
     indexController 		= require("./controllers/indexController"),
     serviceController 		= require("./controllers/serviceController"),
     queueController 		= require("./controllers/queueController"),
+    blobController          = require("./controllers/blobController"),
     logsController 			= require("./controllers/logsController"),
     secretsProvider 		= require("./lib/secrets"),
     hotreload 				= require("../support.lib/hotReload")(),
@@ -40,6 +41,7 @@ const directories = {
     queues 		: path.relative(process.cwd(), path.join(sourcesDir, "queues")),
     secrets 	: path.relative(process.cwd(), path.join(sourcesDir, "secrets")),
     secretStore : path.relative(process.cwd(), path.join(sourcesDir, ".secrets")),
+    blob        : path.relative(process.cwd(), path.join(sourcesDir, "blob"))
 };
 
 //setup our ports
@@ -53,6 +55,7 @@ const ports = {
     rules 		: process.env.RULES_PORT 		|| 8007,
     identity 	: process.env.IDENTITY_PORT 	|| 8008,
     queues 		: process.env.QUEUE_PORT 		|| 8009,
+    blob        : process.env.BLOB_PORT         || 8010,
 };
 
 const reload = function() {
@@ -76,6 +79,7 @@ const startServices = function() {
         serviceRunner.runService("rules", 		"../service.rules/main.js", 		ports.rules, 		directories.rules, secrets.rules);
         serviceRunner.runService("identity", 	"../service.identity.idp/main.js", 	ports.identity, 	directories.identity, secrets.identity);
         serviceRunner.runService("messaging", 	"../service.messaging/main.js",		ports.queues, 		directories.queues, secrets.queues);
+        serviceRunner.runService("blob",         "../service.blob/main.js",         ports.blob,         directories.blob,          secrets.blob);
 
         restarting = false;
     });
@@ -118,6 +122,7 @@ const runApp = function() {
     queueController(app, directories.queues);
     logsController(app, sourcesDir);
     indexController(app, sourcesDir);
+    blobController(app, directories.blob);
 
     app.listen(ports.kernel);
 
@@ -149,6 +154,7 @@ process.on("SIGINT", () => {
     serviceRunner.stopService("rules");
     serviceRunner.stopService("identity");
     serviceRunner.stopService("messaging");
+    serviceRunner.stopService("blob");
 
     setTimeout(() => {
         process.exit();

@@ -134,6 +134,7 @@ The following services are automatically added into each controller:
 * [sessionState](/src/support.documentation/websites/sessionState)
 * [storageService](/src/support.documentation/services/storageService)
 * [locationService](/src/support.documentation/services/locationService)
+* [blobService](/src/support.documentation/services/blobService)
 
 Each of these are defined upon the controller instance as a property that can be access, for example:
 

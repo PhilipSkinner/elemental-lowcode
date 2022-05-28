@@ -28,6 +28,7 @@ COPY service.rules /var/elemental/service.rules
 COPY service.scheduling /var/elemental/service.scheduling
 COPY support.lib /var/elemental/support.lib
 COPY service.data /var/elemental/service.data
+COPY service.blob /var/elemental/service.blob
 
 #copy our scripts
 COPY scripts/elemental-start.sh /var/elemental
@@ -54,6 +55,7 @@ ENV STORAGE_HOST="storage.elementalsystem.org"
 ENV RULES_HOST="rules.elementalsystem.org"
 ENV IDENTITY_HOST="identity.elementalsystem.org"
 ENV QUEUE_HOST="queues.elementalsystem.org"
+ENV BLOB_HOST="blobs.elementalsystem.org"
 
 #run our app
 CMD ["./elemental-start.sh"]

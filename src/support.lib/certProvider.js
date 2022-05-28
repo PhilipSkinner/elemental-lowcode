@@ -1,7 +1,7 @@
 const certProvider = function(crypto, fs, path) {
     this.crypto = crypto;
-    this.fs = fs;
-    this.path = path;
+    this.fs     = fs;
+    this.path   = path;
 };
 
 certProvider.prototype._generateKeypair = function() {

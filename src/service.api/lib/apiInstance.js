@@ -10,7 +10,8 @@ const apiInstance = function(
     authClientProvider,
     messagingService,
     environmentService,
-    locationService
+    locationService,
+    blobService
 ) {
     this.app 					= app;
     this.definition 			= definition;
@@ -24,6 +25,7 @@ const apiInstance = function(
     this.messagingService 		= messagingService;
     this.environmentService 	= environmentService;
     this.locationService        = locationService;
+    this.blobService            = blobService;
 };
 
 apiInstance.prototype.resolveController = function(name) {
@@ -139,7 +141,8 @@ module.exports = function(
     authClientProvider,
     messagingService,
     environmentService,
-    locationService
+    locationService,
+    blobService
 ) {
     if (!roleCheckHandler) {
         roleCheckHandler = require("../../support.lib/roleCheckHandler")();
@@ -181,6 +184,10 @@ module.exports = function(
         locationService = require("../../support.lib/locationService")();
     }
 
+    if (!blobService) {
+        blobService = require("../../support.lib/blobService")();
+    }
+
     return new apiInstance(
         app,
         definition,
@@ -193,6 +200,7 @@ module.exports = function(
         authClientProvider,
         messagingService,
         environmentService,
-        locationService
+        locationService,
+        blobService
     );
 };

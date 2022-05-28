@@ -26,6 +26,8 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
     this.processes[name] = this.childProcess.spawn(this.nodeProcess, [
         "--watch",
         this.path.dirname(script),
+        "--watch",
+        this.path.join(this.path.dirname(script), "../support.lib"),
         script
     ], {
         cwd 	: process.cwd(),

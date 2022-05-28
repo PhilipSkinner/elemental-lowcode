@@ -135,6 +135,26 @@ tokenHandler.prototype.verifyToken = function(token, skipRetry) {
     });
 };
 
+tokenHandler.prototype.passcodeCheck = function(resource, code) {
+    return new Promise((resolve, reject) => {
+        this.request.post(`${this.hostnameResolver.resolveIdentity()}/passcode/validate`, {
+            headers : {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify({
+                resource : resource,
+                code : code
+            })
+        }, (err, response, body) => {
+            if (response.statusCode !== 204) {
+                return resolve(false);
+            }
+
+            return resolve(true);
+        });
+    });
+};
+
 module.exports = function(config, jwt, hostnameResolver, request, jwkToPem) {
     if (!jwt) {
         jwt = require("jsonwebtoken");

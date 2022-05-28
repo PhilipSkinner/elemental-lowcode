@@ -23,6 +23,7 @@ Currently ships with:
 * Rulesets builder
 * Interface/website builder
 * OIDC/OAuth2.0 Identity Provider & Identity Management
+* Blob storage service
 
 ## Table of Contents
 
@@ -106,6 +107,7 @@ The docker image uses several pre-defined hostnames for the service, each of whi
 * Rules 			- http://rules.elementalsystem.org
 * Identity Provider - http://identity.elementalsystem.org
 * Messaging/queues 	- http://queues.elementalsystem.org
+* Blob service      - http://blobs.elementalsystem.org
 
 ### From source
 
@@ -207,6 +209,7 @@ ENV STORAGE_HOST="http://storage.mysite.com"
 ENV RULES_HOST="http://rules.mysite.com"
 ENV IDENTITY_HOST="http://identity.mysite.com"
 ENV QUEUE_HOST="http://queues.mysite.com"
+ENV BLOB_HOST="http://blobs.mysite.com"
 
 #run our app
 CMD ["./docker-start.sh"]
@@ -223,6 +226,7 @@ If you want to run the system outside of a docker container you must set the fol
 * RULES_HOST
 * IDENTITY_HOST
 * QUEUE_HOST
+* BLOB_HOST
 
 Each of these needs to be a valid hostname that resolves to the relevant Elemental service.
 

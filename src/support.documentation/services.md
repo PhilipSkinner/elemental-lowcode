@@ -38,3 +38,4 @@ There are a number of predefined services that can be access from within your co
 * [serviceProvider](/src/support.documentation/services/serviceProvider)
 * [storageService](/src/support.documentation/services/storageService)
 * [locationService](/src/support.documentation/services/locationService)
+* [blobService](/src/support.documentation/services/blobService)

@@ -14,7 +14,8 @@ const queueInstance = function(
     ajv,
     environmentService,
     dataResolver,
-    locationService
+    locationService,
+    blobService
 ) {
     this.app                    = app;
     this.definition             = definition;
@@ -46,6 +47,7 @@ const queueInstance = function(
     this.authClientProvider     = authClientProvider;
     this.messagingService       = messagingService;
     this.locationService        = locationService;
+    this.blobService            = blobService;
     this.ajv                    = ajv;
 };
 
@@ -232,7 +234,8 @@ module.exports = function(
     ajv,
     environmentService,
     dataResolver,
-    locationService
+    locationService,
+    blobService
 ) {
     if (!roleCheckHandler) {
         roleCheckHandler = require("../../support.lib/roleCheckHandler")();
@@ -292,6 +295,10 @@ module.exports = function(
         locationService = require("../../support.lib/locationService")();
     }
 
+    if (!blobService) {
+        blobService = require("../../support.lib/blobService")();
+    }
+
     return new queueInstance(
         app,
         definition,
@@ -308,6 +315,7 @@ module.exports = function(
         ajv,
         environmentService,
         dataResolver,
-        locationService
+        locationService,
+        blobService
     );
 };

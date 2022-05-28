@@ -23,6 +23,8 @@ cd ./src/service.identity.idm && rm -rf node_modules
 cd ../..
 cd ./src/service.messaging && rm -rf node_modules
 cd ../..
+cd ./src/service.blob && rm -rf node_modules
+cd ../..
 cd ./src/support.lib && rm -rf node_modules
 cd ../..
 rm -rf node_modules

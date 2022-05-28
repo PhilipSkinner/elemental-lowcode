@@ -1,0 +1,338 @@
+<template id="template-blobs">
+    <div class="blobStorage">
+        <permissions :roles="['blob_reader','blob_admin','system_reader','system_admin']"></permissions>
+
+        <div v-bind:class="{ 'hidden' : !loading }">
+            <loading message="Loading blob stores..."></loading>
+        </div>
+
+        <div v-bind:class="{ 'hidden' : loading }">
+            <navigation title="Blob storage"></navigation>
+
+            <confirm
+                title="Confirmation"
+                message="Are you sure you want to delete this blob store?"
+                v-bind:visible="deleteConfirmVisible"
+                v-bind:on-confirm="confirmDeleteAction"
+            ></confirm>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <p class="mb-4">Blob stores allow you to store files locally or using third party stores such as S3.</p>
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Current blob stores</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Operations</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Operations</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    <tr v-if="entries.length === 0">
+                                        <td colspan="2" class="no-results">
+                                            There are no blob stores defined.
+                                        </td>
+                                    </tr>
+                                    <tr v-for="item in entries">
+                                        <td>
+                                            <router-link :to="{ name : 'blobDetails', params : { name : item.name } }">{{item.name}}</router-link>
+                                        </td>
+                                        <td>
+                                            <router-link class="btn btn-sm btn-success" :to="{ name : 'blobDetails', params : { name : item.name } }">View Docs</router-link>
+                                            <router-link class="btn btn-sm btn-primary" :to="{ name : 'blobEditor', params : { name : item.name } }">Modify</router-link>
+                                            <router-link class="btn btn-sm btn-primary" :to="{ name : 'blobBrowser', params : { name : item.name } }">Browse</router-link>
+                                            <button class="btn btn-sm btn-danger" v-on:click="_blobStorageController.removeStore(item.name);">Remove</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actionButtons">
+                <router-link to="/blob/editor/.new" class="rounded-circle border-0 btn btn-primary"><i class="fas fa-fw fa-plus"></i></router-link>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="template-blobBrowser">
+    <div class="blobBrowser">
+        <permissions :roles="['blobstore_reader','blobstore_admin','system_reader','system_admin']"></permissions>
+
+        <div v-if="loading">
+            <loading message="Loading blob store..."></loading>
+        </div>
+
+        <div v-if="!loading">
+            <navigation :title="store.name" :navitems="navitems"></navigation>
+
+            <div v-if="uploadOpen">
+                <div class="modal">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload File</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close" v-on:click="_blobBrowserInstance.closeUploadDialog()">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <slot>
+                                    <input type="file" id="file" class="form-control" />
+                                </slot>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-default" type="button" data-dismiss="modal" v-on:click="_blobBrowserInstance.closeUploadDialog()">Cancel</button>
+                                <button class="btn btn-primary" type="button" data-dismiss="modal" v-on:click="_blobBrowserInstance.uploadFile();">Upload</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="createFolderOpen">
+                <div class="modal">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Create Folder</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close" v-on:click="_blobBrowserInstance.closeCreateFolderDialog()">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <slot>
+                                    <input type="text" id="newFolder" class="form-control" />
+                                </slot>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-default" type="button" data-dismiss="modal" v-on:click="_blobBrowserInstance.closeCreateFolderDialog()">Cancel</button>
+                                <button class="btn btn-primary" type="button" data-dismiss="modal" v-on:click="_blobBrowserInstance.createFolder();">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="!entryOpen">
+                <confirm
+                    title="Confirmation"
+                    message="Are you sure you want to delete this path? If this is a folder then all folders/files within it will also be deleted."
+                    v-bind:visible="deleteConfirmVisible"
+                    v-bind:on-confirm="confirmDeleteAction"
+                ></confirm>
+
+                <div class="container-fluid">
+                    <a class="btn btn-sm btn-primary mb-3" v-on:click="_blobBrowserInstance.fetchEntry(path);">Refresh</a>
+                    <a class="btn btn-sm btn-primary mb-3" v-on:click="_blobBrowserInstance.showCreateFolderDialog();">Create Folder</a>
+                    <a class="btn btn-sm btn-success mb-3" v-on:click="_blobBrowserInstance.showUploadDialog();">Upload</a>
+
+                    <h3>/{{path}}</h3>
+
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Size</th>
+                                <th>Created</th>
+                                <th>Last Modified</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Size</th>
+                                <th>Created</th>
+                                <th>Last Modified</th>
+                                <th>Operations</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr v-if="entry.children.length === 0">
+                                <td colspan="6" class="no-results">
+                                    Directory is empty
+                                </td>
+                            </tr>
+                            <tr v-for="item in entry.children">
+                                <td>
+                                    <i class="fas fa-fw fa-level-up-alt" v-if="item.type === 'traverse_up'"></i>
+                                    <i class="fas fa-fw fa-folder" v-if="item.type === 'directory'"></i>
+                                    <i class="fas fa-fw fa-file" v-if="item.type === 'file'"></i>
+                                    <a v-on:click="_blobBrowserInstance.fetchEntry(item.full_path);">
+                                        {{item.name}}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{item.mime_type}}
+                                </td>
+                                <td>
+                                    <span v-if="item.type === 'file'">
+                                        {{item.size}} bytes
+                                    </span>
+                                    <span v-if="item.type !== 'file'">
+                                        {{item.size}}
+                                    </span>
+                                </td>
+                                <td>
+                                    {{item.created}}
+                                </td>
+                                <td>
+                                    {{item.last_modified}}
+                                </td>
+                                <td>
+                                    <a class="btn btn-sm btn-success" v-on:click="_blobBrowserInstance.fetchEntry(item.full_path);">
+                                        <span v-if="item.type === 'directory'">
+                                            Open
+                                        </span>
+                                        <span v-if="item.type === 'traverse_up'">
+                                            Back
+                                        </span>
+                                        <span v-if="item.type === 'file'">
+                                            Details
+                                        </span>
+                                    </a>
+                                    <a class="btn btn-sm btn-primary" v-on:click="_blobBrowserInstance.viewFile(item.full_path, 1);" v-if="item.type === 'file'">
+                                        View
+                                    </a>
+                                    <a class="btn btn-sm btn-primary" v-on:click="_blobBrowserInstance.downloadFile(item.full_path);" v-if="item.type === 'file'">
+                                        Download
+                                    </a>
+                                    <a class="btn btn-sm btn-danger" v-on:click="_blobBrowserInstance.deletePath(item.full_path);">
+                                        Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div v-if="entryOpen" class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <a class="btn btn-sm btn-primary" v-on:click="_blobBrowserInstance.back();">
+                            Back
+                        </a>
+                        <a class="btn btn-sm btn-primary" v-on:click="_blobBrowserInstance.viewFile(entry.full_path, 1);" v-if="entry.type === 'file'">
+                            View
+                        </a>
+                        <a class="btn btn-sm btn-success" v-on:click="_blobBrowserInstance.downloadFile(entry.full_path);">
+                            Download
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">{{entry.name}} Details</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Name:</label>
+                                    <div>{{entry.name}}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Type:</label>
+                                    <div>{{entry.type}}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Size:</label>
+                                    <div>{{entry.size}}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Full Path:</label>
+                                    <div><a :href="window.hosts.blob + '/' + name + '/' + entry.full_path" target="_blank">{{window.hosts.blob}}/{{name}}/{{entry.full_path}}</a></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Created at:</label>
+                                    <div>{{entry.created}}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Last modified:</label>
+                                    <div>{{entry.last_modified}}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Last accessed:</label>
+                                    <div>{{entry.last_accessed}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="template-blobDetails">
+    <div class="blobDetails">
+        <permissions :roles="['blobstore_reader','blobstore_admin','system_reader','system_admin']"></permissions>
+
+        <div v-if="loading">
+            <loading message="Loading blob store..."></loading>
+        </div>
+
+        <div v-if="!loading">
+            <navigation :title="store.name" :navitems="navitems"></navigation>
+
+            <div class="container-fluid">
+
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="template-blobEditor">
+    <div class="blobEditor">
+        <permissions :roles="['blobstore_writer','blobstore_admin','system_writer','system_admin']"></permissions>
+
+        <div v-bind:class="{ 'hidden' : !loading }">
+            <loading message="Loading blob store..."></loading>
+        </div>
+
+        <div v-bind:class="{ 'hidden' : loading }">
+            <navigation :title="store.name" :navitems="navitems"></navigation>
+
+            <div class="entityWrapper">
+                <div id="blobEditor" class="editorWindow"></div>
+            </div>
+            <div class="actionButtons">
+                <router-link to="/blob" class="rounded-circle border-0 btn btn-default"><i class="fas fa-fw fa-times"></i></router-link>
+                <button class="rounded-circle border-0 btn btn-primary" v-on:click="_blobEditorInstance.saveStore();"><i class="fas fa-fw fa-save"></i></button>
+            </div>
+            <modal-error v-bind:title="error.title" v-bind:visible="error.visible">
+                {{error.description}}
+            </modal-error>
+            <alert text="Blob store saved!" v-bind:visible="showAlert"></alert>
+        </div>
+    </div>
+</template>

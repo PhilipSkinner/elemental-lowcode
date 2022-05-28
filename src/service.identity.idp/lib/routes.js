@@ -7,17 +7,19 @@ const routes = function(
     consentController,
     abortController,
     termsController,
-    passwordController
+    passwordController,
+    passcodeController
 ) {
-    this.app = app;
-    this.provider = provider;
-    this.interactionController = interactionController;
-    this.loginController = loginController;
-    this.registerController = registerController;
-    this.consentController = consentController;
-    this.abortController = abortController;
-    this.termsController = termsController;
-    this.passwordController = passwordController;
+    this.app                    = app;
+    this.provider               = provider;
+    this.interactionController  = interactionController;
+    this.loginController        = loginController;
+    this.registerController     = registerController;
+    this.consentController      = consentController;
+    this.abortController        = abortController;
+    this.termsController        = termsController;
+    this.passwordController     = passwordController;
+    this.passcodeController     = passcodeController;
 
     //call init
     this.init();
@@ -91,6 +93,10 @@ routes.prototype.init = function() {
     //abort
     this.app.get("/interaction/:uid/abort",     this.setNoCache.bind(this), this.abortController.abortRequest.bind(this.abortController));
 
+    //one time passcode generation
+    this.app.post("/passcode/generate",         this.setNoCache.bind(this), this.passcodeController.generatePasscode.bind(this.passcodeController));
+    this.app.post("/passcode/validate",         this.setNoCache.bind(this), this.passcodeController.validatePasscode.bind(this.passcodeController));
+
     //add our error handler
     this.app.use(this.errorHandler.bind(this));
 };
@@ -104,7 +110,8 @@ module.exports = (
     consentController,
     abortController,
     termsController,
-    passwordController
+    passwordController,
+    passcodeController
 ) => {
     if (!interactionController) {
         interactionController = require("./controllers/interactionController")(provider);
@@ -134,6 +141,10 @@ module.exports = (
         passwordController = require("./controllers/passwordController")(provider);
     }
 
+    if (!passcodeController) {
+        passcodeController = require("./controllers/passcodeController")(provider);
+    }
+
     return new routes(
         app,
         provider,
@@ -143,6 +154,7 @@ module.exports = (
         consentController,
         abortController,
         termsController,
-        passwordController
+        passwordController,
+        passcodeController
     );
 };
