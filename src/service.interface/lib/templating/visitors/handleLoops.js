@@ -6,7 +6,7 @@ const handleLoops = function(dataResolver) {
 handleLoops.prototype.expandNext = function(view, data) {
     this.modified = false;
     view = view.map((tag) => {
-        if (typeof(tag) !== 'object' || tag === null) {
+        if (typeof(tag) !== "object" || tag === null) {
             return tag;
         }
 
@@ -16,18 +16,18 @@ handleLoops.prototype.expandNext = function(view, data) {
 
         if (tag.repeat) {
             //we are going to repeat this tag, get our enumeration
-            var parts = tag.repeat.split(' ');
+            var parts = tag.repeat.split(" ");
             var arr = this.dataResolver.resolveValue(parts[2], data || {}, tag._scope ? tag._scope.data : {});
-            var dataPropName = parts[0].replace('$.', '');
+            var dataPropName = parts[0].replace("$.", "");
 
-            if (typeof(arr) === 'string' && arr !== parts[2] && arr !== '') {
+            if (typeof(arr) === "string" && arr !== parts[2] && arr !== "") {
                 parts[2] = arr;
-                tag.repeat = parts.join(' ');
+                tag.repeat = parts.join(" ");
                 this.modified = true;
                 return tag;
             }
 
-            if (typeof(arr) === 'number') {
+            if (typeof(arr) === "number") {
                 //generate the array
                 let newArr = [];
                 for (var i = 0; i < arr; i++) {
@@ -39,8 +39,8 @@ handleLoops.prototype.expandNext = function(view, data) {
             //ok, for each child decorate it with our new scoped data and then copy
             let controllerInstances = {};
             var base = JSON.stringify(tag, function(key, value) {
-                if (key === '_controller') {
-                    let instanceId = Math.random() + '';
+                if (key === "_controller") {
+                    let instanceId = Math.random() + "";
                     controllerInstances[instanceId] = value;
                     return instanceId;
                 }
@@ -52,7 +52,7 @@ handleLoops.prototype.expandNext = function(view, data) {
             if (Array.isArray(arr)) {
                 generated = arr.map((item, index) => {
                     var copy = JSON.parse(base, function(key, value) {
-                        if (key === '_controller') {
+                        if (key === "_controller") {
                             return controllerInstances[value];
                         }
 
@@ -100,16 +100,16 @@ function refReplacer() {
     let m = new Map(), v= new Map(), init = null;
 
     return function(field, value) {
-        let p= m.get(this) + (Array.isArray(this) ? `[${field}]` : '.' + field);
+        let p= m.get(this) + (Array.isArray(this) ? `[${field}]` : "." + field);
         let isComplex= value===Object(value);
 
         if (isComplex) m.set(value, p);
 
-        let pp = v.get(value)||'';
-        let path = p.replace(/undefined\.\.?/,'');
-        let val = pp ? `#REF:${pp[0]=='[' ? '$':'$.'}${pp}` : value;
+        let pp = v.get(value)||"";
+        let path = p.replace(/undefined\.\.?/,"");
+        let val = pp ? `#REF:${pp[0]=="[" ? "$":"$."}${pp}` : value;
 
-        !init ? (init=value) : (val===init ? val='#REF:$' : 0);
+        !init ? (init=value) : (val===init ? val="#REF:$" : 0);
         if(!pp && isComplex) v.set(value, path);
 
         return val;
@@ -140,7 +140,7 @@ handleLoops.prototype.applySync = function(definition) {
 
 module.exports = function(dataResolver) {
     if (!dataResolver) {
-        dataResolver = require('../../../../support.lib/dataResolver')();
+        dataResolver = require("../../../../support.lib/dataResolver")();
     }
 
     return new handleLoops(dataResolver);

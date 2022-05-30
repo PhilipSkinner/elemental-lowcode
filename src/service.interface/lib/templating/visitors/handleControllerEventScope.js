@@ -1,12 +1,12 @@
 const handleControllerEventScope = function() {
     this.eventTypes = [
-        'onclick',
-        'submit'
+        "onclick",
+        "submit"
     ];
 
     this.ignored = [
-        '_scope',
-        '_controller'
+        "_scope",
+        "_controller"
     ];
 };
 
@@ -18,10 +18,10 @@ handleControllerEventScope.prototype.expand = function(view, data) {
     }
 
     ourView.forEach((tag) => {
-        if (typeof(tag) === 'object' && tag !== null) {
+        if (typeof(tag) === "object" && tag !== null) {
             //do we have some events?
             this.eventTypes.forEach((event) => {
-                if (typeof(tag[event]) === 'object' && tag[event] !== null && data._controller) {
+                if (typeof(tag[event]) === "object" && tag[event] !== null && data._controller) {
                     tag[event].params = tag[event].params || {};
                     tag[event].params._identifier = data._controller.identifier;
                 }

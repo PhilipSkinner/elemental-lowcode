@@ -10,7 +10,7 @@ integrationInstance.prototype.validateVariables = function(req) {
 
     if (this.config.variables) {
         errors = errors.concat(this.config.variables.map((v) => {
-            if (v.name && v.type === 'queryParam' && typeof(req.query[v.name]) === 'undefined') {
+            if (v.name && v.type === "queryParam" && typeof(req.query[v.name]) === "undefined") {
                 return `Expected queryParam ${v.name} but was not found`;
             }
 
@@ -31,7 +31,7 @@ integrationInstance.prototype.generateVariables = function(req) {
 
     if (this.config.variables) {
         this.config.variables.forEach((v) => {
-            if (v.name && v.type === 'queryParam') {
+            if (v.name && v.type === "queryParam") {
                 variables[v.name] = req.query[v.name];
             }
         });
@@ -59,7 +59,7 @@ integrationInstance.prototype.handler = function(req, res, next) {
         //now we apply our response verification if defined
         let verificationResponse = null;
         if (this.config.request.schema) {
-            if (this.config.request.schema.type === 'JSON') {
+            if (this.config.request.schema.type === "JSON") {
                 verificationResponse = this.jsonSchemaVerifier.verify(this.config.request.schema, thirdPartyResponse.body);
             }
         }
@@ -85,11 +85,11 @@ integrationInstance.prototype.handler = function(req, res, next) {
 
 module.exports = function(name, config, requestService, jsonSchemaVerifier) {
     if (!requestService) {
-        requestService = require('./requestService')();
+        requestService = require("./requestService")();
     }
 
     if (!jsonSchemaVerifier) {
-        jsonSchemaVerifier = require('./jsonSchemaVerifier')();
+        jsonSchemaVerifier = require("./jsonSchemaVerifier")();
     }
 
     return new integrationInstance(name, config, requestService, jsonSchemaVerifier);

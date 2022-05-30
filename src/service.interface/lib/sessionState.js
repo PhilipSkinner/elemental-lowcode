@@ -1,5 +1,5 @@
 const sessionState = function(sessionName) {
-    this.sessionName = sessionName || '__session';
+    this.sessionName = sessionName || "__session";
 };
 
 sessionState.prototype.saveSession = function(sessionData) {
@@ -17,7 +17,7 @@ sessionState.prototype.retrieveSession = function() {
         && this.request.cookies[this.sessionName]
     ) {
         try {
-            this.sessionData = JSON.parse(Buffer.from(this.request.cookies.__session, 'base64').toString('utf8'));
+            this.sessionData = JSON.parse(Buffer.from(this.request.cookies.__session, "base64").toString("utf8"));
         } catch(e) {
             this.sessionData = null;
         }
@@ -69,10 +69,10 @@ sessionState.prototype.getSubject = function() {
         && this.request.session.passport.user.accessToken
     ) {
         try {
-            let claims = JSON.parse(Buffer.from(this.request.session.passport.user.accessToken.split('.')[1], 'base64').toString('utf8'));
+            let claims = JSON.parse(Buffer.from(this.request.session.passport.user.accessToken.split(".")[1], "base64").toString("utf8"));
             return claims.sub;
         } catch (e) {
-            console.log('Error parsing token for subject');
+            console.log("Error parsing token for subject");
         }
     }
 
@@ -122,7 +122,7 @@ sessionState.prototype.getRefreshToken = function() {
 };
 
 sessionState.prototype._isDefined = function(val) {
-    return typeof(val) !== 'undefined' && val !== null && val !== '';
+    return typeof(val) !== "undefined" && val !== null && val !== "";
 };
 
 sessionState.prototype.isAuthenticated = function() {
@@ -159,7 +159,7 @@ sessionState.prototype.generateResponseHeaders = function() {
         && this.response
         && this.response.cookie
     ) {
-        this.response.cookie(this.sessionName, Buffer.from(JSON.stringify(this.sessionData)).toString('base64'));
+        this.response.cookie(this.sessionName, Buffer.from(JSON.stringify(this.sessionData)).toString("base64"));
     }
 };
 
@@ -167,13 +167,13 @@ sessionState.prototype.getRoles = function() {
     let accessTkn = this.getAccessToken();
     if (accessTkn) {
         try {
-            let claims = JSON.parse(Buffer.from(accessTkn.split('.')[1], 'base64').toString('utf8'));
+            let claims = JSON.parse(Buffer.from(accessTkn.split(".")[1], "base64").toString("utf8"));
             claims.role = Array.isArray(claims.role) ? claims.role : [claims.role];
             claims.roles = Array.isArray(claims.roles) ? claims.roles : [claims.roles];
             let r = claims.role.concat(claims.roles);
             return r;
         } catch(e) {
-            console.log('Error parsing token for getRoles');
+            console.log("Error parsing token for getRoles");
         }
     }
     return null;
@@ -182,7 +182,7 @@ sessionState.prototype.getRoles = function() {
 
 sessionState.prototype.hasRole = function(role) {
     let rolesExtracted = this.getRoles();
-    if(typeof(role) === 'undefined' || role === null){
+    if(typeof(role) === "undefined" || role === null){
         return false;
     }
 
@@ -192,7 +192,7 @@ sessionState.prototype.hasRole = function(role) {
 
 sessionState.prototype.hasAtleastOneRole = function(roles) {
     let rolesExtracted = this.getRoles();
-    if(typeof(roles) === 'undefined' || typeof(rolesExtracted) === 'undefined' || roles == null ){
+    if(typeof(roles) === "undefined" || typeof(rolesExtracted) === "undefined" || roles == null ){
         return false;
     }
     
@@ -209,7 +209,7 @@ sessionState.prototype.hasAtleastOneRole = function(roles) {
 
 sessionState.prototype.hasAllRoles = function(roles) {
     let rolesExtracted = this.getRoles();
-    if(typeof(roles) === 'undefined' || typeof(rolesExtracted) === 'undefined' || roles === null ){
+    if(typeof(roles) === "undefined" || typeof(rolesExtracted) === "undefined" || roles === null ){
         return false;
     }
 

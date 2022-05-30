@@ -30,7 +30,7 @@ setup.prototype.setupEnvironment = function(directories) {
     return Promise.all(Object.keys(directories).map((d) => {
         return this.ensureDir(directories[d]);
     })).then(() => {
-        return this.ensureFile(this.path.join(directories.services, 'package.json'), JSON.stringify({
+        return this.ensureFile(this.path.join(directories.services, "package.json"), JSON.stringify({
             dependencies : {}
         }, null, 4));
     });
@@ -38,15 +38,15 @@ setup.prototype.setupEnvironment = function(directories) {
 
 module.exports = function(mkdirp, path, fs) {
     if (!mkdirp) {
-        mkdirp = require('mkdirp');
+        mkdirp = require("mkdirp");
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     return new setup(mkdirp, path, fs);

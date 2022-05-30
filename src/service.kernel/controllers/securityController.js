@@ -11,7 +11,7 @@ const securityController = function(app, identityDir, secretsDir, secretsStore, 
 };
 
 securityController.prototype.getClients = function(req, res) {
-    this.fileLister.executeGlob(this.path.join(this.identityDir, '**/*.client.json')).then((results) => {
+    this.fileLister.executeGlob(this.path.join(this.identityDir, "**/*.client.json")).then((results) => {
         res.status(200);
         res.json(results.map((r) => {
             return Object.assign(r, {
@@ -49,7 +49,7 @@ securityController.prototype.getClient = function(req, res) {
 securityController.prototype.createClient = function(req, res) {
     this.fileLister.writeFile(this.identityDir, `${req.body.client_id}.client.json`, JSON.stringify(req.body, null, 4)).then(() => {
         res.status(201);
-        res.location('/security/clients/' + req.body.client_id);
+        res.location("/security/clients/" + req.body.client_id);
         res.end();
     }).catch((err) => {
         res.status(500);
@@ -93,7 +93,7 @@ securityController.prototype.deleteClient = function(req, res) {
 };
 
 securityController.prototype.getScopes = function(req, res) {
-    this.fileLister.executeGlob(this.path.join(this.identityDir, '**/*.scope.json')).then((results) => {
+    this.fileLister.executeGlob(this.path.join(this.identityDir, "**/*.scope.json")).then((results) => {
         res.status(200);
         res.json(results.map((r) => {
             return Object.assign(r, {
@@ -131,7 +131,7 @@ securityController.prototype.getScope = function(req, res) {
 securityController.prototype.createScope = function(req, res) {
     this.fileLister.writeFile(this.identityDir, `${req.body.name}.scope.json`, JSON.stringify(req.body, null, 4)).then(() => {
         res.status(201);
-        res.location('/security/scopes/' + req.body.name);
+        res.location("/security/scopes/" + req.body.name);
         res.end();
     }).catch((err) => {
         res.status(500);
@@ -175,7 +175,7 @@ securityController.prototype.deleteScope = function(req, res) {
 };
 
 securityController.prototype.getConfig = function(req, res) {
-    this.fileLister.readJSONFile(this.identityDir, 'main.json').then((content) => {
+    this.fileLister.readJSONFile(this.identityDir, "main.json").then((content) => {
         res.status(200);
         res.json(content);
         res.end();
@@ -187,7 +187,7 @@ securityController.prototype.getConfig = function(req, res) {
 };
 
 securityController.prototype.saveConfig = function(req, res) {
-    this.fileLister.writeFile(this.identityDir, 'main.json', JSON.stringify(req.body, null, 4)).then(() => {
+    this.fileLister.writeFile(this.identityDir, "main.json", JSON.stringify(req.body, null, 4)).then(() => {
         res.status(204);
         res.end();
     }).catch((err) => {
@@ -204,7 +204,7 @@ securityController.prototype.saveConfig = function(req, res) {
 /* SECRETS HANDLERS */
 
 securityController.prototype.getSecrets = function(req, res) {
-    this.fileLister.executeGlob(this.path.join(this.secretsDir, '**/*.secret.json')).then((results) => {
+    this.fileLister.executeGlob(this.path.join(this.secretsDir, "**/*.secret.json")).then((results) => {
         return Promise.all(results.map((r) => {
             return this.fileLister.readJSONFile(this.secretsDir, r.basename);
         }));
@@ -226,7 +226,7 @@ securityController.prototype.getSecrets = function(req, res) {
 securityController.prototype.createSecret = function(req, res) {
     this.fileLister.writeFile(this.secretsDir, `${req.body.name}.secret.json`, JSON.stringify(req.body, null, 4)).then(() => {
         res.status(201);
-        res.location('/security/secrets/' + req.body.name);
+        res.location("/security/secrets/" + req.body.name);
         res.end();
     }).catch((err) => {
         res.status(500);
@@ -276,7 +276,7 @@ securityController.prototype.setSecret = function(req, res) {
  */
 
 securityController.prototype.getBannedPasswords = function(req, res) {
-    this.fileLister.readJSONFile(this.identityDir, 'banned.passwords.json').then((data) => {
+    this.fileLister.readJSONFile(this.identityDir, "banned.passwords.json").then((data) => {
         res.status(200);
         res.json(data);
         res.end();
@@ -288,7 +288,7 @@ securityController.prototype.getBannedPasswords = function(req, res) {
 };
 
 securityController.prototype.updateBannedPasswords = function(req, res) {
-    this.fileLister.writeFile(this.identityDir, 'banned.passwords.json', JSON.stringify(req.body, null, 4)).then(() => {
+    this.fileLister.writeFile(this.identityDir, "banned.passwords.json", JSON.stringify(req.body, null, 4)).then(() => {
         res.status(204);
         res.end();
     }).catch((err) => {
@@ -307,41 +307,41 @@ securityController.prototype.initEndpoints = function() {
         return;
     }
 
-    this.app.get('/security/clients',           this.roleCheckHandler.enforceRoles(this.getClients.bind(this),             ['security_reader', 'security_admin', 'system_reader', 'system_admin']));
-    this.app.get('/security/clients/:id',       this.roleCheckHandler.enforceRoles(this.getClient.bind(this),              ['security_reader', 'security_admin', 'system_reader', 'system_admin']));
-    this.app.post('/security/clients',          this.roleCheckHandler.enforceRoles(this.createClient.bind(this),           ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
-    this.app.put('/security/clients/:id',       this.roleCheckHandler.enforceRoles(this.updateClient.bind(this),           ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
-    this.app.delete('/security/clients/:id',    this.roleCheckHandler.enforceRoles(this.deleteClient.bind(this),           ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
+    this.app.get("/security/clients",           this.roleCheckHandler.enforceRoles(this.getClients.bind(this),             ["security_reader", "security_admin", "system_reader", "system_admin"]));
+    this.app.get("/security/clients/:id",       this.roleCheckHandler.enforceRoles(this.getClient.bind(this),              ["security_reader", "security_admin", "system_reader", "system_admin"]));
+    this.app.post("/security/clients",          this.roleCheckHandler.enforceRoles(this.createClient.bind(this),           ["security_writer", "security_admin", "system_writer", "system_admin"]));
+    this.app.put("/security/clients/:id",       this.roleCheckHandler.enforceRoles(this.updateClient.bind(this),           ["security_writer", "security_admin", "system_writer", "system_admin"]));
+    this.app.delete("/security/clients/:id",    this.roleCheckHandler.enforceRoles(this.deleteClient.bind(this),           ["security_writer", "security_admin", "system_writer", "system_admin"]));
 
-    this.app.get('/security/scopes',            this.roleCheckHandler.enforceRoles(this.getScopes.bind(this),              ['security_reader', 'security_admin', 'system_reader', 'system_admin']));
-    this.app.get('/security/scopes/:name',      this.roleCheckHandler.enforceRoles(this.getScope.bind(this),               ['security_reader', 'security_admin', 'system_reader', 'system_admin']));
-    this.app.post('/security/scopes',           this.roleCheckHandler.enforceRoles(this.createScope.bind(this),            ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
-    this.app.put('/security/scopes/:name',      this.roleCheckHandler.enforceRoles(this.updateScope.bind(this),            ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
-    this.app.delete('/security/scopes/:name',   this.roleCheckHandler.enforceRoles(this.deleteScope.bind(this),            ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
+    this.app.get("/security/scopes",            this.roleCheckHandler.enforceRoles(this.getScopes.bind(this),              ["security_reader", "security_admin", "system_reader", "system_admin"]));
+    this.app.get("/security/scopes/:name",      this.roleCheckHandler.enforceRoles(this.getScope.bind(this),               ["security_reader", "security_admin", "system_reader", "system_admin"]));
+    this.app.post("/security/scopes",           this.roleCheckHandler.enforceRoles(this.createScope.bind(this),            ["security_writer", "security_admin", "system_writer", "system_admin"]));
+    this.app.put("/security/scopes/:name",      this.roleCheckHandler.enforceRoles(this.updateScope.bind(this),            ["security_writer", "security_admin", "system_writer", "system_admin"]));
+    this.app.delete("/security/scopes/:name",   this.roleCheckHandler.enforceRoles(this.deleteScope.bind(this),            ["security_writer", "security_admin", "system_writer", "system_admin"]));
 
-    this.app.get('/security/config',            this.roleCheckHandler.enforceRoles(this.getConfig.bind(this),              ['security_reader', 'security_admin', 'system_reader', 'system_admin']));
-    this.app.put('/security/config',            this.roleCheckHandler.enforceRoles(this.saveConfig.bind(this),             ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
+    this.app.get("/security/config",            this.roleCheckHandler.enforceRoles(this.getConfig.bind(this),              ["security_reader", "security_admin", "system_reader", "system_admin"]));
+    this.app.put("/security/config",            this.roleCheckHandler.enforceRoles(this.saveConfig.bind(this),             ["security_writer", "security_admin", "system_writer", "system_admin"]));
 
-    this.app.get('/security/secrets',           this.roleCheckHandler.enforceRoles(this.getSecrets.bind(this),             ['security_reader', 'security_admin', 'system_reader', 'system_admin']));
-    this.app.post('/security/secrets',          this.roleCheckHandler.enforceRoles(this.createSecret.bind(this),           ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
-    this.app.delete('/security/secrets/:name',  this.roleCheckHandler.enforceRoles(this.deleteSecret.bind(this),           ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
-    this.app.put('/security/secrets/:name',     this.roleCheckHandler.enforceRoles(this.setSecret.bind(this),              ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
+    this.app.get("/security/secrets",           this.roleCheckHandler.enforceRoles(this.getSecrets.bind(this),             ["security_reader", "security_admin", "system_reader", "system_admin"]));
+    this.app.post("/security/secrets",          this.roleCheckHandler.enforceRoles(this.createSecret.bind(this),           ["security_writer", "security_admin", "system_writer", "system_admin"]));
+    this.app.delete("/security/secrets/:name",  this.roleCheckHandler.enforceRoles(this.deleteSecret.bind(this),           ["security_writer", "security_admin", "system_writer", "system_admin"]));
+    this.app.put("/security/secrets/:name",     this.roleCheckHandler.enforceRoles(this.setSecret.bind(this),              ["security_writer", "security_admin", "system_writer", "system_admin"]));
 
-    this.app.get('/security/bannedpasswords',   this.roleCheckHandler.enforceRoles(this.getBannedPasswords.bind(this),     ['security_reader', 'security_admin', 'system_reader', 'system_admin']));
-    this.app.put('/security/bannedpasswords',   this.roleCheckHandler.enforceRoles(this.updateBannedPasswords.bind(this),  ['security_writer', 'security_admin', 'system_writer', 'system_admin']));
+    this.app.get("/security/bannedpasswords",   this.roleCheckHandler.enforceRoles(this.getBannedPasswords.bind(this),     ["security_reader", "security_admin", "system_reader", "system_admin"]));
+    this.app.put("/security/bannedpasswords",   this.roleCheckHandler.enforceRoles(this.updateBannedPasswords.bind(this),  ["security_writer", "security_admin", "system_writer", "system_admin"]));
 };
 
 module.exports = function(app, identityDir, secretsDir, secretsStore, fileLister, roleCheckHandler, path) {
     if (!fileLister) {
-        fileLister = require('../lib/fileLister')();
+        fileLister = require("../lib/fileLister")();
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     return new securityController(app, identityDir, secretsDir, secretsStore, fileLister, roleCheckHandler, path);

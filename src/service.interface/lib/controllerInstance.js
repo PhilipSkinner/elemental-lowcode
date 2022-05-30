@@ -61,7 +61,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
             stateEngine.setComponents(componentInstances);
         
             //ensure our state engine triggers on load
-            if (req.method === 'POST') {
+            if (req.method === "POST") {
                 let body = req.body;
 
                 if (body.__params) {
@@ -71,7 +71,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
                 let event = {};
                 if (req.files) {
                     Object.keys(req.files).forEach((path) => {
-                        let parts = path.split('$$_$$');
+                        let parts = path.split("$$_$$");
                         let current = event;
                         for (var i = 0; i < parts.length; i++) {
                             if (i === parts.length - 1) {
@@ -88,14 +88,14 @@ controllerInstance.prototype.handler = function(req, res, next) {
                 }
 
                 //generate our post event!
-                let eventName = 'postback';
+                let eventName = "postback";
                 if (req.query && req.query._event) {
                     eventName = req.query._event;
                 }
 
                 Object.keys(body).forEach((valName) => {
                     //get the path version
-                    var parts = valName.split('$$_$$');
+                    var parts = valName.split("$$_$$");
                     let current = event;
                     for (var i = 0; i < parts.length; i++) {
                         if (i === parts.length - 1) {
@@ -113,7 +113,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
                 return stateEngine.triggerEvent(eventName, this.ensureArrays(event));
             }
 
-            if (req.method === 'GET') {
+            if (req.method === "GET") {
                 //do we have an event to trigger?
                 if (req.query && req.query.event) {
                     return stateEngine.triggerEvent(req.query.event, this.parseQuery(req.query));
@@ -126,7 +126,7 @@ controllerInstance.prototype.handler = function(req, res, next) {
                 return Promise.resolve();
             }
 
-            return stateEngine.triggerEvent('load', Object.assign(req.query || {}, req.params || {}));
+            return stateEngine.triggerEvent("load", Object.assign(req.query || {}, req.params || {}));
         }).then(() => {
             stateEngine.generateResponseHeaders();
 
@@ -135,11 +135,11 @@ controllerInstance.prototype.handler = function(req, res, next) {
                 if (req.session && req.session.save) {
                     req.session.save(() => {
                         stateEngine = null;
-                        res.end('');
+                        res.end("");
                     });
                 } else {
                     stateEngine = null;
-                    res.end('');
+                    res.end("");
                 }
 
                 return;
@@ -160,9 +160,9 @@ controllerInstance.prototype.handler = function(req, res, next) {
     if (this.routeDefinition.secure && this.passport) {
         //reload the session first
         if (!req.session || !req.session.passport || !req.session.passport.user || !req.session.passport.user.accessToken) {
-            return this.passport.authenticate('oauth2')(req, res, next);
+            return this.passport.authenticate("oauth2")(req, res, next);
         } else if (this.routeDefinition.roles) {
-            return this.roleCheckHandler.enforceRoles(handleRequest.bind(this), this.routeDefinition.roles.split(','))(req, res, next);
+            return this.roleCheckHandler.enforceRoles(handleRequest.bind(this), this.routeDefinition.roles.split(","))(req, res, next);
         }
     }
 
@@ -173,7 +173,7 @@ controllerInstance.prototype.parseQuery = function(obj) {
     const ret = {};
 
     Object.keys(obj).forEach((key) => {
-        let parts = key.split('__');
+        let parts = key.split("__");
 
         if (parts.length > 1) {
             let current = ret;
@@ -181,7 +181,7 @@ controllerInstance.prototype.parseQuery = function(obj) {
                 if (index + 1 === parts.length) {                                
                     current[p] = obj[key];
                 } else {
-                    let isArray = (parseInt(parts[index + 1]) + '') === parts[index + 1];
+                    let isArray = (parseInt(parts[index + 1]) + "") === parts[index + 1];
 
                     if (isArray) {
                         current[p] = current[p] || [];
@@ -197,12 +197,12 @@ controllerInstance.prototype.parseQuery = function(obj) {
         if (parts.length === 1) {
             //get the path version
             let current = ret;
-            parts = key.split('$$_$$');            
+            parts = key.split("$$_$$");
             parts.forEach((p, index) => {            
                 if (index + 1 === parts.length) {                                
                     current[p] = obj[key];
                 } else {
-                    let isArray = (parseInt(parts[index + 1]) + '') === parts[index + 1];
+                    let isArray = (parseInt(parts[index + 1]) + "") === parts[index + 1];
 
                     if (isArray) {
                         current[p] = current[p] || [];
@@ -226,7 +226,7 @@ controllerInstance.prototype.ensureArrays = function(obj) {
             allNums = false;
         }
 
-        if (typeof(obj[k]) === 'object') {
+        if (typeof(obj[k]) === "object") {
             obj[k] = this.ensureArrays(obj[k]);
         }
     });
@@ -254,19 +254,19 @@ module.exports = function(
     roleCheckHandler
 ) {
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     if (!controllerState) {
-        controllerState = require('./controllerState');
+        controllerState = require("./controllerState");
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     return new controllerInstance(routeDefinition, path, clientConfig, passport, tagControllers, templateRenderer, fs, controllerState, roleCheckHandler);

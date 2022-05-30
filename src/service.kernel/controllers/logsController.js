@@ -30,20 +30,20 @@ logsController.prototype.initEndpoints = function() {
         return;
     }
 
-    this.app.get('/logs/:service', 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		['system_reader', 'system_admin']));
+    this.app.get("/logs/:service", 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		["system_reader", "system_admin"]));
 };
 
 module.exports = function(app, dir, roleCheckHandler, readLastLines, path) {
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     if (!readLastLines) {
-        readLastLines = require('../lib/readLastLines')();
+        readLastLines = require("../lib/readLastLines")();
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     return new logsController(app, dir, roleCheckHandler, readLastLines, path);

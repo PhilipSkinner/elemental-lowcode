@@ -13,7 +13,7 @@ typeValidator.prototype.getTypeDefinition = function(typeName) {
 
             let schema = null;
             try {
-                schema = JSON.parse(data.toString('utf8'));
+                schema = JSON.parse(data.toString("utf8"));
             } catch(e) {
                 return reject(new Error(`Could not read schema for ${typeName}`));
             }
@@ -37,15 +37,15 @@ typeValidator.prototype.validate = function(typeName, object) {
 
 module.exports = function(fs, path, ajv) {
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!ajv) {
-        ajv = require('ajv')({
+        ajv = require("ajv")({
             allErrors : true
         });
     }

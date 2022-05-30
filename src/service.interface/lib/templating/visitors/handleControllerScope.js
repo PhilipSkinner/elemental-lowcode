@@ -1,7 +1,7 @@
 const handleControllerScope = function() {
     this.ignored = [
-        '_scope',
-        '_controller'
+        "_scope",
+        "_controller"
     ];
 };
 
@@ -13,7 +13,7 @@ handleControllerScope.prototype.expand = function(view, data) {
     }
 
     ourView.forEach((tag) => {
-        if (typeof(tag) === 'object' && tag !== null) {
+        if (typeof(tag) === "object" && tag !== null) {
             //do we have some events?
             if (tag._controller) {
                 tag._controller.instance = tag._controller.instance || {};
@@ -28,7 +28,7 @@ handleControllerScope.prototype.expand = function(view, data) {
                 };
             }
 
-            if (data !== null && typeof(tag._scope) !== 'undefined' && tag._scope !== null) {
+            if (data !== null && typeof(tag._scope) !== "undefined" && tag._scope !== null) {
                 tag._scope.data = tag._scope.data || {};
                 tag._scope.data.bag = tag._scope.data.bag || {};
                 Object.assign(tag._scope.data.bag, data.instance.bag);

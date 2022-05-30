@@ -26,7 +26,7 @@ jsonSchemaVerifier.prototype.verify = function(config, body) {
 
 module.exports = function(ajv) {
     if (!ajv) {
-        ajv = new require('ajv')({
+        ajv = new require("ajv")({
             allErrors : true
         });
     }

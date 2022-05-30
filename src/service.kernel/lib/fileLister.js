@@ -7,11 +7,11 @@ const fileLister = function(path, fs, glob, mkdirp, tar) {
 };
 
 fileLister.prototype.extractTar = function(dir, buffer) {
-    let name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+    let name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
     return this.writeFile(process.cwd(), `${name}.tar`, buffer).then(() => {
         return this.tar.x({
             file : this.path.join(process.cwd(), `${name}.tar`),
-            cwd : dir.indexOf('/') === 0 ? dir : this.path.join(process.cwd(), dir)
+            cwd : dir.indexOf("/") === 0 ? dir : this.path.join(process.cwd(), dir)
         });
     }).then(() => {
         return this.deleteFile(process.cwd(), `${name}.tar`);
@@ -19,16 +19,16 @@ fileLister.prototype.extractTar = function(dir, buffer) {
 };
 
 fileLister.prototype.tarDir = function(dir) {
-    let name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+    let name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
     let data = null;
 
     return this.ensureDir(dir).then(() => {
         return this.tar.c({
             gzip : false,
             file : `${name}.tar`,
-            cwd : dir.indexOf('/') === 0 ? dir : this.path.join(process.cwd(), dir)
+            cwd : dir.indexOf("/") === 0 ? dir : this.path.join(process.cwd(), dir)
         }, [
-            '.'
+            "."
         ]);
     }).then(() => {
         // read the tarball and return it
@@ -52,7 +52,7 @@ fileLister.prototype.executeGlob = function(lookup) {
                 return {
                     path 		: f,
                     basename 	: this.path.basename(f),
-                    name 		: this.path.basename(f).split('.').slice(0, -1).join('.')
+                    name 		: this.path.basename(f).split(".").slice(0, -1).join(".")
                 };
             }));
         });
@@ -71,7 +71,7 @@ fileLister.prototype.readFile = function(dir, file, binary) {
                     return resolve(content);
                 }
 
-                return resolve(content.toString('utf8'));
+                return resolve(content.toString("utf8"));
             });
         });
     });
@@ -136,23 +136,23 @@ fileLister.prototype.deleteFile = function(dir, file) {
 
 module.exports = function(path, fs, glob, mkdirp, tar) {
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     if (!glob) {
-        glob = require('glob');
+        glob = require("glob");
     }
 
     if (!mkdirp) {
-        mkdirp = require('mkdirp');
+        mkdirp = require("mkdirp");
     }
 
     if (!tar) {
-        tar = require('tar');
+        tar = require("tar");
     }
 
     return new fileLister(path, fs, glob, mkdirp, tar);

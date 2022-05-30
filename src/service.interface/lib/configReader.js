@@ -28,7 +28,7 @@ configReader.prototype.readDefinition = function(file) {
 
 configReader.prototype.readMainConfig = function() {
     return new Promise((resolve) => {
-        this.fs.readFile(this.path.join(process.cwd(), process.env.DIR, 'main.json'), (err, content) => {
+        this.fs.readFile(this.path.join(process.cwd(), process.env.DIR, "main.json"), (err, content) => {
             if (err) {
                 return resolve({});
             }
@@ -47,11 +47,11 @@ configReader.prototype.readMainConfig = function() {
 
 module.exports = function(fs, path) {
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     return new configReader(fs, path);

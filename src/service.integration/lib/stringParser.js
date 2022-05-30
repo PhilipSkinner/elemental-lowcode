@@ -4,7 +4,7 @@ const stringParser = function() {
 
 stringParser.prototype._determineReplacementValue = function(name, variables) {
     //get its parts
-    var parts = name.replace('$(', '').replace(')', '').replace(/\[/g, '.').replace(/\]/g, '').split('.');
+    var parts = name.replace("$(", "").replace(")", "").replace(/\[/g, ".").replace(/\]/g, "").split(".");
 
     var currentLevel = variables;
     //lookup time
@@ -14,7 +14,7 @@ stringParser.prototype._determineReplacementValue = function(name, variables) {
         }
     });
 
-    if (typeof(currentLevel) !== 'object' || currentLevel === null) {
+    if (typeof(currentLevel) !== "object" || currentLevel === null) {
         return currentLevel;
     }
 

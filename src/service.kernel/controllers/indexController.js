@@ -24,7 +24,7 @@ indexController.prototype.get = function(req, res) {
 };
 
 indexController.prototype.post = function(req, res) {
-    this.fileLister.extractTar(this.dir, Buffer.from(req.body.file, 'base64')).then(() => {
+    this.fileLister.extractTar(this.dir, Buffer.from(req.body.file, "base64")).then(() => {
         res.status(204);
         res.end();
     }).catch((err) => {
@@ -43,17 +43,17 @@ indexController.prototype.initEndpoints = function() {
         return;
     }
 
-    this.app.get('/', 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		['system_reader', 'system_admin']));
-    this.app.post('/', 			this.roleCheckHandler.enforceRoles(this.post.bind(this), 		['system_writer', 'system_admin']));
+    this.app.get("/", 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		["system_reader", "system_admin"]));
+    this.app.post("/", 			this.roleCheckHandler.enforceRoles(this.post.bind(this), 		["system_writer", "system_admin"]));
 };
 
 module.exports = function(app, dir, fileLister, roleCheckHandler) {
     if (!fileLister) {
-        fileLister = require('../lib/fileLister')();
+        fileLister = require("../lib/fileLister")();
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     return new indexController(app, dir, fileLister, roleCheckHandler);

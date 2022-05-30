@@ -34,7 +34,7 @@ definitionProvider.prototype._getClient = function(config) {
     }
 
     return new Promise((resolve, reject) => {
-        this.fs.readFile(this.path.join(process.env.DIR, '../identity', config.client_id + '.client.json'), (err, content) => {
+        this.fs.readFile(this.path.join(process.env.DIR, "../identity", config.client_id + ".client.json"), (err, content) => {
             if (err) {
                 return reject(err);
             }
@@ -47,7 +47,7 @@ definitionProvider.prototype._getClient = function(config) {
             }
 
             if (client === null) {
-                return reject(new Error('Cannot read client definition'));
+                return reject(new Error("Cannot read client definition"));
             }
 
             return resolve(client);
@@ -92,18 +92,18 @@ definitionProvider.prototype.fetchDefinition = function(file) {
             return Promise.resolve(config);
         });
     }).catch((err) => {
-        console.log('Failed to read definition!');
+        console.log("Failed to read definition!");
         throw err;
     });
 };
 
 module.exports = function(fs, path, reqMethod, resolveMethod) {
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!reqMethod) {

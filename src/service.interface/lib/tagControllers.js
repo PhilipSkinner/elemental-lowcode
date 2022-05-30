@@ -4,8 +4,8 @@ const tagControllers = function(path) {
 };
 
 tagControllers.prototype.registerController = function(name, controller, raw) {
-    if (typeof(name) === 'undefined' || name === null || name === '') {
-        throw new Error('Registering a controller requires a name');
+    if (typeof(name) === "undefined" || name === null || name === "") {
+        throw new Error("Registering a controller requires a name");
     }
 
     this.controllers[name] = {
@@ -36,8 +36,8 @@ tagControllers.prototype.determineInstances = function(view) {
     let instanceCounters = {};
 
     ourView.map((entry) => {
-        if (!(typeof(entry) !== 'object' || entry === null)) {
-            if (typeof(this.controllers[entry.tag]) !== 'undefined') {
+        if (!(typeof(entry) !== "object" || entry === null)) {
+            if (typeof(this.controllers[entry.tag]) !== "undefined") {
                 instanceCounters[entry.tag] = instanceCounters[entry.tag] || 0;
                 instanceCounters[entry.tag]++;
 
@@ -61,7 +61,7 @@ tagControllers.prototype.determineInstances = function(view) {
 
 module.exports = function(path) {
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     return new tagControllers(path);

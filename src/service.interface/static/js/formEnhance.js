@@ -6,7 +6,7 @@ var submitHandler = function(elem) {
 submitHandler.prototype.pollEvent = function() {
     clearTimeout(this.timeout);
     this.handleSubmit(null).then(() => {
-        const poll = this.elem.attributes['data-poll'];
+        const poll = this.elem.attributes["data-poll"];
         if (poll && poll.value) {
             this.timeout = setTimeout(this.pollEvent.bind(this), poll.value);
         }
@@ -15,9 +15,9 @@ submitHandler.prototype.pollEvent = function() {
 
 submitHandler.prototype.init = function() {
     this.resetForm();
-    this.elem.addEventListener('submit', this.handleSubmit.bind(this));
+    this.elem.addEventListener("submit", this.handleSubmit.bind(this));
 
-    const poll = this.elem.attributes['data-poll'];
+    const poll = this.elem.attributes["data-poll"];
     if (poll && poll.value) {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(this.pollEvent.bind(this), poll.value);
@@ -25,10 +25,10 @@ submitHandler.prototype.init = function() {
 };
 
 submitHandler.prototype.resetForm = function() {
-    this.elem.querySelectorAll('input, select, textarea').forEach((field) => {
-        if (field.type !== 'file' && field.type !== 'radio' && field.type !== 'checkbox') {
-            field.value = field.getAttribute('value');
-        } else if (field.type === 'file') {
+    this.elem.querySelectorAll("input, select, textarea").forEach((field) => {
+        if (field.type !== "file" && field.type !== "radio" && field.type !== "checkbox") {
+            field.value = field.getAttribute("value");
+        } else if (field.type === "file") {
             field.value = null;
         }
     });
@@ -44,11 +44,11 @@ submitHandler.prototype.handleSubmit = function(event) {
     const params = {};
     const files = {};
     let doMultipart = false;
-    this.elem.querySelectorAll('input, select, textarea').forEach((field) => {
+    this.elem.querySelectorAll("input, select, textarea").forEach((field) => {
         let name = field.name;
         let value = field.value;
 
-        if (field.type === 'file') {
+        if (field.type === "file") {
             doMultipart = true;
             let fileArray = [];
             for (let i = 0; i < field.files.length; i++) {
@@ -64,7 +64,7 @@ submitHandler.prototype.handleSubmit = function(event) {
 
                 files[name] = files[name].concat(fileArray);
             }
-        } else if ((field.type === 'radio' || field.type === 'checkbox') && !field.checked) {
+        } else if ((field.type === "radio" || field.type === "checkbox") && !field.checked) {
             // do nothing
         } else {
             if (!params[name]) {
@@ -81,7 +81,7 @@ submitHandler.prototype.handleSubmit = function(event) {
 
     if (doMultipart) {
         const formData = new FormData();
-    	formData.append('__params', JSON.stringify(params));
+    	formData.append("__params", JSON.stringify(params));
 
     	Object.keys(files).forEach((fileName) => {
     		if (Array.isArray(files[fileName])) {
@@ -94,18 +94,18 @@ submitHandler.prototype.handleSubmit = function(event) {
     		}
     	});
 
-        return window.axios.post(`${location.pathname}${this.elem.attributes['action'].value}`, formData, {
+        return window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, formData, {
             headers : {
-                'Content-Type': 'multipart/form-data'
+                "Content-Type": "multipart/form-data"
             },
             withCredentials : true
         }).then((response) => {
             this.handleResponse(response, event === null);
         });
     } else {
-        return window.axios.post(`${location.pathname}${this.elem.attributes['action'].value}`, JSON.stringify(params), {
+        return window.axios.post(`${location.pathname}${this.elem.attributes["action"].value}`, JSON.stringify(params), {
             headers : {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             },
             withCredentials : true
         }).then((response) => {
@@ -119,28 +119,28 @@ submitHandler.prototype.handleSubmit = function(event) {
 submitHandler.prototype.handleResponse = function(response, automatic) {
     if (response.request && response.request.responseURL && location.href !== response.request.responseURL) {
         //need to rewrite the location
-        history.pushState({}, '', response.request.responseURL);
+        history.pushState({}, "", response.request.responseURL);
     }
 
     var newMap = createDOMMap(stringToHTML(response.data));
-    var domMap = createDOMMap(document.querySelector('html'));
-    diff(newMap[1].children, domMap, document.querySelector('html'), automatic);
+    var domMap = createDOMMap(document.querySelector("html"));
+    diff(newMap[1].children, domMap, document.querySelector("html"), automatic);
 
     enhanceForms();
     enhanceLinks();
 };
 
 var enhanceForms = function() {
-    var elems = document.querySelectorAll('form[action^="?_event"]');
+    var elems = document.querySelectorAll("form[action^="?_event"]");
     var handlers = [];
     for (var i = 0; i < elems.length; i++) {
-        if (!elems[i].attributes['_submitEnhanced']) {
-            elems[i].attributes['_submitEnhanced'] = 1;
+        if (!elems[i].attributes["_submitEnhanced"]) {
+            elems[i].attributes["_submitEnhanced"] = 1;
             handlers.push(new submitHandler(elems[i]));
         }
     }
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     enhanceForms();
 });

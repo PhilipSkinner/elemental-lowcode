@@ -19,7 +19,7 @@ var support = (function () {
     if (!window.DOMParser) return false;
     var parser = new DOMParser();
     try {
-        parser.parseFromString('x', 'text/html');
+        parser.parseFromString("x", "text/html");
     } catch(err) {
         return false;
     }
@@ -36,12 +36,12 @@ var stringToHTML = function (str) {
     // If DOMParser is supported, use it
     if (support) {
         var parser = new DOMParser();
-        var doc = parser.parseFromString(str, 'text/html');
+        var doc = parser.parseFromString(str, "text/html");
         return doc;
     }
 
     // Otherwise, fallback to old-school method
-    var dom = document.createElement('html');
+    var dom = document.createElement("html");
     dom.innerHTML = str;
 
     return dom;
@@ -73,22 +73,22 @@ var createDOMMap = function (element, isSVG) {
         var details = {
             content: node.childNodes && node.childNodes.length > 0 ? null : node.textContent,
             atts: node.nodeType !== 1 ? [] : getAttributes(node.attributes),
-            type: node.nodeType === 3 ? 'text' : (node.nodeType === 8 ? 'comment' : (node.nodeType === 10 ? 'html' : node.tagName.toLowerCase())),
+            type: node.nodeType === 3 ? "text" : (node.nodeType === 8 ? "comment" : (node.nodeType === 10 ? "html" : node.tagName.toLowerCase())),
             node: node
         };
-        details.isSVG = isSVG || details.type === 'svg';
+        details.isSVG = isSVG || details.type === "svg";
         details.children = createDOMMap(node, details.isSVG);
         return details;
     }));
 };
 
 var getStyleMap = function (styles) {
-    return styles.split(';').reduce(function (arr, style) {
-        if (style.trim().indexOf(':') > 0) {
-            var styleArr = style.split(':');
+    return styles.split(";").reduce(function (arr, style) {
+        if (style.trim().indexOf(":") > 0) {
+            var styleArr = style.split(":");
             arr.push({
-                name: styleArr[0] ? styleArr[0].trim() : '',
-                value: styleArr[1] ? styleArr[1].trim() : ''
+                name: styleArr[0] ? styleArr[0].trim() : "",
+                value: styleArr[1] ? styleArr[1].trim() : ""
             });
         }
         return arr;
@@ -97,7 +97,7 @@ var getStyleMap = function (styles) {
 
 var removeStyles = function (elem, styles) {
     styles.forEach(function (style) {
-        elem.style[style] = '';
+        elem.style[style] = "";
     });
 };
 
@@ -129,11 +129,11 @@ var diffStyles = function (elem, styles) {
 var removeAttributes = function (elem, atts) {
     atts.forEach(function (attribute) {
         // If the attribute is a class, use className
-        // Else if it's style, remove all styles
+        // Else if it"s style, remove all styles
         // Otherwise, use removeAttribute()
-        if (attribute.att === 'class') {
-            elem.className = '';
-        } else if (attribute.att === 'style') {
+        if (attribute.att === "class") {
+            elem.className = "";
+        } else if (attribute.att === "style") {
             removeStyles(elem, Array.prototype.slice.call(elem.style));
         } else {
             elem.removeAttribute(attribute.att);
@@ -149,11 +149,11 @@ var removeAttributes = function (elem, atts) {
 var addAttributes = function (elem, atts) {
     atts.forEach(function (attribute) {
         // If the attribute is a class, use className
-        // Else if it's style, diff and update styles
+        // Else if it"s style, diff and update styles
         // Otherwise, set the attribute
-        if (attribute.att === 'class') {
+        if (attribute.att === "class") {
             elem.className = attribute.value;
-        } else if (attribute.att === 'style') {
+        } else if (attribute.att === "style") {
             diffStyles(elem, attribute.value);
         } else {
             elem.setAttribute(attribute.att, attribute.value);
@@ -169,11 +169,11 @@ var addAttributes = function (elem, atts) {
 var diffAtts = function (template, existing, automatic) {
     if (!automatic) {
         //reset any user modifiable attributes
-        var modifiable = ['value'];
-        var ignoreType = ['radio', 'checkbox', 'submit', 'button'];
+        var modifiable = ["value"];
+        var ignoreType = ["radio", "checkbox", "submit", "button"];
         modifiable.forEach((m) => {
             if (ignoreType.indexOf(existing.node.type) === -1) {
-                existing.node[m] = '';
+                existing.node[m] = "";
             }
         });
     }
@@ -208,12 +208,12 @@ var makeElem = function (elem) {
 
     // Create the element
     var node;
-    if (elem.type === 'text') {
+    if (elem.type === "text") {
         node = document.createTextNode(elem.content);
-    } else if (elem.type === 'comment') {
+    } else if (elem.type === "comment") {
         node = document.createComment(elem.content);
     } else if (elem.isSVG) {
-        node = document.createElementNS('http://www.w3.org/2000/svg', elem.type);
+        node = document.createElementNS("http://www.w3.org/2000/svg", elem.type);
     } else {
         node = document.createElement(elem.type);
     }
@@ -227,7 +227,7 @@ var makeElem = function (elem) {
         elem.children.forEach(function (childElem) {
             node.appendChild(makeElem(childElem));
         });
-    } else if (elem.type !== 'text') {
+    } else if (elem.type !== "text") {
         node.textContent = elem.content;
     }
 
@@ -253,7 +253,7 @@ var diff = function (templateMap, domMap, elem, automatic) {
     // Diff each item in the templateMap
     templateMap.forEach(function (node, index) {
 
-        // If element doesn't exist, create it
+        // If element doesn"t exist, create it
         if (!domMap[index]) {
             elem.appendChild(makeElem(templateMap[index]));
             return;
@@ -275,11 +275,11 @@ var diff = function (templateMap, domMap, elem, automatic) {
 
         // If target element should be empty, wipe it
         if (domMap[index].children.length > 0 && node.children.length < 1) {
-            domMap[index].node.innerHTML = '';
+            domMap[index].node.innerHTML = "";
             return;
         }
 
-        // If element is empty and shouldn't be, build it up
+        // If element is empty and shouldn"t be, build it up
         // This uses a document fragment to minimize reflows
         if (domMap[index].children.length < 1 && node.children.length > 0) {
             var fragment = document.createDocumentFragment();

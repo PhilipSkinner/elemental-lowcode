@@ -1,7 +1,7 @@
 const bindValues = function() {
     this.ignored = [
-        '_scope',
-        '_controller'
+        "_scope",
+        "_controller"
     ];
 };
 
@@ -18,7 +18,7 @@ bindValues.prototype.bindValues = function(view) {
                     tag[prop] = this.bindValues(tag[prop]);
                 }
 
-                if (typeof(tag[prop]) === 'object' && tag[prop] !== null) {
+                if (typeof(tag[prop]) === "object" && tag[prop] !== null) {
                     tag[prop] = this.bindValues([tag[prop]])[0];
                 }
             }
@@ -28,16 +28,16 @@ bindValues.prototype.bindValues = function(view) {
         if (tag.bind) {
             //only specify these if the user hasn"t already
             if (!tag.value) {
-                tag.value = tag.bind + '';
+                tag.value = tag.bind + "";
             }
 
-            if (tag.tag === 'textarea') {
+            if (tag.tag === "textarea") {
                 //special case, set to text
                 tag.text = tag.value;
             }
 
             if (!tag.name) {
-                tag.name = tag.bind.replace('$.', '').split('.').join('$$_$$');
+                tag.name = tag.bind.replace("$.", "").split(".").join("$$_$$");
             }
         }
 

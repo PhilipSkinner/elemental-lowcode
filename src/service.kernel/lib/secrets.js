@@ -6,7 +6,7 @@ const secrets = function(configDir, storeDir, fileLister, path) {
 };
 
 secrets.prototype._listSecrets = function() {
-    return this.fileLister.executeGlob(this.path.join(this.configDir, '**/*.secret.json')).then((results) => {
+    return this.fileLister.executeGlob(this.path.join(this.configDir, "**/*.secret.json")).then((results) => {
         return Promise.all(results.map((r) => {
             return this.fileLister.readJSONFile(this.configDir, r.basename);
         }));
@@ -34,7 +34,7 @@ secrets.prototype.initSecrets = function(clientSecret) {
         rules 		: {},
         identity 	: {
             SECRET 			         : clientSecret,
-            DEBUG 			         : 'oidc-provider:*',
+            DEBUG 			         : "oidc-provider:*",
             IDENTITY_HOST 	         : process.env.IDENTITY_HOST,
             EXTERNAL_IDENTITY_HOST   : process.env.EXTERNAL_IDENTITY_HOST
         },
@@ -43,16 +43,16 @@ secrets.prototype.initSecrets = function(clientSecret) {
 
     return this._listSecrets().then((secrets) => {
         secrets.forEach((s) => {
-            if (typeof(s) !== 'undefined' && s !== null && typeof(s.scope) !== 'undefined' && s.scope !== null && typeof(s.value) !== 'undefined' && s.value !== null) {
+            if (typeof(s) !== "undefined" && s !== null && typeof(s.scope) !== "undefined" && s.scope !== null && typeof(s.value) !== "undefined" && s.value !== null) {
                 //generate our elemental env name
                 const envName = `ELEMENTAL__ENV__${s.name}`;
 
-                if (s.scope === 'global') {
+                if (s.scope === "global") {
                     Object.keys(ret).forEach((system) => {
                         ret[system][envName] = s.value;
                     });
                 } else {
-                    const p = s.scope.split(':');
+                    const p = s.scope.split(":");
                     ret[p[1]][envName] = s.value;
                 }
             }
@@ -64,11 +64,11 @@ secrets.prototype.initSecrets = function(clientSecret) {
 
 module.exports = function(configDir, storeDir, fileLister, path) {
     if (!fileLister) {
-        fileLister = require('./fileLister')();
+        fileLister = require("./fileLister")();
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     return new secrets(configDir, storeDir, fileLister, path);

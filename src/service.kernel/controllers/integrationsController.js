@@ -10,7 +10,7 @@ const integrationsController = function(app, dir, fileLister, roleCheckHandler, 
 };
 
 integrationsController.prototype.get = function(req, res) {
-    this.fileLister.executeGlob(this.path.join(this.dir, '**/*.json')).then((results) => {
+    this.fileLister.executeGlob(this.path.join(this.dir, "**/*.json")).then((results) => {
         res.status(200);
         res.json(results.map((r) => {
             return r;
@@ -28,7 +28,7 @@ integrationsController.prototype.get = function(req, res) {
 };
 
 integrationsController.prototype.getSingular = function(req, res) {
-    this.fileLister.readJSONFile(this.dir, req.params.name + '.json').then((content) => {
+    this.fileLister.readJSONFile(this.dir, req.params.name + ".json").then((content) => {
         res.status(200);
         res.json(content);
         res.end();
@@ -45,14 +45,14 @@ integrationsController.prototype.getSingular = function(req, res) {
 
 integrationsController.prototype.update = function(req, res) {
     //validate the JSON
-    this.typeValidator.validate('integration', req.body).then(() => {
+    this.typeValidator.validate("integration", req.body).then(() => {
         if (req.params.name !== req.body.name) {
-            return this.fileLister.deleteFile(this.dir, req.params.name + '.json').then(() => {
-                return this.fileLister.writeFile(this.dir, req.body.name + '.json', JSON.stringify(req.body));
+            return this.fileLister.deleteFile(this.dir, req.params.name + ".json").then(() => {
+                return this.fileLister.writeFile(this.dir, req.body.name + ".json", JSON.stringify(req.body));
             });
         }
 
-        return this.fileLister.writeFile(this.dir, req.params.name + '.json', JSON.stringify(req.body));
+        return this.fileLister.writeFile(this.dir, req.params.name + ".json", JSON.stringify(req.body));
     }).then(() => {
         res.status(204);
         res.end();
@@ -76,7 +76,7 @@ integrationsController.prototype.update = function(req, res) {
 };
 
 integrationsController.prototype.delete = function(req, res) {
-    this.fileLister.deleteFile(this.dir, req.params.name + '.json').then(() => {
+    this.fileLister.deleteFile(this.dir, req.params.name + ".json").then(() => {
         res.status(204);
         res.end();
     }).catch((err) => {
@@ -91,11 +91,11 @@ integrationsController.prototype.delete = function(req, res) {
 };
 
 integrationsController.prototype.create = function(req, res) {
-    this.typeValidator.validate('integration', req.body).then(() => {
-        return this.fileLister.writeFile(this.dir, req.body.name + '.json', JSON.stringify(req.body));
+    this.typeValidator.validate("integration", req.body).then(() => {
+        return this.fileLister.writeFile(this.dir, req.body.name + ".json", JSON.stringify(req.body));
     }).then(() => {
         res.status(201);
-        res.location('/integrations/' + req.body.name);
+        res.location("/integrations/" + req.body.name);
         res.end();
     }).catch((err) => {
         if (Array.isArray(err)) {
@@ -121,28 +121,28 @@ integrationsController.prototype.initEndpoints = function() {
         return;
     }
 
-    this.app.get('/integrations', 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		['integration_reader', 'integration_admin', 'system_reader', 'system_admin']));
-    this.app.get('/integrations/:name', 	this.roleCheckHandler.enforceRoles(this.getSingular.bind(this), ['integration_reader', 'integration_admin', 'system_reader', 'system_admin']));
-    this.app.put('/integrations/:name', 	this.roleCheckHandler.enforceRoles(this.update.bind(this), 		['integration_writer', 'integration_admin', 'system_writer', 'system_admin']));
-    this.app.delete('/integrations/:name', 	this.roleCheckHandler.enforceRoles(this.delete.bind(this), 		['integration_writer', 'integration_admin', 'system_writer', 'system_admin']));
-    this.app.post('/integrations', 			this.roleCheckHandler.enforceRoles(this.create.bind(this), 		['integration_writer', 'integration_admin', 'system_writer', 'system_admin']));
+    this.app.get("/integrations", 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		["integration_reader", "integration_admin", "system_reader", "system_admin"]));
+    this.app.get("/integrations/:name", 	this.roleCheckHandler.enforceRoles(this.getSingular.bind(this), ["integration_reader", "integration_admin", "system_reader", "system_admin"]));
+    this.app.put("/integrations/:name", 	this.roleCheckHandler.enforceRoles(this.update.bind(this), 		["integration_writer", "integration_admin", "system_writer", "system_admin"]));
+    this.app.delete("/integrations/:name", 	this.roleCheckHandler.enforceRoles(this.delete.bind(this), 		["integration_writer", "integration_admin", "system_writer", "system_admin"]));
+    this.app.post("/integrations", 			this.roleCheckHandler.enforceRoles(this.create.bind(this), 		["integration_writer", "integration_admin", "system_writer", "system_admin"]));
 };
 
 module.exports = function(app, dir, fileLister, path, roleCheckHandler, typeValidator) {
     if (!fileLister) {
-        fileLister = require('../lib/fileLister')();
+        fileLister = require("../lib/fileLister")();
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     if (!typeValidator) {
-        typeValidator = require('../lib/typeValidator')();
+        typeValidator = require("../lib/typeValidator")();
     }
 
     return new integrationsController(app, dir, fileLister, roleCheckHandler, path, typeValidator);

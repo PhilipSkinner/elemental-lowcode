@@ -8,7 +8,7 @@ const websiteService = function(app, configReader, websiteInstance, glob, path) 
 
 websiteService.prototype.findDefinitions = function(dir) {
     return new Promise((resolve, reject) => {
-        this.glob(this.path.join(dir, '**/*.website.json'), (err, definitions) => {
+        this.glob(this.path.join(dir, "**/*.website.json"), (err, definitions) => {
             if (err) {
                 return reject(err);
             }
@@ -20,7 +20,7 @@ websiteService.prototype.findDefinitions = function(dir) {
 
 websiteService.prototype.findTagsets = function(dir) {
     return new Promise((resolve, reject) => {
-        this.glob(this.path.join(dir, 'tagsets/**/*.json'), (err, tagsets) => {
+        this.glob(this.path.join(dir, "tagsets/**/*.json"), (err, tagsets) => {
             if (err) {
                 return reject(err);
             }
@@ -72,16 +72,16 @@ websiteService.prototype.init = function(dir) {
                 definition.__main 	= mainConfig;
                 definition.tagsets 	= tagsets;
 
-                if (typeof(definition.client_id) === 'undefined' || definition.client_id === null || definition.client_id === '') {
+                if (typeof(definition.client_id) === "undefined" || definition.client_id === null || definition.client_id === "") {
                     return Promise.resolve(definition);
                 }
 
                 // read the client config
-                return this.configReader.readDefinition(this.path.join(dir, '../identity', definition.client_id + '.client.json')).then((client) => {
+                return this.configReader.readDefinition(this.path.join(dir, "../identity", definition.client_id + ".client.json")).then((client) => {
                     definition.client = client;
                     return Promise.resolve(definition);
                 }).catch((err) => {
-                    console.error('Could not load client configuration', err);
+                    console.error("Could not load client configuration", err);
                     return Promise.resolve(definition);
                 });
             }).then((definition) => {
@@ -96,20 +96,20 @@ websiteService.prototype.init = function(dir) {
 
 module.exports = function(app, configReader, websiteInstance, glob, path) {
     if (!configReader) {
-        configReader = require('./configReader')();
+        configReader = require("./configReader")();
     }
 
     if (!websiteInstance) {
         //can"t be a singleton
-        websiteInstance = require('./websiteInstance');
+        websiteInstance = require("./websiteInstance");
     }
 
     if (!glob) {
-        glob = require('glob');
+        glob = require("glob");
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     return new websiteService(app, configReader, websiteInstance, glob, path);

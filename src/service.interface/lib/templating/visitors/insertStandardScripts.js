@@ -1,20 +1,20 @@
 const insertStandardScripts = function() {
     this.standardScripts = [
-        '/_static/js/axios.js',
-        '/_static/js/diff.js',
-        '/_static/js/historyEnhance.js',
-        '/_static/js/clickEnhance.js',
-        '/_static/js/formEnhance.js',
+        "/_static/js/axios.js",
+        "/_static/js/diff.js",
+        "/_static/js/historyEnhance.js",
+        "/_static/js/clickEnhance.js",
+        "/_static/js/formEnhance.js",
     ];
 };
 
 insertStandardScripts.prototype.traverse = function(object) {
-    if (object.tag === 'body') {
+    if (object.tag === "body") {
         object.children = object.children || [];
 
         this.standardScripts.forEach((script) => {
             object.children.push({
-                tag : 'script',
+                tag : "script",
                 src : script
             });
         });

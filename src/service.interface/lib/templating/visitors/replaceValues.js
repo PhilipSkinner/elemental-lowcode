@@ -2,10 +2,10 @@ const replaceValues = function(dataResolver) {
     this.dataResolver = dataResolver;
 
     this.ignoredProps = [
-        'repeat',
-        '_scope',
-        '_controller',
-        '_bind'
+        "repeat",
+        "_scope",
+        "_controller",
+        "_bind"
     ];
 };
 
@@ -17,7 +17,7 @@ replaceValues.prototype.replace = function(view, data) {
             tag = this.dataResolver.detectValues(tag, scopedData, {});
         }
 
-        if (typeof(tag) !== 'object' || tag === null) {
+        if (typeof(tag) !== "object" || tag === null) {
             return tag;
         }
 
@@ -35,7 +35,7 @@ replaceValues.prototype.replace = function(view, data) {
                 return;
             }
 
-            if (typeof(tag[prop]) === 'object' && tag[prop] !== null) {
+            if (typeof(tag[prop]) === "object" && tag[prop] !== null) {
                 tag[prop] = this.replace([tag[prop]], scopedData)[0];
                 return;
             }
@@ -43,7 +43,7 @@ replaceValues.prototype.replace = function(view, data) {
             tag[prop] = this.dataResolver.detectValues(tag[prop], scopedData, {});
 
             //has the value now changed into something we need to attempt to resolve?
-            if (typeof(tag[prop]) === 'object' && tag[prop] !== null) {
+            if (typeof(tag[prop]) === "object" && tag[prop] !== null) {
                 tag[prop] = this.replace([tag[prop]], scopedData)[0];
                 return;
             }
@@ -71,7 +71,7 @@ replaceValues.prototype.applySync = function(definition) {
 
 module.exports = function(dataResolver) {
     if (!dataResolver) {
-        dataResolver = require('../../../../support.lib/dataResolver')();
+        dataResolver = require("../../../../support.lib/dataResolver")();
     }
 
     return new replaceValues(dataResolver);

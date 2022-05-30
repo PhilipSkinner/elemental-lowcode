@@ -9,11 +9,11 @@ readLastLines.prototype.read = function(path, lastSeenLine) {
                 return reject(err);
             }
 
-            let lines = data.toString('utf8').split('\n');
+            let lines = data.toString("utf8").split("\n");
             let ret = {};
 
             for (var i = lastSeenLine; i < lines.length - 1; i++) {
-                ret[i + ''] = lines[i];
+                ret[i + ""] = lines[i];
             }
 
             return resolve(ret);
@@ -23,7 +23,7 @@ readLastLines.prototype.read = function(path, lastSeenLine) {
 
 module.exports = function(fs) {
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     return new readLastLines(fs);

@@ -1,8 +1,8 @@
 const
-    express 		= require('express'),
-    tokenHandler 	= require('../support.lib/tokenHandler'),
-    hotreload 		= require('../support.lib/hotReload')(),
-    rateLimit       = require('express-rate-limit');
+    express 		= require("express"),
+    tokenHandler 	= require("../support.lib/tokenHandler"),
+    hotreload 		= require("../support.lib/hotReload")(),
+    rateLimit       = require("express-rate-limit");
 
 let app = null;
 let server = null;
@@ -14,7 +14,7 @@ const limiter = rateLimit({
 });
 
 if (!process.env.DIR) {
-    throw new Error('Require dir to load configuration from.');
+    throw new Error("Require dir to load configuration from.");
 }
 
 const startup = () => {
@@ -22,13 +22,13 @@ const startup = () => {
     app.use(limiter);
     app.use(tHandler.tokenCheck.bind(tHandler));
 
-    let integrationService = require('./lib/integrationService')(app);
+    let integrationService = require("./lib/integrationService")(app);
 
     //now init our integrations
     integrationService.init(process.env.DIR).then(() => {
         //and run our app
         server = app.listen(process.env.PORT, () => {
-            console.log('Hotreload complete');
+            console.log("Hotreload complete");
             restarting = false;
         });
     });
@@ -38,7 +38,7 @@ const reload = () => {
     if (!restarting) {
         restarting = true;
         if (server) {
-            console.log('Closing...');
+            console.log("Closing...");
             server.close(startup);
         } else {
             startup();

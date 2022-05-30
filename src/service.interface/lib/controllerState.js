@@ -72,7 +72,7 @@ controllerState.prototype.deallocate = function() {
 };
 
 controllerState.prototype.getBag = function() {
-    return typeof(this.controllerDefinition.bag) === 'undefined' || this.controllerDefinition.bag === null ? {} : this.controllerDefinition.bag;
+    return typeof(this.controllerDefinition.bag) === "undefined" || this.controllerDefinition.bag === null ? {} : this.controllerDefinition.bag;
 };
 
 controllerState.prototype.cleanValues = function(values) {
@@ -82,7 +82,7 @@ controllerState.prototype.cleanValues = function(values) {
         });
     }
 
-    if (typeof(values) === 'object') {
+    if (typeof(values) === "object") {
         Object.keys(values).forEach((k) => {
             values[k] = this.cleanValues(values[k]);
         });
@@ -91,8 +91,8 @@ controllerState.prototype.cleanValues = function(values) {
     }
 
     if (values && values.replace) {
-        values = values.replace(/\$\(/g, '&#36;(');
-        values = values.replace(/\$\./g, '&#36;.');
+        values = values.replace(/\$\(/g, "&#36;(");
+        values = values.replace(/\$\./g, "&#36;.");
     }
 
     return values;
@@ -100,7 +100,7 @@ controllerState.prototype.cleanValues = function(values) {
 
 controllerState.prototype._triggerComponentEvents = function(name, details) {
     return Promise.all((this.componentInstances || []).map((ci) => {
-        if ((details._identifier && ci.identifier === details._identifier) || name === 'load') {
+        if ((details._identifier && ci.identifier === details._identifier) || name === "load") {
             try {
                 let result = null;
 
@@ -172,43 +172,43 @@ module.exports = function(
     environmentService
 ) {
     if (!storageService) {
-        storageService = require('../../support.lib/storageService')();
+        storageService = require("../../support.lib/storageService")();
     }
 
     if (!sessionState) {
-        sessionState = require('./sessionState')(controllerDefinition.sessionName);
+        sessionState = require("./sessionState")(controllerDefinition.sessionName);
     }
 
     if (!integrationService) {
-        integrationService = require('../../support.lib/integrationService')();
+        integrationService = require("../../support.lib/integrationService")();
     }
 
     if (!rulesetService) {
-        rulesetService = require('../../support.lib/ruleService')();
+        rulesetService = require("../../support.lib/ruleService")();
     }
 
     if (!authClientProvider) {
-        authClientProvider = require('../../support.lib/authClientProvider')(clientConfig);
+        authClientProvider = require("../../support.lib/authClientProvider")(clientConfig);
     }
 
     if (!idmService) {
-        idmService = require('../../support.lib/idmService')();
+        idmService = require("../../support.lib/idmService")();
     }
 
     if (!navigationService) {
-        navigationService = require('../../support.lib/navigationService')();
+        navigationService = require("../../support.lib/navigationService")();
     }
 
     if (!serviceProvider) {
-        serviceProvider = require('../../support.lib/iocProvider')();
+        serviceProvider = require("../../support.lib/iocProvider")();
     }
 
     if (!messagingService) {
-        messagingService = require('../../support.lib/messagingService')();
+        messagingService = require("../../support.lib/messagingService")();
     }
 
     if (!environmentService) {
-        environmentService = require('../../support.lib/environmentService')();
+        environmentService = require("../../support.lib/environmentService")();
     }
 
     return new controllerState(

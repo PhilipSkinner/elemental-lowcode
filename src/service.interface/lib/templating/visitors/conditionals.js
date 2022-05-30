@@ -1,7 +1,7 @@
 const conditionals = function() {
     this.ignoredProps = [
-        '_scope',
-        '_controller'
+        "_scope",
+        "_controller"
     ];
 };
 
@@ -28,13 +28,13 @@ conditionals.prototype.evaluate = function(ifStatement) {
         }
 
         //now set our validity
-        if (statement.logicalOperator === 'and') {
+        if (statement.logicalOperator === "and") {
             if (valid === null) {
                 valid = true;
             }
 
             valid = valid && result;
-        } else if (statement.logicalOperator === 'or') {
+        } else if (statement.logicalOperator === "or") {
             if (valid === null) {
                 valid = false;
             }
@@ -72,7 +72,7 @@ conditionals.prototype.restrict = function(view) {
                 return;
             }
 
-            if (typeof(tag[prop]) === 'object' && tag[prop] !== null) {
+            if (typeof(tag[prop]) === "object" && tag[prop] !== null) {
                 tag[prop] = this.restrict([tag[prop]])[0];
                 return;
             }

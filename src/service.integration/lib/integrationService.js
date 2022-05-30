@@ -9,16 +9,16 @@ const integrationService = function(app, configReader, integrationInstance, role
 integrationService.prototype.constructInstance = function(name, config) {
     let instance = this.integrationInstance(name, config);
     let execRoles = [
-        'system_admin',
-        'system_exec',
-        'integration_exec',
+        "system_admin",
+        "system_exec",
+        "integration_exec",
         `${name}_exec`
     ];
 
     if (config.roles) {
         if (config.roles.replace) {
             if (config.roles.replace.exec) {
-                execRoles = ['system_admin'];
+                execRoles = ["system_admin"];
             }
         }
 
@@ -33,8 +33,8 @@ integrationService.prototype.constructInstance = function(name, config) {
         }
     }
 
-    if (config.method === 'get') {
-        console.log('Starting', name, 'on', `/${name}`);
+    if (config.method === "get") {
+        console.log("Starting", name, "on", `/${name}`);
         this.app.get(`/${name}`, this.roleCheckHandler.enforceRoles(instance.handler.bind(instance), execRoles));
         this.hostedEndpoints.push(`/${name}`);
     }
@@ -47,14 +47,14 @@ integrationService.prototype.init = function(dir) {
             this.constructInstance(integrationName, config[integrationName]);
         });
 
-        console.log('Discovery endpoint hosted');
+        console.log("Discovery endpoint hosted");
         const discoveryRoles = [
-            'system_admin',
-            'system_reader',
-            'integration_reader'
+            "system_admin",
+            "system_reader",
+            "integration_reader"
         ];
         //and add our discovery endpoint
-        this.app.get('/', this.roleCheckHandler.enforceRoles((req, res, next) => {
+        this.app.get("/", this.roleCheckHandler.enforceRoles((req, res, next) => {
             res.json({
                 endpoints : this.hostedEndpoints
             });
@@ -66,16 +66,16 @@ integrationService.prototype.init = function(dir) {
 
 module.exports = function(app, configReader, integrationInstance, roleCheckHandler) {
     if (!configReader) {
-        configReader = require('./configReader')();
+        configReader = require("./configReader")();
     }
 
     if (!integrationInstance) {
         //don"t exec as we don"t want this to be a singleton!
-        integrationInstance = require('./integrationInstance');
+        integrationInstance = require("./integrationInstance");
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     return new integrationService(app, configReader, integrationInstance, roleCheckHandler);

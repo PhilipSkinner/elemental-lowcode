@@ -62,39 +62,39 @@ module.exports = function(
     handleControllerScope
 ) {
     if (!arrayWrapper) {
-        arrayWrapper = require('./visitors/arrayWrapper')();
+        arrayWrapper = require("./visitors/arrayWrapper")();
     }
 
     if (!expandCustomTags) {
-        expandCustomTags = require('./visitors/expandCustomTags')();
+        expandCustomTags = require("./visitors/expandCustomTags")();
     }
 
     if (!handleLoops) {
-        handleLoops = require('./visitors/handleLoops')();
+        handleLoops = require("./visitors/handleLoops")();
     }
 
     if (!replaceValues) {
-        replaceValues = require('./visitors/replaceValues')();
+        replaceValues = require("./visitors/replaceValues")();
     }
 
     if (!defineScope) {
-        defineScope = require('./visitors/defineScope')();
+        defineScope = require("./visitors/defineScope")();
     }
 
     if (!bindValues) {
-        bindValues = require('./visitors/bindValues')();
+        bindValues = require("./visitors/bindValues")();
     }
 
     if (!conditionals) {
-        conditionals = require('./visitors/conditionals')();
+        conditionals = require("./visitors/conditionals")();
     }
 
     if (!insertStandardScripts) {
-        insertStandardScripts = require('./visitors/insertStandardScripts')();
+        insertStandardScripts = require("./visitors/insertStandardScripts")();
     }
 
     if (!handleControllerScope) {
-        handleControllerScope = require('./visitors/handleControllerScope')();
+        handleControllerScope = require("./visitors/handleControllerScope")();
     }
 
     return new preProcessor(arrayWrapper, expandCustomTags, handleLoops, replaceValues, defineScope, bindValues, conditionals, insertStandardScripts, handleControllerScope);

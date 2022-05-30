@@ -20,11 +20,11 @@ requestService.prototype.sendRequest = function(requestConfig, variables) {
 
 module.exports = function(request, stringParser) {
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     if (!stringParser) {
-        stringParser = require('./stringParser')();
+        stringParser = require("./stringParser")();
     }
 
     return new requestService(request, stringParser);

@@ -12,10 +12,10 @@ const dataController = function(app, dir, fileLister, storageService, roleCheckH
 
 dataController.prototype.getDataTypes = function(req, res) {
     let results = null;
-    this.fileLister.executeGlob(this.path.join(this.dir, '**/*.json')).then((_results) => {
+    this.fileLister.executeGlob(this.path.join(this.dir, "**/*.json")).then((_results) => {
         results = _results;
         return Promise.all(results.map((r) => {
-            return this.storageService.detailCollection(r.name, req.headers.authorization.replace('Bearer ', ''))
+            return this.storageService.detailCollection(r.name, req.headers.authorization.replace("Bearer ", ""))
                 .then((details) => {
                     return Promise.resolve(details);
                 }).catch(() => {
@@ -42,7 +42,7 @@ dataController.prototype.getDataTypes = function(req, res) {
 };
 
 dataController.prototype.getDataType = function(req, res) {
-    this.fileLister.readJSONFile(this.dir, req.params.name + '.json').then((content) => {
+    this.fileLister.readJSONFile(this.dir, req.params.name + ".json").then((content) => {
         res.status(200);
         res.json(content);
         res.end();
@@ -58,8 +58,8 @@ dataController.prototype.getDataType = function(req, res) {
 };
 
 dataController.prototype.updateDataType = function(req, res) {
-    this.typeValidator.validate('datatype', req.body).then(() => {
-        return this.fileLister.writeFile(this.dir, req.params.name + '.json', JSON.stringify(req.body));
+    this.typeValidator.validate("datatype", req.body).then(() => {
+        return this.fileLister.writeFile(this.dir, req.params.name + ".json", JSON.stringify(req.body));
     }).then(() => {
         res.status(204);
         res.end();
@@ -83,7 +83,7 @@ dataController.prototype.updateDataType = function(req, res) {
 };
 
 dataController.prototype.deleteDataType = function(req, res) {
-    this.fileLister.deleteFile(this.dir, req.params.name + '.json').then(() => {
+    this.fileLister.deleteFile(this.dir, req.params.name + ".json").then(() => {
         res.status(204);
         res.end();
     }).catch((err) => {
@@ -98,11 +98,11 @@ dataController.prototype.deleteDataType = function(req, res) {
 };
 
 dataController.prototype.createDataType = function(req, res) {
-    this.typeValidator.validate('datatype', req.body).then(() => {
-        return this.fileLister.writeFile(this.dir, req.body.name + '.json', JSON.stringify(req.body));
+    this.typeValidator.validate("datatype", req.body).then(() => {
+        return this.fileLister.writeFile(this.dir, req.body.name + ".json", JSON.stringify(req.body));
     }).then(() => {
         res.status(201);
-        res.location('/data/types/' + req.body.name);
+        res.location("/data/types/" + req.body.name);
         res.end();
     }).catch((err) => {
         if (Array.isArray(err)) {
@@ -128,32 +128,32 @@ dataController.prototype.initEndpoints = function() {
         return;
     }
 
-    this.app.get('/data/types', 			this.roleCheckHandler.enforceRoles(this.getDataTypes.bind(this), 	['datatype_reader', 'datatype_admin', 'system_reader', 'system_admin']));
-    this.app.get('/data/types/:name', 		this.roleCheckHandler.enforceRoles(this.getDataType.bind(this), 	['datatype_reader', 'datatype_admin', 'system_reader', 'system_admin']));
-    this.app.put('/data/types/:name', 		this.roleCheckHandler.enforceRoles(this.updateDataType.bind(this), 	['datatype_writer', 'datatype_admin', 'system_writer', 'system_admin']));
-    this.app.delete('/data/types/:name', 	this.roleCheckHandler.enforceRoles(this.deleteDataType.bind(this), 	['datatype_writer', 'datatype_admin', 'system_writer', 'system_admin']));
-    this.app.post('/data/types', 			this.roleCheckHandler.enforceRoles(this.createDataType.bind(this), 	['datatype_writer', 'datatype_admin', 'system_writer', 'system_admin']));
+    this.app.get("/data/types", 			this.roleCheckHandler.enforceRoles(this.getDataTypes.bind(this), 	["datatype_reader", "datatype_admin", "system_reader", "system_admin"]));
+    this.app.get("/data/types/:name", 		this.roleCheckHandler.enforceRoles(this.getDataType.bind(this), 	["datatype_reader", "datatype_admin", "system_reader", "system_admin"]));
+    this.app.put("/data/types/:name", 		this.roleCheckHandler.enforceRoles(this.updateDataType.bind(this), 	["datatype_writer", "datatype_admin", "system_writer", "system_admin"]));
+    this.app.delete("/data/types/:name", 	this.roleCheckHandler.enforceRoles(this.deleteDataType.bind(this), 	["datatype_writer", "datatype_admin", "system_writer", "system_admin"]));
+    this.app.post("/data/types", 			this.roleCheckHandler.enforceRoles(this.createDataType.bind(this), 	["datatype_writer", "datatype_admin", "system_writer", "system_admin"]));
 };
 
 module.exports = function(app, dir, fileLister, storageService, roleCheckHandler, path, typeValidator) {
     if (!fileLister) {
-        fileLister = require('../lib/fileLister')();
+        fileLister = require("../lib/fileLister")();
     }
 
     if (!storageService) {
-        storageService = require('../../support.lib/storageService')();
+        storageService = require("../../support.lib/storageService")();
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!typeValidator) {
-        typeValidator = require('../lib/typeValidator')();
+        typeValidator = require("../lib/typeValidator")();
     }
 
     return new dataController(app, dir, fileLister, storageService, roleCheckHandler, path, typeValidator);

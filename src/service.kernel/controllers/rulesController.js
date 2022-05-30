@@ -10,7 +10,7 @@ const rulesController = function(app, dir, fileLister, roleCheckHandler, path, t
 };
 
 rulesController.prototype.get = function(req, res) {
-    this.fileLister.executeGlob(this.path.join(this.dir, '**/*.json')).then((results) => {
+    this.fileLister.executeGlob(this.path.join(this.dir, "**/*.json")).then((results) => {
         res.status(200);
         res.json(results.map((r) => {
             return r;
@@ -28,7 +28,7 @@ rulesController.prototype.get = function(req, res) {
 };
 
 rulesController.prototype.getSingular = function(req, res) {
-    this.fileLister.readJSONFile(this.dir, req.params.name + '.json').then((content) => {
+    this.fileLister.readJSONFile(this.dir, req.params.name + ".json").then((content) => {
         res.status(200);
         res.json(content);
         res.end();
@@ -44,14 +44,14 @@ rulesController.prototype.getSingular = function(req, res) {
 };
 
 rulesController.prototype.update = function(req, res) {
-    this.typeValidator.validate('ruleset', req.body).then(() => {
+    this.typeValidator.validate("ruleset", req.body).then(() => {
         if (req.params.name !== req.body.name) {
-            return this.fileLister.deleteFile(this.dir, req.params.name + '.json').then(() => {
-                return this.fileLister.writeFile(this.dir, req.body.name + '.json', JSON.stringify(req.body));
+            return this.fileLister.deleteFile(this.dir, req.params.name + ".json").then(() => {
+                return this.fileLister.writeFile(this.dir, req.body.name + ".json", JSON.stringify(req.body));
             });
         }
 
-        return this.fileLister.writeFile(this.dir, req.params.name + '.json', JSON.stringify(req.body));
+        return this.fileLister.writeFile(this.dir, req.params.name + ".json", JSON.stringify(req.body));
     }).then(() => {
         res.status(204);
         res.end();
@@ -75,7 +75,7 @@ rulesController.prototype.update = function(req, res) {
 };
 
 rulesController.prototype.delete = function(req, res) {
-    this.fileLister.deleteFile(this.dir, req.params.name + '.json').then(() => {
+    this.fileLister.deleteFile(this.dir, req.params.name + ".json").then(() => {
         res.status(204);
         res.end();
     }).catch((err) => {
@@ -90,11 +90,11 @@ rulesController.prototype.delete = function(req, res) {
 };
 
 rulesController.prototype.create = function(req, res) {
-    this.typeValidator.validate('ruleset', req.body).then(() => {
-        return this.fileLister.writeFile(this.dir, req.body.name + '.json', JSON.stringify(req.body));
+    this.typeValidator.validate("ruleset", req.body).then(() => {
+        return this.fileLister.writeFile(this.dir, req.body.name + ".json", JSON.stringify(req.body));
     }).then(() => {
         res.status(201);
-        res.location('/rules/' + req.body.name);
+        res.location("/rules/" + req.body.name);
         res.end();
     }).catch((err) => {
         if (Array.isArray(err)) {
@@ -120,28 +120,28 @@ rulesController.prototype.initEndpoints = function() {
         return;
     }
 
-    this.app.get('/rules', 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		['rule_reader', 'rule_admin', 'system_reader', 'system_admin']));
-    this.app.get('/rules/:name', 	this.roleCheckHandler.enforceRoles(this.getSingular.bind(this), ['rule_reader', 'rule_admin', 'system_reader', 'system_admin']));
-    this.app.put('/rules/:name', 	this.roleCheckHandler.enforceRoles(this.update.bind(this), 		['rule_writer', 'rule_admin', 'system_writer', 'system_admin']));
-    this.app.delete('/rules/:name', this.roleCheckHandler.enforceRoles(this.delete.bind(this), 		['rule_writer', 'rule_admin', 'system_writer', 'system_admin']));
-    this.app.post('/rules', 		this.roleCheckHandler.enforceRoles(this.create.bind(this), 		['rule_writer', 'rule_admin', 'system_writer', 'system_admin']));
+    this.app.get("/rules", 			this.roleCheckHandler.enforceRoles(this.get.bind(this), 		["rule_reader", "rule_admin", "system_reader", "system_admin"]));
+    this.app.get("/rules/:name", 	this.roleCheckHandler.enforceRoles(this.getSingular.bind(this), ["rule_reader", "rule_admin", "system_reader", "system_admin"]));
+    this.app.put("/rules/:name", 	this.roleCheckHandler.enforceRoles(this.update.bind(this), 		["rule_writer", "rule_admin", "system_writer", "system_admin"]));
+    this.app.delete("/rules/:name", this.roleCheckHandler.enforceRoles(this.delete.bind(this), 		["rule_writer", "rule_admin", "system_writer", "system_admin"]));
+    this.app.post("/rules", 		this.roleCheckHandler.enforceRoles(this.create.bind(this), 		["rule_writer", "rule_admin", "system_writer", "system_admin"]));
 };
 
 module.exports = function(app, dir, fileLister, path, roleCheckHandler, typeValidator) {
     if (!fileLister) {
-        fileLister = require('../lib/fileLister')();
+        fileLister = require("../lib/fileLister")();
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     if (!typeValidator) {
-        typeValidator = require('../lib/typeValidator')();
+        typeValidator = require("../lib/typeValidator")();
     }
 
     return new rulesController(app, dir, fileLister, roleCheckHandler, path, typeValidator);

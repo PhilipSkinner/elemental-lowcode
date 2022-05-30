@@ -48,19 +48,19 @@ apiInstance.prototype.resolveController = function(name) {
 
 apiInstance.prototype.setupEndpoints = function() {
     return new Promise((resolve) => {
-        console.info('Setting up API endpoints...');
+        console.info("Setting up API endpoints...");
 
         const originalReaderRoles = [
-            'system_admin',
-            'system_reader',
-            'api_reader',
+            "system_admin",
+            "system_reader",
+            "api_reader",
             `${this.definition.name}_reader`
         ];
 
         const originalWriterRoles = [
-            'system_admin',
-            'system_writer',
-            'api_writer',
+            "system_admin",
+            "system_writer",
+            "api_writer",
             `${this.definition.name}_writer`
         ];
 
@@ -72,7 +72,7 @@ apiInstance.prototype.setupEndpoints = function() {
             if (routeConfig.get) {
                 let readerRoles = JSON.parse(JSON.stringify(originalReaderRoles));
                 if (routeConfig.get.replace) {
-                    readerRoles = ['system_admin'];
+                    readerRoles = ["system_admin"];
                 }
 
                 if (routeConfig.get.roles) {
@@ -94,7 +94,7 @@ apiInstance.prototype.setupEndpoints = function() {
             if (routeConfig.post) {
                 let writerRoles = JSON.parse(JSON.stringify(originalWriterRoles));
                 if (routeConfig.post.replace) {
-                    writerRoles = ['system_admin'];
+                    writerRoles = ["system_admin"];
                 }
 
                 if (routeConfig.post.roles) {
@@ -112,7 +112,7 @@ apiInstance.prototype.setupEndpoints = function() {
             }
         });
 
-        console.info('Endpoint setup complete');
+        console.info("Endpoint setup complete");
 
         return resolve();
     });
@@ -138,39 +138,39 @@ module.exports = function(
     environmentService
 ) {
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     if (!serviceProvider) {
-        serviceProvider = require('../../support.lib/iocProvider')();
+        serviceProvider = require("../../support.lib/iocProvider")();
     }
 
     if (!storageService) {
-        storageService = require('../../support.lib/storageService')();
+        storageService = require("../../support.lib/storageService")();
     }
 
     if (!integrationService) {
-        integrationService = require('../../support.lib/integrationService')();
+        integrationService = require("../../support.lib/integrationService")();
     }
 
     if (!rulesetService) {
-        rulesetService = require('../../support.lib/ruleService')();
+        rulesetService = require("../../support.lib/ruleService")();
     }
 
     if (!idmService) {
-        idmService = require('../../support.lib/idmService')();
+        idmService = require("../../support.lib/idmService")();
     }
 
     if (!authClientProvider) {
-        authClientProvider = require('../../support.lib/authClientProvider')(definition ? definition.client : null);
+        authClientProvider = require("../../support.lib/authClientProvider")(definition ? definition.client : null);
     }
 
     if (!messagingService) {
-        messagingService = require('../../support.lib/messagingService')();
+        messagingService = require("../../support.lib/messagingService")();
     }
 
     if (!environmentService) {
-        environmentService = require('../../support.lib/environmentService')();
+        environmentService = require("../../support.lib/environmentService")();
     }
 
     return new apiInstance(

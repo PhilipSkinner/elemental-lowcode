@@ -1,45 +1,45 @@
 const
-    express 				= require('express'),
-    cors 					= require('cors'),
-    bodyParser 				= require('body-parser'),
-    path 					= require('path'),
-    fileUpload				= require('express-fileupload'),
-    setup 					= require('./lib/setup')(),
-    argParser 				= require('./lib/argParser')(),
-    serviceRunner 			= require('./lib/serviceRunner')(),
-    apiController 			= require('./controllers/apiController'),
-    integrationsController 	= require('./controllers/integrationsController'),
-    dataController 			= require('./controllers/dataController'),
-    rulesController 		= require('./controllers/rulesController'),
-    tokenHandler 			= require('../support.lib/tokenHandler'),
-    websitesController 		= require('./controllers/websitesController'),
-    securityController 		= require('./controllers/securityController'),
-    indexController 		= require('./controllers/indexController'),
-    serviceController 		= require('./controllers/serviceController'),
-    queueController 		= require('./controllers/queueController'),
-    logsController 			= require('./controllers/logsController'),
-    secretsProvider 		= require('./lib/secrets'),
-    hotreload 				= require('../support.lib/hotReload')(),
-    initialSetup 			= require('./setup')(),
-    rateLimit               = require('express-rate-limit'),
-    crypto                  = require('node:crypto');
+    express 				= require("express"),
+    cors 					= require("cors"),
+    bodyParser 				= require("body-parser"),
+    path 					= require("path"),
+    fileUpload				= require("express-fileupload"),
+    setup 					= require("./lib/setup")(),
+    argParser 				= require("./lib/argParser")(),
+    serviceRunner 			= require("./lib/serviceRunner")(),
+    apiController 			= require("./controllers/apiController"),
+    integrationsController 	= require("./controllers/integrationsController"),
+    dataController 			= require("./controllers/dataController"),
+    rulesController 		= require("./controllers/rulesController"),
+    tokenHandler 			= require("../support.lib/tokenHandler"),
+    websitesController 		= require("./controllers/websitesController"),
+    securityController 		= require("./controllers/securityController"),
+    indexController 		= require("./controllers/indexController"),
+    serviceController 		= require("./controllers/serviceController"),
+    queueController 		= require("./controllers/queueController"),
+    logsController 			= require("./controllers/logsController"),
+    secretsProvider 		= require("./lib/secrets"),
+    hotreload 				= require("../support.lib/hotReload")(),
+    initialSetup 			= require("./setup")(),
+    rateLimit               = require("express-rate-limit"),
+    crypto                  = require("node:crypto");
 
 const args = argParser.fetch();
 let restarting = false;
-let sourcesDir = args.sources || process.env.SOURCES_DIR || '.sources';
+let sourcesDir = args.sources || process.env.SOURCES_DIR || ".sources";
 
 //setup all of our source folders
 const directories = {
-    identity 	: path.relative(process.cwd(), path.join(sourcesDir, 'identity')),
-    api 		: path.relative(process.cwd(), path.join(sourcesDir, 'api')),
-    integration : path.relative(process.cwd(), path.join(sourcesDir, 'integration')),
-    website 	: path.relative(process.cwd(), path.join(sourcesDir, 'website')),
-    data 		: path.relative(process.cwd(), path.join(sourcesDir, 'data')),
-    rules 		: path.relative(process.cwd(), path.join(sourcesDir, 'rules')),
-    services	: path.relative(process.cwd(), path.join(sourcesDir, 'services')),
-    queues 		: path.relative(process.cwd(), path.join(sourcesDir, 'queues')),
-    secrets 	: path.relative(process.cwd(), path.join(sourcesDir, 'secrets')),
-    secretStore : path.relative(process.cwd(), path.join(sourcesDir, '.secrets')),
+    identity 	: path.relative(process.cwd(), path.join(sourcesDir, "identity")),
+    api 		: path.relative(process.cwd(), path.join(sourcesDir, "api")),
+    integration : path.relative(process.cwd(), path.join(sourcesDir, "integration")),
+    website 	: path.relative(process.cwd(), path.join(sourcesDir, "website")),
+    data 		: path.relative(process.cwd(), path.join(sourcesDir, "data")),
+    rules 		: path.relative(process.cwd(), path.join(sourcesDir, "rules")),
+    services	: path.relative(process.cwd(), path.join(sourcesDir, "services")),
+    queues 		: path.relative(process.cwd(), path.join(sourcesDir, "queues")),
+    secrets 	: path.relative(process.cwd(), path.join(sourcesDir, "secrets")),
+    secretStore : path.relative(process.cwd(), path.join(sourcesDir, ".secrets")),
 };
 
 //setup our ports
@@ -63,19 +63,19 @@ const reload = function() {
 };
 
 const startServices = function() {
-    const secret = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1].map(() => { return crypto.randomInt(1000).toString(36); }).join('').replace(/[^a-z]+/g, '');
+    const secret = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1].map(() => { return crypto.randomInt(1000).toString(36); }).join("").replace(/[^a-z]+/g, "");
 
     //load our secrets and scope per app
     secretsProvider(directories.secrets, directories.secretStore).initSecrets(secret).then((secrets) => {
         //start up our services
-        serviceRunner.runService('admin', 		'../ui.editor/main.js', 		    ports.admin, 		'../ui.editor', secrets.admin);
-        serviceRunner.runService('api', 		'../service.api/main.js', 			ports.api, 			directories.api, secrets.api);
-        serviceRunner.runService('integration', '../service.integration/main.js', 	ports.integration, 	directories.integration, secrets.integration);
-        serviceRunner.runService('interface', 	'../service.interface/main.js', 	ports.website, 		directories.website, secrets.website);
-        serviceRunner.runService('storage', 	'../service.data/main.js', 			ports.data, 		directories.data, secrets.data);
-        serviceRunner.runService('rules', 		'../service.rules/main.js', 		ports.rules, 		directories.rules, secrets.rules);
-        serviceRunner.runService('identity', 	'../service.identity.idp/main.js', 	ports.identity, 	directories.identity, secrets.identity);
-        serviceRunner.runService('messaging', 	'../service.messaging/main.js',		ports.queues, 		directories.queues, secrets.queues);
+        serviceRunner.runService("admin", 		"../ui.editor/main.js", 		    ports.admin, 		"../ui.editor", secrets.admin);
+        serviceRunner.runService("api", 		"../service.api/main.js", 			ports.api, 			directories.api, secrets.api);
+        serviceRunner.runService("integration", "../service.integration/main.js", 	ports.integration, 	directories.integration, secrets.integration);
+        serviceRunner.runService("interface", 	"../service.interface/main.js", 	ports.website, 		directories.website, secrets.website);
+        serviceRunner.runService("storage", 	"../service.data/main.js", 			ports.data, 		directories.data, secrets.data);
+        serviceRunner.runService("rules", 		"../service.rules/main.js", 		ports.rules, 		directories.rules, secrets.rules);
+        serviceRunner.runService("identity", 	"../service.identity.idp/main.js", 	ports.identity, 	directories.identity, secrets.identity);
+        serviceRunner.runService("messaging", 	"../service.messaging/main.js",		ports.queues, 		directories.queues, secrets.queues);
 
         restarting = false;
     });
@@ -93,9 +93,9 @@ const runApp = function() {
     //middleware
     app.use(limiter);
     app.use(cors({
-        methods : 'GET,HEAD,PUT,PATCH,POST,DELETE'
+        methods : "GET,HEAD,PUT,PATCH,POST,DELETE"
     }));
-    app.use(bodyParser({limit: '50mb'}));
+    app.use(bodyParser({limit: "50mb"}));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended : false }));
     app.use(bodyParser.text());
@@ -140,15 +140,15 @@ if (initialSetup.shouldRun(directories.identity)) {
 }
 
 //our sigint handler
-process.on('SIGINT', () => {
-    serviceRunner.stopService('admin');
-    serviceRunner.stopService('api');
-    serviceRunner.stopService('integration');
-    serviceRunner.stopService('interface');
-    serviceRunner.stopService('storage');
-    serviceRunner.stopService('rules');
-    serviceRunner.stopService('identity');
-    serviceRunner.stopService('messaging');
+process.on("SIGINT", () => {
+    serviceRunner.stopService("admin");
+    serviceRunner.stopService("api");
+    serviceRunner.stopService("integration");
+    serviceRunner.stopService("interface");
+    serviceRunner.stopService("storage");
+    serviceRunner.stopService("rules");
+    serviceRunner.stopService("identity");
+    serviceRunner.stopService("messaging");
 
     setTimeout(() => {
         process.exit();

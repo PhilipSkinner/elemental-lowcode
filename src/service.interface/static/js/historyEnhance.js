@@ -15,8 +15,8 @@ historyHandler.prototype.handleEvent = function(event) {
 
 historyHandler.prototype.handleResponse = function(response) {
     var newMap = createDOMMap(stringToHTML(response.data));
-    var domMap = createDOMMap(document.querySelector('html'));
-    diff(newMap[1].children, domMap, document.querySelector('html'));
+    var domMap = createDOMMap(document.querySelector("html"));
+    diff(newMap[1].children, domMap, document.querySelector("html"));
 
     enhanceForms();
     enhanceLinks();
@@ -24,4 +24,4 @@ historyHandler.prototype.handleResponse = function(response) {
 
 
 var _historyHandler = new historyHandler();
-window.addEventListener('popstate', _historyHandler.handleEvent.bind(_historyHandler));
+window.addEventListener("popstate", _historyHandler.handleEvent.bind(_historyHandler));

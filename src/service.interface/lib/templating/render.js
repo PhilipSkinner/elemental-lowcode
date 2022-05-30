@@ -5,42 +5,42 @@ const render = function(fs, path, preProcessor) {
     this.tabLevel = -1;
 
     this.invalidProperties = [
-        'text',
-        'tag',
-        'onclick',
-        'children',
-        'repeat',
-        'submit',
-        'bind',
-        '_scope',
-        '_controller',
-        'if'
+        "text",
+        "tag",
+        "onclick",
+        "children",
+        "repeat",
+        "submit",
+        "bind",
+        "_scope",
+        "_controller",
+        "if"
     ];
     this.requireClosing = [
-        'script',
-        'div',
-        'a',
-        'textarea'
+        "script",
+        "div",
+        "a",
+        "textarea"
     ];
     this.singleProps = [
-        'required',
-        'checked',
-        'selected'
+        "required",
+        "checked",
+        "selected"
     ];
     this.internalClick = [
-        'td',
-        'th',
-        'div'
+        "td",
+        "th",
+        "div"
     ];
     this.nativeClickTags = [
-        'a',
-        'area'
+        "a",
+        "area"
     ];
     this.customTags = {};
 };
 
 render.prototype._getPollParams = function(eventProps) {
-    let pollParams = '';
+    let pollParams = "";
     if (eventProps.poll) {
         if (eventProps.poll.every) {
             pollParams = ` data-poll="${eventProps.poll.every}" `;
@@ -50,7 +50,7 @@ render.prototype._getPollParams = function(eventProps) {
 };
 
 render.prototype.submitHandler = function(eventProps, toWrap) {
-    let action = '';
+    let action = "";
     if (eventProps && eventProps.eventName) {
         action = `?_event=${eventProps.eventName}`;
     }
@@ -63,33 +63,33 @@ render.prototype.submitHandler = function(eventProps, toWrap) {
 render.prototype._unpackParams = function(prefix, params) {
     if (Array.isArray(params)) {
         return params.map((val, index) => {
-            if (typeof(val) === 'object') {
+            if (typeof(val) === "object") {
                 return this._unpackParams(`${prefix}${index}__`, val);
             }
             return `${encodeURIComponent(prefix)}${encodeURIComponent(index)}=${encodeURIComponent(params[index])}`;
-        }).join('&').replace(/&&/g, '&');
+        }).join("&").replace(/&&/g, "&");
     }
 
     return Object.keys(params || {}).map((key) => {
-        if (typeof(params[key]) === 'object') {
+        if (typeof(params[key]) === "object") {
             return this._unpackParams(`${prefix}${key}__`, params[key]);
         }
         return `${encodeURIComponent(prefix)}${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`;
-    }).join('&').replace(/&&/g, '&');
+    }).join("&").replace(/&&/g, "&");
 };
 
 render.prototype.clickHandler = function(eventProps, toWrap, parentTag) {
     if (
-        typeof(eventProps) === 'undefined'
+        typeof(eventProps) === "undefined"
 		|| eventProps === null
-		|| typeof(eventProps.eventName) === 'undefined'
+		|| typeof(eventProps.eventName) === "undefined"
 		|| eventProps.eventName === null
-		|| eventProps.eventName === ''
+		|| eventProps.eventName === ""
     ) {
         return toWrap;
     }
 
-    let extraParams = this._unpackParams('', eventProps.params || {});
+    let extraParams = this._unpackParams("", eventProps.params || {});
     let pollParams = this._getPollParams(eventProps);
 
     if (this.nativeClickTags.indexOf(parentTag) !== -1) {
@@ -105,13 +105,13 @@ render.prototype.clickHandler = function(eventProps, toWrap, parentTag) {
 };
 
 render.prototype.endClickHandler = function(val) {
-    if (val.trim().indexOf('<!-- @clickHandler -->') === 0) {
+    if (val.trim().indexOf("<!-- @clickHandler -->") === 0) {
         return `${val}</a><!-- /@clickHandler -->`;
     }
 
-    if (val.trim().indexOf('<!-- @internalClickHandler -->') === 0) {
-        let lastTagPos = val.lastIndexOf('<');
-        val = val.substring(0, lastTagPos) + '</a>' + val.substring(lastTagPos);
+    if (val.trim().indexOf("<!-- @internalClickHandler -->") === 0) {
+        let lastTagPos = val.lastIndexOf("<");
+        val = val.substring(0, lastTagPos) + "</a>" + val.substring(lastTagPos);
         return `${val}<!-- /@internalClickHandler -->`;
     }
 
@@ -161,23 +161,23 @@ render.prototype.renderTagWithProperties = function(tag, properties) {
 
         if (this.invalidProperties.indexOf(p) === -1 && properties[p] !== null) {
             if (Array.isArray(properties[p])) {
-                propValue = properties[p].join(' ');
+                propValue = properties[p].join(" ");
             }
 
             if (this.singleProps.indexOf(p) === -1) {
                 render += ` ${p}="${propValue}" `;
             } else {
-                if (propValue == 'true' || propValue == '1') {
+                if (propValue == "true" || propValue == "1") {
                     render += ` ${p} `;
                 }
             }
         }
 
-        if (p === 'onclick') {
+        if (p === "onclick") {
             render = this.clickHandler(propValue, render, tag);
         }
 
-        if (p === 'submit') {
+        if (p === "submit") {
             render = this.submitHandler(propValue, render);
         }
     });
@@ -192,57 +192,57 @@ render.prototype.handleTag = function(c, data) {
         });
     }
 
-    if (typeof(c.__display) !== 'undefined' && c.__display === false) {
+    if (typeof(c.__display) !== "undefined" && c.__display === false) {
         return {
-            start 		: '',
-            content 	: '',
-            end 		: ''
+            start 		: "",
+            content 	: "",
+            end 		: ""
         };
     }
 
-    if (c.children || (typeof(c.text) !== 'undefined' && c.text !== null)) {
+    if (c.children || (typeof(c.text) !== "undefined" && c.text !== null)) {
         var text = c.text;
 
         if (Array.isArray(text)) {
-            text = text.join(' ');
+            text = text.join(" ");
         }
 
         var content = (
             (
-                typeof(text) === 'undefined' || text === null
-                    ? ''
+                typeof(text) === "undefined" || text === null
+                    ? ""
                     : (
-                        c.tag === 'textarea' ? '' : '\n' + this.generateTabs() + '\t'
-                    ) + text + (c.tag === 'textarea' ? '' : '\n')
+                        c.tag === "textarea" ? "" : "\n" + this.generateTabs() + "\t"
+                    ) + text + (c.tag === "textarea" ? "" : "\n")
             )
 			+ this.renderChildren(c.children, data)
         );
 
         return {
-            start 	: (this.renderTagWithProperties(c.tag, c, data) + '>').replace('>>', '>'),
+            start 	: (this.renderTagWithProperties(c.tag, c, data) + ">").replace(">>", ">"),
             content : content,
-            end 	: (c.tag === 'textarea' ? '' : this.generateTabs()) + `</${c.tag}>`
+            end 	: (c.tag === "textarea" ? "" : this.generateTabs()) + `</${c.tag}>`
         };
     } else {
         return {
             start : this.renderTagWithProperties(c.tag, c, data),
-            content : '',
-            end : this.requireClosing.indexOf(c.tag) === -1 ? ' />' : `></${c.tag}>`,
+            content : "",
+            end : this.requireClosing.indexOf(c.tag) === -1 ? " />" : `></${c.tag}>`,
         };
     }
 };
 
 render.prototype.generateTabs = function() {
-    var ret = '';
+    var ret = "";
     for (var i = 0; i < this.tabLevel; i++) {
-        ret += '\t';
+        ret += "\t";
     }
     return ret;
 };
 
 render.prototype.renderChildren = function(children, data) {
     if (!children || !Array.isArray(children)) {
-        return '';
+        return "";
     }
 
     this.tabLevel++;
@@ -253,15 +253,15 @@ render.prototype.renderChildren = function(children, data) {
         if (a) {
             if (Array.isArray(a)) {
                 a.forEach((aa) => {
-                    s += this.endClickHandler(this.generateTabs() + aa.start + aa.content + aa.end) + '\n';
+                    s += this.endClickHandler(this.generateTabs() + aa.start + aa.content + aa.end) + "\n";
                 });
             } else {
                 s += this.endClickHandler(this.generateTabs() + a.start + a.content + a.end);
             }
         }
 
-        return s + '\n';
-    }, '\n');
+        return s + "\n";
+    }, "\n");
 
     this.tabLevel--;
 
@@ -274,21 +274,21 @@ render.prototype.renderView = function(view, bag) {
     return this.preProcessor.process(view, {
         bag : bag
     }, this.customTags).then((processed) => {
-        return Promise.resolve('<!DOCTYPE HTML>' + this.renderChildren(processed.view, processed.data));
+        return Promise.resolve("<!DOCTYPE HTML>" + this.renderChildren(processed.view, processed.data));
     });
 };
 
 module.exports = function(fs, path, preProcessor) {
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!preProcessor) {
-        preProcessor = require('./preProcessor')();
+        preProcessor = require("./preProcessor")();
     }
 
     return new render(fs, path, preProcessor);
