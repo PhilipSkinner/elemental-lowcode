@@ -1,94 +1,94 @@
 body {
-    padding: 0px;
-    margin: 0px;
+  padding: 0px;
+  margin: 0px;
 }
 
 .ui-columns {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    height: 100vh;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  height: 100vh;
 
-    .ui-half {
-        flex-grow: 1;
-        padding: 60px 80px;
-        position: relative;
+  .ui-half {
+    flex-grow: 1;
+    padding: 60px 80px;
+    position: relative;
 
-        &--highlight {
-            background: $background-highlight;
-        }
+    &--highlight {
+      background: $background-highlight;
     }
+  }
 }
 
 .ui-restricted {
-    &--thin {
-        max-width: 400px;
-        margin: 0px auto;
-    }
+  &--thin {
+    max-width: 400px;
+    margin: 0px auto;
+  }
 }
 
 .ui-feature {
-    .ui-feature-image {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        right: 0px;
-        bottom: 0px;
+  .ui-feature-image {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
 
-        &--login {
-            background: url("/images/login.png") no-repeat center center;
-            background-size: 75%;
-        }
-
-        &--consents {
-            background: url("/images/consents.png") no-repeat center center;
-            background-size: 75%;
-        }
-
-        &--error {
-            background: url("/images/error.png") no-repeat center center;
-            background-size: 75%;
-        }
-
-        &--logout {
-            background: url("/images/logout.png") no-repeat center center;
-            background-size: 75%;
-        }
-
-        &--register {
-            background: url("/images/register.png") no-repeat center center;
-            background-size: 75%;
-        }
-
-        &--terms {
-            background: url("/images/terms.png") no-repeat center center;
-            background-size: 55%;
-        }
-
-        &--password {
-            background: url("/images/password.png") no-repeat center center;
-            background-size: 40%;
-        }
+    &--login {
+      background: url("/images/login.png") no-repeat center center;
+      background-size: 75%;
     }
+
+    &--consents {
+      background: url("/images/consents.png") no-repeat center center;
+      background-size: 75%;
+    }
+
+    &--error {
+      background: url("/images/error.png") no-repeat center center;
+      background-size: 75%;
+    }
+
+    &--logout {
+      background: url("/images/logout.png") no-repeat center center;
+      background-size: 75%;
+    }
+
+    &--register {
+      background: url("/images/register.png") no-repeat center center;
+      background-size: 75%;
+    }
+
+    &--terms {
+      background: url("/images/terms.png") no-repeat center center;
+      background-size: 55%;
+    }
+
+    &--password {
+      background: url("/images/password.png") no-repeat center center;
+      background-size: 40%;
+    }
+  }
 }
 
 @media only screen and (max-width: 765px) {
-    .ui-columns {
-        display: block;
+  .ui-columns {
+    display: block;
 
-        .ui-half {
-            padding: $block-spacing;
-        }
+    .ui-half {
+      padding: $block-spacing;
     }
+  }
 
-    .ui-feature {
-        display: none;
-    }
+  .ui-feature {
+    display: none;
+  }
 
-    .ui-restricted {
-        &--thin {
-            width: 100%;
-        }
+  .ui-restricted {
+    &--thin {
+      width: 100%;
     }
+  }
 }

@@ -73,52 +73,53 @@ div.block {
 }
 
 .documentation-menu {
-    div {
-        >div {
-            padding-left: 15px;
-        }
+  div {
+    >div {
+      padding-left: 15px;
     }
+  }
 }
 
 .editor-form {
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    bottom: 0px;
-    width: 268px;
-    z-index: 100;
-    background: #FFF;
-    padding: 20px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: 268px;
+  z-index: 100;
+  background: #FFF;
+  padding: 20px;
 }
 
 .editorWindow--withform {
-    right: 268px;
+  right: 268px;
 }
 
 .editorWindow--withHeader {
-    top: 70px;
+  top: 70px;
 }
 
 .scrollable {
-    max-height: 200px;
-    overflow-x: scroll;
+  max-height: 200px;
+  overflow-x: scroll;
 }
 
 .overlay {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    bottom: 0px;
-    right: 0px;
-    background: rgba(0,0,0,0.6);
-    z-index: 20000;
-    .alert {
-        width: 400px;
-        margin-left: -200px;
-        left: 50%;
-        top: 200px;
-        text-align: left;
-    }
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  background: rgba(0,0,0,0.6);
+  z-index: 20000;
+
+  .alert {
+    width: 400px;
+    margin-left: -200px;
+    left: 50%;
+    top: 200px;
+    text-align: left;
+  }
 }
 
 .hidden {

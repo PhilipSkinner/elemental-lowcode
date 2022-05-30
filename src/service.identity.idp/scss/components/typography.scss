@@ -1,74 +1,74 @@
 body {
-    font-family: "Be Vietnam", sans-serif;
-    font-size: 14px;
+  font-family: "Be Vietnam", sans-serif;
+  font-size: 14px;
 }
 
 a {
-    color: $text-highlight;
+  color: $text-highlight;
 
-    &:hover {
-        text-decoration: none;
-    }
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: $header-color;
+  color: $header-color;
 }
 
 h1 {
-    font-size: 36px;
-    font-weight: 500;
+  font-size: 36px;
+  font-weight: 500;
 }
 
 p {
-    color: $text-color;
+  color: $text-color;
 }
 
 .ui-logo {
-    font-family: "Be Vietnam";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 32px;
-    line-height: 47px;
-    color: $text-highlight;
-    text-transform: uppercase;
+  font-family: "Be Vietnam";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 47px;
+  color: $text-highlight;
+  text-transform: uppercase;
 }
 
 .ui-intro {
-    padding-bottom: $block-spacing;
+  padding-bottom: $block-spacing;
 
-    .ui-intro-text {
-        font-size: 18px;
-    }
+  .ui-intro-text {
+    font-size: 18px;
+  }
 }
 
 .ui-text {
-    &--center {
-        text-align: center;
-    }
+  &--center {
+    text-align: center;
+  }
 
-    &--anchor-bottom {
-        position: fixed;
-        bottom: $block-spacing;
-        width: 400px;
-    }
+  &--anchor-bottom {
+    position: fixed;
+    bottom: $block-spacing;
+    width: 400px;
+  }
 }
 
 .ui-header {
-    .ui-header-text {
-        display: inline-block;
-    }
+  .ui-header-text {
+    display: inline-block;
+  }
 
-    .ui-header-icon {
-        display: inline-block;
-        position: relative;
-        top: 8px;
-        left: 16px;
+  .ui-header-icon {
+    display: inline-block;
+    position: relative;
+    top: 8px;
+    left: 16px;
 
-        &--welcome {
-            background: url("/images/thumbs-up.png");
-            width: 53px;
-            height: 53px;
-        }
+    &--welcome {
+      background: url("/images/thumbs-up.png");
+      width: 53px;
+      height: 53px;
     }
+  }
 }

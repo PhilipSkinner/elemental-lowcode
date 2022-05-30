@@ -1,35 +1,35 @@
 .ui-alert {
-    padding: 16px 20px;
-    margin-bottom: $block-spacing;
-    border-radius: $border-radius;
+  padding: 16px 20px;
+  margin-bottom: $block-spacing;
+  border-radius: $border-radius;
 
-    &--success {
-        padding-left: 60px;
-        background: $success-background-color;
-        background-image: url("/icons/happy-face.svg");
-        background-position: 22px 20px;
-        background-size: 22px 16px;
-        background-repeat: no-repeat;
-        color: $success-text-color;
-    }
+  &--success {
+    padding-left: 60px;
+    background: $success-background-color;
+    background-image: url("/icons/happy-face.svg");
+    background-position: 22px 20px;
+    background-size: 22px 16px;
+    background-repeat: no-repeat;
+    color: $success-text-color;
+  }
 
-    &--error {
-        padding-left: 60px;
-        background: $negative-background-color;
-        background-image: url("/icons/sad-face.svg");
-        background-position: 22px 20px;
-        background-size: 22px 16px;
-        background-repeat: no-repeat;
-        color: $negative-text-color;
-    }
+  &--error {
+    padding-left: 60px;
+    background: $negative-background-color;
+    background-image: url("/icons/sad-face.svg");
+    background-position: 22px 20px;
+    background-size: 22px 16px;
+    background-repeat: no-repeat;
+    color: $negative-text-color;
+  }
 
-    &--warning {
-        background: $warning-background-color;
-        color: $warning-text-color;
-    }
+  &--warning {
+    background: $warning-background-color;
+    color: $warning-text-color;
+  }
 
-    &--info {
-        background: $info-background-color;
-        color: $info-text-color;
-    }
+  &--info {
+    background: $info-background-color;
+    color: $info-text-color;
+  }
 }
