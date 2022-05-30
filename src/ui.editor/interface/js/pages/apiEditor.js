@@ -223,7 +223,7 @@ _apiEditorController.prototype.newController = function() {
     this.resources[`controllers/${name}.js`] = [
         "module.exports = function() {",
         "	return (req, res, next) => {",
-        "		res.json({ hello : "world" });",
+        "		res.json({ hello : \"world\" });",
         "		next();",
         "	};",
         "};",
