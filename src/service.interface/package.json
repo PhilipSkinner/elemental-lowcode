@@ -7,7 +7,7 @@
 		"cookie-parser": "^1.4.4",
 		"elemental-string-format": "0.1.0",
 		"express": "^4.17.1",
-		"express-fileupload": "^1.1.7-alpha.3",
+		"express-fileupload": "^1.4.0",
 		"express-session": "^1.17.0",
 		"glob": "^7.1.6",
 		"memorystore": "^1.6.2",
