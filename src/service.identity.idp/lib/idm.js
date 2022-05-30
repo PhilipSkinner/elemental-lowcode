@@ -2,8 +2,8 @@ const idm = function(app, roleCheckHandler, db, bcrypt, tokenHandler, uuid, emai
     this.app 				= app;
     this.roleCheckHandler 	= roleCheckHandler;
     this.db 				= db;
-    this.userDB 			= new this.db('User');
-    this.clientDB  			= new this.db('Client');
+    this.userDB 			= new this.db("User");
+    this.clientDB  			= new this.db("Client");
     this.bcrypt 			= bcrypt;
     this.tokenHandler 		= tokenHandler;
     this.uuid 				= uuid;
@@ -37,15 +37,15 @@ idm.prototype.getUser = function(req, res, next) {
 
 idm.prototype.createUser = function(req, res, next) {
     if (
-        typeof(req.body.username) === 'undefined'
+        typeof(req.body.username) === "undefined"
         || req.body.username === null
-        || req.body.username.replace(/ /g, '') === ''
+        || req.body.username.replace(/ /g, "") === ""
         || !this.emailValidator.validate(req.body.username)
     ) {
         res.status(400);
         res.json({
             errors : [
-                'Username must be an email address.'
+                "Username must be an email address."
             ]
         });
         return;
@@ -54,11 +54,11 @@ idm.prototype.createUser = function(req, res, next) {
     this._connect().then(() => {
         this.userDB.find(req.body.subject);
     }).then((existing) => {
-        if (typeof(existing) !== 'undefined' && existing !== null) {
+        if (typeof(existing) !== "undefined" && existing !== null) {
             res.status(409);
-            res.send('');
+            res.send("");
             next();
-            return Promise.reject(new Error('User already exists'));
+            return Promise.reject(new Error("User already exists"));
         }
 
         //generate the password
@@ -76,9 +76,9 @@ idm.prototype.createUser = function(req, res, next) {
         req.body.subject = this.uuid();
         return this.userDB.upsert(req.body.subject, req.body, null);
     }).then(() => {
-        res.setHeader('Location', `/api/users/${req.body.subject}`);
+        res.setHeader("Location", `/api/users/${req.body.subject}`);
         res.status(201);
-        res.send('');
+        res.send("");
         next();
     }).catch((err) => {
         console.error(err);
@@ -87,15 +87,15 @@ idm.prototype.createUser = function(req, res, next) {
 
 idm.prototype.updateUser = function(req, res, next) {
     if (
-        typeof(req.body.username) === 'undefined'
+        typeof(req.body.username) === "undefined"
         || req.body.username === null
-        || req.body.username.replace(/ /g, '') === ''
+        || req.body.username.replace(/ /g, "") === ""
         || !this.emailValidator.validate(req.body.username)
     ) {
         res.status(400);
         res.json({
             errors : [
-                'Username must be an email address.'
+                "Username must be an email address."
             ]
         });
         return;
@@ -121,7 +121,7 @@ idm.prototype.updateUser = function(req, res, next) {
         return this.userDB.upsert(req.params.id, req.body, null);
     }).then(() => {
         res.status(204);
-        res.send('');
+        res.send("");
         next();
     });
 };
@@ -131,7 +131,7 @@ idm.prototype.deleteUser = function(req, res, next) {
         return this.userDB.destroy(req.params.id);
     }).then(() => {
         res.status(204);
-        res.send('');
+        res.send("");
         next();
     });
 };
@@ -140,9 +140,9 @@ idm.prototype.createClient = function(req, res, next) {
     this._connect().then(() => {
         return this.clientDB.upsert(req.body.client_id, req.body, null);
     }).then(() => {
-        res.setHeader('Location', `/api/clients/${req.body.client_id}`);
+        res.setHeader("Location", `/api/clients/${req.body.client_id}`);
         res.status(201);
-        res.send('');
+        res.send("");
         next();
     }).catch((err) => {
         console.error(err);
@@ -163,41 +163,41 @@ idm.prototype._connect = function() {
 };
 
 idm.prototype.initRoutes = function() {
-    this.app.use('/api', 					this.tokenHandler.tokenCheck.bind(this.tokenHandler));
+    this.app.use("/api", 					this.tokenHandler.tokenCheck.bind(this.tokenHandler));
 
-    this.app.get('/api/users', 				this.roleCheckHandler.enforceRoles(this.getUsers.bind(this), 		['user_reader', 'user_admin', 'system_reader', 'system_admin']));
-    this.app.get('/api/users/:id', 			this.roleCheckHandler.enforceRoles(this.getUser.bind(this), 		['user_reader', 'user_admin', 'system_reader', 'system_admin']));
-    this.app.post('/api/users', 			this.roleCheckHandler.enforceRoles(this.createUser.bind(this), 		['user_writer', 'user_admin', 'system_writer', 'system_admin']));
-    this.app.put('/api/users/:id', 			this.roleCheckHandler.enforceRoles(this.updateUser.bind(this), 		['user_writer', 'user_admin', 'system_writer', 'system_admin']));
-    this.app.delete('/api/users/:id',		this.roleCheckHandler.enforceRoles(this.deleteUser.bind(this), 		['user_writer', 'user_admin', 'system_writer', 'system_admin']));
+    this.app.get("/api/users", 				this.roleCheckHandler.enforceRoles(this.getUsers.bind(this), 		["user_reader", "user_admin", "system_reader", "system_admin"]));
+    this.app.get("/api/users/:id", 			this.roleCheckHandler.enforceRoles(this.getUser.bind(this), 		["user_reader", "user_admin", "system_reader", "system_admin"]));
+    this.app.post("/api/users", 			this.roleCheckHandler.enforceRoles(this.createUser.bind(this), 		["user_writer", "user_admin", "system_writer", "system_admin"]));
+    this.app.put("/api/users/:id", 			this.roleCheckHandler.enforceRoles(this.updateUser.bind(this), 		["user_writer", "user_admin", "system_writer", "system_admin"]));
+    this.app.delete("/api/users/:id",		this.roleCheckHandler.enforceRoles(this.deleteUser.bind(this), 		["user_writer", "user_admin", "system_writer", "system_admin"]));
 
     //todo: need to complete these IdM endpoints
-    this.app.post('/api/clients', 			this.roleCheckHandler.enforceRoles(this.createClient.bind(this), 	['client_writer', 'client_admin', 'system_writer', 'system_admin']));
+    this.app.post("/api/clients", 			this.roleCheckHandler.enforceRoles(this.createClient.bind(this), 	["client_writer", "client_admin", "system_writer", "system_admin"]));
 };
 
 module.exports = function(app, roleCheckHandler, db, bcrypt, tokenHandler, uuid, emailValidator) {
     if (!db) {
-        db = require('../../support.lib/db')();
+        db = require("../../support.lib/db")();
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     if (!bcrypt) {
-        bcrypt = require('bcrypt');
+        bcrypt = require("bcrypt");
     }
 
     if (!tokenHandler) {
-        tokenHandler = require('../../support.lib/tokenHandler')();
+        tokenHandler = require("../../support.lib/tokenHandler")();
     }
 
     if (!uuid) {
-        uuid = require('uuid').v4;
+        uuid = require("uuid").v4;
     }
 
     if (!emailValidator) {
-        emailValidator = require('email-validator');
+        emailValidator = require("email-validator");
     }
 
     return new idm(app, roleCheckHandler, db, bcrypt, tokenHandler, uuid, emailValidator);

@@ -25,7 +25,7 @@
                 </div>
             <% } %>
 
-            <% if (params.scope && params.scope.includes('offline_access')) { %>
+            <% if (params.scope && params.scope.includes("offline_access")) { %>
                 <div class="ui-alert ui-alert--info">
                     The application is requesting the ability to refresh your session automatically on your behalf.
                 </div>
@@ -37,7 +37,7 @@
                 </div>
             <% } %>
 
-            <% newScopes = new Set(details.scopes.new); newScopes.delete('openid'); newScopes.delete('offline_access') %>
+            <% newScopes = new Set(details.scopes.new); newScopes.delete("openid"); newScopes.delete("offline_access") %>
             <% if (newScopes.size) { %>
                 <p>
                     You consent to the following scopes:
@@ -51,7 +51,7 @@
                 </div>
             <% } %>
 
-            <% newClaims = new Set(details.claims.new); ['sub', 'sid', 'auth_time', 'acr', 'amr', 'iss'].forEach(Set.prototype.delete.bind(newClaims)) %>
+            <% newClaims = new Set(details.claims.new); ["sub", "sid", "auth_time", "acr", "amr", "iss"].forEach(Set.prototype.delete.bind(newClaims)) %>
             <% if (newClaims.size) { %>
                 <p>
                     You consent to sharing the following information:

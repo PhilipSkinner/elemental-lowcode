@@ -37,37 +37,37 @@ body {
         bottom: 0px;
 
         &--login {
-            background: url('/images/login.png') no-repeat center center;
+            background: url("/images/login.png") no-repeat center center;
             background-size: 75%;
         }
 
         &--consents {
-            background: url('/images/consents.png') no-repeat center center;
+            background: url("/images/consents.png") no-repeat center center;
             background-size: 75%;
         }
 
         &--error {
-            background: url('/images/error.png') no-repeat center center;
+            background: url("/images/error.png") no-repeat center center;
             background-size: 75%;
         }
 
         &--logout {
-            background: url('/images/logout.png') no-repeat center center;
+            background: url("/images/logout.png") no-repeat center center;
             background-size: 75%;
         }
 
         &--register {
-            background: url('/images/register.png') no-repeat center center;
+            background: url("/images/register.png") no-repeat center center;
             background-size: 75%;
         }
 
         &--terms {
-            background: url('/images/terms.png') no-repeat center center;
+            background: url("/images/terms.png") no-repeat center center;
             background-size: 55%;
         }
 
         &--password {
-            background: url('/images/password.png') no-repeat center center;
+            background: url("/images/password.png") no-repeat center center;
             background-size: 40%;
         }
     }

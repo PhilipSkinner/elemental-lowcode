@@ -21,22 +21,22 @@ passwordController.prototype.showPasswordForm = function(req, res, next) {
         if (details.session && details.session.accountId) {
             const rules = this.clientHelper.getPasswordRules(client);
 
-            return res.render('password', {
+            return res.render("password", {
                 client          : client,
                 uid             : details.uid,
                 details         : details.prompt.details,
                 params          : details.params,
                 passwordError   : details.lastSubmission && details.lastSubmission.password_error ? details.lastSubmission.password_error : rules.error,
-                title           : 'Reset Password',
+                title           : "Reset Password",
             });
         }
 
-        return res.render('forgottenPassword', {
+        return res.render("forgottenPassword", {
             client          : client,
             uid             : details.uid,
             details         : details.prompt.details,
             params          : details.params,
-            title           : 'Confirm email address',
+            title           : "Confirm email address",
             sent            : details.lastSubmission && details.lastSubmission.email_sent,
             code            : details.lastSubmission && details.lastSubmission.validation_code
         });
@@ -61,7 +61,7 @@ passwordController.prototype.handlePassword = function(req, res, next) {
         if (!this.passwordHelper.passwordStrongEnough(rules, req.body.password)) {
             return this.provider.interactionFinished(req, res, {
                 select_account  : {},
-                prompt          : 'password',
+                prompt          : "password",
                 password_error  : rules.error,
                 login           : {
                     account : details.session.accountId,
@@ -75,8 +75,8 @@ passwordController.prototype.handlePassword = function(req, res, next) {
         if (this.passwordHelper.isBannedPassword(bannedPasswords, req.body.password)) {
             return this.provider.interactionFinished(req, res, {
                 select_account  : {},
-                prompt          : 'password',
-                password_error  : 'That password is not allowed - it has been banned.',
+                prompt          : "password",
+                password_error  : "That password is not allowed - it has been banned.",
                 login           : {
                     account : details.session.accountId,
                 }
@@ -88,8 +88,8 @@ passwordController.prototype.handlePassword = function(req, res, next) {
         if (req.body.password !== req.body.repeat) {
             return this.provider.interactionFinished(req, res, {
                 select_account  : {},
-                prompt          : 'password',
-                password_error  : 'Your passwords did not match.',
+                prompt          : "password",
+                password_error  : "Your passwords did not match.",
                 login           : {
                     account : details.session.accountId,
                 }
@@ -127,22 +127,22 @@ passwordController.prototype.showForgottenPasswordForm = function(req, res, next
         details = _details;
         return this.provider.Client.find(details.params.client_id);
     }).then((client) => {
-        //client hasn't enabled resets
+        //client hasn"t enabled resets
         if (!this.clientHelper.resetEnabled(client)) {
             //not good, redirect back to login
             return this.provider.interactionFinished(req, res, {
-                prompt : 'login'
+                prompt : "login"
             }, {
                 mergeWithLastSubmission : false
             });
         }
 
-        return res.render('forgottenPassword', {
+        return res.render("forgottenPassword", {
             client          : client,
             uid             : details.uid,
             details         : details.prompt.details,
             params          : details.params,
-            title           : 'Confirm email address',
+            title           : "Confirm email address",
             sent            : details.lastSubmission && details.lastSubmission.email_sent,
             code            : details.lastSubmission && details.lastSubmission.validation_code
         });
@@ -162,7 +162,7 @@ passwordController.prototype.sendVerificationEmail = function(req, res, next) {
         if (!this.clientHelper.resetEnabled(client)) {
             //not good, redirect back to login
             return this.provider.interactionFinished(req, res, {
-                prompt : 'login'
+                prompt : "login"
             }, {
                 mergeWithLastSubmission : false
             });
@@ -173,14 +173,14 @@ passwordController.prototype.sendVerificationEmail = function(req, res, next) {
             if (user) {
                 validationCode = this.totpGenerator.generateTotp(user.profile.subject, this.clientHelper.getTotpSettings(client));
 
-                let template = '';
+                let template = "";
 
-                if (client.features.reset.mechanism === 'link-token') {
-                    template = 'forgottenLinkToken';
+                if (client.features.reset.mechanism === "link-token") {
+                    template = "forgottenLinkToken";
                 }
 
-                if (client.features.reset.mechanism === 'totp') {
-                    template = 'forgottenTotpCode';
+                if (client.features.reset.mechanism === "totp") {
+                    template = "forgottenTotpCode";
                 }
 
                 return this.ejs.renderFile(this.path.join(__dirname, `../../emails/${template}.ejs`), {
@@ -192,7 +192,7 @@ passwordController.prototype.sendVerificationEmail = function(req, res, next) {
                     return this.emailService.sendEmail(
                         this.clientHelper.getFromEmailAddress(client),
                         user.profile.username,
-                        'Reset password',
+                        "Reset password",
                         html
                     );
                 }).then(() => {
@@ -202,9 +202,9 @@ passwordController.prototype.sendVerificationEmail = function(req, res, next) {
         });
     }).then((user) => {
         if (user && user.username) {
-            //we'll just pretend that we sent the thing
+            //we"ll just pretend that we sent the thing
             return this.provider.interactionFinished(req, res, {
-                prompt : 'code',
+                prompt : "code",
                 email_sent : true,
                 validation_code : validationCode,
                 username : user.username,
@@ -228,7 +228,7 @@ passwordController.prototype.handleResetCode = function(req, res, next) {
         if (!this.clientHelper.resetEnabled(client)) {
             //not good, redirect back to login
             return this.provider.interactionFinished(req, res, {
-                prompt : 'login'
+                prompt : "login"
             }, {
                 mergeWithLastSubmission : false
             });
@@ -237,7 +237,7 @@ passwordController.prototype.handleResetCode = function(req, res, next) {
         if (!details.lastSubmission || !details.lastSubmission.validation_code || !details.lastSubmission.username || !details.lastSubmission.subject) {
             //not good, this is a very odd state to be in
             return this.provider.interactionFinished(req, res, {
-                prompt : 'login'
+                prompt : "login"
             }, {
                 mergeWithLastSubmission : false
             });
@@ -251,25 +251,25 @@ passwordController.prototype.handleResetCode = function(req, res, next) {
 
             if (receivedCode === details.lastSubmission.validation_code) {
                 //can reset their password now
-                return res.render('resetPassword', {
+                return res.render("resetPassword", {
                     client          : client,
                     uid             : details.uid,
                     details         : details.lastSubmission,
                     params          : details.params,
                     passwordError   : null,
-                    title           : 'Reset password'
+                    title           : "Reset password"
                 });
             } else {
-                codeError = 'That code is incorrect, please try again.';
+                codeError = "That code is incorrect, please try again.";
             }
         }
 
-        return res.render('resetCode', {
+        return res.render("resetCode", {
             client          : client,
             uid             : details.uid,
             details         : details.lastSubmission,
             params          : details.params,
-            title           : 'Confirmation code',
+            title           : "Confirmation code",
             sent            : details.lastSubmission && details.lastSubmission.email_sent,
             codeError       : codeError
         });
@@ -297,19 +297,19 @@ passwordController.prototype.resetPassword = function(req, res, next) {
         if (!this.passwordHelper.passwordStrongEnough(rules, req.body.password)) {
             passwordError = rules.error;
         } else if (this.passwordHelper.isBannedPassword(bannedPasswords, req.body.password)) {
-            passwordError = 'That password is not allowed - it has been banned.';
+            passwordError = "That password is not allowed - it has been banned.";
         } else if (req.body.password !== req.body.repeat) {
-            passwordError = 'Your passwords did not match.';
+            passwordError = "Your passwords did not match.";
         }
 
         if (passwordError !== null) {
-            return res.render('resetPassword', {
+            return res.render("resetPassword", {
                 client          : client,
                 uid             : details.uid,
                 details         : details.lastSubmission,
                 params          : details.params,
                 passwordError   : passwordError,
-                title           : 'Reset password'
+                title           : "Reset password"
             });
         }
 
@@ -337,19 +337,19 @@ passwordController.prototype.resetPassword = function(req, res, next) {
 
 module.exports = function(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver) {
     if (!accountService) {
-        accountService = require('../account')();
+        accountService = require("../account")();
     }
 
     if (!clientHelper) {
-        clientHelper = require('../helpers/clientHelper')();
+        clientHelper = require("../helpers/clientHelper")();
     }
 
     if (!passwordHelper) {
-        passwordHelper = require('../helpers/passwordHelper')();
+        passwordHelper = require("../helpers/passwordHelper")();
     }
 
     if (!emailService) {
-        emailService = require('../../../support.lib/emailService')({
+        emailService = require("../../../support.lib/emailService")({
             host : process.env.SMTP_HOST,
             port : process.env.SMTP_PORT,
             username : process.env.SMTP_USERNAME,
@@ -359,19 +359,19 @@ module.exports = function(provider, accountService, clientHelper, passwordHelper
     }
 
     if (!totpGenerator) {
-        totpGenerator = require('../helpers/totpHelper')();
+        totpGenerator = require("../helpers/totpHelper")();
     }
 
     if (!ejs) {
-        ejs = require('ejs');
+        ejs = require("ejs");
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!hostnameResolver) {
-        hostnameResolver = require('../../../support.lib/hostnameResolver')();
+        hostnameResolver = require("../../../support.lib/hostnameResolver")();
     }
 
     return new passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);

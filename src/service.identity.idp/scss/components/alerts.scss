@@ -6,7 +6,7 @@
     &--success {
         padding-left: 60px;
         background: $success-background-color;
-        background-image: url('/icons/happy-face.svg');
+        background-image: url("/icons/happy-face.svg");
         background-position: 22px 20px;
         background-size: 22px 16px;
         background-repeat: no-repeat;
@@ -16,7 +16,7 @@
     &--error {
         padding-left: 60px;
         background: $negative-background-color;
-        background-image: url('/icons/sad-face.svg');
+        background-image: url("/icons/sad-face.svg");
         background-position: 22px 20px;
         background-size: 22px 16px;
         background-repeat: no-repeat;

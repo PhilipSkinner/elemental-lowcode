@@ -13,7 +13,7 @@ storageEngine.prototype.initStore = function(type) {
         secrets : this.environmentService.listSecrets()
     }, {}, true);
 
-    if (typeof(type.connectionString) !== 'undefined' && type.connectionString !== null && type.connectionString !== '') {
+    if (typeof(type.connectionString) !== "undefined" && type.connectionString !== null && type.connectionString !== "") {
         return this.sqlStore(type.connectionString, type);
     }
 
@@ -39,24 +39,24 @@ storageEngine.prototype.init = function(dir) {
 
 module.exports = function(app, typesReader, typeInstance, sqlStore, dataResolver, environmentService) {
     if (!typesReader) {
-        typesReader = require('./typesReader')();
+        typesReader = require("./typesReader")();
     }
 
     if (!typeInstance) {
         //no exec, can"t be a singleton
-        typeInstance = require('./typeInstance');
+        typeInstance = require("./typeInstance");
     }
 
     if (!sqlStore) {
-        sqlStore = require('../../support.lib/stores/sqlStore');
+        sqlStore = require("../../support.lib/stores/sqlStore");
     }
 
     if (!dataResolver) {
-        dataResolver = require('../../support.lib/dataResolver')();
+        dataResolver = require("../../support.lib/dataResolver")();
     }
 
     if (!environmentService) {
-        environmentService = require('../../support.lib/environmentService')();
+        environmentService = require("../../support.lib/environmentService")();
     }
 
     return new storageEngine(app, typesReader, typeInstance, sqlStore, dataResolver, environmentService);

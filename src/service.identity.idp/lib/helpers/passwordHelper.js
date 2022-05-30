@@ -1,11 +1,11 @@
 const passwordHelper = function() {
-    this.numbers = ['0','1','2','3','4','5','6','7','8','9'];
-    this.lowercase = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
-    this.uppercase = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+    this.numbers = ["0","1","2","3","4","5","6","7","8","9"];
+    this.lowercase = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+    this.uppercase = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 };
 
 passwordHelper.prototype.isBannedPassword = function(banList, password) {
-    if (typeof(banList) === 'undefined' || banList === null || !Array.isArray(banList)) {
+    if (typeof(banList) === "undefined" || banList === null || !Array.isArray(banList)) {
         return false;
     }
 
@@ -22,7 +22,7 @@ passwordHelper.prototype.passwordStrongEnough = function(rules, password) {
         symbol : 0
     };
 
-    password.split('').forEach((char) => {
+    password.split("").forEach((char) => {
         if (this.numbers.indexOf(char) !== -1) {
             details.numeric++;
         } else if (this.lowercase.indexOf(char) !== -1) {

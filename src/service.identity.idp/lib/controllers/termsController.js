@@ -28,7 +28,7 @@ terms.prototype.showTermsForm = function(req, res, next) {
             });
         }
 
-        return res.render('terms', {
+        return res.render("terms", {
             client          : client,
             uid             : details.uid,
             details         : details.prompt.details,
@@ -37,7 +37,7 @@ terms.prototype.showTermsForm = function(req, res, next) {
             privacyRequired : this.clientHelper.privacyRequired(account, client),
             termsError      : details.lastSubmission && details.lastSubmission.termsError,
             privacyError    : details.lastSubmission && details.lastSubmission.privacyError,
-            title           : 'Terms & Conditions',
+            title           : "Terms & Conditions",
         });
     }).catch((err) => {
         next(err);
@@ -114,7 +114,7 @@ terms.prototype.handleTerms = function(req, res, next) {
 
         if (termsError || privacyError) {
             return this.provider.interactionFinished(req, res, {
-                prompt       : 'terms',
+                prompt       : "terms",
                 termsError   : termsError,
                 privacyError : privacyError
             }, {
@@ -139,11 +139,11 @@ terms.prototype.handleTerms = function(req, res, next) {
 
 module.exports = function(provider, accountService, clientHelper) {
     if (!accountService) {
-        accountService = require('../account')();
+        accountService = require("../account")();
     }
 
     if (!clientHelper) {
-        clientHelper = require('../helpers/clientHelper')();
+        clientHelper = require("../helpers/clientHelper")();
     }
 
     return new terms(provider, accountService, clientHelper);

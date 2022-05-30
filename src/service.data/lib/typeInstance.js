@@ -10,13 +10,13 @@ const typeInstance = function(store, app, definition, uuid, ajv, roleCheckHandle
     this.schemas            = {};
 
     //setup the id property
-    this.definition.schema.properties['id'] = {
-        'type' : 'string'
+    this.definition.schema.properties["id"] = {
+        "type" : "string"
     };
 };
 
 typeInstance.prototype._determinePath = function(type) {
-    return type.replace('_', '.').replace(this.definition.name.toLowerCase(), '$');
+    return type.replace("_", ".").replace(this.definition.name.toLowerCase(), "$");
 };
 
 typeInstance.prototype.determineIdentifiers = function(req) {
@@ -28,15 +28,15 @@ typeInstance.prototype.determineIdentifiers = function(req) {
     });
 
     const identifiers = [];
-    let last = '';
+    let last = "";
     let lastIdentifier = null;
-    req.path.toLowerCase().split('/').forEach((p) => {
-        if (p === '' || p === '.details') {
+    req.path.toLowerCase().split("/").forEach((p) => {
+        if (p === "" || p === ".details") {
             return;
         }
 
         if (Object.keys(inverted).indexOf(p) === -1) {
-            if (last === '') {
+            if (last === "") {
                 last = p;
             } else {
                 last = `${last}_${p}`;
@@ -51,7 +51,7 @@ typeInstance.prototype.determineIdentifiers = function(req) {
         }
     });
 
-    if (last !== '' && lastIdentifier === null) {
+    if (last !== "" && lastIdentifier === null) {
         identifiers.push({
             type        : last,
             identifier  : null
@@ -67,14 +67,14 @@ typeInstance.prototype.getHandler = function(req, res) {
     req.query = req.query || {};
     Object.keys(req.query).forEach((param) => {
         //filter_$.path.to.variable
-        if (param.indexOf('filter_') === 0) {
+        if (param.indexOf("filter_") === 0) {
             filters.push({
                 path    : param.slice(7),
                 value   : req.query[param]
             });
         }
 
-        if (param.indexOf('order_') === 0) {
+        if (param.indexOf("order_") === 0) {
             orders.push({
                 path    : param.slice(6),
                 value   : req.query[param]
@@ -91,7 +91,7 @@ typeInstance.prototype.getHandler = function(req, res) {
     if (identifiers.length > 1) {
         const parent = identifiers.slice(-2)[0];
         filters.push({
-            path    : '$.parent',
+            path    : "$.parent",
             value   : parent.identifier
         });
         prom = this.store.getResource(parent.type, parent.identifier);
@@ -163,7 +163,7 @@ typeInstance.prototype.isUnique = function(data, objPath) {
 
     return new Promise((resolve) => {
         Promise.all(this.definition.keys.map((key) => {
-            if (key.type !== 'unique') {
+            if (key.type !== "unique") {
                 return Promise.resolve(null);
             }
 
@@ -186,7 +186,7 @@ typeInstance.prototype.isUnique = function(data, objPath) {
                 return Promise.resolve({
                     isUnique    : res.length === 0,
                     errors      : res.length === 0 ? [] : [
-                        `Duplicate key error - ${key.paths.join(', ')}`
+                        `Duplicate key error - ${key.paths.join(", ")}`
                     ]
                 });
             });
@@ -250,13 +250,13 @@ typeInstance.prototype.createHandler = function(req, res) {
                 if (!success) {
                     res.status(424).json({
                         errors : [
-                            'error constructing object'
+                            "error constructing object"
                         ]
                     }).end();
                     return;
                 }
 
-                res.header('Location', `/${this.definition.name}/${newId}`);
+                res.header("Location", `/${this.definition.name}/${newId}`);
                 res.status(201);
                 res.end();
                 return;
@@ -278,7 +278,7 @@ typeInstance.prototype.getSingleHandler = function(req, res) {
 
     //if the identifier is null just call next
     if (toFetch.identifier === null && identifiers.length > 1) {
-        //we're finding a single child item
+        //we"re finding a single child item
         const filters = [];
         const parent = identifiers.slice(-2)[0];
 
@@ -290,7 +290,7 @@ typeInstance.prototype.getSingleHandler = function(req, res) {
             }
 
             filters.push({
-                path    : '$.parent',
+                path    : "$.parent",
                 value   : parent.identifier
             });
 
@@ -366,13 +366,13 @@ typeInstance.prototype.updateHandler = function(req, res) {
             if (!success) {
                 res.status(424).json({
                     errors : [
-                        'error updating object'
+                        "error updating object"
                     ]
                 }).end();
                 return;
             }
 
-            res.header('Location', req.path);
+            res.header("Location", req.path);
             res.status(204);
             res.end();
             return;
@@ -401,7 +401,7 @@ typeInstance.prototype.deleteHandler = function(req, res) {
             if (!success) {
                 res.status(424).json({
                     errors : [
-                        'error deleting object'
+                        "error deleting object"
                     ]
                 }).end();
                 return;
@@ -442,11 +442,11 @@ typeInstance.prototype.patchHandler = function(req, res) {
 
         //if the identifier is null just call next
         if (toFetch.identifier === null && identifiers.length > 1) {
-            //we're finding a single child item
+            //we"re finding a single child item
             const filters = [];
 
             filters.push({
-                path    : '$.parent',
+                path    : "$.parent",
                 value   : parent.identifier
             });
 
@@ -477,13 +477,13 @@ typeInstance.prototype.patchHandler = function(req, res) {
                     if (!success) {
                         res.status(424).json({
                             errors : [
-                                'error updating object'
+                                "error updating object"
                             ]
                         }).end();
                         return;
                     }
 
-                    res.header('Location', req.path);
+                    res.header("Location", req.path);
                     res.status(204);
                     res.end();
                     return;
@@ -492,7 +492,7 @@ typeInstance.prototype.patchHandler = function(req, res) {
         }
 
         return this.store.getResource(toFetch.type, toFetch.identifier).then((resource) => {
-            if (resource === null || typeof(resource) === 'undefined') {
+            if (resource === null || typeof(resource) === "undefined") {
                 res.status(404).end();
                 return;
             }
@@ -511,13 +511,13 @@ typeInstance.prototype.patchHandler = function(req, res) {
                 if (!success) {
                     res.status(424).json({
                         errors : [
-                            'error updating object'
+                            "error updating object"
                         ]
                     }).end();
                     return;
                 }
 
-                res.header('Location', req.path);
+                res.header("Location", req.path);
                 res.status(204);
                 res.end();
                 return;
@@ -534,12 +534,12 @@ typeInstance.prototype.patchHandler = function(req, res) {
 typeInstance.prototype.swaggerGen = function(paths) {
     const generatedPaths = {};
     const errorSchema = {
-        type : 'object',
+        type : "object",
         properties : {
             errors : {
-                type : 'array',
+                type : "array",
                 items : {
-                    type : 'string'
+                    type : "string"
                 }
             }
         }
@@ -547,24 +547,24 @@ typeInstance.prototype.swaggerGen = function(paths) {
 
     paths.forEach((p) => {
         const def = {
-            summary         : '',
-            description     : '',
-            operationId     : `${p.method}_${p.path.replace(/\//g, '_')}`,
+            summary         : "",
+            description     : "",
+            operationId     : `${p.method}_${p.path.replace(/\//g, "_")}`,
             tags            : [
                 this.definition.name
             ],
             consumes        : [
-                'application/json'
+                "application/json"
             ],
             produces        : [
-                'application/json'
+                "application/json"
             ],
             responses       : {
                 401 : {
-                    description : 'Unauthorized access - missing bearer token'
+                    description : "Unauthorized access - missing bearer token"
                 },
                 403 : {
-                    description : 'Forbidden - you do not have the correct level of access'
+                    description : "Forbidden - you do not have the correct level of access"
                 }
             },
             security : [
@@ -580,108 +580,108 @@ typeInstance.prototype.swaggerGen = function(paths) {
             this.schemas[p.name] = p.schema;
         }
 
-        if (p.method === 'get') {
-            if (p.type === 'singular') {
-                def.responses['404'] = {
-                    description : 'Resource not found'
+        if (p.method === "get") {
+            if (p.type === "singular") {
+                def.responses["404"] = {
+                    description : "Resource not found"
                 };
 
-                def.responses['200'] = {
-                    description : 'The resource',
+                def.responses["200"] = {
+                    description : "The resource",
                     schema      : p.schema
                 };
             }
 
-            if (p.type === 'listing') {
-                def.responses['200'] = {
-                    description : 'The list of resources',
+            if (p.type === "listing") {
+                def.responses["200"] = {
+                    description : "The list of resources",
                     schema      : {
-                        type    : 'array',
+                        type    : "array",
                         items   : p.schema
                     }
                 };
 
                 def.parameters.push({
-                    name        : 'start',
-                    in          : 'query',
-                    description : 'This parameter can be used to specify the starting object index that records should be pulled for. This index starts at 1. The default for this value is 1.',
+                    name        : "start",
+                    in          : "query",
+                    description : "This parameter can be used to specify the starting object index that records should be pulled for. This index starts at 1. The default for this value is 1.",
                     required    : false,
-                    type        : 'integer'
+                    type        : "integer"
                 });
 
                 def.parameters.push({
-                    name        : 'count',
-                    in          : 'query',
-                    description : 'This parameter can be used to specify the number of objects to be returned. The default for this value is 5.',
+                    name        : "count",
+                    in          : "query",
+                    description : "This parameter can be used to specify the number of objects to be returned. The default for this value is 5.",
                     required    : false,
-                    type        : 'integer'
+                    type        : "integer"
                 });
             }
         }
 
-        if (p.method === 'delete') {
-            def.responses['204'] = {
-                description : 'Resource deleted',
+        if (p.method === "delete") {
+            def.responses["204"] = {
+                description : "Resource deleted",
                 headers     : {}
             };
 
-            def.responses['404'] = {
-                description : 'Resource not found',
+            def.responses["404"] = {
+                description : "Resource not found",
                 schema      : errorSchema
             };
 
-            def.responses['424'] = {
-                description : 'Could not delete entity from datastore',
+            def.responses["424"] = {
+                description : "Could not delete entity from datastore",
                 schema      : errorSchema
             };
         }
 
-        if (['post', 'put', 'patch'].indexOf(p.method) !== -1) {
-            if (p.method === 'post') {
-                def.responses['201'] = {
-                    description : 'Resource created',
+        if (["post", "put", "patch"].indexOf(p.method) !== -1) {
+            if (p.method === "post") {
+                def.responses["201"] = {
+                    description : "Resource created",
                     headers : {
                         Location : {
-                            type        : 'string',
-                            description : 'Location of newly created resource'
+                            type        : "string",
+                            description : "Location of newly created resource"
                         }
                     }
                 };
 
-                def.responses['409'] = {
-                    description : 'Resource conflict',
+                def.responses["409"] = {
+                    description : "Resource conflict",
                     schema      : errorSchema
                 };
             } else {
-                def.responses['204'] = {
-                    description : 'Resource updated'
+                def.responses["204"] = {
+                    description : "Resource updated"
                 };
 
-                def.responses['404'] = {
-                    description : 'Resource not found',
+                def.responses["404"] = {
+                    description : "Resource not found",
                     schema      : errorSchema
                 };
             }
 
-            def.responses['422'] = {
-                description : 'Unprocessable entity - does not match schema',
+            def.responses["422"] = {
+                description : "Unprocessable entity - does not match schema",
                 schema      : errorSchema
             };
 
-            def.responses['424'] = {
-                description : 'Could not store entity in datastore',
+            def.responses["424"] = {
+                description : "Could not store entity in datastore",
                 schema      : errorSchema
             };
 
-            if (p.method === 'post' && p.schema && p.schema.properties && p.schema.properties.id) {
+            if (p.method === "post" && p.schema && p.schema.properties && p.schema.properties.id) {
                 //remove the ID from the body
                 delete(p.schema.properties.id);
             }
 
             def.parameters.push({
-                name        : 'body',
-                in          : 'body',
-                description : 'The objects properties',
+                name        : "body",
+                in          : "body",
+                description : "The objects properties",
                 required    : true,
                 schema      : p.schema
             });
@@ -697,14 +697,14 @@ typeInstance.prototype.swaggerGen = function(paths) {
             }
 
             if(m.length === 2) {
-                updatedPath = updatedPath.replace(`:${m[1]}`, '{' + m[1] + '}');
+                updatedPath = updatedPath.replace(`:${m[1]}`, "{" + m[1] + "}");
                 def.parameters.push({
                     name        : m[1],
-                    in          : 'path',
+                    in          : "path",
                     description : `The ${m[1]}`,
                     required    : true,
                     schema      : {
-                        type    : 'string'
+                        type    : "string"
                     }
                 });
             }
@@ -716,13 +716,13 @@ typeInstance.prototype.swaggerGen = function(paths) {
 
     return (req, res) => {
         res.json({
-            swagger     : '2.0',
+            swagger     : "2.0",
             info        : {
                 description : this.definition.description,
                 title       : this.definition.name
             },
-            host        : this.hostnameResolver.resolveStorage().replace(/https?:\/\//, ''),
-            basePath    : '/',
+            host        : this.hostnameResolver.resolveStorage().replace(/https?:\/\//, ""),
+            basePath    : "/",
             paths       : generatedPaths,
             tags        : [
                 {
@@ -730,13 +730,13 @@ typeInstance.prototype.swaggerGen = function(paths) {
                 }
             ],
             schemes : [
-                'http'
+                "http"
             ],
             securityDefinitions : {
                 bearerToken : {
-                    type    : 'apiKey',
-                    name    : 'Authorization',
-                    in      : 'header'
+                    type    : "apiKey",
+                    name    : "Authorization",
+                    in      : "header"
                 }
             }
         });
@@ -748,35 +748,35 @@ typeInstance.prototype.swaggerGen = function(paths) {
 typeInstance.prototype.init = function() {
     return new Promise((resolve) => {
         let readerRoles = [
-            'system_admin',
-            'system_reader',
-            'data_reader',
-            this.definition.name + '_reader'
+            "system_admin",
+            "system_reader",
+            "data_reader",
+            this.definition.name + "_reader"
         ];
         let writerRoles = [
-            'system_admin',
-            'system_writer',
-            'data_writer',
-            this.definition.name + '_writer'
+            "system_admin",
+            "system_writer",
+            "data_writer",
+            this.definition.name + "_writer"
         ];
         let deletionRoles = [
-            'system_admin',
-            'system_writer',
-            'data_writer',
-            this.definition.name + '_writer'
+            "system_admin",
+            "system_writer",
+            "data_writer",
+            this.definition.name + "_writer"
         ];
 
         if (this.definition.roles) {
-            //clear our roles if we've been told to
+            //clear our roles if we"ve been told to
             if (this.definition.roles.replace) {
                 if (this.definition.roles.replace.read === true) {
-                    readerRoles = ['system_admin',];
+                    readerRoles = ["system_admin",];
                 }
                 if (this.definition.roles.replace.write === true) {
-                    writerRoles = ['system_admin',];
+                    writerRoles = ["system_admin",];
                 }
                 if (this.definition.roles.replace.delete === true) {
-                    deletionRoles = ['system_admin',];
+                    deletionRoles = ["system_admin",];
                 }
             }
 
@@ -809,17 +809,17 @@ typeInstance.prototype.init = function() {
 
         console.log(`Initializing type ${this.definition.name}`);
 
-        const paths = this.determinePaths('', this.definition.name, this.normaliseName(this.definition.name), this.definition.schema);
+        const paths = this.determinePaths("", this.definition.name, this.normaliseName(this.definition.name), this.definition.schema);
 
         //assign the roles
         paths.forEach((p) => {
             let roles = readerRoles;
 
-            if (['created', 'update', 'patch'].indexOf(p.type) !== -1) {
+            if (["created", "update", "patch"].indexOf(p.type) !== -1) {
                 roles = writerRoles;
             }
 
-            if (['delete'].indexOf(p.type) !== -1) {
+            if (["delete"].indexOf(p.type) !== -1) {
                 roles = deletionRoles;
             }
 
@@ -843,31 +843,31 @@ typeInstance.prototype.init = function() {
 };
 
 typeInstance.prototype.determineHandler = function(type) {
-    if (type === 'listing') {
+    if (type === "listing") {
         return this.getHandler;
     }
 
-    if (type === 'details') {
+    if (type === "details") {
         return this.getDetailsHandler;
     }
 
-    if (type === 'create') {
+    if (type === "create") {
         return this.createHandler;
     }
 
-    if (type === 'singular') {
+    if (type === "singular") {
         return this.getSingleHandler;
     }
 
-    if (type === 'update') {
+    if (type === "update") {
         return this.updateHandler;
     }
 
-    if (type === 'delete') {
+    if (type === "delete") {
         return this.deleteHandler;
     }
 
-    if (type === 'patch') {
+    if (type === "patch") {
         return this.patchHandler;
     }
 
@@ -876,7 +876,7 @@ typeInstance.prototype.determineHandler = function(type) {
 };
 
 typeInstance.prototype.normaliseName = function(name) {
-    return name.toLowerCase().replace(' ', '_');
+    return name.toLowerCase().replace(" ", "_");
 };
 
 typeInstance.prototype.determinePaths = function(parentPath, name, fullName, schema, noIdentifier) {
@@ -891,13 +891,13 @@ typeInstance.prototype.determinePaths = function(parentPath, name, fullName, sch
     }
 
     let simpleSchema = {
-        type        : 'object',
+        type        : "object",
         properties  : {}
     };
 
-    if (schema.type === 'object' && schema.properties) {
+    if (schema.type === "object" && schema.properties) {
         Object.keys(schema.properties).forEach((p) => {
-            if (['object', 'array'].indexOf(schema.properties[p].type) === -1) {
+            if (["object", "array"].indexOf(schema.properties[p].type) === -1) {
                 simpleSchema.properties[p] = schema.properties[p];
             }
         });
@@ -908,74 +908,74 @@ typeInstance.prototype.determinePaths = function(parentPath, name, fullName, sch
     //push in our paths
     if (!noIdentifier) {
         ret.push({
-            method      : 'get',
+            method      : "get",
             path        : `${parentPath}/${normName}`,
-            type        : 'listing',
+            type        : "listing",
             schema      : simpleSchema,
             name        : fullName
         });
 
         ret.push({
-            method  : 'get',
+            method  : "get",
             path    : `${parentPath}/${normName}/.details`,
-            type    : 'details',
+            type    : "details",
             schema  : simpleSchema,
             name    : fullName
         });
 
         ret.push({
-            method  : 'post',
+            method  : "post",
             path    : `${parentPath}/${normName}`,
-            type    : 'create',
+            type    : "create",
             schema  : simpleSchema,
             name    : fullName
         });
     }
 
     ret.push({
-        method  : 'get',
+        method  : "get",
         path    : singularPath,
-        type    : 'singular',
+        type    : "singular",
         schema  : simpleSchema,
         name    : fullName
     });
 
     ret.push({
-        method  : 'put',
+        method  : "put",
         path    : singularPath,
-        type    : 'update',
+        type    : "update",
         schema  : simpleSchema,
         name    : fullName
     });
 
     if (!noIdentifier) {
         ret.push({
-            method  : 'delete',
+            method  : "delete",
             path    : singularPath,
-            type    : 'delete',
+            type    : "delete",
             schema  : simpleSchema,
             name    : fullName
         });
     }
 
     ret.push({
-        method  : 'patch',
+        method  : "patch",
         path    : singularPath,
-        type    : 'patch',
+        type    : "patch",
         schema  : simpleSchema,
         name    : fullName
     });
 
-    if (schema.type === 'object' && schema.properties) {
+    if (schema.type === "object" && schema.properties) {
         Object.keys(schema.properties).forEach((prop) => {
             let childName = this.normaliseName(`${fullName}_${prop}`);
 
-            if (schema.properties[prop].type === 'array' && schema.properties[prop].items && schema.properties[prop].items.type === 'object') {
+            if (schema.properties[prop].type === "array" && schema.properties[prop].items && schema.properties[prop].items.type === "object") {
                 //need a new set of paths!
                 ret = ret.concat(this.determinePaths(singularPath, prop, childName, schema.properties[prop].items));
             }
 
-            if (schema.properties[prop].type === 'object') {
+            if (schema.properties[prop].type === "object") {
                 //need another new set of paths, without the identifiers though!
                 ret = ret.concat(this.determinePaths(singularPath, prop, childName, schema.properties[prop], true));
             }
@@ -987,25 +987,25 @@ typeInstance.prototype.determinePaths = function(parentPath, name, fullName, sch
 
 module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver) {
     if (!uuid) {
-        uuid = require('uuid/v4');
+        uuid = require("uuid/v4");
     }
 
     if (!ajv) {
-        ajv = require('ajv')({
+        ajv = require("ajv")({
             allErrors : true
         });
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     if (!jsonpath) {
-        jsonpath = require('jsonpath');
+        jsonpath = require("jsonpath");
     }
 
     if (!hostnameResolver) {
-        hostnameResolver = require('../../support.lib/hostnameResolver')();
+        hostnameResolver = require("../../support.lib/hostnameResolver")();
     }
 
     return new typeInstance(store, app, definition, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);

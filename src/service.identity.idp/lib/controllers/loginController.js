@@ -15,8 +15,8 @@ login.prototype.showLoginForm = function(req, res, next) {
             pageName = details.lastSubmission.prompt;
         }
 
-        //exit out if this interaction isn't for this page
-        if (pageName !== 'login') {
+        //exit out if this interaction isn"t for this page
+        if (pageName !== "login") {
             res.redirect(`/interaction/${req.params.uid}`);
             return;
         }
@@ -27,7 +27,7 @@ login.prototype.showLoginForm = function(req, res, next) {
             return;
         }
 
-        return res.render('login', {
+        return res.render("login", {
             authError           : details.lastSubmission && details.lastSubmission.login && details.lastSubmission.login.account === null ? true : false,
             usernameError       : details.lastSubmission && details.lastSubmission.username_error ? true : false,
             passwordError       : details.lastSubmission && details.lastSubmission.password_error ? true : false,
@@ -36,7 +36,7 @@ login.prototype.showLoginForm = function(req, res, next) {
             details             : details.prompt.details,
             params              : details.params,
             newAccount          : details.lastSubmission && details.lastSubmission.new_account,
-            title               : 'Sign-in',
+            title               : "Sign-in",
             registrationEnabled : this.clientHelper.registrationEnabled(client),
             resetEnabled        : this.clientHelper.resetEnabled(client),
         });
@@ -64,7 +64,7 @@ login.prototype.handleLogin = function(req, res, next) {
                     login : {
                         account : account.accountId
                     },
-                    prompt : 'terms'
+                    prompt : "terms"
                 }, { mergeWithLastSubmission: false });
             }
 
@@ -80,16 +80,16 @@ login.prototype.handleLogin = function(req, res, next) {
                     login : {
                         account : account.accountId
                     },
-                    prompt : 'password',
-                    password_error  : isBanned ? 'That password is not allowed - it has been banned.' : null,
+                    prompt : "password",
+                    password_error  : isBanned ? "That password is not allowed - it has been banned." : null,
                 }, { mergeWithLastSubmission : false });
             }
         }
 
         const result = {
             select_account: {},
-            username_error : typeof(req.body.login) === 'undefined' || req.body.login === null || req.body.login.replace(/ /g, '') === '',
-            password_error : typeof(req.body.password) === 'undefined' || req.body.password === null || req.body.password.replace(/ /g, '') === '',
+            username_error : typeof(req.body.login) === "undefined" || req.body.login === null || req.body.login.replace(/ /g, "") === "",
+            password_error : typeof(req.body.password) === "undefined" || req.body.password === null || req.body.password.replace(/ /g, "") === "",
             login: {
                 account : account && account.accountId ? account.accountId : null,
             },
@@ -105,15 +105,15 @@ login.prototype.handleLogin = function(req, res, next) {
 
 module.exports = function(provider, accountService, clientHelper, passwordHelper) {
     if (!accountService) {
-        accountService = require('../account')();
+        accountService = require("../account")();
     }
 
     if (!clientHelper) {
-        clientHelper = require('../helpers/clientHelper')();
+        clientHelper = require("../helpers/clientHelper")();
     }
 
     if (!passwordHelper) {
-        passwordHelper = require('../helpers/passwordHelper')();
+        passwordHelper = require("../helpers/passwordHelper")();
     }
 
     return new login(provider, accountService, clientHelper, passwordHelper);

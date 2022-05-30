@@ -1,18 +1,18 @@
 const
-    Provider 		    = require('oidc-provider'),
-    cors                = require('cors'),
-    clientProvider 	    = require('./lib/configProvider')(),
-    path 			    = require('path'),
-    set 			    = require('lodash/set'),
-    express 		    = require('express'),
-    bodyParser 		    = require('body-parser'),
-    routes 			    = require('./lib/routes'),
-    idm 			    = require('./lib/idm'),
-    hostnameResolver    = require('../support.lib/hostnameResolver')(),
-    passwordGrant       = require('./lib/passwordGrant')(),
-    sass                = require('express-compile-sass'),
-    hotreload           = require('../support.lib/hotReload')(),
-    rateLimit           = require('express-rate-limit');
+    Provider 		    = require("oidc-provider"),
+    cors                = require("cors"),
+    clientProvider 	    = require("./lib/configProvider")(),
+    path 			    = require("path"),
+    set 			    = require("lodash/set"),
+    express 		    = require("express"),
+    bodyParser 		    = require("body-parser"),
+    routes 			    = require("./lib/routes"),
+    idm 			    = require("./lib/idm"),
+    hostnameResolver    = require("../support.lib/hostnameResolver")(),
+    passwordGrant       = require("./lib/passwordGrant")(),
+    sass                = require("express-compile-sass"),
+    hotreload           = require("../support.lib/hotReload")(),
+    rateLimit           = require("express-rate-limit");
 
 const { PORT = 3000, ISSUER = `${hostnameResolver.resolveIdentity()}` } = process.env;
 let app = null;
@@ -24,7 +24,7 @@ const limiter = rateLimit({
 });
 
 if (!process.env.DIR) {
-    throw new Error('Require dir to load configuration from.');
+    throw new Error("Require dir to load configuration from.");
 }
 
 const startup = () => {
@@ -32,14 +32,14 @@ const startup = () => {
         app = express();
 
         app.use(limiter);
-        app.set('views', path.join(__dirname, 'views'));
-        app.set('view engine', 'ejs');
+        app.set("views", path.join(__dirname, "views"));
+        app.set("view engine", "ejs");
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended : false }));
         app.use(cors({
-            methods : 'GET,HEAD,PUT,PATCH,POST,DELETE'
+            methods : "GET,HEAD,PUT,PATCH,POST,DELETE"
         }));
-        app.use(express.static(path.join(__dirname, './static'), {}));
+        app.use(express.static(path.join(__dirname, "./static"), {}));
         app.use(sass({
             root: __dirname,
             sourceMap: true,
@@ -51,7 +51,7 @@ const startup = () => {
         clientProvider.fetchConfig(process.env.DIR, process.env.SECRET).then((config) => {
             const provider = new Provider(ISSUER, config);
 
-            provider.registerGrantType('password', passwordGrant, ['client_id', 'client_secret', 'username', 'password', 'scope'], []);
+            provider.registerGrantType("password", passwordGrant, ["client_id", "client_secret", "username", "password", "scope"], []);
             provider.proxy = true;
 
             //register our routes
@@ -67,7 +67,7 @@ const startup = () => {
                 console.log(`application is listening on port ${PORT}, check its /.well-known/openid-configuration`);
                 restarting = false;
             });
-            server.on('error', (err) => {
+            server.on("error", (err) => {
                 reject(err);
             });
         }).catch(reject);
@@ -79,7 +79,7 @@ const reload = () => {
         return new Promise((resolve, reject) => {
             restarting = true;
             if (server) {
-                console.log('Closing...');
+                console.log("Closing...");
                 server.close(() => {
                     startup().then(resolve).catch(reject);
                 });
@@ -92,6 +92,6 @@ const reload = () => {
 
 reload();
 
-hotreload.watch(process.env.DIR + '**/*.json', reload, () => {
+hotreload.watch(process.env.DIR + "**/*.json", reload, () => {
     restarting = false;
 });

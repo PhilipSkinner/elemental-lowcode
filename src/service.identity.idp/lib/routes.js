@@ -28,7 +28,7 @@ routes.prototype.addLayout = function(req, res, next) {
     res.render = (view, locals) => {
         this.app.render(view, locals, (err, html) => {
             if (err) throw err;
-            orig.call(res, '_layout', {
+            orig.call(res, "_layout", {
                 ...locals,
                 body: html,
             });
@@ -44,15 +44,15 @@ routes.prototype.errorHandler = function(err, req, res, next) {
         next(err);
     }
 
-    return res.render('error', {
+    return res.render("error", {
         error     : err,
-        title     : 'Error',
+        title     : "Error",
     });
 };
 
 routes.prototype.setNoCache = function(req, res, next) {
-    res.set('Pragma', 'no-cache');
-    res.set('Cache-Control', 'no-cache, no-store');
+    res.set("Pragma", "no-cache");
+    res.set("Cache-Control", "no-cache, no-store");
     next();
 };
 
@@ -61,35 +61,35 @@ routes.prototype.init = function() {
     this.app.use(this.addLayout.bind(this));
 
     //interaction spawn point
-    this.app.get('/interaction/:uid',            this.setNoCache.bind(this), this.interactionController.handleInteraction.bind(this.interactionController));
+    this.app.get("/interaction/:uid",            this.setNoCache.bind(this), this.interactionController.handleInteraction.bind(this.interactionController));
 
     //login routes
-    this.app.get('/interaction/:uid/login',      this.setNoCache.bind(this), this.loginController.showLoginForm.bind(this.loginController));
-    this.app.post('/interaction/:uid/login',     this.setNoCache.bind(this), this.loginController.handleLogin.bind(this.loginController));
+    this.app.get("/interaction/:uid/login",      this.setNoCache.bind(this), this.loginController.showLoginForm.bind(this.loginController));
+    this.app.post("/interaction/:uid/login",     this.setNoCache.bind(this), this.loginController.handleLogin.bind(this.loginController));
 
     //registration routes
-    this.app.get('/interaction/:uid/register',   this.setNoCache.bind(this), this.registerController.showRegistrationForm.bind(this.registerController));
-    this.app.post('/interaction/:uid/register',  this.setNoCache.bind(this), this.registerController.handleRegistration.bind(this.registerController));
+    this.app.get("/interaction/:uid/register",   this.setNoCache.bind(this), this.registerController.showRegistrationForm.bind(this.registerController));
+    this.app.post("/interaction/:uid/register",  this.setNoCache.bind(this), this.registerController.handleRegistration.bind(this.registerController));
 
     //consents
-    this.app.get('/interaction/:uid/consent',    this.setNoCache.bind(this), this.consentController.showConsent.bind(this.consentController));
-    this.app.post('/interaction/:uid/confirm',   this.setNoCache.bind(this), this.consentController.confirmConsent.bind(this.consentController));
+    this.app.get("/interaction/:uid/consent",    this.setNoCache.bind(this), this.consentController.showConsent.bind(this.consentController));
+    this.app.post("/interaction/:uid/confirm",   this.setNoCache.bind(this), this.consentController.confirmConsent.bind(this.consentController));
 
     //terms
-    this.app.get('/interaction/:uid/terms',      this.setNoCache.bind(this), this.termsController.showTermsForm.bind(this.termsController));
-    this.app.post('/interaction/:uid/terms',     this.setNoCache.bind(this), this.termsController.handleTerms.bind(this.termsController));
+    this.app.get("/interaction/:uid/terms",      this.setNoCache.bind(this), this.termsController.showTermsForm.bind(this.termsController));
+    this.app.post("/interaction/:uid/terms",     this.setNoCache.bind(this), this.termsController.handleTerms.bind(this.termsController));
 
     //password
-    this.app.get('/interaction/:uid/password',   this.setNoCache.bind(this), this.passwordController.showPasswordForm.bind(this.passwordController));
-    this.app.post('/interaction/:uid/password',  this.setNoCache.bind(this), this.passwordController.handlePassword.bind(this.passwordController));
-    this.app.get('/interaction/:uid/forgotten',  this.setNoCache.bind(this), this.passwordController.showForgottenPasswordForm.bind(this.passwordController));
-    this.app.post('/interaction/:uid/forgotten', this.setNoCache.bind(this), this.passwordController.sendVerificationEmail.bind(this.passwordController));
-    this.app.get('/interaction/:uid/code',       this.setNoCache.bind(this), this.passwordController.handleResetCode.bind(this.passwordController));
-    this.app.post('/interaction/:uid/code',      this.setNoCache.bind(this), this.passwordController.handleResetCode.bind(this.passwordController));
-    this.app.post('/interaction/:uid/reset',     this.setNoCache.bind(this), this.passwordController.resetPassword.bind(this.passwordController));
+    this.app.get("/interaction/:uid/password",   this.setNoCache.bind(this), this.passwordController.showPasswordForm.bind(this.passwordController));
+    this.app.post("/interaction/:uid/password",  this.setNoCache.bind(this), this.passwordController.handlePassword.bind(this.passwordController));
+    this.app.get("/interaction/:uid/forgotten",  this.setNoCache.bind(this), this.passwordController.showForgottenPasswordForm.bind(this.passwordController));
+    this.app.post("/interaction/:uid/forgotten", this.setNoCache.bind(this), this.passwordController.sendVerificationEmail.bind(this.passwordController));
+    this.app.get("/interaction/:uid/code",       this.setNoCache.bind(this), this.passwordController.handleResetCode.bind(this.passwordController));
+    this.app.post("/interaction/:uid/code",      this.setNoCache.bind(this), this.passwordController.handleResetCode.bind(this.passwordController));
+    this.app.post("/interaction/:uid/reset",     this.setNoCache.bind(this), this.passwordController.resetPassword.bind(this.passwordController));
 
     //abort
-    this.app.get('/interaction/:uid/abort',     this.setNoCache.bind(this), this.abortController.abortRequest.bind(this.abortController));
+    this.app.get("/interaction/:uid/abort",     this.setNoCache.bind(this), this.abortController.abortRequest.bind(this.abortController));
 
     //add our error handler
     this.app.use(this.errorHandler.bind(this));
@@ -107,31 +107,31 @@ module.exports = (
     passwordController
 ) => {
     if (!interactionController) {
-        interactionController = require('./controllers/interactionController')(provider);
+        interactionController = require("./controllers/interactionController")(provider);
     }
 
     if (!loginController) {
-        loginController = require('./controllers/loginController')(provider);
+        loginController = require("./controllers/loginController")(provider);
     }
 
     if (!registerController) {
-        registerController = require('./controllers/registerController')(provider);
+        registerController = require("./controllers/registerController")(provider);
     }
 
     if (!consentController) {
-        consentController = require('./controllers/consentController')(provider);
+        consentController = require("./controllers/consentController")(provider);
     }
 
     if (!abortController) {
-        abortController = require('./controllers/abortController')(provider);
+        abortController = require("./controllers/abortController")(provider);
     }
 
     if (!termsController) {
-        termsController = require('./controllers/termsController')(provider);
+        termsController = require("./controllers/termsController")(provider);
     }
 
     if (!passwordController) {
-        passwordController = require('./controllers/passwordController')(provider);
+        passwordController = require("./controllers/passwordController")(provider);
     }
 
     return new routes(

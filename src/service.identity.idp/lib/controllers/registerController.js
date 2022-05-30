@@ -16,20 +16,20 @@ register.prototype.showRegistrationForm = function(req, res, next) {
         if (!this.clientHelper.registrationEnabled(client)) {
             //not good, redirect back to login
             return this.provider.interactionFinished(req, res, {
-                prompt : 'login'
+                prompt : "login"
             }, {
                 mergeWithLastSubmission : false
             });
         }
 
-        return res.render('register', {
+        return res.render("register", {
             client          : client,
             uid             : details.uid,
             params          : details.params,
             details         : details.lastSubmission && details.lastSubmission.details ? details.lastSubmission.details : {},
             duplicate       : details.lastSubmission && details.lastSubmission.duplicate,
             passwordError   : details.lastSubmission ? details.lastSubmission.password_error : null,
-            title           : 'Register',
+            title           : "Register",
         });
     }).catch((err) => {
         next(err);
@@ -44,7 +44,7 @@ register.prototype.handleRegistration = function(req, res, next) {
         if (!this.clientHelper.registrationEnabled(client)) {
             //not good, redirect back to login
             return this.provider.interactionFinished(req, res, {
-                prompt : 'login'
+                prompt : "login"
             }, {
                 mergeWithLastSubmission : false
             });
@@ -54,11 +54,11 @@ register.prototype.handleRegistration = function(req, res, next) {
             username : req.body.login
         };
 
-        if (typeof(details.username) === 'undefined' || details.username === null || details.username.replace(/ /g, '') === '') {
+        if (typeof(details.username) === "undefined" || details.username === null || details.username.replace(/ /g, "") === "") {
             return this.provider.interactionFinished(req, res, {
                 select_account  : {},
-                prompt          : 'register',
-                password_error  : 'You must provide a username.',
+                prompt          : "register",
+                password_error  : "You must provide a username.",
                 details         : details,
                 login           : {
                     account : null,
@@ -71,8 +71,8 @@ register.prototype.handleRegistration = function(req, res, next) {
         if (!this.emailValidator.validate(details.username)) {
             return this.provider.interactionFinished(req, res, {
                 select_account  : {},
-                prompt          : 'register',
-                password_error  : 'You did not enter a correctly formatted email address.',
+                prompt          : "register",
+                password_error  : "You did not enter a correctly formatted email address.",
                 details         : details,
                 login           : {
                     account : null,
@@ -87,7 +87,7 @@ register.prototype.handleRegistration = function(req, res, next) {
         if (!this.passwordHelper.passwordStrongEnough(rules, req.body.password)) {
             return this.provider.interactionFinished(req, res, {
                 select_account  : {},
-                prompt          : 'register',
+                prompt          : "register",
                 password_error  : rules.error,
                 details         : details,
                 login           : {
@@ -102,8 +102,8 @@ register.prototype.handleRegistration = function(req, res, next) {
         if (this.passwordHelper.isBannedPassword(bannedPasswords, req.body.password)) {
             return this.provider.interactionFinished(req, res, {
                 select_account  : {},
-                prompt          : 'register',
-                password_error  : 'That password is not allowed - it has been banned.',
+                prompt          : "register",
+                password_error  : "That password is not allowed - it has been banned.",
                 details         : details,
                 login           : {
                     account : null,
@@ -118,7 +118,7 @@ register.prototype.handleRegistration = function(req, res, next) {
             if (!account) {
                 return this.provider.interactionFinished(req, res, {
                     select_account : {},
-                    prompt : 'register',
+                    prompt : "register",
                     details : details,
                     duplicate : true,
                     login : {
@@ -145,19 +145,19 @@ register.prototype.handleRegistration = function(req, res, next) {
 
 module.exports = function(provider, accountService, clientHelper, passwordHelper, emailValidator) {
     if (!accountService) {
-        accountService = require('../account')();
+        accountService = require("../account")();
     }
 
     if (!clientHelper) {
-        clientHelper = require('../helpers/clientHelper')();
+        clientHelper = require("../helpers/clientHelper")();
     }
 
     if (!passwordHelper) {
-        passwordHelper = require('../helpers/passwordHelper')();
+        passwordHelper = require("../helpers/passwordHelper")();
     }
 
     if (!emailValidator) {
-        emailValidator = require('email-validator');
+        emailValidator = require("email-validator");
     }
 
     return new register(provider, accountService, clientHelper, passwordHelper, emailValidator);

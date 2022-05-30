@@ -2,14 +2,14 @@ const clientHelper = function() {
     this.defaultPasswordRules = {
         max_length  : 999,
         min_length  : 6,
-        error       : 'Your password must be 6 characters long and must contain atleast 1 letter, 1 number and 1 symbol.',
+        error       : "Your password must be 6 characters long and must contain atleast 1 letter, 1 number and 1 symbol.",
         rules       : {
             alpha       : 1,
             numeric     : 1,
             symbols     : 1,
             mixed_case  : false
         },
-        validation_regex : '.*?'
+        validation_regex : ".*?"
     };
 
     this.defaultTotpSettings = {
@@ -17,7 +17,7 @@ const clientHelper = function() {
         window : 60
     };
 
-    this.defaultEmailAddress = 'noreply@lowcode.live';
+    this.defaultEmailAddress = "noreply@lowcode.live";
 };
 
 clientHelper.prototype.getFromEmailAddress = function(client) {

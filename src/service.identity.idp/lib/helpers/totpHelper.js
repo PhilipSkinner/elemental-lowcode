@@ -12,7 +12,7 @@ totpHelper.prototype.verifyTotp = function(string, code, settings) {
 
 module.exports = function(totpGenerator) {
     if (!totpGenerator) {
-        totpGenerator = require('notp').totp;
+        totpGenerator = require("notp").totp;
     }
 
     return new totpHelper(totpGenerator);

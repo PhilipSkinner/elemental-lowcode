@@ -1,17 +1,17 @@
 module.exports = function(db, bcrypt, uuid) {
     if (!db) {
-        db = require('../../support.lib/db')();
+        db = require("../../support.lib/db")();
     }
 
     if (!bcrypt) {
-        bcrypt = require('bcrypt');
+        bcrypt = require("bcrypt");
     }
 
     if (!uuid) {
-        uuid = require('uuid').v4;
+        uuid = require("uuid").v4;
     }
 
-    const userDB = new db('User');
+    const userDB = new db("User");
 
     class Account {
         constructor(username, profile) {
@@ -37,7 +37,7 @@ module.exports = function(db, bcrypt, uuid) {
         static async findByUsername(username) {
             const user = await userDB.findByUsername(username);
 
-            if (typeof(user) === 'undefined' || user === null) {
+            if (typeof(user) === "undefined" || user === null) {
                 return null;
             }
 
@@ -47,7 +47,7 @@ module.exports = function(db, bcrypt, uuid) {
         static async findByLogin(login, password) {
             const user = await userDB.findByUsername(login);
 
-            if (typeof(user) === 'undefined' || user === null) {
+            if (typeof(user) === "undefined" || user === null) {
                 return null;
             }
 
@@ -62,7 +62,7 @@ module.exports = function(db, bcrypt, uuid) {
         static async findAccount(ctx, id) {
             const user = await userDB.find(id);
 
-            if (user === null || typeof(user) === 'undefined') {
+            if (user === null || typeof(user) === "undefined") {
                 return null;
             }
 
@@ -84,7 +84,7 @@ module.exports = function(db, bcrypt, uuid) {
                     };
                 }
 
-                if (token.clientId && token.kind === 'ClientCredentials') {
+                if (token.clientId && token.kind === "ClientCredentials") {
                     //get the claims from the client
                     return clients.reduce((claims, client) => {
                         if (client.client_id === token.clientId) {
@@ -129,7 +129,7 @@ module.exports = function(db, bcrypt, uuid) {
         static async registerUser(username, password) {
             const user = await userDB.findByUsername(username);
 
-            if (typeof(user) !== 'undefined' && user !== null) {
+            if (typeof(user) !== "undefined" && user !== null) {
                 return null;
             }
 

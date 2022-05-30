@@ -22,16 +22,16 @@ consent.prototype.showConsent = function(req, res, next) {
                 login : {
                     account : account.accountId
                 },
-                prompt : 'terms'
+                prompt : "terms"
             });
         }
 
-        return res.render('consents', {
+        return res.render("consents", {
             client    : client,
             uid       : details.uid,
             details   : details.prompt.details,
             params    : details.params,
-            title     : 'Authorize',
+            title     : "Authorize",
         });
     }).catch((err) => {
         next(err);
@@ -42,8 +42,8 @@ consent.prototype.confirmConsent = function(req, res, next) {
     this.provider.interactionDetails(req, res).then((details) => {
         let pageName = details.prompt.name;
 
-        //exit out if this interaction isn't for this page
-        if (pageName !== 'consent') {
+        //exit out if this interaction isn"t for this page
+        if (pageName !== "consent") {
             res.redirect(`/interaction/${req.params.uid}`);
             return;
         }
@@ -63,11 +63,11 @@ consent.prototype.confirmConsent = function(req, res, next) {
 
 module.exports = function(provider, accountService, clientHelper) {
     if (!accountService) {
-        accountService = require('../account')();
+        accountService = require("../account")();
     }
 
     if (!clientHelper) {
-        clientHelper = require('../helpers/clientHelper')();
+        clientHelper = require("../helpers/clientHelper")();
     }
 
     return new consent(provider, accountService, clientHelper);

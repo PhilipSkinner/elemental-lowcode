@@ -9,37 +9,37 @@ interactionController.prototype.handleInteraction = function(req, res, next) {
             pageName = details.lastSubmission.prompt;
         }
 
-        if (pageName === 'login') {
+        if (pageName === "login") {
             res.redirect(`/interaction/${req.params.uid}/login`);
             return;
         }
 
-        if (pageName === 'register') {
+        if (pageName === "register") {
             res.redirect(`/interaction/${req.params.uid}/register`);
             return;
         }
 
-        if (pageName === 'consent') {
+        if (pageName === "consent") {
             res.redirect(`/interaction/${req.params.uid}/consent`);
             return;
         }
 
-        if (pageName === 'terms') {
+        if (pageName === "terms") {
             res.redirect(`/interaction/${req.params.uid}/terms`);
             return;
         }
 
-        if (pageName == 'password') {
+        if (pageName == "password") {
             res.redirect(`/interaction/${req.params.uid}/password`);
             return;
         }
 
-        if (pageName == 'forgotten') {
+        if (pageName == "forgotten") {
             res.redirect(`/interaction/${req.params.uid}/forgotten`);
             return;
         }
 
-        if (pageName == 'code') {
+        if (pageName == "code") {
             res.redirect(`/interaction/${req.params.uid}/code`);
             return;
         }
