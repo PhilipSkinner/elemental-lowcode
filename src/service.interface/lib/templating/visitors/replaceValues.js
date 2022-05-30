@@ -11,6 +11,10 @@ const replaceValues = function(dataResolver) {
 
 replaceValues.prototype.replace = function(view, data) {
     return view.map((tag) => {
+        if (typeof(tag) === "undefined" || tag === null) {
+            return tag;
+        }
+
         let scopedData = Object.assign(data, tag._scope && tag._scope.data ? tag._scope.data : {});
 
         if (tag && tag.replace) {

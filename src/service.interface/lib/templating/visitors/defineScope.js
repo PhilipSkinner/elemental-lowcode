@@ -6,6 +6,10 @@ const defineScope = function() {
 
 defineScope.prototype.traverse = function(tags) {
     return tags.map((tag) => {
+        if (typeof(tag) === "undefined" || tag === null) {
+            return tag;
+        }
+
         Object.keys(tag).forEach((prop) => {
             if (this.excluded.indexOf(prop) !== -1) {
                 return;

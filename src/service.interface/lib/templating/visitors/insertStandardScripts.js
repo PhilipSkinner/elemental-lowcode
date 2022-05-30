@@ -22,6 +22,10 @@ insertStandardScripts.prototype.traverse = function(object) {
         return object;
     } else {
         object.children = object.children && object.children.map ? object.children.map((child) => {
+            if (typeof(child) === "undefined" || child === null) {
+                return child;
+            }
+
             return this.traverse(child);
         }) : null;
     }
@@ -32,6 +36,10 @@ insertStandardScripts.prototype.traverse = function(object) {
 insertStandardScripts.prototype.apply = function(definition) {
     //find our body tag and insert the standard scripts
     definition.view = definition.view.map((tag) => {
+        if (typeof(tag) === "undefined" || tag === null) {
+            return tag;
+        }
+
         return this.traverse(tag);
     });
 

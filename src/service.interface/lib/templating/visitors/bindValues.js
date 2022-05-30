@@ -7,6 +7,10 @@ const bindValues = function() {
 
 bindValues.prototype.bindValues = function(view) {
     return view.map((tag) => {
+        if (typeof(tag) === "undefined" || tag === null) {
+            return tag;
+        }
+
         if (Array.isArray(tag)) {
             return this.bindValues(tag);
         }

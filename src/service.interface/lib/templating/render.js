@@ -3,6 +3,7 @@ const render = function(fs, path, preProcessor) {
     this.path = path;
     this.preProcessor = preProcessor;
     this.tabLevel = -1;
+    this.tabCharacter = "    ";
 
     this.invalidProperties = [
         "text",
@@ -192,6 +193,10 @@ render.prototype.handleTag = function(c, data) {
         });
     }
 
+    if (typeof(c) === "undefined" || c === null) {
+        return null;
+    }
+
     if (typeof(c.__display) !== "undefined" && c.__display === false) {
         return {
             start 		: "",
@@ -212,7 +217,7 @@ render.prototype.handleTag = function(c, data) {
                 typeof(text) === "undefined" || text === null
                     ? ""
                     : (
-                        c.tag === "textarea" ? "" : "\n" + this.generateTabs() + "\t"
+                        c.tag === "textarea" ? "" : "\n" + this.generateTabs() + this.tabCharacter
                     ) + text + (c.tag === "textarea" ? "" : "\n")
             )
 			+ this.renderChildren(c.children, data)
@@ -235,7 +240,7 @@ render.prototype.handleTag = function(c, data) {
 render.prototype.generateTabs = function() {
     var ret = "";
     for (var i = 0; i < this.tabLevel; i++) {
-        ret += "\t";
+        ret += this.tabCharacter;
     }
     return ret;
 };

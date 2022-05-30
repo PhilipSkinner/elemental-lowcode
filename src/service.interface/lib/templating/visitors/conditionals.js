@@ -52,6 +52,10 @@ conditionals.prototype.evaluate = function(ifStatement) {
 
 conditionals.prototype.restrict = function(view) {
     return view.map((tag) => {
+        if (typeof(tag) === "undefined" || tag === null) {
+            return tag;
+        }
+
         if (Array.isArray(tag)) {
             return this.restrict(tag);
         }
