@@ -6,7 +6,24 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
     this.timeout            = 3000;
     this.attempts           = 10;
 
+    this.simpleTypes = [
+        "string",
+        "boolean",
+        "integer",
+        "number",
+        "datetime",
+        "decimal"
+    ];
+
+    this.models = {};
+    this.tables = {};
+    this.simpleTables = {};
+    this.columnTableLookups = {};
+    this.mainTable = null;
+    this.isReady = false;
+
     if (this.connectionString === null || typeof(this.connectionString) === "undefined") {
+        this.isReady = true;
         return;
     }
 
@@ -34,22 +51,6 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
         },
         logging : false
     });
-
-    this.simpleTypes = [
-        "string",
-        "boolean",
-        "integer",
-        "number",
-        "datetime",
-        "decimal"
-    ];
-
-    this.models = {};
-    this.tables = {};
-    this.simpleTables = {};
-    this.columnTableLookups = {};
-    this.mainTable = null;
-    this.isReady = false;
 
     if (dialect === "sqlite") {
         this.connection.query("PRAGMA journal_mode=WAL;", {
@@ -114,6 +115,8 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
             allowNull 		: false,
         };
 
+        console.log(this);
+
         if (this.simpleTypes.indexOf(schemaConfig.type) !== -1) {
             columns.value = {
                 type 		: this.determineType(schemaConfig.type, schemaConfig.format),
@@ -141,6 +144,7 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
                     //is it our id?
                     if (propName === "id") {
                         columns[propName].primaryKey = true;
+                        columns[propName].allowNull = false;
 
                         if (schemaConfig.properties[propName].type === "string") {
                             columns[propName].type = this.sequelize.STRING(255);
@@ -270,7 +274,7 @@ sqlStore.prototype.convertToReturnValue = function(result, name) {
                 return this.getResources(c, 1, 9999, [
                     {
                         path : "$.parent",
-                        value : result.id
+                        value : result.id || ret.id
                     }
                 ]).then((values) => {
                     ret[this.columnTableLookups[c]] = values.map((v) => {
