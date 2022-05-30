@@ -10,7 +10,7 @@ environmentService.prototype.listEnvironmentVariables = function() {
     let ret = {};
 
     Object.keys(process.env).forEach((name) => {
-        if (name.indexOf('ELEMENTAL__ENV__') !== 0) {
+        if (name.indexOf("ELEMENTAL__ENV__") !== 0) {
             ret[name] = process.env[name];
         }
     });
@@ -26,8 +26,8 @@ environmentService.prototype.listSecrets = function() {
     let ret = {};
 
     Object.keys(process.env).forEach((name) => {
-        if (name.indexOf('ELEMENTAL__ENV__') === 0) {
-            ret[name.replace('ELEMENTAL__ENV__', '')] = process.env[name];
+        if (name.indexOf("ELEMENTAL__ENV__") === 0) {
+            ret[name.replace("ELEMENTAL__ENV__", "")] = process.env[name];
         }
     });
 

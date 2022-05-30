@@ -42,7 +42,7 @@ _dataController.prototype._deleteType = function(name) {
 };
 
 window.Data = {
-    template : '#template-dataTypes',
+    template : "#template-dataTypes",
     data 	 : () => {
         return window._dataControllerInstance.getData();
     },

@@ -24,63 +24,63 @@ const _websitesEditorController = function(page) {
     this.editor                     = null;
     this.activeRoute                = null;
     this.activeErrorHandler         = null;
-    this.tagSearchTerms             = '';
+    this.tagSearchTerms             = "";
     this.mainNavItems               = [
         {
-            name        : 'Config',
+            name        : "Config",
             event       : this.showConfig.bind(this),
             selected    : true
         },
         {
-            name        : 'Routes',
+            name        : "Routes",
             event       : this.showRoutes.bind(this),
             selected    : false
         },
         {
-            name        : 'Tags',
+            name        : "Tags",
             event       : this.showTags.bind(this),
             selected    : false
         },
         {
-            name        : 'Resources',
+            name        : "Resources",
             event       : this.showResources.bind(this),
             selected    : false
         },
         {
-            name        : 'Errors',
+            name        : "Errors",
             event       : this.showErrors.bind(this),
             selected    : false
         },
         {
-            name        : 'View',
+            name        : "View",
             event       : this.viewWebsite.bind(this),
             selected    : false
         }
     ];
     this.editorNavItems = [
         {
-            name        : 'Interface',
+            name        : "Interface",
             event       : this.showViewEditor.bind(this),
             selected    : true
         },
         {
-            name        : 'Source',
+            name        : "Source",
             event       : this.showViewSource.bind(this),
             selected    : false
         },
         {
-            name        : 'Controller',
+            name        : "Controller",
             event       : this.showControllerEditor.bind(this),
             selected    : false
         },
         {
-            name        : 'View',
+            name        : "View",
             event       : this.viewRoute.bind(this),
             selected    : false,
             visible     : this.isRouteSelected.bind(this)
         },
         {
-            name        : 'Handles',
+            name        : "Handles",
             event       : this.viewHandles.bind(this),
             selected    : false,
             visible     : this.isHandlerSelected.bind(this)
@@ -134,7 +134,7 @@ _websitesEditorController.prototype.showErrors = function() {
 };
 
 _websitesEditorController.prototype.viewWebsite = function() {
-    window.open(`${window.hosts.interface}/${this.website.name}/`, '_blank');
+    window.open(`${window.hosts.interface}/${this.website.name}/`, "_blank");
 };
 
 _websitesEditorController.prototype._resetEditorNavState = function() {
@@ -191,7 +191,7 @@ _websitesEditorController.prototype.viewHandles = function() {
 
 _websitesEditorController.prototype.viewRoute = function() {
     if (this.activeRoute && this.activeRoute.route) {
-        window.open(`${window.hosts.interface}/${this.website.name}${this.activeRoute.route}`, '_blank');
+        window.open(`${window.hosts.interface}/${this.website.name}${this.activeRoute.route}`, "_blank");
     }
 };
 
@@ -225,7 +225,7 @@ _websitesEditorController.prototype.wipeData = function() {
     this.tagSelected                = false;
     this.tagsets                    = {};
     this.filteredTagsets            = {};
-    this.tagSearchTerms             = '';
+    this.tagSearchTerms             = "";
     this._resetNavState();
     this._resetEditorNavState();
     this.mainNavItems[0].selected = true;
@@ -241,7 +241,7 @@ _websitesEditorController.prototype.filterTags = function(event) {
 };
 
 _websitesEditorController.prototype._filteredTagsets = function() {
-    if (this.tagSearchTerms.replace(/ /g, '') === '') {
+    if (this.tagSearchTerms.replace(/ /g, "") === "") {
         return this.tagsets;
     }
 
@@ -317,87 +317,87 @@ _websitesEditorController.prototype.getData = function() {
         errorCodes                          : [
             {
                 code : 400,
-                error : 'Bad Request'
+                error : "Bad Request"
             },
             {
                 code : 401,
-                error : 'Unauthorized'
+                error : "Unauthorized"
             },
             {
                 code : 402,
-                error : 'Payment Required'
+                error : "Payment Required"
             },
             {
                 code : 403,
-                error : 'Forbidden'
+                error : "Forbidden"
             },
             {
                 code : 404,
-                error : 'Not Found'
+                error : "Not Found"
             },
             {
                 code : 405,
-                error : 'Method Not Allowed'
+                error : "Method Not Allowed"
             },
             {
                 code : 406,
-                error : 'Not Acceptable'
+                error : "Not Acceptable"
             },
             {
                 code : 408,
-                error : 'Request Timeout'
+                error : "Request Timeout"
             },
             {
                 code : 409,
-                error : 'Conflict'
+                error : "Conflict"
             },
             {
                 code : 411,
-                error : 'Length Required'
+                error : "Length Required"
             },
             {
                 code : 412,
-                error : 'Precondition Failed'
+                error : "Precondition Failed"
             },
             {
                 code : 413,
-                error : 'Payload Too Large'
+                error : "Payload Too Large"
             },
             {
                 code : 414,
-                error : 'URI Too Long'
+                error : "URI Too Long"
             },
             {
                 code : 415,
-                error : 'Unsupported Media Type'
+                error : "Unsupported Media Type"
             },
             {
                 code : 417,
-                error : 'Expectation Failed'
+                error : "Expectation Failed"
             },
             {
                 code : 422,
-                error : 'Unprocessable Entity'
+                error : "Unprocessable Entity"
             },
             {
                 code : 429,
-                error : 'Too Many Requests'
+                error : "Too Many Requests"
             },
             {
                 code : 431,
-                error : 'Request Header Fields Too Large'
+                error : "Request Header Fields Too Large"
             },
             {
                 code : 500,
-                error : 'Internal Server Error'
+                error : "Internal Server Error"
             },
             {
                 code : 501,
-                error : 'Not Implemented'
+                error : "Not Implemented"
             },
             {
                 code : 505,
-                error : 'HTTP Version Not Supported'
+                error : "HTTP Version Not Supported"
             }
         ]
     };
@@ -413,20 +413,20 @@ _websitesEditorController.prototype.autoProvisionClient = function() {
 
     //generate a default client
     const client = {
-        'client_id': `interface-${this.website.name}-client`,
-        'client_secret': `${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}`,
-        'scope': 'openid roles offline_access',
-        'grants' : [
-            'client_credentials',
-            'authorization_code',
-            'refresh_token'
+        "client_id": `interface-${this.website.name}-client`,
+        "client_secret": `${window.generateGuid().split("-").reverse().join("")}${window.generateGuid().split("-").reverse().join("")}${window.generateGuid().split("-").reverse().join("")}`,
+        "scope": "openid roles offline_access",
+        "grants" : [
+            "client_credentials",
+            "authorization_code",
+            "refresh_token"
         ],
-        'redirect_uris': [
+        "redirect_uris": [
             `${window.hosts.interface}/${this.website.name}/_auth`
         ],
-        'features' : {
-            'registration' : {
-                'enabled' : false
+        "features" : {
+            "registration" : {
+                "enabled" : false
             }
         }
     };
@@ -435,7 +435,7 @@ _websitesEditorController.prototype.autoProvisionClient = function() {
     return window.axiosProxy
         .post(`${window.hosts.kernel}/security/clients`, JSON.stringify(client), {
             headers : {
-                'Content-Type' : 'application/json',
+                "Content-Type" : "application/json",
             }
         })
         .then((response) => {
@@ -452,26 +452,26 @@ _websitesEditorController.prototype.autoProvisionClient = function() {
 _websitesEditorController.prototype.initEditor = function(elem, type, value) {
     //set our editor up
     this.editor = window.ace.edit(document.getElementById(elem), {
-        mode : 'ace/mode/' + type,
-        selectionStyle : 'text'
+        mode : "ace/mode/" + type,
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.saveAll();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
     this.editor.setValue(value);
 };
 
 _websitesEditorController.prototype.saveResource = function(path, value) {
     return new Promise((resolve, reject) => {
-        if (typeof(value) === 'object') {
+        if (typeof(value) === "object") {
             value = JSON.stringify(value, null, 4);
         }
 
@@ -492,8 +492,8 @@ _websitesEditorController.prototype.saveWebsite = function() {
         this.website.tagset = this.caller.website.tagset;
         this.website.client_id = this.caller.website.client_id;
 
-        if (typeof(this.website.name) === 'undefined') {
-            return reject(new Error('Cannot save website without name'));
+        if (typeof(this.website.name) === "undefined") {
+            return reject(new Error("Cannot save website without name"));
         }
 
         //update our website routes
@@ -569,7 +569,7 @@ _websitesEditorController.prototype.showSource = function() {
     window.selectedTags = [];
     this.tagSelected = false;
     setTimeout(() => {
-        this.initEditor('viewEditor', 'json', this.resources[this.activeResource]);
+        this.initEditor("viewEditor", "json", this.resources[this.activeResource]);
         this.refreshState();
     }, 25);
 };
@@ -651,7 +651,7 @@ _websitesEditorController.prototype.editView = function(viewPath, skipState) {
         }
         var rawResource = resource;
 
-        if (typeof(resource) === 'object') {
+        if (typeof(resource) === "object") {
             rawResource = JSON.stringify(resource, null, 4);
         }
 
@@ -669,13 +669,13 @@ _websitesEditorController.prototype.findProps = function(obj, props) {
         return props;
     }
 
-    if (typeof(obj) === 'string') {
-        if (obj.indexOf('$.') !== -1) {
-            let parts = obj.split('$.');
+    if (typeof(obj) === "string") {
+        if (obj.indexOf("$.") !== -1) {
+            let parts = obj.split("$.");
             parts.forEach((p) => {
-                let name = p.split(' ')[0];
+                let name = p.split(" ")[0];
                 if (name) {
-                    props[name] = '';
+                    props[name] = "";
                 }
             });
         }
@@ -691,7 +691,7 @@ _websitesEditorController.prototype.findProps = function(obj, props) {
         return props;
     }
 
-    if (typeof(obj) === 'object') {
+    if (typeof(obj) === "object") {
         Object.keys(obj).forEach((k) => {
             props = this.findProps(obj[k], props);
         });
@@ -705,7 +705,7 @@ _websitesEditorController.prototype.findProps = function(obj, props) {
 
 _websitesEditorController.prototype.configureCustomTagset = function() {
     this.tagsets.Custom = {
-        name : 'Custom',
+        name : "Custom",
         tags : []
     };
 
@@ -728,7 +728,7 @@ _websitesEditorController.prototype.editController = function(path) {
     this.loadResource(path).then((resource) => {
         this.refreshState();
         setTimeout(() => {
-            this.initEditor('controllerEditor', 'javascript', resource);
+            this.initEditor("controllerEditor", "javascript", resource);
         }, 10);
     });
 };
@@ -906,7 +906,7 @@ _websitesEditorController.prototype.showSaveMessage = function() {
 };
 
 _websitesEditorController.prototype.newRoute = function() {
-    var name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+    var name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
 
     this.routes.push({
         route       : `/${name}`,
@@ -916,29 +916,29 @@ _websitesEditorController.prototype.newRoute = function() {
 
     //add our blank resources
     this.resources[`./view/${name}.json`] = JSON.stringify({
-        'tag' : 'html',
-        'children' : [
+        "tag" : "html",
+        "children" : [
             {
-                'tag' : 'head',
-                'children' : []
+                "tag" : "head",
+                "children" : []
             },
             {
-                'tag' : 'body',
-                'children' : []
+                "tag" : "body",
+                "children" : []
             }
         ]
     }, null, 4);
     this.resources[`./controllers/${name}.js`] = [
-        'module.exports = {',
-        '   events : {',
-        '       load : function(event) {},',
-        '   }',
-        '}'
-    ].join('\n');
+        "module.exports = {",
+        "   events : {",
+        "       load : function(event) {},",
+        "   }",
+        "}"
+    ].join("\n");
 };
 
 _websitesEditorController.prototype.newTag = function() {
-    var name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+    var name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
 
     this.tags.push({
         name        : name,
@@ -947,18 +947,18 @@ _websitesEditorController.prototype.newTag = function() {
     });
 
     this.resources[`./view/${name}.json`] = JSON.stringify({
-        'tag' : 'div',
-        'children' : [
+        "tag" : "div",
+        "children" : [
 
         ]
     }, null, 4);
     this.resources[`./controllers/${name}.js`] = [
-        'module.exports = {',
-        '   events : {',
-        '       load : function(event) {},',
-        '   }',
-        '}'
-    ].join('\n');
+        "module.exports = {",
+        "   events : {",
+        "       load : function(event) {},",
+        "   }",
+        "}"
+    ].join("\n");
 };
 
 _websitesEditorController.prototype.newStaticFile = function() {
@@ -973,7 +973,7 @@ _websitesEditorController.prototype.closeUploader = function() {
 
 _websitesEditorController.prototype.uploadResource = function() {
     var formData = new FormData();
-    var imagefile = document.querySelector('#file');
+    var imagefile = document.querySelector("#file");
 
     return window.getBase64(imagefile.files[0]).then((file) => {
         return window.axiosProxy.post(`${window.hosts.kernel}/websites/${this.website.name}/staticfiles`, {
@@ -981,7 +981,7 @@ _websitesEditorController.prototype.uploadResource = function() {
             name : imagefile.files[0].name
         }, {
             headers: {
-                'Content-Type' : 'application/json',
+                "Content-Type" : "application/json",
             }
         }).then(() => {
             this.newResourceVisible = false;
@@ -1016,8 +1016,8 @@ _websitesEditorController.prototype._removeResource = function(filename) {
 };
 
 _websitesEditorController.prototype.setDroppableConfig = function(event) {
-    const groupName = event.target.attributes['data-group'].value;
-    const tagName = event.target.attributes['data-tag'].value;
+    const groupName = event.target.attributes["data-group"].value;
+    const tagName = event.target.attributes["data-tag"].value;
 
     let config = {};
     window._websitesEditorControllerInstance.tagsets[groupName].tags.forEach((t) => {
@@ -1026,7 +1026,7 @@ _websitesEditorController.prototype.setDroppableConfig = function(event) {
         }
     });
 
-    event.dataTransfer.setData('text', JSON.stringify(config));
+    event.dataTransfer.setData("text", JSON.stringify(config));
 };
 
 _websitesEditorController.prototype.clearProperties = function() {
@@ -1035,22 +1035,22 @@ _websitesEditorController.prototype.clearProperties = function() {
 };
 
 _websitesEditorController.prototype.isExpression = function(val) {
-    return typeof(val) !== 'undefined' && val !== null && !Array.isArray(val) && val.indexOf && val.indexOf('$.') !== -1;
+    return typeof(val) !== "undefined" && val !== null && !Array.isArray(val) && val.indexOf && val.indexOf("$.") !== -1;
 };
 
 _websitesEditorController.prototype.setAsExpression = function(prop) {
-    this.activeProperties[prop] = '$.';
+    this.activeProperties[prop] = "$.";
     this.refreshState();
 };
 
 _websitesEditorController.prototype.unsetAsExpression = function(prop) {
-    this.activeProperties[prop] = '';
+    this.activeProperties[prop] = "";
     this.refreshState();
 };
 
 _websitesEditorController.prototype.ensureArray = function(prop) {
     if (!Array.isArray(this.caller.activeProperties[prop])) {
-        if (!(typeof(this.caller.activeProperties[prop]) === 'undefined' || this.caller.activeProperties[prop] === null)) {
+        if (!(typeof(this.caller.activeProperties[prop]) === "undefined" || this.caller.activeProperties[prop] === null)) {
             this.caller.activeProperties[prop] = [this.caller.activeProperties[prop]];
         } else {
             this.caller.activeProperties[prop] = [];
@@ -1064,12 +1064,12 @@ _websitesEditorController.prototype.addToArray = function(prop) {
     this.activeProperties = this.caller.activeProperties;
 
     if (Array.isArray(this.activeProperties[prop])) {
-        this.activeProperties[prop].push('');
+        this.activeProperties[prop].push("");
     } else {
-        if (!(typeof(this.activeProperties[prop]) === 'undefined' || this.activeProperties[prop] === null)) {
+        if (!(typeof(this.activeProperties[prop]) === "undefined" || this.activeProperties[prop] === null)) {
             this.activeProperties[prop] = [this.activeProperties[prop]];
         } else {
-            this.activeProperties[prop] = [''];
+            this.activeProperties[prop] = [""];
         }
     }
 
@@ -1115,7 +1115,7 @@ _websitesEditorController.prototype.setProperties = function(properties) {
 
     if (remaining.length > 0) {
         this.activeDefinition.propertyGroups.push({
-            name : 'Other Properties',
+            name : "Other Properties",
             properties : remaining
         });
     }
@@ -1141,7 +1141,7 @@ _websitesEditorController.prototype.keyDownHandler = function(event) {
  */
 
 _websitesEditorController.prototype.newErrorHandler = function() {
-    var name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+    var name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
 
     this.errorhandlers.push({
         name        : name,
@@ -1152,25 +1152,25 @@ _websitesEditorController.prototype.newErrorHandler = function() {
 
     //add our blank resources
     this.resources[`./view/${name}.json`] = JSON.stringify({
-        'tag' : 'html',
-        'children' : [
+        "tag" : "html",
+        "children" : [
             {
-                'tag' : 'head',
-                'children' : []
+                "tag" : "head",
+                "children" : []
             },
             {
-                'tag' : 'body',
-                'children' : []
+                "tag" : "body",
+                "children" : []
             }
         ]
     }, null, 4);
     this.resources[`./controllers/${name}.js`] = [
-        'module.exports = {',
-        '   events : {',
-        '       load : function(event) {},',
-        '   }',
-        '}'
-    ].join('\n');
+        "module.exports = {",
+        "   events : {",
+        "       load : function(event) {},",
+        "   }",
+        "}"
+    ].join("\n");
 
     this.refreshState();
 };
@@ -1240,23 +1240,23 @@ _websitesEditorController.prototype.removeHandlerCode = function(name, code) {
  */
 
 window.WebsiteEditor = {
-    template : '#template-websiteEditor',
+    template : "#template-websiteEditor",
     data     : () => {
         return window._websitesEditorControllerInstance.getData();
     },
     mounted  : function() {
         window._websitesEditorControllerInstance.wipeData();
 
-        document.removeEventListener('keydown', window._websitesEditorControllerInstance.keyDownHandler);
-        document.addEventListener('keydown', window._websitesEditorControllerInstance.keyDownHandler);
+        document.removeEventListener("keydown", window._websitesEditorControllerInstance.keyDownHandler);
+        document.addEventListener("keydown", window._websitesEditorControllerInstance.keyDownHandler);
 
-        if (this.$route.params.name === '.new') {
+        if (this.$route.params.name === ".new") {
             return window._websitesEditorControllerInstance.fetchClients(this).then(() => {
                 //fetch our basic tagset
-                return window._websitesEditorControllerInstance.fetchTagset('basic');
+                return window._websitesEditorControllerInstance.fetchTagset("basic");
             }).then(() => {
                 //fetch our global properties
-                return window._websitesEditorControllerInstance.fetchProperties('global');
+                return window._websitesEditorControllerInstance.fetchProperties("global");
             }).then(() => {
                 //fetch our user defined tagsets
                 return window._websitesEditorControllerInstance.fetchTagsets();
@@ -1269,10 +1269,10 @@ window.WebsiteEditor = {
             return window._websitesEditorControllerInstance.fetchStaticFiles(this, this.$route.params.name);
         }).then(() => {
             //fetch our basic tagset
-            return window._websitesEditorControllerInstance.fetchTagset('basic');
+            return window._websitesEditorControllerInstance.fetchTagset("basic");
         }).then(() => {
             //fetch our global properties
-            return window._websitesEditorControllerInstance.fetchProperties('global');
+            return window._websitesEditorControllerInstance.fetchProperties("global");
         }).then(() => {
             //fetch our predefined tagset
             let tagset = window._websitesEditorControllerInstance.website.tagset;
@@ -1288,7 +1288,7 @@ window.WebsiteEditor = {
         });
     },
     destroyed : function() {
-        document.removeEventListener('keydown', window._websitesEditorControllerInstance.keyDownHandler);
+        document.removeEventListener("keydown", window._websitesEditorControllerInstance.keyDownHandler);
         window._websitesEditorControllerInstance.wipeData();
     }
 };
@@ -1297,14 +1297,14 @@ window.selectedTags = [];
 
 function resolveValue(path, data) {
     let current = data;
-    let parts = path.replace('$.', '').split('.');
+    let parts = path.replace("$.", "").split(".");
     parts.forEach((p) => {
         if (current) {
             current = current[p];
         }
     });
 
-    if (typeof(current) === 'undefined') {
+    if (typeof(current) === "undefined") {
         return path;
     }
 
@@ -1312,7 +1312,7 @@ function resolveValue(path, data) {
 }
 
 function detectValues(string, data) {
-    if (!string || !string.indexOf || string.indexOf('$.') === -1) {
+    if (!string || !string.indexOf || string.indexOf("$.") === -1) {
         return string;
     }
 
@@ -1338,7 +1338,7 @@ function detectValues(string, data) {
     }
 
     replacements.forEach((r) => {
-        if (typeof(r.rep) === 'object') {
+        if (typeof(r.rep) === "object") {
             string = r.rep;
         } else {
             string = string.replace(r.val, r.rep);
@@ -1358,12 +1358,12 @@ function renderTag(tag, scope, expandChildren) {
 
     Object.keys(tag).forEach((k) => {
         if (
-            ['text', 'tag', 'onclick', 'children', 'repeat', 'submit', 'bind', '_scope', 'if'].indexOf(k) === -1
-            && (['link', 'script'].indexOf(tag) === -1 && ['href', 'src'].indexOf(k) === -1)
+            ["text", "tag", "onclick", "children", "repeat", "submit", "bind", "_scope", "if"].indexOf(k) === -1
+            && (["link", "script"].indexOf(tag) === -1 && ["href", "src"].indexOf(k) === -1)
         ) {
             let value = detectValues(tag[k], scope);
 
-            if (!(typeof(value) === 'undefined' || value === null)) {
+            if (!(typeof(value) === "undefined" || value === null)) {
                 if (value === true) {
                     parts.push(` ${k}="${k}" `);
                 }
@@ -1377,7 +1377,7 @@ function renderTag(tag, scope, expandChildren) {
 
     if (tag.text) {
         needsEnd = true;
-        parts.push('>');
+        parts.push(">");
         if (Array.isArray(tag.text)) {
             parts = parts.concat(tag.text.map((t) => {
                 return detectValues(t, scope);
@@ -1390,7 +1390,7 @@ function renderTag(tag, scope, expandChildren) {
     if (tag.children && expandChildren) {
         if (!needsEnd) {
             needsEnd = true;
-            parts.push('>');
+            parts.push(">");
         }
 
         tag.children.forEach((child) => {
@@ -1398,25 +1398,25 @@ function renderTag(tag, scope, expandChildren) {
         });
     }
 
-    if (needsEnd || ['textarea'].indexOf(tagName) !== -1) {
+    if (needsEnd || ["textarea"].indexOf(tagName) !== -1) {
         if (!needsEnd) {
-            parts.push('>');
+            parts.push(">");
         }
 
         parts.push(`</${tagName}>`);
     } else {
-        parts.push('/>');
+        parts.push("/>");
     }
 
-    return parts.join('');
+    return parts.join("");
 }
 
 window._websiteDragData = {};
 
-window.Vue.component('tagsection', {
-    template : '#template-tagSection',
+window.Vue.component("tagsection", {
+    template : "#template-tagSection",
     props : [
-        'tag'
+        "tag"
     ],
     data : function() {
         let ret = {
@@ -1474,7 +1474,7 @@ window.Vue.component('tagsection', {
                     thisTag : thisTag
                 };
 
-                event.dataTransfer.setData('text', depId);
+                event.dataTransfer.setData("text", depId);
             }
 
             event.stopPropagation();
@@ -1604,9 +1604,9 @@ window.Vue.component('tagsection', {
             event.stopPropagation();
             ret.droppable = false;
 
-            let config = JSON.parse(event.dataTransfer.getData('text'));
+            let config = JSON.parse(event.dataTransfer.getData("text"));
 
-            if (typeof(config) === 'number') {
+            if (typeof(config) === "number") {
                 let depId = config + 1 - 1;
                 config = window._websiteDragData[config];
                 let newChildren = [];
@@ -1629,7 +1629,7 @@ window.Vue.component('tagsection', {
                     newTag = config.view;
                 }
 
-                if (typeof(config.properties) !== 'undefined' && config.properties !== null) {
+                if (typeof(config.properties) !== "undefined" && config.properties !== null) {
                     Object.keys(config.properties).forEach((prop) => {
                         newTag[prop] = null;
                     });

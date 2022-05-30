@@ -1,7 +1,7 @@
 const _servicesEditorController = function(page) {
     this._page = page;
     this.service = {};
-    this.serviceName = '';
+    this.serviceName = "";
     this.caller = null;
     this.name = null;
     this.editor = null;
@@ -19,26 +19,26 @@ const _servicesEditorController = function(page) {
 
 _servicesEditorController.prototype.initEditor = function() {
     //set our editor up
-    this.editor = window.ace.edit(document.getElementById('serviceEditor'), {
-        mode : 'ace/mode/javascript',
-        selectionStyle : 'text'
+    this.editor = window.ace.edit(document.getElementById("serviceEditor"), {
+        mode : "ace/mode/javascript",
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.saveService();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
 };
 
 _servicesEditorController.prototype.initBlankType = function() {
-    this.serviceName = '';
-    this.caller.serviceName = '';
+    this.serviceName = "";
+    this.caller.serviceName = "";
     this.isNew = true;
     this.caller.isNew = true;
 
@@ -92,7 +92,7 @@ _servicesEditorController.prototype.saveService = function() {
                 payload : this.editor.getValue()
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 }
             })
             .then((response) => {
@@ -106,7 +106,7 @@ _servicesEditorController.prototype.saveService = function() {
                 }, 1500);
             }).catch((err) => {
                 this.data.error.visible = true;
-                this.data.error.title = 'Error saving service';
+                this.data.error.title = "Error saving service";
                 this.data.error.description = err.toString();
 
                 this.caller.error = this.getData().error;
@@ -119,12 +119,12 @@ _servicesEditorController.prototype.saveService = function() {
                 payload : this.editor.getValue()
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 }
             })
             .then((response) => {
                 //set our name
-                location.href = '/#/services/editor/' + this.serviceName;
+                location.href = "/#/services/editor/" + this.serviceName;
 
                 this.data.error.visible = false;
                 this.caller.showAlert = true;
@@ -136,7 +136,7 @@ _servicesEditorController.prototype.saveService = function() {
                 }, 1500);
             }).catch((err) => {
                 this.data.error.visible = true;
-                this.data.error.title = 'Error saving service';
+                this.data.error.title = "Error saving service";
                 this.data.error.description = err.toString();
 
                 this.caller.error = this.getData().error;
@@ -147,14 +147,14 @@ _servicesEditorController.prototype.saveService = function() {
 };
 
 window.ServicesEditor = {
-    template : '#template-servicesEditor',
+    template : "#template-servicesEditor",
     data 	 : () => {
         return _servicesEditorInstance.getData();
     },
     mounted  : function() {
         window._servicesEditorInstance.setCaller(this);
         window._servicesEditorInstance.initEditor();
-        if (this.$route.params.name === '.new') {
+        if (this.$route.params.name === ".new") {
             window._servicesEditorInstance.initBlankType();
             return null;
         }

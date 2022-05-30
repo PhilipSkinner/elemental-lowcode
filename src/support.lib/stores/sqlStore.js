@@ -6,13 +6,13 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
     this.timeout            = 3000;
     this.attempts           = 10;
 
-    if (this.connectionString === null || typeof(this.connectionString) === 'undefined') {
+    if (this.connectionString === null || typeof(this.connectionString) === "undefined") {
         return;
     }
 
-    let dialect = this.connectionString.split(':')[0].toLowerCase();
+    let dialect = this.connectionString.split(":")[0].toLowerCase();
     let dialectOptions = {
-        collate : 'utf8_general_ci',
+        collate : "utf8_general_ci",
     };
 
     this.connection = new this.sequelize(this.connectionString, {
@@ -28,7 +28,7 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
         },
         define 	: {
             freezeTableName	: true,
-            charset 		: this.connectionString.indexOf('postgres://') !== -1 ? 'utf-8' : 'utf8',
+            charset 		: this.connectionString.indexOf("postgres://") !== -1 ? "utf-8" : "utf8",
             dialectOptions 	: dialectOptions,
             timestamps 		: false
         },
@@ -36,12 +36,12 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
     });
 
     this.simpleTypes = [
-        'string',
-        'boolean',
-        'integer',
-        'number',
-        'datetime',
-        'decimal'
+        "string",
+        "boolean",
+        "integer",
+        "number",
+        "datetime",
+        "decimal"
     ];
 
     this.models = {};
@@ -51,8 +51,8 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
     this.mainTable = null;
     this.isReady = false;
 
-    if (dialect === 'sqlite') {
-        this.connection.query('PRAGMA journal_mode=WAL;', {
+    if (dialect === "sqlite") {
+        this.connection.query("PRAGMA journal_mode=WAL;", {
             logging: console.log,
             raw: true
         });
@@ -64,19 +64,19 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
 };
 
 sqlStore.prototype.determineType = function(type, format) {
-    if (type === 'boolean') {
+    if (type === "boolean") {
         return this.sequelize.BOOLEAN;
     }
 
-    if (type === 'integer') {
+    if (type === "integer") {
         return this.sequelize.INTEGER;
     }
 
-    if (type === 'number' || type === 'decimal') {
+    if (type === "number" || type === "decimal") {
         return this.sequelize.DECIMAL;
     }
 
-    if (type === 'string' && format === 'date-time') {
+    if (type === "string" && format === "date-time") {
         return this.sequelize.DATE;
     }
 
@@ -88,7 +88,7 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
     let normalisedBaseName = this._normalizedTableName(baseName);
     let normalisedOriginalName = this._normalizedTableName(originalName);
 
-    if (schemaConfig.type === 'object' || this.simpleTypes.indexOf(schemaConfig.type) !== -1) {
+    if (schemaConfig.type === "object" || this.simpleTypes.indexOf(schemaConfig.type) !== -1) {
         //add our ID
         columns.id = {
             primaryKey 		: true,
@@ -103,7 +103,7 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
                 allowNull 	: true,
                 references 	: {
                     model 	: parentName,
-                    key 	: 'id'
+                    key 	: "id"
                 }
             };
         }
@@ -139,10 +139,10 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
                     };
 
                     //is it our id?
-                    if (propName === 'id') {
+                    if (propName === "id") {
                         columns[propName].primaryKey = true;
 
-                        if (schemaConfig.properties[propName].type === 'string') {
+                        if (schemaConfig.properties[propName].type === "string") {
                             columns[propName].type = this.sequelize.STRING(255);
                         }
                     }
@@ -157,7 +157,7 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
         tables[normalisedBaseName] = columns;
     }
 
-    if (schemaConfig.type === 'array') {
+    if (schemaConfig.type === "array") {
         tables = this.determineTables(`${normalisedBaseName}`, schemaConfig.items, tables, parentName, originalName);
     }
 
@@ -167,7 +167,7 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
 sqlStore.prototype.initType = function() {
     return new Promise((resolve, reject) => {
         //generate our list of tables and columns
-        this.tables = this.determineTables(this.config.name, this.config.schema, {}, '', this.config.name);
+        this.tables = this.determineTables(this.config.name, this.config.schema, {}, "", this.config.name);
 
         const models = [];
         Object.keys(this.tables).forEach((name) => {
@@ -183,10 +183,10 @@ sqlStore.prototype.initType = function() {
                 let parentModel = this.models[this._normalizedTableName(this.tables[name].parent.references.model)];
 
                 parentModel.hasMany(childModel, {
-                    foreignKey : 'parent'
+                    foreignKey : "parent"
                 });
                 childModel.belongsTo(parentModel, {
-                    foreignKey : 'id'
+                    foreignKey : "id"
                 });
             }
         });
@@ -220,7 +220,7 @@ sqlStore.prototype.getDetails = function(type, parent, attempts) {
             return Promise.resolve(null);
         }
 
-        if (typeof(attempts) === 'undefined' || attempts === null) {
+        if (typeof(attempts) === "undefined" || attempts === null) {
             attempts = 0;
         }
 
@@ -256,7 +256,7 @@ sqlStore.prototype.convertToReturnValue = function(result, name) {
         let ret = {};
         Object.keys(result.dataValues).forEach((val) => {
             if (val.indexOf(`${result._modelOptions.name.singular}_`) === 0) {
-                ret[val.replace(`${result._modelOptions.name.singular}_`, '')] = JSON.parse(JSON.stringify(result.dataValues[val])).map((r) => {
+                ret[val.replace(`${result._modelOptions.name.singular}_`, "")] = JSON.parse(JSON.stringify(result.dataValues[val])).map((r) => {
                     return r;
                 });
             } else {
@@ -269,7 +269,7 @@ sqlStore.prototype.convertToReturnValue = function(result, name) {
             return Promise.all(this.simpleTables[name].children.map((c) => {
                 return this.getResources(c, 1, 9999, [
                     {
-                        path : '$.parent',
+                        path : "$.parent",
                         value : result.id
                     }
                 ]).then((values) => {
@@ -292,7 +292,7 @@ sqlStore.prototype.getResources = function(type, start, count, filters, orders, 
             return Promise.resolve(null);
         }
 
-        if (typeof(attempts) === 'undefined' || attempts === null) {
+        if (typeof(attempts) === "undefined" || attempts === null) {
             attempts = 0;
         }
 
@@ -316,7 +316,7 @@ sqlStore.prototype.getResources = function(type, start, count, filters, orders, 
 
     if (filters && filters.forEach) {
         filters.forEach((f) => {
-            if (typeof(f.value) === 'object' && f.value !== null) {
+            if (typeof(f.value) === "object" && f.value !== null) {
                 //composite values
                 if (f.value.fields) {
                     let q = [];
@@ -326,7 +326,7 @@ sqlStore.prototype.getResources = function(type, start, count, filters, orders, 
                         q.push(qn);
 
                     });
-                    if (f.value.operator === 'or') {
+                    if (f.value.operator === "or") {
                         where[this.sequelize.Op.or] = q;
                     } else {
                         where[this.sequelize.Op.and] = q;
@@ -368,7 +368,7 @@ sqlStore.prototype.getResource = function(type, id, attempts) {
             return Promise.resolve(null);
         }
 
-        if (typeof(attempts) === 'undefined' || attempts === null) {
+        if (typeof(attempts) === "undefined" || attempts === null) {
             attempts = 1;
         }
 
@@ -379,13 +379,13 @@ sqlStore.prototype.getResource = function(type, id, attempts) {
         });
     }
 
-    if (typeof(id) === 'undefined' || id === null) {
+    if (typeof(id) === "undefined" || id === null) {
         return Promise.resolve(null);
     }
 
     return this.getResources(type, 1, 1, [
         {
-            path  : '$.id',
+            path  : "$.id",
             value : id
         }
     ]).then((results) => {
@@ -417,7 +417,7 @@ sqlStore.prototype.saveResource = function(name, data, id, parentId) {
 
     return new Promise((resolve, reject) => {
         if (!id) {
-            if (typeof(data.id) === 'undefined' || data.id === null) {
+            if (typeof(data.id) === "undefined" || data.id === null) {
                 data.id = this.uuid();
             }
 
@@ -476,7 +476,7 @@ sqlStore.prototype.createResource = function(type, id, data, attempts) {
             return Promise.resolve(null);
         }
 
-        if (typeof(attempts) === 'undefined' || attempts === null) {
+        if (typeof(attempts) === "undefined" || attempts === null) {
             attempts = 1;
         }
 
@@ -487,7 +487,7 @@ sqlStore.prototype.createResource = function(type, id, data, attempts) {
         });
     }
 
-    //we ignore the ids here, we don't care for the auto-generated ones
+    //we ignore the ids here, we don"t care for the auto-generated ones
     let newResource = null;
     data.id = id;
 
@@ -495,8 +495,8 @@ sqlStore.prototype.createResource = function(type, id, data, attempts) {
         newResource = _newResource;
         return Promise.resolve(newResource.dataValues);
     }).catch((err) => {
-        if (err && (err.original && err.original.code === 'ER_DUP_ENTRY' || (err.fields && err.fields.indexOf('id') === 0))) {
-            return Promise.reject(new Error('Resource already exists'));
+        if (err && (err.original && err.original.code === "ER_DUP_ENTRY" || (err.fields && err.fields.indexOf("id") === 0))) {
+            return Promise.reject(new Error("Resource already exists"));
         }
 
         return Promise.reject(err);
@@ -509,7 +509,7 @@ sqlStore.prototype.updateResource = function(type, id, data, parentId, attempts)
             return Promise.resolve(null);
         }
 
-        if (typeof(attempts) === 'undefined' || attempts === null) {
+        if (typeof(attempts) === "undefined" || attempts === null) {
             attempts = 1;
         }
 
@@ -532,7 +532,7 @@ sqlStore.prototype.deleteResource = function(type, id, attempts) {
             return Promise.resolve(null);
         }
 
-        if (typeof(attempts) === 'undefined' || attempts === null) {
+        if (typeof(attempts) === "undefined" || attempts === null) {
             attempts = 1;
         }
 
@@ -560,11 +560,11 @@ module.exports = function(connectionString, typeConfig, sequelize, uuid) {
     }
 
     if (!sequelize) {
-        sequelize = require('sequelize');
+        sequelize = require("sequelize");
     }
 
     if (!uuid) {
-        uuid = require('uuid/v4');
+        uuid = require("uuid/v4");
     }
 
     return new sqlStore(connectionString, typeConfig, sequelize, uuid);

@@ -6,12 +6,12 @@ const _securityScopeEditorController = function(page) {
     this.currentClaim = null;
     this.navitems = [
         {
-            name        : 'Form',
+            name        : "Form",
             event       : this.showForm.bind(this),
             selected    : this.formVisible,
         },
         {
-            name        : 'Editor',
+            name        : "Editor",
             event       : this.showEditor.bind(this),
             selected    : this.editorVisible,
         }
@@ -21,14 +21,14 @@ const _securityScopeEditorController = function(page) {
     };
     this.showAlert = false;
     this.defaultScope = {
-        name : 'my-scope',
+        name : "my-scope",
         claims : [
-            'claim1',
-            'claim2'
+            "claim1",
+            "claim2"
         ]
     };
     this.scope = {
-        name : '',
+        name : "",
         claims : []
     };
 };
@@ -92,21 +92,21 @@ _securityScopeEditorController.prototype.showEditor = function() {
 
 _securityScopeEditorController.prototype.initEditor = function() {
     //set our editor up
-    this.editor = window.ace.edit(document.getElementById('scopeEditor'), {
-        mode : 'ace/mode/json',
-        selectionStyle : 'text'
+    this.editor = window.ace.edit(document.getElementById("scopeEditor"), {
+        mode : "ace/mode/json",
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.save();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
 };
 
 _securityScopeEditorController.prototype.initBlankType = function() {
@@ -184,7 +184,7 @@ _securityScopeEditorController.prototype.save = function() {
         return window.axiosProxy
             .put(`${window.hosts.kernel}/security/scopes/${this.name}`, data, {
                 headers : {
-                    'Content-Type' : 'application/json',
+                    "Content-Type" : "application/json",
                 }
             })
             .then((response) => {
@@ -199,7 +199,7 @@ _securityScopeEditorController.prototype.save = function() {
             }).catch((err) => {
                 this.error = {
                     visible : true,
-                    title : 'Error saving scope',
+                    title : "Error saving scope",
                     description : err.toString()
                 };                
 
@@ -209,7 +209,7 @@ _securityScopeEditorController.prototype.save = function() {
         return window.axiosProxy
             .post(`${window.hosts.kernel}/security/scopes`, data, {
                 headers : {
-                    'Content-Type' : 'application/json',
+                    "Content-Type" : "application/json",
                 }
             })
             .then((response) => {
@@ -226,7 +226,7 @@ _securityScopeEditorController.prototype.save = function() {
             }).catch((err) => {
                 this.error = {
                     visible : true,
-                    title : 'Error saving scope',
+                    title : "Error saving scope",
                     description : err.toString()
                 };
                 
@@ -236,14 +236,14 @@ _securityScopeEditorController.prototype.save = function() {
 };
 
 window.SecurityScopeEditor = {
-    template : '#template-securityScopeEditor',
+    template : "#template-securityScopeEditor",
     data 	 : () => {
         return window._securityScopeEditorControllerInstance.getData();
     },
     mounted  : function() {
         window._securityScopeEditorControllerInstance.setCaller(this);
         window._securityScopeEditorControllerInstance.initEditor();
-        if (this.$route.params.name === '.new') {
+        if (this.$route.params.name === ".new") {
             window._securityScopeEditorControllerInstance.initBlankType();
             return null;
         }

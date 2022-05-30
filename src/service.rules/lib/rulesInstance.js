@@ -44,16 +44,16 @@ rulesInstance.prototype.executeRules = function(req, res) {
 rulesInstance.prototype.init = function() {
     return new Promise((resolve) => {
         let execRoles = [
-            'system_admin',
-            'system_exec',
-            'rules_exec',
+            "system_admin",
+            "system_exec",
+            "rules_exec",
             `${this.definition.name}_exec`
         ];
 
         if (this.definition.roles) {
             if (this.definition.roles.replace) {
                 if (this.definition.roles.replace.exec) {
-                    execRoles = ['system_admin'];
+                    execRoles = ["system_admin"];
                 }
             }
 
@@ -76,17 +76,17 @@ rulesInstance.prototype.init = function() {
 
 module.exports = function(app, definition, ajv, comparitorService, roleCheckHandler) {
     if (!ajv) {
-        ajv = require('ajv')({
+        ajv = require("ajv")({
             allErrors : true
         });
     }
 
     if (!comparitorService) {
-        comparitorService = require('./comparitorService')();
+        comparitorService = require("./comparitorService")();
     }
 
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     return new rulesInstance(app, definition, ajv, comparitorService, roleCheckHandler);

@@ -4,27 +4,27 @@ const apiProxyHandler = function(hostMappings, refreshingTokenSessionStore, requ
     this.request = request;
 
     this.headerBlacklist = [
-        'host',
-        'connection',
-        'cache-control',
-        'pragma',
-        'max-forwards',
-        'referer',
-        'x-forward-to',
-        'x-forward-path',
-        'sec-fetch-dest',
-        'sec-fetch-mode',
-        'sec-fetch-site',
-        'x-waws-unencoded-url',
-        'x-arr-log-id',
-        'disguised-host',
-        'x-site-deployment-id',
-        'was-default-hostname',
-        'x-original-url',
-        'x-arr-ssl',
-        'x-forwarded-proto',
-        'x-appservice-proto',
-        'x-forwarded-tlsversion'
+        "host",
+        "connection",
+        "cache-control",
+        "pragma",
+        "max-forwards",
+        "referer",
+        "x-forward-to",
+        "x-forward-path",
+        "sec-fetch-dest",
+        "sec-fetch-mode",
+        "sec-fetch-site",
+        "x-waws-unencoded-url",
+        "x-arr-log-id",
+        "disguised-host",
+        "x-site-deployment-id",
+        "was-default-hostname",
+        "x-original-url",
+        "x-arr-ssl",
+        "x-forwarded-proto",
+        "x-appservice-proto",
+        "x-forwarded-tlsversion"
     ];
 };
 
@@ -36,8 +36,8 @@ apiProxyHandler.prototype.addTokens = function(res, tokens) {
         tokens.refresh_token
     );
 
-    res.clearCookie('session');
-    res.cookie('session', sessionId);
+    res.clearCookie("session");
+    res.cookie("session", sessionId);
 };
 
 apiProxyHandler.prototype.determineHostname = function(service) {
@@ -53,7 +53,7 @@ apiProxyHandler.prototype.getRoles = function(oauthProvider, scope) {
                 return;
             }
 
-            const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+            const payload = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
 
             let roles = [];
 
@@ -73,11 +73,11 @@ apiProxyHandler.prototype.getRoles = function(oauthProvider, scope) {
 };
 
 apiProxyHandler.prototype.rawBodyHandler = function(req, res, next) {
-    var data = '';
-    req.on('data', function(chunk) {
+    var data = "";
+    req.on("data", function(chunk) {
         data += chunk;
     });
-    req.on('end', function() {
+    req.on("end", function() {
         req.rawBody = data;
         next();
     });
@@ -98,10 +98,10 @@ apiProxyHandler.prototype.handler = function(oauthProvider, scope) {
                     outgoingHeaders[k] = req.headers[k];
                 }
             });
-            outgoingHeaders['Authorization'] = `Bearer ${token}`;
+            outgoingHeaders["Authorization"] = `Bearer ${token}`;
 
             //now we construct and send our request
-            this.request[req.method.toLowerCase()](`${this.determineHostname(req.headers['x-forward-to'])}${req.headers['x-forward-path']}`, {
+            this.request[req.method.toLowerCase()](`${this.determineHostname(req.headers["x-forward-to"])}${req.headers["x-forward-path"]}`, {
                 headers : outgoingHeaders,
                 body : req.rawBody,
                 encoding: null
@@ -127,11 +127,11 @@ apiProxyHandler.prototype.handler = function(oauthProvider, scope) {
 
 module.exports = function(hostMappings, refreshingTokenSessionStore, request) {
     if (!refreshingTokenSessionStore) {
-        refreshingTokenSessionStore = require('./refreshingTokenSessionStore')();
+        refreshingTokenSessionStore = require("./refreshingTokenSessionStore")();
     }
 
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     return new apiProxyHandler(hostMappings, refreshingTokenSessionStore, request);

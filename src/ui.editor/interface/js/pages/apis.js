@@ -41,7 +41,7 @@ _apisController.prototype._deleteApi = function(name) {
 };
 
 window.Apis = {
-    template : '#template-apis',
+    template : "#template-apis",
     data 	 : () => {
         return window._apisControllerInstance.getData();
     },

@@ -2,7 +2,7 @@ const _integrationDetailController = function(page) {
     this._page = page;
     this.caller = null;
     this.integration = {
-        method : '',
+        method : "",
         roles : {
             needsRole : false
         },
@@ -48,17 +48,17 @@ _integrationDetailController.prototype.forceRefresh = function() {
 _integrationDetailController.prototype.setNavItems = function() {
     this.navitems = [
         {
-            name            : 'Documentation',
+            name            : "Documentation",
             selected        : true,
-            route_name      : 'integrationDetails',
+            route_name      : "integrationDetails",
             route_params    : {
                 name : this.name
             }
         },
         {
-            name            : 'Modify',
+            name            : "Modify",
             selected        : false,
-            route_name      : 'integrationEditor',
+            route_name      : "integrationEditor",
             route_params    : {
                 name : this.name
             }
@@ -82,7 +82,7 @@ _integrationDetailController.prototype.fetchType = function(name) {
 };
 
 window.IntegrationDetails = {
-    template : '#template-integrationDetails',
+    template : "#template-integrationDetails",
     data 	 : () => {
         return window._integrationDetailInstance.getData();
     },

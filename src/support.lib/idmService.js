@@ -20,7 +20,7 @@ idmService.prototype._getToken = function(authToken) {
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     });
 };
 
@@ -40,7 +40,7 @@ idmService.prototype.getUsers = function(authToken) {
                     try {
                         return resolve(JSON.parse(body));
                     } catch(e) {
-                        return reject(new Error('Invalid JSON response'));
+                        return reject(new Error("Invalid JSON response"));
                     }
                 }
 
@@ -57,7 +57,7 @@ idmService.prototype.registerUser = function(user, authToken) {
                 body : JSON.stringify(user),
                 headers : {
                     Authorization 	: `Bearer ${token}`,
-                    'content-type' 	: 'application/json'
+                    "content-type" 	: "application/json"
                 }
             }, (err, res) => {
                 if (err) {
@@ -67,9 +67,9 @@ idmService.prototype.registerUser = function(user, authToken) {
                 if (res.statusCode === 201) {
                     let id = null;
                     try {
-                        id = res.headers.location.split('/').slice(-1)[0];
+                        id = res.headers.location.split("/").slice(-1)[0];
                     } catch(e) {
-                        return reject(new Error('Could not parse location header'));
+                        return reject(new Error("Could not parse location header"));
                     }
 
                     return this.getUser(id, authToken).then(resolve).catch(reject);
@@ -97,7 +97,7 @@ idmService.prototype.getUser = function(user, authToken) {
                     try {
                         return resolve(JSON.parse(body));
                     } catch(e) {
-                        return reject(new Error('Invalid JSON response'));
+                        return reject(new Error("Invalid JSON response"));
                     }
                 }
 
@@ -118,7 +118,7 @@ idmService.prototype.updateUser = function(username, password, claims, authToken
                 }),
                 headers : {
                     Authorization : `Bearer ${token}`,
-                    'content-type' : 'application/json'
+                    "content-type" : "application/json"
                 }
             }, (err, res) => {
                 if (err) {
@@ -143,13 +143,13 @@ idmService.prototype.createClient = function(client_id, client_secret, grant_typ
                     client_id : client_id,
                     client_secret : client_secret,
                     grant_types : grant_types,
-                    scope : scopes.join(' '),
+                    scope : scopes.join(" "),
                     redirect_uris : redirect_uris,
                     post_logout_redirect_uris : post_logout_redirect_uris
                 }),
                 headers : {
                     Authorization : `Bearer ${token}`,
-                    'content-type' : 'application/json'
+                    "content-type" : "application/json"
                 }
             }, (err, res) => {
                 if (err) {
@@ -168,11 +168,11 @@ idmService.prototype.createClient = function(client_id, client_secret, grant_typ
 
 module.exports = function(request, hostnameResolver) {
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     if (!hostnameResolver) {
-        hostnameResolver = require('./hostnameResolver')();
+        hostnameResolver = require("./hostnameResolver")();
     }
 
     return new idmService(request, hostnameResolver);

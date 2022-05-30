@@ -55,7 +55,7 @@ _apiDetailsController.prototype.fetchApi = function(name) {
 };
 
 window.apiDetails = {
-    template : '#template-api-details',
+    template : "#template-api-details",
     data 	 : () => {
         return window._apiDetailsControllerInstance.getData();
     },

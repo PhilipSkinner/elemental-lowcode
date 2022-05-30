@@ -4,14 +4,14 @@ const comparitorService = function() {
 
 comparitorService.prototype.resolveValue = function(path, data) {
     let current = data;
-    let parts = path.replace('$.', '').split('.');
+    let parts = path.replace("$.", "").split(".");
     parts.forEach((p) => {
         if (current) {
             current = current[p];
         }
     });
 
-    if (typeof(current) === 'undefined') {
+    if (typeof(current) === "undefined") {
         return path;
     }
 
@@ -22,43 +22,43 @@ comparitorService.prototype.evaluateComparison = function(facts, comparison) {
     //find the value
     var sourceValue = this.resolveValue(comparison.input, facts);
 
-    if (comparison.operator === 'eq') {
+    if (comparison.operator === "eq") {
         return sourceValue === comparison.value;
     }
 
-    if (comparison.operator === 'ne') {
+    if (comparison.operator === "ne") {
         return sourceValue !== comparison.value;
     }
 
-    if (comparison.operator === 'contains') {
+    if (comparison.operator === "contains") {
         return sourceValue.indexOf(comparison.value) !== -1;
     }
 
-    if (comparison.operator === 'does not contain') {
+    if (comparison.operator === "does not contain") {
         return sourceValue.indexOf(comparison.value) === -1;
     }
 
-    if (comparison.operator === 'gt') {
+    if (comparison.operator === "gt") {
         return sourceValue > comparison.value;
     }
 
-    if (comparison.operator === 'gte') {
+    if (comparison.operator === "gte") {
         return sourceValue >= comparison.value;
     }
 
-    if (comparison.operator === 'lt') {
+    if (comparison.operator === "lt") {
         return sourceValue < comparison.value;
     }
 
-    if (comparison.operator === 'lte') {
+    if (comparison.operator === "lte") {
         return sourceValue <= comparison.value;
     }
 
-    if (comparison.operator === 'is null') {
+    if (comparison.operator === "is null") {
         return sourceValue === null;
     }
 
-    if (comparison.operator === 'is not null') {
+    if (comparison.operator === "is not null") {
         return sourceValue !== null;
     }
 

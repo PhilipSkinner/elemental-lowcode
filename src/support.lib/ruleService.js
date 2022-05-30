@@ -19,13 +19,13 @@ ruleService.prototype.callRuleset = function(name, facts, authToken) {
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     }).then((token) => {
         return new Promise((resolve, reject) => {
             this.request.post(`${this.hostnameResolver.resolveRules()}/${name}`, {
                 body : JSON.stringify(facts),
                 headers : {
-                    'content-type' : 'application/json',
+                    "content-type" : "application/json",
                     Authorization : `Bearer ${token}`
                 }
             }, (err, res, body) => {
@@ -41,7 +41,7 @@ ruleService.prototype.callRuleset = function(name, facts, authToken) {
                 try {
                     result = JSON.parse(body);
                 } catch(e) {
-                    return reject(new Error('Invalid response received from ruleset call'));
+                    return reject(new Error("Invalid response received from ruleset call"));
                 }
 
                 return resolve(result);
@@ -52,11 +52,11 @@ ruleService.prototype.callRuleset = function(name, facts, authToken) {
 
 module.exports = function(request, hostnameResolver) {
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     if (!hostnameResolver) {
-        hostnameResolver = require('./hostnameResolver')();
+        hostnameResolver = require("./hostnameResolver")();
     }
 
     return new ruleService(request, hostnameResolver);

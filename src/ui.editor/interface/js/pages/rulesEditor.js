@@ -25,28 +25,28 @@ _rulesEditorController.prototype.setLoaded = function() {
 
 _rulesEditorController.prototype.initEditor = function() {
     //set our editor up
-    this.editor = window.ace.edit(document.getElementById('ruleEditor'), {
-        mode : 'ace/mode/json',
-        selectionStyle : 'text'
+    this.editor = window.ace.edit(document.getElementById("ruleEditor"), {
+        mode : "ace/mode/json",
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.saveRule();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
 };
 
 _rulesEditorController.prototype.initBlankType = function() {
     this.name = null;
 
     this.ruleset = {
-        name : 'untitled',
+        name : "untitled",
         roles : {
             replace : {
                 exec : false
@@ -57,10 +57,10 @@ _rulesEditorController.prototype.initBlankType = function() {
             }
         },
         facts : {
-            type : 'object',
+            type : "object",
             properties : {
                 value : {
-                    type : 'string'
+                    type : "string"
                 }
             }
         },
@@ -68,12 +68,12 @@ _rulesEditorController.prototype.initBlankType = function() {
             {
                 comparitors : [
                     {
-                        input : '$.value',
-                        operator : 'eq',
-                        value : 'hello'
+                        input : "$.value",
+                        operator : "eq",
+                        value : "hello"
                     }
                 ],
-                output : 'world'
+                output : "world"
             }
         ]
     };
@@ -115,17 +115,17 @@ _rulesEditorController.prototype.forceRefresh = function() {
 _rulesEditorController.prototype.setNavItems = function() {
     this.navitems = [
         {
-            name            : 'Documentation',
+            name            : "Documentation",
             selected        : false,
-            route_name      : 'rulesetDetails',
+            route_name      : "rulesetDetails",
             route_params    : {
                 name : this.name
             }
         },
         {
-            name            : 'Modify',
+            name            : "Modify",
             selected        : true,
-            route_name      : 'rulesetEditor',
+            route_name      : "rulesetEditor",
             route_params    : {
                 name : this.name
             }
@@ -160,7 +160,7 @@ _rulesEditorController.prototype.saveRule = function() {
         return window.axiosProxy
             .put(`${window.hosts.kernel}/rules/${this.name}`, this.editor.getValue(), {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 }
             })
             .then((response) => {
@@ -168,7 +168,7 @@ _rulesEditorController.prototype.saveRule = function() {
                 this.showAlert = true;
 
                 if (this.name !== this.ruleset.name) {
-                    location.href = '/#/rulesets/editor/' + this.ruleset.name;
+                    location.href = "/#/rulesets/editor/" + this.ruleset.name;
                     this.name = this.ruleset.name;
                     this.setNavItems();
                 }
@@ -183,7 +183,7 @@ _rulesEditorController.prototype.saveRule = function() {
             }).catch((err) => {
                 this.error = {
                     visible     : true,
-                    title       : 'Error saving ruleset',
+                    title       : "Error saving ruleset",
                     description : err.toString(),
                 };
 
@@ -194,13 +194,13 @@ _rulesEditorController.prototype.saveRule = function() {
         return window.axiosProxy
             .post(`${window.hosts.kernel}/rules`, this.editor.getValue(), {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 }
             })
             .then((response) => {
                 //set our name
                 this.name = parsed.name;
-                location.href = '/#/rulesets/editor/' + this.name;
+                location.href = "/#/rulesets/editor/" + this.name;
                 this.setNavItems();
 
                 this.error.visible = false;
@@ -215,7 +215,7 @@ _rulesEditorController.prototype.saveRule = function() {
             }).catch((err) => {
                 this.error = {
                     visible     : true,
-                    title       : 'Error saving ruleset',
+                    title       : "Error saving ruleset",
                     description : err.toString(),
                 };
 
@@ -226,13 +226,13 @@ _rulesEditorController.prototype.saveRule = function() {
 };
 
 window.RulesEditor = {
-    template : '#template-rulesEditor',
+    template : "#template-rulesEditor",
     data 	 : () => {
         return _rulesEditorInstance.getData();
     },
     mounted  : function() {
         window._rulesEditorInstance.initEditor();
-        if (this.$route.params.name === '.new') {
+        if (this.$route.params.name === ".new") {
             window._rulesEditorInstance.initBlankType();
             return null;
         }

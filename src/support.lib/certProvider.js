@@ -5,15 +5,15 @@ const certProvider = function(crypto, fs, path) {
 };
 
 certProvider.prototype._generateKeypair = function() {
-    return this.crypto.generateKeyPairSync('rsa', {
+    return this.crypto.generateKeyPairSync("rsa", {
         modulusLength: 2048,
         publicKeyEncoding: {
-            type: 'spki',
-            format: 'pem'
+            type: "spki",
+            format: "pem"
         },
         privateKeyEncoding: {
-            type: 'pkcs8',
-            format: 'pem'
+            type: "pkcs8",
+            format: "pem"
         }
     });
 };
@@ -25,13 +25,13 @@ certProvider.prototype._fetchSigningKeypair = function() {
     };
 
     try {
-        ret.privateKey = this.fs.readFileSync(this.path.join(process.cwd(), 'signing-private.key')).toString('utf8');
+        ret.privateKey = this.fs.readFileSync(this.path.join(process.cwd(), "signing-private.key")).toString("utf8");
     } catch(e) {
         ret.privateKey = null;
     }
 
     try {
-        ret.publicKey = this.fs.readFileSync(this.path.join(process.cwd(), 'signing-public.key')).toString('utf8');
+        ret.publicKey = this.fs.readFileSync(this.path.join(process.cwd(), "signing-public.key")).toString("utf8");
     } catch(e) {
         ret.publicKey = null;
     }
@@ -40,8 +40,8 @@ certProvider.prototype._fetchSigningKeypair = function() {
         ret = this._generateKeypair();
 
         //and persist
-        this.fs.writeFileSync(this.path.join(process.cwd(), 'signing-private.key'), ret.privateKey);
-        this.fs.writeFileSync(this.path.join(process.cwd(), 'signing-public.key'), ret.publicKey);
+        this.fs.writeFileSync(this.path.join(process.cwd(), "signing-private.key"), ret.privateKey);
+        this.fs.writeFileSync(this.path.join(process.cwd(), "signing-public.key"), ret.publicKey);
     }
 
     return ret;
@@ -57,15 +57,15 @@ certProvider.prototype.fetchPrivateSigningKey = function() {
 
 module.exports = function(crypto, fs, path) {
     if (!crypto) {
-        crypto = require('crypto');
+        crypto = require("crypto");
     }
 
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     return new certProvider(crypto, fs, path);

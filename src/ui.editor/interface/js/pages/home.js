@@ -8,16 +8,16 @@ const _homeController = function(page) {
     this.apis = [];
     this.navItems = [
         {
-            name : 'Home',
+            name : "Home",
             selected : true,
-            link : '/#/',
-            target : ''
+            link : "/#/",
+            target : ""
         },
         {
-            name : 'Monitor',
+            name : "Monitor",
             selected : false,
-            link : '/#/monitor',
-            target : ''
+            link : "/#/monitor",
+            target : ""
         }
     ];
 };
@@ -106,7 +106,7 @@ _homeController.prototype.refresh = function() {
 };
 
 window.Home = {
-    template : '#template-home',
+    template : "#template-home",
     data 	 : () => {
         return window._homeControllerInstance.getData();
     },

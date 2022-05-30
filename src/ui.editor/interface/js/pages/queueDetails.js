@@ -31,7 +31,7 @@ _queueDetailController.prototype.fetchQueue = function(name) {
 };
 
 window.QueueDetails = {
-    template : '#template-queueDetails',
+    template : "#template-queueDetails",
     data 	 : () => {
         return window._queueDetailInstance.getData();
     },

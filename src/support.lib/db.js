@@ -9,14 +9,14 @@ const db = function(fs, path, glob, sqlStore, dataResolver, environmentService) 
     this.environmentService   = environmentService;
 
     try {
-        this.mainConfig = JSON.parse(this.fs.readFileSync(this.path.join(process.env.DIR, 'main.json')));
+        this.mainConfig = JSON.parse(this.fs.readFileSync(this.path.join(process.env.DIR, "main.json")));
     } catch(e) {
         this.mainConfig = {};
     }
 
     if (process.env.MYSQL_CONNECTION_STRING) {
         this.mainConfig = {
-            storageEngine: 'sql',
+            storageEngine: "sql",
             connectionString: process.env.MYSQL_CONNECTION_STRING
         };
     }
@@ -24,7 +24,7 @@ const db = function(fs, path, glob, sqlStore, dataResolver, environmentService) 
 
 db.prototype.generateModel = function(name) {
     //needs to be sync for first time runs
-    const definition = JSON.parse(this.fs.readFileSync(this.path.join(__dirname, 'types', `${name}.json`)));
+    const definition = JSON.parse(this.fs.readFileSync(this.path.join(__dirname, "types", `${name}.json`)));
 
     //now determine the storage engine
     let engine = null;
@@ -98,7 +98,7 @@ db.prototype.generateClass = function() {
             }
 
             return this.model.engine.createResource(this.name, id, resource).catch((err) => {
-                if (err.toString().indexOf('Resource already exists') !== -1) {
+                if (err.toString().indexOf("Resource already exists") !== -1) {
                     return this.model.engine.updateResource(this.name, id, resource);
                 }
 
@@ -163,7 +163,7 @@ db.prototype.generateClass = function() {
 
             const found = await this.model.engine.getResources(this.name, 1, 1, [
                 {
-                    path : '$.username',
+                    path : "$.username",
                     value : username
                 }
             ]);
@@ -197,7 +197,7 @@ db.prototype.generateClass = function() {
 
             const found = await this.model.engine.getResources(this.name, 1, 1, [
                 {
-                    path : '$.userCode',
+                    path : "$.userCode",
                     value : userCode
                 }
             ]);
@@ -231,7 +231,7 @@ db.prototype.generateClass = function() {
 
             const found = await this.model.engine.getResources(this.name, 1, 1, [
                 {
-                    path : '$.uid',
+                    path : "$.uid",
                     value : uid
                 }
             ]);
@@ -292,7 +292,7 @@ db.prototype.generateClass = function() {
 
             const found = this.model.engine.getResources(this.name, 1, 1, [
                 {
-                    path : '$.grantId',
+                    path : "$.grantId",
                     value : grantId
                 }
             ]);
@@ -314,27 +314,27 @@ db.prototype.generateClass = function() {
 
 module.exports = function(fs, path, glob, sqlStore, dataResolver, environmentService) {
     if (!fs) {
-        fs = require('fs');
+        fs = require("fs");
     }
 
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!glob) {
-        glob = require('glob');
+        glob = require("glob");
     }
 
     if (!sqlStore) {
-        sqlStore = require('./stores/sqlStore');
+        sqlStore = require("./stores/sqlStore");
     }
 
     if (!dataResolver) {
-        dataResolver = require('./dataResolver')();
+        dataResolver = require("./dataResolver")();
     }
 
     if (!environmentService) {
-        environmentService = require('./environmentService')();
+        environmentService = require("./environmentService")();
     }
 
     const instance = new db(fs, path, glob, sqlStore, dataResolver, environmentService);

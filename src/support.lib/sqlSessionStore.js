@@ -1,23 +1,23 @@
-const util = require('util');
+const util = require("util");
 
 const sqlSessionStore = function(connectionString, siteName, sqlStore) {
     this.connectionString = connectionString;
     this.name = `${siteName}__sessions`;
     this.tableDefinition = {
-        'name' : this.name,
-        'keys' : [
+        "name" : this.name,
+        "keys" : [
             {
-                'type' : 'unique',
-                'paths' : [
-                    '$.id'
+                "type" : "unique",
+                "paths" : [
+                    "$.id"
                 ]
             }
         ],
-        'schema' : {
-            'type' : 'object',
-            'properties' : {
-                'session' : {
-                    'type' : 'string'
+        "schema" : {
+            "type" : "object",
+            "properties" : {
+                "session" : {
+                    "type" : "string"
                 }
             }
         }
@@ -38,22 +38,22 @@ sqlSessionStore.prototype.all = function(cb) {
 
 sqlSessionStore.prototype.destroy = function(sid, cb) {
     this.sqlStore.deleteResource(this.name, sid).then(() => {
-        if (cb && typeof(cb) === 'function') {
+        if (cb && typeof(cb) === "function") {
             cb();
         }
     }).catch((err) => {
-        if (cb && typeof(cb) === 'function') {
+        if (cb && typeof(cb) === "function") {
             cb(err);
         }
     });
 };
 
 sqlSessionStore.prototype.clear = function(cb) {
-    cb(new Error('Not implemented'));
+    cb(new Error("Not implemented"));
 };
 
 sqlSessionStore.prototype.length = function(cb) {
-    cb(new Error('Not implemented'));
+    cb(new Error("Not implemented"));
 };
 
 sqlSessionStore.prototype.get = function(sid, cb) {
@@ -74,7 +74,7 @@ sqlSessionStore.prototype.set = function(sid, session, cb) {
     }).then(() => {
         cb();
     }).catch((err) => {
-        if (err.toString().indexOf('Resource already exists') !== -1) {
+        if (err.toString().indexOf("Resource already exists") !== -1) {
             this.sqlStore.updateResource(this.name, sid, {
                 session : JSON.stringify(session)
             }).then(() => {
@@ -94,7 +94,7 @@ sqlSessionStore.prototype.touch = function(sid, session, cb) {
 
 module.exports = function(session, connectionString, siteName, sqlStore) {
     if (!sqlStore) {
-        sqlStore = require('./stores/sqlStore');
+        sqlStore = require("./stores/sqlStore");
     }
 
     if (session) {

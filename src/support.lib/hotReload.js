@@ -19,7 +19,7 @@ hotReload.prototype.attemptLaunch = function(cb, onFail) {
 };
 
 hotReload.prototype.pauseBeforeAttempt = function(cb, onFail) {
-    console.error('Issue with starting service, attempting to restart in 500ms...');
+    console.error("Issue with starting service, attempting to restart in 500ms...");
     setTimeout(() => {
         onFail();
         this.attemptLaunch(cb, onFail);
@@ -28,12 +28,12 @@ hotReload.prototype.pauseBeforeAttempt = function(cb, onFail) {
 
 hotReload.prototype.watch = function(dir, cb, onFail) {
     //setup our unhandled rejection handler
-    process.on('unhandledRejection', (err) => {
+    process.on("unhandledRejection", (err) => {
         console.error(err);
         this.pauseBeforeAttempt(cb, onFail, err);
     });
 
-    this.chokidar.watch(dir).on('all', () => {
+    this.chokidar.watch(dir).on("all", () => {
         clearTimeout(this.debounce);
         this.debounce = setTimeout(() => {
             this.attemptLaunch(cb, onFail);
@@ -43,7 +43,7 @@ hotReload.prototype.watch = function(dir, cb, onFail) {
 
 module.exports = function(chokidar) {
     if (!chokidar) {
-        chokidar = require('chokidar');
+        chokidar = require("chokidar");
     }
 
     return new hotReload(chokidar);

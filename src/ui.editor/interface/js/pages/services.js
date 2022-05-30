@@ -41,7 +41,7 @@ _servicesController.prototype._deleteService = function(name) {
 };
 
 window.Services = {
-    template : '#template-services',
+    template : "#template-services",
     data 	 : () => {
         return window._servicesControllerInstance.getData();
     },

@@ -44,7 +44,7 @@ _messagingController.prototype._removeQueue = function(name) {
 };
 
 window.Messaging = {
-    template : '#template-messaging',
+    template : "#template-messaging",
     data 	 : () => {
         return window._messagingControllerInstance.getQueues();
     },

@@ -25,7 +25,7 @@ refreshingTokenSessionStore.prototype.refreshTokens = function(oauthProvider, sc
     return new Promise((resolve, reject) => {
         this.request.post(`${oauthProvider.authorizationCode.config.auth.tokenHost}${oauthProvider.authorizationCode.config.auth.tokenPath}`, {
             form : {
-                grant_type : 'refresh_token',
+                grant_type : "refresh_token",
                 scope : scope,
                 client_id : oauthProvider.authorizationCode.config.client.id,
                 client_secret : oauthProvider.authorizationCode.config.client.secret,
@@ -33,7 +33,7 @@ refreshingTokenSessionStore.prototype.refreshTokens = function(oauthProvider, sc
             }
         }, (err, response, body) => {
             if (response.statusCode !== 200) {
-                //didn't work, return the expired access token
+                //didn"t work, return the expired access token
                 return resolve(session.accessToken);
             }
 
@@ -66,7 +66,7 @@ refreshingTokenSessionStore.prototype.getToken = function(oauthProvider, scope, 
                 return resolve(null);
             }
 
-            const payload = JSON.parse(Buffer.from(session.accessToken.split('.')[1], 'base64').toString());
+            const payload = JSON.parse(Buffer.from(session.accessToken.split(".")[1], "base64").toString());
 
             if ((payload.exp * 1000) < (new Date() - 1 + (this.bufferTime * 1000) + 1) && session.refreshToken) {
                 return this.refreshTokens(oauthProvider, scope, sessionId, session).then(resolve).catch((error) => {
@@ -91,7 +91,7 @@ refreshingTokenSessionStore.prototype.getIdToken = function(oauthProvider, scope
                 return resolve(null);
             }
 
-            const payload = JSON.parse(Buffer.from(session.idToken.split('.')[1], 'base64').toString());
+            const payload = JSON.parse(Buffer.from(session.idToken.split(".")[1], "base64").toString());
 
             if ((payload.exp * 1000) < (new Date() - 1 + (this.bufferTime * 1000) + 1) && session.refreshToken) {
                 return this.refreshTokens(oauthProvider, scope, sessionId, session).then(resolve).catch((error) => {
@@ -108,15 +108,15 @@ refreshingTokenSessionStore.prototype.getIdToken = function(oauthProvider, scope
 
 module.exports = function(sqlSessionStore, uuid, request) {
     if (!sqlSessionStore) {
-        sqlSessionStore = require('./sqlSessionStore')(null, process.env.MYSQL_CONNECTION_STRING, '__token_store__');
+        sqlSessionStore = require("./sqlSessionStore")(null, process.env.MYSQL_CONNECTION_STRING, "__token_store__");
     }
 
     if (!uuid) {
-        uuid = require('uuid');
+        uuid = require("uuid");
     }
 
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     return new refreshingTokenSessionStore(sqlSessionStore, uuid, request);

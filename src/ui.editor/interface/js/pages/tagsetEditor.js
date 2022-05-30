@@ -6,12 +6,12 @@ _tagsetEditor.prototype.clearState = function() {
     this.editor 					= null;
     this.navitems = [
         {
-            name 		: 'Interface',
+            name 		: "Interface",
             event 		: this.editView.bind(this),
             selected 	: true
         },
         {
-            name 		: 'Controller',
+            name 		: "Controller",
             event 		: this.editController.bind(this),
             selected 	: false
         }
@@ -28,10 +28,10 @@ _tagsetEditor.prototype.clearState = function() {
 _tagsetEditor.prototype.initBlankTagset = function() {
     return new Promise((resolve, reject) => {
         this.tagset = {
-            name : 'untitled',
+            name : "untitled",
             groups 	: [
                 {
-                    name : 'Group 1',
+                    name : "Group 1",
                     tags : []
                 }
             ]
@@ -92,7 +92,7 @@ _tagsetEditor.prototype.save = function() {
 
     return window.axiosProxy.put(`${window.hosts.kernel}/tags/${this.tagset.name}`, JSON.stringify(this.tagset.groups, null, 4), {
         headers : {
-            'content-type' : 'application/json'
+            "content-type" : "application/json"
         }
     }).then((response) => {
         location.href = `/#/websites/tagsets/editor/${this.tagset.name}`;
@@ -110,12 +110,12 @@ _tagsetEditor.prototype.save = function() {
 _tagsetEditor.prototype.addTag = function(groupNum) {
     this.tagset.groups[groupNum].tags.push({
         name 		: `Tag ${this.tagset.groups[groupNum].tags.length + 1}`,
-        tag  		: 'div',
+        tag  		: "div",
         view 		: JSON.stringify({
-            tag 		: 'div',
+            tag 		: "div",
             children 	: []
         }, null, 4),
-        controller 	: 'module.exports = {\n\tevents : {}\n};'
+        controller 	: "module.exports = {\n\tevents : {}\n};"
     });
 
     this.refreshState();
@@ -142,22 +142,22 @@ _tagsetEditor.prototype.closeEditor = function() {
 
 _tagsetEditor.prototype.initEditor = function(elem, type, value) {
     this.editor = window.ace.edit(document.getElementById(elem), {
-        mode : 'ace/mode/' + type,
-        selectionStyle : 'text'
+        mode : "ace/mode/" + type,
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.save();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
     this.editor.setValue(value);
-    this.editor.getSession().setMode('ace/mode/' + type);
+    this.editor.getSession().setMode("ace/mode/" + type);
 };
 
 _tagsetEditor.prototype.editView = function() {
@@ -173,7 +173,7 @@ _tagsetEditor.prototype.editView = function() {
     this.refreshState();
 
     setTimeout(() => {
-        this.initEditor('viewEditor', 'json', this.activeTag.view);
+        this.initEditor("viewEditor", "json", this.activeTag.view);
     }, 10);
 };
 
@@ -190,7 +190,7 @@ _tagsetEditor.prototype.editController = function() {
     this.refreshState();
 
     setTimeout(() => {
-        this.initEditor('controllerEditor', 'javascript', this.activeTag.controller);
+        this.initEditor("controllerEditor", "javascript", this.activeTag.controller);
     }, 10);
 };
 
@@ -233,7 +233,7 @@ _tagsetEditor.prototype.keyDownHandler = function(event) {
 };
 
 window.TagsetEditor = {
-    template : '#template-tagsetEditor',
+    template : "#template-tagsetEditor",
     data 	 : () => {
         return window._tagsetEditorInstance.getData();
     },
@@ -241,17 +241,17 @@ window.TagsetEditor = {
         window._tagsetEditorInstance.clearState();
         window._tagsetEditorInstance.setCaller(this);
 
-        document.removeEventListener('keydown', window._tagsetEditorInstance.keyDownHandler);
-        document.addEventListener('keydown', window._tagsetEditorInstance.keyDownHandler);
+        document.removeEventListener("keydown", window._tagsetEditorInstance.keyDownHandler);
+        document.addEventListener("keydown", window._tagsetEditorInstance.keyDownHandler);
 
-        if (this.$route.params.name === '.new') {
+        if (this.$route.params.name === ".new") {
             return window._tagsetEditorInstance.initBlankTagset();
         } else {
             return window._tagsetEditorInstance.getTagset(this.$route.params.name);
         }
     },
     destroyed : function() {
-        document.removeEventListener('keydown', window._tagsetEditorInstance.keyDownHandler);
+        document.removeEventListener("keydown", window._tagsetEditorInstance.keyDownHandler);
         window._tagsetEditorInstance.clearState();
     }
 };

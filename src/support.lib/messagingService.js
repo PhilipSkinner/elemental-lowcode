@@ -19,7 +19,7 @@ messagingService.prototype._getToken = function(authToken) {
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     });
 };
 
@@ -29,7 +29,7 @@ messagingService.prototype.queueMessage = function(queueName, message, authToken
             this.request.post(`${this.hostnameResolver.resolveQueue()}/${queueName}`, {
                 body : JSON.stringify(message),
                 headers : {
-                    'content-type' : 'application/json',
+                    "content-type" : "application/json",
                     Authorization : `Bearer ${token}`
                 }
             }, (err, res) => {
@@ -38,10 +38,10 @@ messagingService.prototype.queueMessage = function(queueName, message, authToken
                 }
 
                 if (res.statusCode === 201) {
-                    return resolve(res.headers.location.split('/').slice(-1)[0]);
+                    return resolve(res.headers.location.split("/").slice(-1)[0]);
                 }
 
-                return reject(new Error('Invalid response received'));
+                return reject(new Error("Invalid response received"));
             });
         });
     });
@@ -60,10 +60,10 @@ messagingService.prototype.getMessage = function(queueName, id, authToken) {
                 }
 
                 if (res.statusCode === 201) {
-                    return resolve(res.headers.location.split('/').slice(-1)[0]);
+                    return resolve(res.headers.location.split("/").slice(-1)[0]);
                 }
 
-                return reject(new Error('Invalid response received'));
+                return reject(new Error("Invalid response received"));
             });
         });
     });
@@ -82,10 +82,10 @@ messagingService.prototype.deleteMessage = function(queueName, id, authToken) {
                 }
 
                 if (res.statusCode === 201) {
-                    return resolve(res.headers.location.split('/').slice(-1)[0]);
+                    return resolve(res.headers.location.split("/").slice(-1)[0]);
                 }
 
-                return reject(new Error('Invalid response received'));
+                return reject(new Error("Invalid response received"));
             });
         });
     });
@@ -93,11 +93,11 @@ messagingService.prototype.deleteMessage = function(queueName, id, authToken) {
 
 module.exports = function(request, hostnameResolver) {
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     if (!hostnameResolver) {
-        hostnameResolver = require('./hostnameResolver')();
+        hostnameResolver = require("./hostnameResolver")();
     }
 
     return new messagingService(request, hostnameResolver);

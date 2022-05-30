@@ -76,7 +76,7 @@ _rulesController.prototype._removeRule = function(rule) {
 };
 
 window.Rules = {
-    template : '#template-rules',
+    template : "#template-rules",
     data 	 : () => {
         return window._rulesControllerInstance.getData();
     },

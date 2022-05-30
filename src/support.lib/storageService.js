@@ -20,7 +20,7 @@ storageService.prototype.detailCollection = function(path, authToken) {
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     }).then((token) => {
         return new Promise((resolve, reject) => {
             this.request.get(`${this.hostnameResolver.resolveStorage()}/${path}/.details`, {
@@ -40,7 +40,7 @@ storageService.prototype.detailCollection = function(path, authToken) {
                 try {
                     result = JSON.parse(body);
                 } catch(e) {
-                    return reject(new Error('Invalid response received from collection details'));
+                    return reject(new Error("Invalid response received from collection details"));
                 }
 
                 return resolve(result);
@@ -61,20 +61,20 @@ storageService.prototype.getList = function(path, start, count, filters, orders,
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     }).then((token) => {
         const qs = {
             start : start,
             count : count
         };
 
-        if (typeof(filters) === 'object' && filters !== null) {
+        if (typeof(filters) === "object" && filters !== null) {
             Object.keys(filters).forEach((path) => {
                 qs[`filter_${path}`] = filters[path];
             });
         }
 
-        if (typeof(orders) === 'object' && orders !== null) {
+        if (typeof(orders) === "object" && orders !== null) {
             Object.keys(orders).forEach((path) => {
                 qs[`order_${path}`] = orders[path];
             });
@@ -99,7 +99,7 @@ storageService.prototype.getList = function(path, start, count, filters, orders,
                 try {
                     result = JSON.parse(body);
                 } catch(e) {
-                    return reject(new Error('Invalid response received from getting list of results'));
+                    return reject(new Error("Invalid response received from getting list of results"));
                 }
 
                 return resolve(result);
@@ -120,7 +120,7 @@ storageService.prototype.getEntity = function(path, id, authToken) {
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     }).then((token) => {
         return new Promise((resolve, reject) => {
             this.request.get(`${this.hostnameResolver.resolveStorage()}/${path}/${id}`, {
@@ -140,7 +140,7 @@ storageService.prototype.getEntity = function(path, id, authToken) {
                 try {
                     result = JSON.parse(body);
                 } catch(e) {
-                    return reject(new Error('Invalid response received when fetching entity'));
+                    return reject(new Error("Invalid response received when fetching entity"));
                 }
 
                 result.id = result.id || id;
@@ -162,13 +162,13 @@ storageService.prototype.createEntity = function(path, entity, authToken) {
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     }).then((token) => {
         return new Promise((resolve, reject) => {
             this.request.post(`${this.hostnameResolver.resolveStorage()}/${path}`, {
                 body : JSON.stringify(entity),
                 headers : {
-                    'content-type' : 'application/json',
+                    "content-type" : "application/json",
                     Authorization : `Bearer ${token}`
                 }
             }, (err, res, body) => {
@@ -177,7 +177,7 @@ storageService.prototype.createEntity = function(path, entity, authToken) {
                 }
 
                 if (res.statusCode === 201) {
-                    return this.getEntity(path, res.headers.location.split('/').slice(-1)[0], token).then(resolve).catch(reject);
+                    return this.getEntity(path, res.headers.location.split("/").slice(-1)[0], token).then(resolve).catch(reject);
                 }
 
                 return reject(body);
@@ -198,13 +198,13 @@ storageService.prototype.updateEntity = function(path, id, entity, authToken) {
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     }).then((token) => {
         return new Promise((resolve, reject) => {
             this.request.put(`${this.hostnameResolver.resolveStorage()}/${path}/${id}`, {
                 body : JSON.stringify(entity),
                 headers : {
-                    'content-type' : 'application/json',
+                    "content-type" : "application/json",
                     Authorization : `Bearer ${token}`
                 }
             }, (err, res, body) => {
@@ -234,13 +234,13 @@ storageService.prototype.patchEntity = function(path, id, entity, authToken) {
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     }).then((token) => {
         return new Promise((resolve, reject) => {
             this.request.patch(`${this.hostnameResolver.resolveStorage()}/${path}/${id}`, {
                 body : JSON.stringify(entity),
                 headers : {
-                    'content-type' : 'application/json',
+                    "content-type" : "application/json",
                     Authorization : `Bearer ${token}`
                 }
             }, (err, res, body) => {
@@ -270,7 +270,7 @@ storageService.prototype.deleteEntity = function(path, id, authToken) {
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     }).then((token) => {
         return new Promise((resolve, reject) => {
             this.request.delete(`${this.hostnameResolver.resolveStorage()}/${path}/${id}`, {
@@ -294,11 +294,11 @@ storageService.prototype.deleteEntity = function(path, id, authToken) {
 
 module.exports = function(request, hostnameResolver) {
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     if (!hostnameResolver) {
-        hostnameResolver = require('./hostnameResolver')();
+        hostnameResolver = require("./hostnameResolver")();
     }
 
     return new storageService(request, hostnameResolver);

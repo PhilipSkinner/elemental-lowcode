@@ -19,7 +19,7 @@ integrationService.prototype.callIntegration = function(name, method, params, au
             }).catch(reject);
         }
 
-        return resolve('');
+        return resolve("");
     }).then((token) => {
         return new Promise((resolve, reject) => {
             this.request[method](`${this.hostnameResolver.resolveIntegration()}/${name}`, {
@@ -35,7 +35,7 @@ integrationService.prototype.callIntegration = function(name, method, params, au
                 try {
                     return resolve(JSON.parse(body));
                 } catch(e) {
-                    return reject(new Error('Invalid response received from integration call'));
+                    return reject(new Error("Invalid response received from integration call"));
                 }
             });
         });
@@ -44,11 +44,11 @@ integrationService.prototype.callIntegration = function(name, method, params, au
 
 module.exports = function(request, hostnameResolver) {
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     if (!hostnameResolver) {
-        hostnameResolver = require('./hostnameResolver')();
+        hostnameResolver = require("./hostnameResolver")();
     }
 
     return new integrationService(request, hostnameResolver);

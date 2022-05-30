@@ -1,32 +1,32 @@
 const sqlQueue = function(connectionString, sqlStore) {
-    this.name = 'queue__messages';
+    this.name = "queue__messages";
     this.messageDefinition = {
-        'name' : this.name,
-        'keys' : [
+        "name" : this.name,
+        "keys" : [
             {
-                'type' : 'unique',
-                'paths' : [
-                    '$.id'
+                "type" : "unique",
+                "paths" : [
+                    "$.id"
                 ]
             }
         ],
-        'schema' : {
-            'type' : 'object',
-            'properties' : {
-                'queue' : {
-                    'type' : 'string'
+        "schema" : {
+            "type" : "object",
+            "properties" : {
+                "queue" : {
+                    "type" : "string"
                 },
-                'status' : {
-                    'type' : 'string'
+                "status" : {
+                    "type" : "string"
                 },
-                'request' : {
-                    'type' : 'string'
+                "request" : {
+                    "type" : "string"
                 },
-                'result' : {
-                    'type' : 'string'
+                "result" : {
+                    "type" : "string"
                 },
-                'error' : {
-                    'type' : 'string'
+                "error" : {
+                    "type" : "string"
                 }
             }
         }
@@ -41,7 +41,7 @@ sqlQueue.prototype.insertMessage = function(queueName, uuid, message) {
 
 sqlQueue.prototype.markAsInProgress = function(queueName, uuid) {
     return this.sqlStore.getResource(this.name, uuid).then((message) => {
-        message.status = 'INPROGRESS';
+        message.status = "INPROGRESS";
 
         return this.sqlStore.updateResource(this.name, uuid, message);
     });
@@ -49,7 +49,7 @@ sqlQueue.prototype.markAsInProgress = function(queueName, uuid) {
 
 sqlQueue.prototype.markAsComplete = function(queueName, uuid, result) {
     return this.sqlStore.getResource(this.name, uuid).then((message) => {
-        message.status = 'COMPLETE';
+        message.status = "COMPLETE";
         message.result = JSON.stringify(result);
 
         return this.sqlStore.updateResource(this.name, uuid, message);
@@ -58,7 +58,7 @@ sqlQueue.prototype.markAsComplete = function(queueName, uuid, result) {
 
 sqlQueue.prototype.markAsError = function(queueName, uuid, error) {
     return this.sqlStore.getResource(this.name, uuid).then((message) => {
-        message.status = 'ERROR';
+        message.status = "ERROR";
         message.error = JSON.stringify(error);
 
         return this.sqlStore.updateResource(this.name, uuid, message);
@@ -96,11 +96,11 @@ sqlQueue.prototype.deleteMessage = function(queue, uuid) {
 sqlQueue.prototype.getNextMessage = function(queue) {
     return this.sqlStore.getResources(this.name, 1, 1, [
         {
-            path : '$.status',
-            value : 'PENDING'
+            path : "$.status",
+            value : "PENDING"
         },
         {
-            path : '$.queue',
+            path : "$.queue",
             value : queue
         }
     ]).then((messages) => {
@@ -134,7 +134,7 @@ sqlQueue.prototype.getNextMessage = function(queue) {
 
 module.exports = function(connectionString, sqlStore) {
     if (!sqlStore) {
-        sqlStore = require('../../../support.lib/stores/sqlStore');
+        sqlStore = require("../../../support.lib/stores/sqlStore");
     }
 
     return new sqlQueue(connectionString, sqlStore);

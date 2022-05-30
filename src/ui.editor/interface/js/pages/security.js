@@ -14,20 +14,20 @@ const _securityController = function(page) {
     this.settingSecretValue = false;
     this.addingSecret = false;
     this.showAlert = false;
-    this.currentPassword = '';
+    this.currentPassword = "";
     this.navitems = [
         {
-            name 		: 'Settings',
+            name 		: "Settings",
             event 		: this.showSettings.bind(this),
             selected 	: this.settingsVisible
         },
         {
-            name        : 'Banned Passwords',
+            name        : "Banned Passwords",
             event       : this.showBannedPasswords.bind(this),
             selected    : this.bannedPasswordsVisible
         },
         {
-            name 		: 'Secrets',
+            name 		: "Secrets",
             event 		: this.showSecrets.bind(this),
             selected	: this.secretsVisible
         }
@@ -122,14 +122,14 @@ _securityController.prototype.showBannedPasswords = function() {
 
 _securityController.prototype.addBannedPassword = function() {
     this.addingBannedPassword = true;
-    this.currentPassword = '';
+    this.currentPassword = "";
 
     this.forceRefresh();
 };
 
 _securityController.prototype.cancelSetBannedPassword = function() {
     this.addingBannedPassword = false;
-    this.currentPassword = '';
+    this.currentPassword = "";
 
     this.forceRefresh();
 };
@@ -145,7 +145,7 @@ _securityController.prototype.setSecret = function(name) {
     this.settingSecretValue = true;
     this.currentSecret = {
         name 	: name,
-        value 	: ''
+        value 	: ""
     };
 
     this.forceRefresh();
@@ -262,7 +262,7 @@ _securityController.prototype.saveBannedPassword = function() {
     return window.axiosProxy
         .put(`${window.hosts.kernel}/security/bannedpasswords`, JSON.stringify(this.bannedPasswords), {
             headers : {
-                'Content-Type' : 'application/json'
+                "Content-Type" : "application/json"
             }
         }).then((response) => {
             this.showBannedPasswords();
@@ -279,7 +279,7 @@ _securityController.prototype.removeBannedPassword = function(password) {
     return window.axiosProxy
         .put(`${window.hosts.kernel}/security/bannedpasswords`, JSON.stringify(this.bannedPasswords), {
             headers : {
-                'Content-Type' : 'application/json'
+                "Content-Type" : "application/json"
             }
         }).then((response) => {
             this.showBannedPasswords();
@@ -294,7 +294,7 @@ _securityController.prototype.saveSecret = function() {
             scope : this.currentSecret.scope
         }), {
             headers : {
-                'Content-Type' : 'application/json'
+                "Content-Type" : "application/json"
             }
         }).then((response) => {
             this.showSecrets();
@@ -327,7 +327,7 @@ _securityController.prototype.saveSecretValue = function() {
     return window.axiosProxy
         .put(`${window.hosts.kernel}/security/secrets/${this.currentSecret.name}`, this.currentSecret.value, {
             headers : {
-                'Content-Type' : 'text/plain',
+                "Content-Type" : "text/plain",
             }
         }).then((response) => {
             this.cancelSetSecret();
@@ -336,7 +336,7 @@ _securityController.prototype.saveSecretValue = function() {
 };
 
 window.Security = {
-    template : '#template-security',
+    template : "#template-security",
     data 	 : () => {
         return window._securityControllerInstance.getData();
     },

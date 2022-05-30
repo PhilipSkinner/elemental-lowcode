@@ -6,7 +6,7 @@ const emailService = function(config, nodemailer) {
         port : config.port || 587,
         username : config.username,
         password : config.password,
-        protocol : config.protocol || 'smtps',
+        protocol : config.protocol || "smtps",
     };
 
     //create our connection
@@ -14,7 +14,7 @@ const emailService = function(config, nodemailer) {
         pool : true,
         host : this.smtpSettings.host,
         port : this.smtpSettings.port,
-        secure : this.smtpSettings.protocol === 'smtps',
+        secure : this.smtpSettings.protocol === "smtps",
         auth : {
             user : this.smtpSettings.username,
             pass : this.smtpSettings.password
@@ -27,9 +27,9 @@ const emailService = function(config, nodemailer) {
     this.transport.verify((err) => {
         if (err) {
             console.error(err);
-            console.error('Error connecting to smtp service! Emails will not be sent.');
+            console.error("Error connecting to smtp service! Emails will not be sent.");
         } else {
-            console.log('Connection to SMTP server is good, emails can be sent.');
+            console.log("Connection to SMTP server is good, emails can be sent.");
         }
     });
 };
@@ -54,7 +54,7 @@ emailService.prototype.sendEmail = function(from, to, subject, html, attachments
 
 module.exports = function(config, nodemailer) {
     if (!nodemailer) {
-        nodemailer = require('nodemailer');
+        nodemailer = require("nodemailer");
     }
 
     return new emailService(config, nodemailer);

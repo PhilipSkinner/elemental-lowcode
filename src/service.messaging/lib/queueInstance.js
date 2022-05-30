@@ -21,18 +21,18 @@ const queueInstance = function(
     this.dataResolver           = dataResolver;
     this.environmentService     = environmentService;
 
-    if (this.definition && this.definition.storageEngine === 'sql') {
+    if (this.definition && this.definition.storageEngine === "sql") {
         //resolve our values
         this.definition.connectionString = this.dataResolver.detectValues(this.definition.connectionString, {
             secrets : this.environmentService.listSecrets()
         }, {}, true);
 
-        if (typeof(this.definition.connectionString) !== 'undefined' && this.definition.connectionString !== null && this.definition.connectionString !== '') {
+        if (typeof(this.definition.connectionString) !== "undefined" && this.definition.connectionString !== null && this.definition.connectionString !== "") {
             this.queueProvider = sqlQueueProvider(this.definition.connectionString);
         }
     }
 
-    if (typeof(this.queueProvider) === 'undefined' || this.queueProvider === null) {
+    if (typeof(this.queueProvider) === "undefined" || this.queueProvider === null) {
         this.queueProvider = sqlQueueProvider(process.env.MYSQL_CONNECTION_STRING);
     }
 
@@ -63,7 +63,7 @@ queueInstance.prototype.queueMessage = function(req, res) {
     this.queueProvider.insertMessage(this.definition.name, id, {
         id      : id,
         queue   : this.definition.name,
-        status  : 'PENDING',
+        status  : "PENDING",
         request : req.body,
         result  : null,
         error   : null
@@ -118,14 +118,14 @@ queueInstance.prototype.setupEndpoints = function() {
         }
 
         let roles = [
-            'system_admin',
-            'system_writer',
-            'queue_writer',
+            "system_admin",
+            "system_writer",
+            "queue_writer",
             `${this.definition.name}_writer`
         ];
 
         if (this.definition.roles.replace === true) {
-            roles = ['system_admin'];
+            roles = ["system_admin"];
         }
 
         if (this.definition.roles.roles) {
@@ -232,57 +232,57 @@ module.exports = function(
     dataResolver
 ) {
     if (!roleCheckHandler) {
-        roleCheckHandler = require('../../support.lib/roleCheckHandler')();
+        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
     }
 
     if (!sqlQueueProvider) {
-        sqlQueueProvider = require('./queues/sqlQueue');
+        sqlQueueProvider = require("./queues/sqlQueue");
     }
 
     if (!uuid) {
-        uuid = require('uuid');
+        uuid = require("uuid");
     }
 
     if (!serviceProvider) {
-        serviceProvider = require('../../support.lib/iocProvider')();
+        serviceProvider = require("../../support.lib/iocProvider")();
     }
 
     if (!storageService) {
-        storageService = require('../../support.lib/storageService')();
+        storageService = require("../../support.lib/storageService")();
     }
 
     if (!integrationService) {
-        integrationService = require('../../support.lib/integrationService')();
+        integrationService = require("../../support.lib/integrationService")();
     }
 
     if (!rulesetService) {
-        rulesetService = require('../../support.lib/ruleService')();
+        rulesetService = require("../../support.lib/ruleService")();
     }
 
     if (!idmService) {
-        idmService = require('../../support.lib/idmService')();
+        idmService = require("../../support.lib/idmService")();
     }
 
     if (!authClientProvider) {
-        authClientProvider = require('../../support.lib/authClientProvider')(definition ? definition.client : null);
+        authClientProvider = require("../../support.lib/authClientProvider")(definition ? definition.client : null);
     }
 
     if (!messagingService) {
-        messagingService = require('../../support.lib/messagingService')();
+        messagingService = require("../../support.lib/messagingService")();
     }
 
     if (!ajv) {
-        ajv = require('ajv')({
+        ajv = require("ajv")({
             allErrors : true
         });
     }
 
     if (!environmentService) {
-        environmentService = require('../../support.lib/environmentService')();
+        environmentService = require("../../support.lib/environmentService")();
     }
 
     if (!dataResolver) {
-        dataResolver = require('../../support.lib/dataResolver')();
+        dataResolver = require("../../support.lib/dataResolver")();
     }
 
     return new queueInstance(

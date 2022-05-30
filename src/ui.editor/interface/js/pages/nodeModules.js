@@ -3,11 +3,11 @@ const _nodeModulesController = function(page) {
     this.nodeModules 	= [];
     this.formOpen 		= false;
     this.modifying 		= false;
-    this.moduleName 	= '';
-    this.moduleVersion 	= '';
+    this.moduleName 	= "";
+    this.moduleVersion 	= "";
     this.displayResult 	= false;
-    this.resultStdout	= '';
-    this.resultStderr 	= '';
+    this.resultStdout	= "";
+    this.resultStderr 	= "";
 };
 
 _nodeModulesController.prototype.getData = function() {
@@ -71,8 +71,8 @@ _nodeModulesController.prototype._removeNodeModule = function(nodeModule) {
 _nodeModulesController.prototype.addNodeModule = function() {
     this.formOpen = true;
     this.modifying = false;
-    this.moduleName = '';
-    this.moduleVersion = '';
+    this.moduleName = "";
+    this.moduleVersion = "";
 
     this.refreshState();
 };
@@ -80,8 +80,8 @@ _nodeModulesController.prototype.addNodeModule = function() {
 _nodeModulesController.prototype.closeForm = function() {
     this.formOpen = false;
     this.modifying = false;
-    this.moduleName = '';
-    this.moduleVersion = '';
+    this.moduleName = "";
+    this.moduleVersion = "";
 
     this.refreshState();
 };
@@ -90,7 +90,7 @@ _nodeModulesController.prototype.modifyNodeModule = function(name) {
     this.formOpen = true;
     this.modifying = true;
     this.moduleName	= name;
-    this.moduleVersion = '';
+    this.moduleVersion = "";
 
     this.refreshState();
 };
@@ -106,7 +106,7 @@ _nodeModulesController.prototype.handleSubmit = function() {
             }),
             {
                 headers : {
-                    'content-type' : 'application/json'
+                    "content-type" : "application/json"
                 }
             }).then(() => {
                 this.closeForm();
@@ -120,7 +120,7 @@ _nodeModulesController.prototype.handleSubmit = function() {
             }),
             {
                 headers : {
-                    'content-type' : 'application/json'
+                    "content-type" : "application/json"
                 }
             }).then(() => {
                 this.closeForm();
@@ -142,13 +142,13 @@ _nodeModulesController.prototype.runInstall = function() {
 
 _nodeModulesController.prototype.hideResult = function() {
     this.displayResult = false;
-    this.resultStdout = '';
-    this.resultStderr = '';
+    this.resultStdout = "";
+    this.resultStderr = "";
     this.refreshState();
 };
 
 window.NodeModules = {
-    template : '#template-nodeModules',
+    template : "#template-nodeModules",
     data 	 : () => {
         return window._nodeModulesControllerInstance.getData();
     },

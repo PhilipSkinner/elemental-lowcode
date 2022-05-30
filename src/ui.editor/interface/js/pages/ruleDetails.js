@@ -50,17 +50,17 @@ _ruleDetailController.prototype.forceRefresh = function() {
 _ruleDetailController.prototype.setNavItems = function() {
     this.navitems = [
         {
-            name            : 'Documentation',
+            name            : "Documentation",
             selected        : true,
-            route_name      : 'rulesetDetails',
+            route_name      : "rulesetDetails",
             route_params    : {
                 name : this.name
             }
         },
         {
-            name            : 'Modify',
+            name            : "Modify",
             selected        : false,
-            route_name      : 'rulesetEditor',
+            route_name      : "rulesetEditor",
             route_params    : {
                 name : this.name
             }
@@ -85,7 +85,7 @@ _ruleDetailController.prototype.fetchRule = function(name) {
 };
 
 window.RuleDetails = {
-    template : '#template-ruleDetails',
+    template : "#template-ruleDetails",
     data 	 : () => {
         return window._ruleDetailInstance.getData();
     },

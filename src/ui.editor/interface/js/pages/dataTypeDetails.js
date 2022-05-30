@@ -9,8 +9,8 @@ const _dataTypeDetailsController = function(page) {
         exampleId 				: null,
         exampleSingleResponse 	: null,
         exampleObject 			: null,
-        token                   : 'my-access-token',
-        uri 					: '',
+        token                   : "my-access-token",
+        uri 					: "",
         navitems : [
         ]
     };
@@ -37,7 +37,7 @@ _dataTypeDetailsController.prototype.fetchType = function(name) {
 
 
 window.DataTypeDetails = {
-    template : '#template-dataTypeDetails',
+    template : "#template-dataTypeDetails",
     data 	 : () => {
         return window._dataTypeDetailsInstance.getData();
     },
@@ -46,10 +46,10 @@ window.DataTypeDetails = {
         window._dataTypeDetailsInstance.fetchType(this.$route.params.type);
         window._dataTypeDetailsInstance.data.navitems = [
             {
-                name 		: 'Edit',
+                name 		: "Edit",
                 event 		: () => {
                     window.router.push({
-                        name : 'dataTypeEditor',
+                        name : "dataTypeEditor",
                         params : {
                             type : this.$route.params.type
                         }
@@ -58,16 +58,16 @@ window.DataTypeDetails = {
                 selected	: false
             },
             {
-                name 		: 'API Explorer',
+                name 		: "API Explorer",
                 event 		: () => {
 
                 },
                 selected 	: true
             },
             {
-                name 		: 'Definition',
+                name 		: "Definition",
                 link		: `${window.hosts.storage}/${this.$route.params.type}/.definition`,
-                target      : '_blank',
+                target      : "_blank",
                 selected	: false
             }
         ];

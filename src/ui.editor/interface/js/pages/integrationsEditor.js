@@ -24,35 +24,35 @@ _integrationsEditorController.prototype.setLoaded = function() {
 
 _integrationsEditorController.prototype.initEditor = function() {
     //set our editor up
-    this.editor = window.ace.edit(document.getElementById('integrationEditor'), {
-        mode : 'ace/mode/json',
-        selectionStyle : 'text'
+    this.editor = window.ace.edit(document.getElementById("integrationEditor"), {
+        mode : "ace/mode/json",
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.saveIntegration();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
 };
 
 _integrationsEditorController.prototype.initBlankType = function() {
     this.name = null;
 
     this.integration = {
-        name : 'exampleGetRequest',
-        description : 'Get a single post from our example third party system. ',
-        method: 'get',
+        name : "exampleGetRequest",
+        description : "Get a single post from our example third party system. ",
+        method: "get",
         variables: [
             {
-                name: 'id',
-                type: 'queryParam',
-                description: 'The ID of the post to fetch'
+                name: "id",
+                type: "queryParam",
+                description: "The ID of the post to fetch"
             }
         ],
         roles : {
@@ -65,36 +65,36 @@ _integrationsEditorController.prototype.initBlankType = function() {
             }
         },
         request: {
-            uri: 'https://jsonplaceholder.typicode.com/posts/$(id)',
-            method: 'get',
+            uri: "https://jsonplaceholder.typicode.com/posts/$(id)",
+            method: "get",
             schema: {
-                type: 'JSON',
+                type: "JSON",
                 value: {
-                    type: 'object',
+                    type: "object",
                     properties: {
                         userId: {
-                            type: 'integer'
+                            type: "integer"
                         },
                         id: {
-                            type: 'integer'
+                            type: "integer"
                         },
                         title: {
-                            type: 'string'
+                            type: "string"
                         },
                         body: {
-                            type: 'string'
+                            type: "string"
                         }
                     },
                     required: [
-                        'userId',
-                        'id',
-                        'title',
-                        'body'
+                        "userId",
+                        "id",
+                        "title",
+                        "body"
                     ]
                 }
             }
         },
-        transformer: '(input) => { return input; }'
+        transformer: "(input) => { return input; }"
     };
 
     //set the example
@@ -134,17 +134,17 @@ _integrationsEditorController.prototype.forceRefresh = function() {
 _integrationsEditorController.prototype.setNavItems = function() {
     this.navitems = [
         {
-            name            : 'Documentation',
+            name            : "Documentation",
             selected        : false,
-            route_name      : 'integrationDetails',
+            route_name      : "integrationDetails",
             route_params    : {
                 name : this.name
             }
         },
         {
-            name            : 'Modify',
+            name            : "Modify",
             selected        : true,
-            route_name      : 'integrationEditor',
+            route_name      : "integrationEditor",
             route_params    : {
                 name : this.name
             }
@@ -177,7 +177,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
         return window.axiosProxy
             .put(`${window.hosts.kernel}/integrations/${this.name}`, this.editor.getValue(), {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 }
             })
             .then((response) => {
@@ -185,7 +185,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
                 this.showAlert = true;
 
                 if (this.name !== this.integration.name) {
-                    location.href = '#/integrations/editor/' + this.integration.name;
+                    location.href = "#/integrations/editor/" + this.integration.name;
                     this.name = this.integration.name;
                     this.setNavItems();
                 }
@@ -200,7 +200,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
             }).catch((err) => {
                 this.error = {
                     visible         : true,
-                    title           : 'Error saving integration',
+                    title           : "Error saving integration",
                     description     : err.toString(),
                 };
 
@@ -211,13 +211,13 @@ _integrationsEditorController.prototype.saveIntegration = function() {
         return window.axiosProxy
             .post(`${window.hosts.kernel}/integrations`, this.editor.getValue(), {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 }
             })
             .then((response) => {
                 //set our name
                 this.name = parsed.name;
-                location.href = '/#/integrations/editor/' + this.name;
+                location.href = "/#/integrations/editor/" + this.name;
                 this.setNavItems();
 
                 this.error.visible = false;
@@ -232,7 +232,7 @@ _integrationsEditorController.prototype.saveIntegration = function() {
             }).catch((err) => {
                 this.error = {
                     visible         : true,
-                    title           : 'Error saving integration',
+                    title           : "Error saving integration",
                     description     : err.toString(),
                 };
 
@@ -243,13 +243,13 @@ _integrationsEditorController.prototype.saveIntegration = function() {
 };
 
 window.IntegrationsEditor = {
-    template : '#template-integrationsEditor',
+    template : "#template-integrationsEditor",
     data 	 : () => {
         return window._integrationsEditorInstance.getData();
     },
     mounted  : function() {
         window._integrationsEditorInstance.initEditor();
-        if (this.$route.params.name === '.new') {
+        if (this.$route.params.name === ".new") {
             window._integrationsEditorInstance.initBlankType();
             return null;
         }

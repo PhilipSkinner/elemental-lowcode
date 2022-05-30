@@ -1,20 +1,20 @@
 const _monitorController = function(page) {
     this._page = page;
-    this.system = 'interface.errors';
+    this.system = "interface.errors";
     this.timeout = null;
     this.lastSeen = 0;
     this.navItems = [
         {
-            name : 'Home',
+            name : "Home",
             selected : false,
-            link : '/#/',
-            target : ''
+            link : "/#/",
+            target : ""
         },
         {
-            name : 'Monitor',
+            name : "Monitor",
             selected : true,
-            link : '/#/monitor',
-            target : ''
+            link : "/#/monitor",
+            target : ""
         }
     ];
 };
@@ -38,7 +38,7 @@ _monitorController.prototype.setCaller = function(caller) {
 };
 
 _monitorController.prototype._renderLines = function(lines) {
-    const elem = document.querySelectorAll('#monitorContent')[0];
+    const elem = document.querySelectorAll("#monitorContent")[0];
     const numbers = Object.keys(lines).map((n) => { return parseInt(n, 10); }).sort((a,b) => {return a - b;});
     const maxLines = 500;
     let toRemove = 0;
@@ -66,7 +66,7 @@ _monitorController.prototype._renderLines = function(lines) {
     //remove them
     if (toRemove === existingNum) {
         //simply wipe it out
-        elem.innerHTML = '';
+        elem.innerHTML = "";
     } else {
         for (var i = 0; i < toRemove; i++) {
             //remove the item
@@ -75,8 +75,8 @@ _monitorController.prototype._renderLines = function(lines) {
     }
 
     for (var i = numbers[totalNew - toAdd]; i <= numbers.slice(-1)[0]; i++) {
-        var lm = document.createElement('div');
-        var corrected = lines[i].replace(/[\r\n]/g, '');
+        var lm = document.createElement("div");
+        var corrected = lines[i].replace(/[\r\n]/g, "");
         lm.innerHTML = `<span class="number">${i}</span><span class="message"><pre>${corrected}</pre></span>`;
         elem.appendChild(lm);
     }
@@ -114,7 +114,7 @@ _monitorController.prototype.refresh = function() {
 };
 
 window.Monitor = {
-    template : '#template-monitor',
+    template : "#template-monitor",
     data 	 : () => {
         return window._monitorControllerInstance.getData();
     },

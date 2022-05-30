@@ -1,7 +1,7 @@
 const _queueEditorController = function(page) {
     this._page = page;
     this.queue = {};
-    this.handler = '';
+    this.handler = "";
     this.caller = null;
     this.name = null;
     this.editor = null;
@@ -12,7 +12,7 @@ const _queueEditorController = function(page) {
     this.showAlert = false;
     this.navitems = [
         {
-            name        : 'Auto-provision client',
+            name        : "Auto-provision client",
             event       : this.autoProvisionClient.bind(this),
             selected    : false
         },
@@ -38,20 +38,20 @@ _queueEditorController.prototype.autoProvisionClient = function() {
 
     //generate a default client
     const client = {
-	    'client_id': `interface-${parsed.name}-client`,
-	    'client_secret': `${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}`,
-	    'scope': 'roles',
-	    'grant_types' : [
-            'client_credentials'
+	    "client_id": `interface-${parsed.name}-client`,
+	    "client_secret": `${window.generateGuid().split("-").reverse().join("")}${window.generateGuid().split("-").reverse().join("")}${window.generateGuid().split("-").reverse().join("")}`,
+	    "scope": "roles",
+	    "grant_types" : [
+            "client_credentials"
 	    ],
-	    'redirect_uris': []
+	    "redirect_uris": []
     };
 
     //save the client and set the value
     return window.axiosProxy
         .post(`${window.hosts.kernel}/security/clients`, JSON.stringify(client), {
             headers : {
-                'Content-Type' : 'application/json',
+                "Content-Type" : "application/json",
             }
         })
         .then((response) => {
@@ -82,37 +82,37 @@ _queueEditorController.prototype.showQueueEditor = function() {
 
 _queueEditorController.prototype.initEditor = function() {
     //set our editor up
-    this.editor = window.ace.edit(document.getElementById('queueEditor'), {
-        mode : 'ace/mode/json',
-        selectionStyle : 'text'
+    this.editor = window.ace.edit(document.getElementById("queueEditor"), {
+        mode : "ace/mode/json",
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.saveQueue();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
 
-    this.handlerEditor = window.ace.edit(document.getElementById('handlerEditor'), {
-        mode : 'ace/mode/javascript',
-        selectionStyle : 'text'
+    this.handlerEditor = window.ace.edit(document.getElementById("handlerEditor"), {
+        mode : "ace/mode/javascript",
+        selectionStyle : "text"
     });
     this.handlerEditor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.saveQueue();
         }
     });
-    this.handlerEditor.setTheme('ace/theme/twilight');
+    this.handlerEditor.setTheme("ace/theme/twilight");
 };
 
 _queueEditorController.prototype.initBlankType = function() {
@@ -120,19 +120,19 @@ _queueEditorController.prototype.initBlankType = function() {
 
     //set the example
     this.editor.setValue(JSON.stringify({
-        'name'  		: 'myQueue',
-        'client_id' 	: '',
-        'roles'  		: {
-            'needsRole' : true,
-            'replace' 	: false,
-            'roles' 	: []
+        "name"  		: "myQueue",
+        "client_id" 	: "",
+        "roles"  		: {
+            "needsRole" : true,
+            "replace" 	: false,
+            "roles" 	: []
         },
-        'incoming' 		: {
-            'schema' : {
-                'type' 			: 'object',
-                'properties' 	: {
-                    'hello' 	: {
-                        'type' 	: 'string'
+        "incoming" 		: {
+            "schema" : {
+                "type" 			: "object",
+                "properties" 	: {
+                    "hello" 	: {
+                        "type" 	: "string"
                     }
                 }
             }
@@ -198,12 +198,12 @@ _queueEditorController.prototype.saveQueue = function() {
     if (this.name) {
         return window.axiosProxy.put(`${window.hosts.kernel}/queues/${this.name}/handler`, JSON.stringify({ payload : this.handlerEditor.getValue() }), {
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             }
         }).then(() => {
             return window.axiosProxy.put(`${window.hosts.kernel}/queues/${this.name}`, this.editor.getValue(), {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 }
             });
         }).then((response) => {
@@ -218,7 +218,7 @@ _queueEditorController.prototype.saveQueue = function() {
         }).catch((err) => {
             this.error = {
                 visible 	: true,
-                title 		: 'Error saving queue',
+                title 		: "Error saving queue",
                 description : err.toString()
             };
 
@@ -228,7 +228,7 @@ _queueEditorController.prototype.saveQueue = function() {
         return window.axiosProxy
             .post(`${window.hosts.kernel}/queues`, this.editor.getValue(), {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 }
             })
             .then((response) => {
@@ -236,11 +236,11 @@ _queueEditorController.prototype.saveQueue = function() {
                 this.name = parsed.name;
                 return window.axiosProxy.put(`${window.hosts.kernel}/queues/${this.name}/handler`, JSON.stringify({ payload : this.handlerEditor.getValue() }), {
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     }
                 });
             }).then(() => {
-                location.href = '/#/messaging/editor/' + this.name;
+                location.href = "/#/messaging/editor/" + this.name;
 
                 this.error.visible = false;
                 this.showAlert = true;
@@ -253,7 +253,7 @@ _queueEditorController.prototype.saveQueue = function() {
             }).catch((err) => {
                 this.error = {
                     visible 	: true,
-                    title 		: 'Error saving queue',
+                    title 		: "Error saving queue",
                     description : err.toString()
                 };
 
@@ -263,14 +263,14 @@ _queueEditorController.prototype.saveQueue = function() {
 };
 
 window.QueueEditor = {
-    template : '#template-queueEditor',
+    template : "#template-queueEditor",
     data 	 : () => {
         return _queueEditorInstance.getData();
     },
     mounted  : function() {
         window._queueEditorInstance.setCaller(this);
         window._queueEditorInstance.initEditor();
-        if (this.$route.params.name === '.new') {
+        if (this.$route.params.name === ".new") {
             window._queueEditorInstance.initBlankType();
             return null;
         }

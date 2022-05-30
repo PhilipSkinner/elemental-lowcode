@@ -20,20 +20,20 @@ _apiEditorController.prototype.autoProvisionClient = function() {
 
     //generate a default client
     const client = {
-	    'client_id': `interface-${this.api.name}-client`,
-	    'client_secret': `${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}${window.generateGuid().split('-').reverse().join('')}`,
-	    'scope': 'roles',
-	    'grant_types' : [
-            'client_credentials'
+	    "client_id": `interface-${this.api.name}-client`,
+	    "client_secret": `${window.generateGuid().split("-").reverse().join("")}${window.generateGuid().split("-").reverse().join("")}${window.generateGuid().split("-").reverse().join("")}`,
+	    "scope": "roles",
+	    "grant_types" : [
+            "client_credentials"
 	    ],
-	    'redirect_uris': []
+	    "redirect_uris": []
     };
 
     //save the client and set the value
     return window.axiosProxy
         .post(`${window.hosts.kernel}/security/clients`, JSON.stringify(client), {
             headers : {
-                'Content-Type' : 'application/json'
+                "Content-Type" : "application/json"
             }
         })
         .then((response) => {
@@ -64,7 +64,7 @@ _apiEditorController.prototype.configureRouteSecurity = function(name, method) {
         method 	: method
     };
     this.selectedRoute = JSON.parse(JSON.stringify(this.selectedRoute[method.toLowerCase()]));
-    this.selectedRoute.roles = this.selectedRoute.roles.join(', ');
+    this.selectedRoute.roles = this.selectedRoute.roles.join(", ");
     this.securityPopupOpen = true;
     this.refreshState();
 };
@@ -75,10 +75,10 @@ _apiEditorController.prototype.setSecurity = function() {
     });
 
     route[this.securityDetails.method.toLowerCase()] = JSON.parse(JSON.stringify(this.selectedRoute));
-    let roles = this.selectedRoute.roles.split(',').map((val) => {
+    let roles = this.selectedRoute.roles.split(",").map((val) => {
         return val.trim();
     }).reduce((sum, a) => {
-        if (a !== '') {
+        if (a !== "") {
             sum.push(a);
         }
         return sum;
@@ -92,20 +92,20 @@ _apiEditorController.prototype.setSecurity = function() {
 _apiEditorController.prototype.initEditor = function(elem, type, value) {
     //set our editor up
     this.editor = window.ace.edit(document.getElementById(elem), {
-        mode : 'ace/mode/' + type,
-        selectionStyle : 'text'
+        mode : "ace/mode/" + type,
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.saveAll();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
     this.editor.setValue(value);
 };
 
@@ -122,13 +122,13 @@ _apiEditorController.prototype.editController = function(name) {
     //is it already loaded?
     if (this.resources[resourceName]) {
         return setTimeout(() => {
-            this.initEditor('controllerEditor', 'javascript', this.resources[resourceName]);
+            this.initEditor("controllerEditor", "javascript", this.resources[resourceName]);
         }, 10);
     }
 
     return window.axiosProxy.get(`${window.hosts.kernel}/apis/${this.api.name}/${resourceName}`).then((resource) => {
         this.resources[resourceName] = resource.data;
-        return this.initEditor('controllerEditor', 'javascript', this.resources[resourceName]);
+        return this.initEditor("controllerEditor", "javascript", this.resources[resourceName]);
     });
 };
 
@@ -216,38 +216,38 @@ _apiEditorController.prototype.mainView = function() {
 
 _apiEditorController.prototype.newController = function() {
     this.api.controllers = this.api.controllers || {};
-    var name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+    var name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
 
     this.api.controllers[name] = `controllers/${name}.js`;
 
     this.resources[`controllers/${name}.js`] = [
-        'module.exports = function() {',
-        '	return (req, res, next) => {',
-        '		res.json({ hello : "world" });',
-        '		next();',
-        '	};',
-        '};',
-    ].join('\n');
+        "module.exports = function() {",
+        "	return (req, res, next) => {",
+        "		res.json({ hello : "world" });",
+        "		next();",
+        "	};",
+        "};",
+    ].join("\n");
 
     this.refreshState();
 };
 
 _apiEditorController.prototype.newRoute = function() {
     this.api.routes = this.api.routes || {};
-    var name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+    var name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
 
     this.api.routes[`/${name}`] = {
-        'get' : {
-            'controller' : null,
-            'needsRole' : true,
-            'replace' : false,
-            'roles' : []
+        "get" : {
+            "controller" : null,
+            "needsRole" : true,
+            "replace" : false,
+            "roles" : []
         },
-        'post' : {
-            'controller' : null,
-            'needsRole' : true,
-            'replace' : false,
-            'roles' : []
+        "post" : {
+            "controller" : null,
+            "needsRole" : true,
+            "replace" : false,
+            "roles" : []
         }
     };
 
@@ -269,7 +269,7 @@ _apiEditorController.prototype._saveAPI = function() {
         `${window.hosts.kernel}/apis/${this.api.name}`,
         this.api
     ).then(() => {
-        location.href = '/#/apis/editor/' + this.api.name;
+        location.href = "/#/apis/editor/" + this.api.name;
         this.showAlert = true;
         this.refreshState();
 
@@ -298,7 +298,7 @@ _apiEditorController.prototype.saveAll = function() {
     }
 
     return Promise.all(Object.keys(this.resources).map((name) => {
-        if (name.indexOf('controllers/') === 0) {
+        if (name.indexOf("controllers/") === 0) {
             return this._saveController(name.substring(12), this.resources[name]);
         }
 
@@ -352,17 +352,17 @@ _apiEditorController.prototype.keyDownHandler = function(event) {
 };
 
 window.apiEditor = {
-    template : '#template-api-editor',
+    template : "#template-api-editor",
     data 	 : function() {
         return window._apiEditorControllerInstance.getData();
     },
     mounted  : function() {
         window._apiEditorControllerInstance.setCaller(this);
 
-        document.removeEventListener('keydown', window._apiEditorControllerInstance.keyDownHandler);
-        document.addEventListener('keydown', window._apiEditorControllerInstance.keyDownHandler);
+        document.removeEventListener("keydown", window._apiEditorControllerInstance.keyDownHandler);
+        document.addEventListener("keydown", window._apiEditorControllerInstance.keyDownHandler);
 
-        if (this.$route.params.name === '.new') {
+        if (this.$route.params.name === ".new") {
             window._apiEditorControllerInstance.api = {};
             return window._apiEditorControllerInstance.fetchClients();
         }
@@ -372,7 +372,7 @@ window.apiEditor = {
         ]);
     },
     destroyed : function() {
-        document.removeEventListener('keydown', window._apiEditorControllerInstance.keyDownHandler);
+        document.removeEventListener("keydown", window._apiEditorControllerInstance.keyDownHandler);
     }
 };
 

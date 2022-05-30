@@ -9,12 +9,12 @@ const _securityUserEditorController = function(page) {
     this.enteringPassword = false;
     this.navitems = [
         {
-            name        : 'Form',
+            name        : "Form",
             event       : this.showForm.bind(this),
             selected    : this.formVisible,
         },
         {
-            name        : 'Editor',
+            name        : "Editor",
             event       : this.showEditor.bind(this),
             selected    : this.editorVisible,
         }
@@ -29,7 +29,7 @@ _securityUserEditorController.prototype.closeError = function() {
 
 _securityUserEditorController.prototype.clearPassword = function() {
     this.enteringPassword = true;
-    this.user.password = '';
+    this.user.password = "";
     this.forceRefresh();
 };
 
@@ -46,7 +46,7 @@ _securityUserEditorController.prototype.cancelAddClaim = function() {
 };
 
 _securityUserEditorController.prototype.saveClaim = function() {
-    if (typeof(this.user.claims[this.caller.currentClaim.name]) === 'undefined') {
+    if (typeof(this.user.claims[this.caller.currentClaim.name]) === "undefined") {
         this.user.claims[this.caller.currentClaim.name] = [];
     }
     this.user.claims[this.caller.currentClaim.name].push(this.caller.currentClaim.value);
@@ -116,21 +116,21 @@ _securityUserEditorController.prototype.showEditor = function() {
 
 _securityUserEditorController.prototype.initEditor = function() {
     //set our editor up
-    this.editor = window.ace.edit(document.getElementById('userEditor'), {
-        mode : 'ace/mode/json',
-        selectionStyle : 'text'
+    this.editor = window.ace.edit(document.getElementById("userEditor"), {
+        mode : "ace/mode/json",
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.save();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
 };
 
 _securityUserEditorController.prototype.initBlankType = function() {
@@ -138,11 +138,11 @@ _securityUserEditorController.prototype.initBlankType = function() {
     this.id = null;
     this.enteringPassword = true;
     this.user = JSON.parse(JSON.stringify({
-        username    : 'username',
-        password    : '',
+        username    : "username",
+        password    : "",
         registered  : new Date(),
         claims      : {
-            name  : 'User Name',
+            name  : "User Name",
             roles : [
 
             ]
@@ -214,7 +214,7 @@ _securityUserEditorController.prototype.save = function() {
         return window.axiosProxy
             .put(`${window.hosts.identity}/api/users/${this.id}`, data, {
                 headers : {
-                    'Content-Type' : 'application/json',
+                    "Content-Type" : "application/json",
                 }
             })
             .then((response) => {
@@ -228,7 +228,7 @@ _securityUserEditorController.prototype.save = function() {
             }).catch((err) => {
                 this.error = {
                     visible     : true,
-                    title       : 'Error saving user',
+                    title       : "Error saving user",
                     description : err.toString()
                 };
                 
@@ -238,11 +238,11 @@ _securityUserEditorController.prototype.save = function() {
         return window.axiosProxy
             .post(`${window.hosts.identity}/api/users`, data, {
                 headers : {
-                    'Content-Type' : 'application/json',
+                    "Content-Type" : "application/json",
                 }
             })
             .then((response) => {
-                this.id = response.headers.location.split('/').slice(-1);                
+                this.id = response.headers.location.split("/").slice(-1);
                 location.href = `/#/security/user/${this.id}`;        
 
                 this.showAlert = true;
@@ -257,7 +257,7 @@ _securityUserEditorController.prototype.save = function() {
             }).catch((err) => {                
                 this.error = {
                     visible     : true,
-                    title       : 'Error saving user',
+                    title       : "Error saving user",
                     description : err.response && err.response.data ? window.axiosProxy.generateErrorMessage(err.response.data) : err.toString()
                 };
                 
@@ -267,14 +267,14 @@ _securityUserEditorController.prototype.save = function() {
 };
 
 window.SecurityUserEditor = {
-    template : '#template-securityUserEditor',
+    template : "#template-securityUserEditor",
     data 	 : () => {
         return window._securityUserEditorControllerInstance.getData();
     },
     mounted  : function() {
         window._securityUserEditorControllerInstance.setCaller(this);
         window._securityUserEditorControllerInstance.initEditor();
-        if (this.$route.params.name === '.new') {
+        if (this.$route.params.name === ".new") {
             window._securityUserEditorControllerInstance.initBlankType();
             return null;
         }

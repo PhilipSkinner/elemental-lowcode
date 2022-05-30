@@ -1,10 +1,10 @@
 const
-    express 		= require('express'),
-    path 			= require('path'),
-    tokenHandler 	= require('../support.lib/tokenHandler'),
-    hotreload 		= require('../support.lib/hotReload')(),
-    bodyParser 		= require('body-parser'),
-    rateLimit       = require('express-rate-limit');
+    express 		= require("express"),
+    path 			= require("path"),
+    tokenHandler 	= require("../support.lib/tokenHandler"),
+    hotreload 		= require("../support.lib/hotReload")(),
+    bodyParser 		= require("body-parser"),
+    rateLimit       = require("express-rate-limit");
 
 let app = null;
 let server = null;
@@ -16,7 +16,7 @@ const limiter = rateLimit({
 });
 
 if (!process.env.DIR) {
-    throw new Error('Require dir to load configuration from.');
+    throw new Error("Require dir to load configuration from.");
 }
 
 if (!process.env.PORT) {
@@ -28,7 +28,7 @@ let queueService = null;
 const startup = () => {
     app = express();
 
-    queueService = require('./lib/queueService')(app);
+    queueService = require("./lib/queueService")(app);
 
     app.use(limiter);
     app.use(bodyParser.json());
@@ -37,7 +37,7 @@ const startup = () => {
 
     queueService.init(process.env.DIR).then(() => {        
         server = app.listen(process.env.PORT, () => {
-            console.log('Hotreload complete');        
+            console.log("Hotreload complete");
             restarting = false;
         });        
     });
@@ -51,7 +51,7 @@ const reload = () => {
         }
 
         if (server) {
-            console.log('Closing...');
+            console.log("Closing...");
             server.close(startup);
         } else {
             startup();
@@ -61,7 +61,7 @@ const reload = () => {
 
 hotreload.watch([
     process.env.DIR,
-    path.join(process.env.DIR, '../identity/**/*.json')
+    path.join(process.env.DIR, "../identity/**/*.json")
 ], reload, () => {
     restarting = false;
 });

@@ -1,13 +1,13 @@
 const services = {
-    environmentService 	: require('./environmentService')(),
-    hostnameResolver 	: require('./hostnameResolver')(),
-    storageService 		: require('./storageService')(),
-    integrationService 	: require('./integrationService')(),
-    rulesetService 		: require('./ruleService')(),
-    idmService 			: require('./idmService')(),
-    authClientProvider 	: require('./authClientProvider')(),
-    messagingService 	: require('./messagingService')(),
-    sessionState 		: require('../service.interface/lib/sessionState')(),
+    environmentService 	: require("./environmentService")(),
+    hostnameResolver 	: require("./hostnameResolver")(),
+    storageService 		: require("./storageService")(),
+    integrationService 	: require("./integrationService")(),
+    rulesetService 		: require("./ruleService")(),
+    idmService 			: require("./idmService")(),
+    authClientProvider 	: require("./authClientProvider")(),
+    messagingService 	: require("./messagingService")(),
+    sessionState 		: require("../service.interface/lib/sessionState")(),
     navigationService 	: null
 };
 
@@ -25,7 +25,7 @@ iocProvider.prototype.setContext = function(sessionState, request, response, nav
 iocProvider.prototype._getRequires = function(fnString) {
     var regex = /^\(?(.*?)\)?[ \t]*?=>/;
 
-    if (fnString.indexOf('function') === 0) {
+    if (fnString.indexOf("function") === 0) {
         regex = /^function.*?\((.*?)\)/;
     }
 
@@ -45,7 +45,7 @@ iocProvider.prototype._getRequires = function(fnString) {
 };
 
 iocProvider.prototype.resolveRequirements = function(fn) {
-    if (typeof(fn) === 'object') {
+    if (typeof(fn) === "object") {
         return fn;
     }
 
@@ -75,14 +75,14 @@ iocProvider.prototype.resolveRequirements = function(fn) {
         params.push(resolvedRequirement);
     });
 
-    //can't call apply on a constructor :(
+    //can"t call apply on a constructor :(
     let ret = null;
     try {
         ret = eval(`new fn(${params.map((p, index) => {
             return `params[${index}]`;
-        }).join(',')})`);
+        }).join(",")})`);
     } catch(e) {
-        if (e.toString().indexOf('fn is not a constructor') !== -1) {
+        if (e.toString().indexOf("fn is not a constructor") !== -1) {
             ret = fn.apply(null, params);
         } else {
             throw e;
@@ -93,7 +93,7 @@ iocProvider.prototype.resolveRequirements = function(fn) {
 
 iocProvider.prototype.resolveService = function(name) {
     try {
-        let module = this.path.join(process.cwd(), this.path.dirname(process.env.DIR), 'services', name);
+        let module = this.path.join(process.cwd(), this.path.dirname(process.env.DIR), "services", name);
         delete require.cache[require.resolve(module)];
         this.services[name] = require(module);
 
@@ -105,7 +105,7 @@ iocProvider.prototype.resolveService = function(name) {
 
 module.exports = function(path) {
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     return new iocProvider(services, path);

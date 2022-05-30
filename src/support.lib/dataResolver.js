@@ -4,7 +4,7 @@ const dataResolver = function(stringFormat, environmentService) {
 };
 
 dataResolver.prototype.detectValues = function(string, data, scope, replaceUndefined) {
-    if (!string || !string.indexOf || (string.indexOf('$.') === -1 && string.indexOf('$(') === -1)) {
+    if (!string || !string.indexOf || (string.indexOf("$.") === -1 && string.indexOf("$(") === -1)) {
         return string;
     }
 
@@ -26,15 +26,15 @@ dataResolver.prototype.detectValues = function(string, data, scope, replaceUndef
                 let slicedString = match.slice(0, i);
                 var rep = this.resolveValue(slicedString, scopedData, replaceUndefined);
 
-                if (typeof(rep) === 'boolean') {
+                if (typeof(rep) === "boolean") {
                     rep = rep.toString();
                 }
 
                 if (rep === null) {
-                    rep = '';
+                    rep = "";
                 }
 
-                if (typeof(rep) !== 'undefined' && rep !== slicedString) {
+                if (typeof(rep) !== "undefined" && rep !== slicedString) {
                     matchingValues.push({
                         val: slicedString,
                         rep: rep
@@ -44,7 +44,7 @@ dataResolver.prototype.detectValues = function(string, data, scope, replaceUndef
                     if (matchingValues.length != 0) {
                         replacements.push(matchingValues.pop());
                     } else if (replaceUndefined) {
-                        replacements.push({ val: slicedString, rep: '' });
+                        replacements.push({ val: slicedString, rep: "" });
                     }
                 }
             }
@@ -52,7 +52,7 @@ dataResolver.prototype.detectValues = function(string, data, scope, replaceUndef
     }
 
     replacements.forEach((r) => {
-        if (typeof(r.rep) === 'object') {
+        if (typeof(r.rep) === "object") {
             string = r.rep;
         } else {
             string = string.replace(r.val, r.rep);
@@ -79,7 +79,7 @@ dataResolver.prototype.detectValues = function(string, data, scope, replaceUndef
     }
 
     replacements.forEach((r) => {
-        if (typeof(r.rep) === 'object') {
+        if (typeof(r.rep) === "object") {
             string = r.rep;
         } else {
             string = string.replace(r.val, r.rep);
@@ -91,7 +91,7 @@ dataResolver.prototype.detectValues = function(string, data, scope, replaceUndef
 
 dataResolver.prototype.resolveFunction = function(fn, data) {
     //does it have unresolved values?
-    if (fn.indexOf('$.') !== -1) {
+    if (fn.indexOf("$.") !== -1) {
         return fn;
     }
 
@@ -102,7 +102,7 @@ dataResolver.prototype.resolveFunction = function(fn, data) {
     let evalStatement = fn.slice(2).slice(0, -1);
 
     //does it contain another function?
-    if (evalStatement.indexOf('$(') !== -1) {
+    if (evalStatement.indexOf("$(") !== -1) {
         //we need to evaluate the inner statement first
         evalStatement = this.detectValues(evalStatement, data, {}, false);
     }
@@ -113,14 +113,14 @@ dataResolver.prototype.resolveFunction = function(fn, data) {
         console.error(evalStatement, e);
     }
 
-    return '';
+    return "";
 };
 
 dataResolver.prototype.resolveValue = function(path, data, replaceUndefined) {
     let current = Object.assign({
         env : this.environmentService.listEnvironmentVariables()
     }, data);
-    let parts = path.replace('$.', '').split('.');
+    let parts = path.replace("$.", "").split(".");
 
     parts.forEach((p) => {
         if (current) {
@@ -128,12 +128,12 @@ dataResolver.prototype.resolveValue = function(path, data, replaceUndefined) {
         }
     });
 
-    if (typeof(current) === 'undefined' && !replaceUndefined) {
+    if (typeof(current) === "undefined" && !replaceUndefined) {
         return path;
     }
 
-    if (replaceUndefined && typeof(current) === 'undefined') {
-        return '';
+    if (replaceUndefined && typeof(current) === "undefined") {
+        return "";
     }
 
     return current;
@@ -141,11 +141,11 @@ dataResolver.prototype.resolveValue = function(path, data, replaceUndefined) {
 
 module.exports = function(stringFormat, environmentService) {
     if (!stringFormat) {
-        stringFormat = require('elemental-string-format');
+        stringFormat = require("elemental-string-format");
     }
 
     if (!environmentService) {
-        environmentService = require('./environmentService')();
+        environmentService = require("./environmentService")();
     }
 
     return new dataResolver(stringFormat, environmentService);

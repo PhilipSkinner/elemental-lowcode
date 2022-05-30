@@ -10,7 +10,7 @@ const queueService = function(app, path, glob, definitionProvider, queueInstance
 
 queueService.prototype.findQueueDefinitions = function(dir) {
     return new Promise((resolve, reject) => {
-        this.glob(this.path.join(process.cwd(), dir, '**/*.queue.json'), (err, definitions) => {
+        this.glob(this.path.join(process.cwd(), dir, "**/*.queue.json"), (err, definitions) => {
             if (err) {
                 return reject(err);
             }
@@ -59,19 +59,19 @@ queueService.prototype.init = function(dir) {
 
 module.exports = function(app, path, glob, definitionProvider, queueInstance) {
     if (!path) {
-        path = require('path');
+        path = require("path");
     }
 
     if (!glob) {
-        glob = require('glob');
+        glob = require("glob");
     }
 
     if (!definitionProvider) {
-        definitionProvider = require('./definitionProvider')();
+        definitionProvider = require("./definitionProvider")();
     }
 
     if (!queueInstance) {
-        queueInstance = require('./queueInstance');
+        queueInstance = require("./queueInstance");
     }
 
     return new queueService(app, path, glob, definitionProvider, queueInstance);

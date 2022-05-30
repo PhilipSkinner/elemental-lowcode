@@ -4,42 +4,42 @@ const _securityClientEditorController = function(page) {
     this.error = {
         visible : false
     };
-    this.sectionVisible = 'details';
+    this.sectionVisible = "details";
     this.navitems = [
         {
-            name        : 'Details',
+            name        : "Details",
             event       : this.showDetails.bind(this),
-            selected    : this.sectionVisible == 'details'
+            selected    : this.sectionVisible == "details"
         },
         {
-            name        : 'Claims',
+            name        : "Claims",
             event       : this.showClaims.bind(this),
-            selected    : this.sectionVisible == 'claims'
+            selected    : this.sectionVisible == "claims"
         },
         {
-            name        : 'Registration',
+            name        : "Registration",
             event       : this.showRegistration.bind(this),
-            selected    : this.sectionVisible == 'registration'
+            selected    : this.sectionVisible == "registration"
         },
         {
-            name        : 'Password Enforcement',
+            name        : "Password Enforcement",
             event       : this.showPasswords.bind(this),
-            selected    : this.sectionVisible == 'passwords'
+            selected    : this.sectionVisible == "passwords"
         },
         {
-            name        : 'Terms & Privacy',
+            name        : "Terms & Privacy",
             event       : this.showTerms.bind(this),
-            selected    : this.sectionVisible == 'terms'
+            selected    : this.sectionVisible == "terms"
         },
         {
-            name        : 'Editor',
+            name        : "Editor",
             event       : this.showEditor.bind(this),
-            selected    : this.sectionVisible == 'editor'
+            selected    : this.sectionVisible == "editor"
         }
     ];
     this.client = {
         grant_types : [],
-        scope : '',
+        scope : "",
         redirect_uris : [],
         claims : {},
         features : {
@@ -60,19 +60,19 @@ const _securityClientEditorController = function(page) {
     };
     this.grantTypes = {};
     this.addingScope = false;
-    this.newScope = '';
+    this.newScope = "";
     this.allScopes = [];
     this.addingRedirectUri = false;
-    this.newRedirectUri = '';
+    this.newRedirectUri = "";
     this.addingTermsImplicitConsent = false;
-    this.newTermsImplicitConsent = '';
+    this.newTermsImplicitConsent = "";
     this.addingPrivacyImplicitConsent = false;
-    this.newPrivacyImplicitConsent = '';
+    this.newPrivacyImplicitConsent = "";
     this.addingBannedPassword = false;
-    this.newBannedPassword = '';
+    this.newBannedPassword = "";
     this.addingClientClaim = false;
-    this.newClaimName = '';
-    this.newClaimValue = '';
+    this.newClaimName = "";
+    this.newClaimValue = "";
 };
 
 _securityClientEditorController.prototype.removeClientClaim = function(name, value) {
@@ -101,13 +101,13 @@ _securityClientEditorController.prototype.removeClientClaim = function(name, val
 
 _securityClientEditorController.prototype.cancelAddClientClaim = function() {
     this.addingClientClaim = false;
-    this.newClaimValue = '';
-    this.newClaimName = '';
+    this.newClaimValue = "";
+    this.newClaimName = "";
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.saveClientClaim = function() {
-    if (typeof(this.client.claims[this.caller.newClaimName]) === 'undefined') {
+    if (typeof(this.client.claims[this.caller.newClaimName]) === "undefined") {
         this.client.claims[this.caller.newClaimName] = [];
     }
 
@@ -118,15 +118,15 @@ _securityClientEditorController.prototype.saveClientClaim = function() {
     this.client.claims[this.caller.newClaimName].push(this.caller.newClaimValue);
 
     this.addingClientClaim = false;
-    this.newClaimValue = '';
-    this.newClaimName = '';
+    this.newClaimValue = "";
+    this.newClaimName = "";
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.addClientClaim = function() {
     this.addingClientClaim = true;
-    this.newClaimValue = '';
-    this.newClaimName = '';
+    this.newClaimValue = "";
+    this.newClaimName = "";
     this.forceRefresh();
 };
 
@@ -143,14 +143,14 @@ _securityClientEditorController.prototype.clientClaims = function() {
 }
 
 _securityClientEditorController.prototype.cancelAddBannedPassword = function() {
-    this.newBannedPassword = ''
+    this.newBannedPassword = ""
     this.addingBannedPassword = false;
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.saveBannedPassword = function() {
     this.client.features.banned_passwords.push(this.caller.newBannedPassword);
-    this.newBannedPassword = ''
+    this.newBannedPassword = ""
     this.addingBannedPassword = false;
     this.forceRefresh();
 };
@@ -168,7 +168,7 @@ _securityClientEditorController.prototype.removeBannedPassword = function(passwo
 
 _securityClientEditorController.prototype.addBannedPassword = function() {
     this.addingBannedPassword = true;
-    this.newBannedPassword = '';
+    this.newBannedPassword = "";
     this.forceRefresh();
 };
 
@@ -184,21 +184,21 @@ _securityClientEditorController.prototype.removePrivacyImplicitConsent = functio
 };
 
 _securityClientEditorController.prototype.cancelAddPrivacyImplicitConsent = function() {
-    this.newPrivacyImplicitConsent = '';
+    this.newPrivacyImplicitConsent = "";
     this.addingPrivacyImplicitConsent = false;
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.savePrivacyImplicitConsent = function() {
     this.client.features.privacy.implicit_consents.push(this.caller.newPrivacyImplicitConsent);
-    this.newPrivacyImplicitConsent = '';
+    this.newPrivacyImplicitConsent = "";
     this.addingPrivacyImplicitConsent = false;
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.addPrivacyImplicitConsent = function() {
     this.addingPrivacyImplicitConsent = true;
-    this.newPrivacyImplicitConsent = '';
+    this.newPrivacyImplicitConsent = "";
     this.forceRefresh();
 };
 
@@ -214,27 +214,27 @@ _securityClientEditorController.prototype.removeTermsImplicitConsent = function(
 };
 
 _securityClientEditorController.prototype.cancelAddTermsImplicitConsent = function() {
-    this.newTermsImplicitConsent = '';
+    this.newTermsImplicitConsent = "";
     this.addingTermsImplicitConsent = false;
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.saveTermsImplicitConsent = function() {
     this.client.features.terms.implicit_consents.push(this.caller.newTermsImplicitConsent);
-    this.newTermsImplicitConsent = '';
+    this.newTermsImplicitConsent = "";
     this.addingTermsImplicitConsent = false;
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.addTermsImplicitConsent = function() {
     this.addingTermsImplicitConsent = true;
-    this.newTermsImplicitConsent = '';
+    this.newTermsImplicitConsent = "";
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.standardiseClient = function() {
     this.client.grant_types                         = this.client.grant_types || [];
-    this.client.scope                               = this.client.scope || '';
+    this.client.scope                               = this.client.scope || "";
     this.client.redirect_uris                       = this.client.redirect_uris || [];
     this.client.claims                              = this.client.claims || {};
     this.client.features                            = this.client.features || {};
@@ -252,7 +252,7 @@ _securityClientEditorController.prototype.standardiseClient = function() {
 
 _securityClientEditorController.prototype.cancelAddingRedirectUri = function() {
     this.addingRedirectUri = false;
-    this.newRedirectUri = 'https://';
+    this.newRedirectUri = "https://";
     this.forceRefresh();
 };
 
@@ -260,13 +260,13 @@ _securityClientEditorController.prototype.saveRedirectUri = function() {
     this.client.redirect_uris.push(this.caller.newRedirectUri);
 
     this.addingRedirectUri = false;
-    this.newRedirectUri = 'https://';
+    this.newRedirectUri = "https://";
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.addRedirectUri = function() {
     this.addingRedirectUri = true;
-    this.newRedirectUri = 'https://';
+    this.newRedirectUri = "https://";
     this.forceRefresh();
 };
 
@@ -284,7 +284,7 @@ _securityClientEditorController.prototype.removeRedirectUri = function(uri) {
 
 _securityClientEditorController.prototype.cancelAddScope = function() {
     this.addingScope = false;
-    this.newScope = '';
+    this.newScope = "";
     this.forceRefresh();    
 };
 
@@ -292,23 +292,23 @@ _securityClientEditorController.prototype.saveScope = function() {
     this.client.scope += ` ${this.caller.newScope}`;
 
     this.addingScope = false;
-    this.newScope = '';
+    this.newScope = "";
     this.forceRefresh();    
 };
 
 _securityClientEditorController.prototype.addScope = function() {
     this.addingScope = true;
-    this.newScope = '';
+    this.newScope = "";
     this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.removeScope = function(scope) {    
-    this.client.scope = this.client.scope.split(' ').reduce((sum, a) => {
+    this.client.scope = this.client.scope.split(" ").reduce((sum, a) => {
         if (a !== scope) {
             sum += `${a} `;
         }
         return sum;
-    }, '');
+    }, "");
 
     this.forceRefresh();
 };
@@ -320,7 +320,7 @@ _securityClientEditorController.prototype.showDetails = function() {
     this.navitems[3].selected = false;
     this.navitems[4].selected = false;
     this.navitems[5].selected = false;
-    this.sectionVisible = 'details';
+    this.sectionVisible = "details";
 
     this.refreshInternalState();    
 
@@ -334,7 +334,7 @@ _securityClientEditorController.prototype.showClaims = function() {
     this.navitems[3].selected = false;
     this.navitems[4].selected = false;
     this.navitems[5].selected = false;
-    this.sectionVisible = 'claims';
+    this.sectionVisible = "claims";
 
     this.refreshInternalState();
 
@@ -348,7 +348,7 @@ _securityClientEditorController.prototype.showRegistration = function() {
     this.navitems[3].selected = false;
     this.navitems[4].selected = false;
     this.navitems[5].selected = false;
-    this.sectionVisible = 'registration';
+    this.sectionVisible = "registration";
 
     this.refreshInternalState();
 
@@ -362,7 +362,7 @@ _securityClientEditorController.prototype.showPasswords = function() {
     this.navitems[3].selected = true;
     this.navitems[4].selected = false;
     this.navitems[5].selected = false;
-    this.sectionVisible = 'passwords';
+    this.sectionVisible = "passwords";
 
     this.refreshInternalState();
 
@@ -376,7 +376,7 @@ _securityClientEditorController.prototype.showTerms = function() {
     this.navitems[3].selected = false;
     this.navitems[4].selected = true;
     this.navitems[5].selected = false;
-    this.sectionVisible = 'terms';
+    this.sectionVisible = "terms";
 
     this.refreshInternalState();
 
@@ -390,7 +390,7 @@ _securityClientEditorController.prototype.showEditor = function() {
     this.navitems[3].selected = false;
     this.navitems[4].selected = false;
     this.navitems[5].selected = true;
-    this.sectionVisible = 'editor';
+    this.sectionVisible = "editor";
 
     this.refreshEditorState();
 
@@ -410,21 +410,21 @@ _securityClientEditorController.prototype.refreshInternalState = function() {
 
 _securityClientEditorController.prototype.initEditor = function() {
     //set our editor up
-    this.editor = window.ace.edit(document.getElementById('clientEditor'), {
-        mode : 'ace/mode/json',
-        selectionStyle : 'text'
+    this.editor = window.ace.edit(document.getElementById("clientEditor"), {
+        mode : "ace/mode/json",
+        selectionStyle : "text"
     });
     this.editor.commands.addCommand({
-        name : 'save',
+        name : "save",
         bindKey : {
-            win: 'Ctrl-S',
-            mac: 'Cmd-S'
+            win: "Ctrl-S",
+            mac: "Cmd-S"
         },
         exec : () => {
             this.save();
         }
     });
-    this.editor.setTheme('ace/theme/twilight');
+    this.editor.setTheme("ace/theme/twilight");
 };
 
 _securityClientEditorController.prototype.initBlankType = function() {
@@ -432,9 +432,9 @@ _securityClientEditorController.prototype.initBlankType = function() {
 
     //set the example
     this.editor.setValue(JSON.stringify({
-        client_id : 'my-client',
-        client_secret : 'my really secret secret',
-        scope : 'openid roles',
+        client_id : "my-client",
+        client_secret : "my really secret secret",
+        scope : "openid roles",
         redirect_uris : [
             `${window.hosts.interface}/callback`
         ],
@@ -531,7 +531,7 @@ _securityClientEditorController.prototype.fetchClient = function(name) {
 };
 
 _securityClientEditorController.prototype.save = function() {
-    if (this.sectionVisible !== 'editor') {
+    if (this.sectionVisible !== "editor") {
         this.refreshEditorState();
     } else {
         this.refreshInternalState();
@@ -543,7 +543,7 @@ _securityClientEditorController.prototype.save = function() {
         return window.axiosProxy
             .put(`${window.hosts.kernel}/security/clients/${this.name}`, data, {
                 headers : {
-                    'Content-Type' : 'application/json',
+                    "Content-Type" : "application/json",
                 }
             })
             .then((response) => {
@@ -557,7 +557,7 @@ _securityClientEditorController.prototype.save = function() {
             }).catch((err) => {
                 this.error = {
                     visible : true,
-                    title : 'Error saving client',
+                    title : "Error saving client",
                     description : err.toString()
                 };
                 
@@ -567,7 +567,7 @@ _securityClientEditorController.prototype.save = function() {
         return window.axiosProxy
             .post(`${window.hosts.kernel}/security/clients`, this.editor.getValue(), {
                 headers : {
-                    'Content-Type' : 'application/json',
+                    "Content-Type" : "application/json",
                 }
             })
             .then((response) => {
@@ -583,7 +583,7 @@ _securityClientEditorController.prototype.save = function() {
             }).catch((err) => {
                 this.error = {
                     visible : true,
-                    title : 'Error saving client',
+                    title : "Error saving client",
                     description : err.toString()
                 };
                 
@@ -602,7 +602,7 @@ _securityClientEditorController.prototype.fetchScopes = function() {
 };
 
 window.SecurityClientEditor = {
-    template : '#template-securityClientEditor',
+    template : "#template-securityClientEditor",
     data 	 : () => {
         return window._securityClientEditorControllerInstance.getData();
     },
@@ -610,7 +610,7 @@ window.SecurityClientEditor = {
         window._securityClientEditorControllerInstance.setCaller(this);
         window._securityClientEditorControllerInstance.initEditor();
         return window._securityClientEditorControllerInstance.fetchScopes().then(() => {
-            if (this.$route.params.id === '.new') {
+            if (this.$route.params.id === ".new") {
                 window._securityClientEditorControllerInstance.initBlankType();
                 return null;
             }

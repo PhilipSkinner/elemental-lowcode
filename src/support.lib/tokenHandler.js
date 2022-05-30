@@ -22,7 +22,7 @@ tokenHandler.prototype.getJwksEndpoint = function(uri) {
 
             try {
                 const payload = JSON.parse(body);
-                endpointUrl = payload['jwks_uri'];
+                endpointUrl = payload["jwks_uri"];
             } catch(e) {
                 //ignored on purpose
             }
@@ -81,9 +81,9 @@ tokenHandler.prototype.tokenCheck = function(req, res, next) {
         return;
     }
 
-    let token = req.headers['x-access-token'] || req.headers['authorization'] || '';
+    let token = req.headers["x-access-token"] || req.headers["authorization"] || "";
 
-    if (token.startsWith('Bearer ')) {
+    if (token.startsWith("Bearer ")) {
         token = token.slice(7, token.length);
     }
 
@@ -93,7 +93,7 @@ tokenHandler.prototype.tokenCheck = function(req, res, next) {
             next();
             return;
         }).catch((err) => {
-            console.error('Invalid bearer token received on', req.path);
+            console.error("Invalid bearer token received on", req.path);
             console.error(err);
             res.status(401);
             res.end();
@@ -108,11 +108,11 @@ tokenHandler.prototype.tokenCheck = function(req, res, next) {
 
 tokenHandler.prototype.verifyToken = function(token, skipRetry) {
     return new Promise((resolve, reject) => {
-        let parts = token.split('.');
-        let headers = JSON.parse(Buffer.from(parts[0], 'base64').toString('utf8'));
+        let parts = token.split(".");
+        let headers = JSON.parse(Buffer.from(parts[0], "base64").toString("utf8"));
 
-        if (typeof(headers.alg) === 'undefined' || headers.alg === null || headers.alg === '') {
-            return reject(new Error('Undefined or empty algorithm detected in token headers'));
+        if (typeof(headers.alg) === "undefined" || headers.alg === null || headers.alg === "") {
+            return reject(new Error("Undefined or empty algorithm detected in token headers"));
         }
 
         this.jwt.verify(token, this.publicKeys[headers.kid], { algorithms: [headers.alg] }, (err, decoded) => {
@@ -137,19 +137,19 @@ tokenHandler.prototype.verifyToken = function(token, skipRetry) {
 
 module.exports = function(config, jwt, hostnameResolver, request, jwkToPem) {
     if (!jwt) {
-        jwt = require('jsonwebtoken');
+        jwt = require("jsonwebtoken");
     }
 
     if (!hostnameResolver) {
-        hostnameResolver = require('./hostnameResolver')();
+        hostnameResolver = require("./hostnameResolver")();
     }
 
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     if (!jwkToPem) {
-        jwkToPem = require('jwk-to-pem');
+        jwkToPem = require("jwk-to-pem");
     }
 
     return new tokenHandler(config, jwt, hostnameResolver, request, jwkToPem);

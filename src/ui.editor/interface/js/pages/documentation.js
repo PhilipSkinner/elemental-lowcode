@@ -5,7 +5,7 @@ const loadPage = function(name, obj) {
         obj.html = converter.makeHtml(content.data);
 
         //quickly replace any /documentation links
-        obj.html = obj.html.replace(/"\/src\/support\.documentation/g, '"#/documentation');
+        obj.html = obj.html.replace(/"\/src\/support\.documentation/g, "\"#/documentation");
 
         //scroll to the top
         window.scrollTo(0, 0);
@@ -13,7 +13,7 @@ const loadPage = function(name, obj) {
 };
 
 window.Documentation = {
-    template : '#template-documentation',
+    template : "#template-documentation",
     data 	 : () => {
         return {
             html : this.html
@@ -21,14 +21,14 @@ window.Documentation = {
     },
     mounted  : function() {
         const handlePage = () => {
-            var page = '/documentation/index';
+            var page = "/documentation/index";
 
             if (this.$route.path) {
                 page = this.$route.path;
             }
 
-            if (page === '/documentation') {
-                page = '/documentation/index';
+            if (page === "/documentation") {
+                page = "/documentation/index";
             }
 
             loadPage(page, this);
@@ -37,7 +37,7 @@ window.Documentation = {
         handlePage();
 
         this.$router.afterEach((to, from) => {
-            if (to.path.indexOf('/documentation') === 0) {
+            if (to.path.indexOf("/documentation") === 0) {
                 handlePage();
             }
         });

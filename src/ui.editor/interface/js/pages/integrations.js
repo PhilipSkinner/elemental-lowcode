@@ -69,7 +69,7 @@ _integrationsController.prototype._removeIntegration = function(name) {
 };
 
 window.Integrations = {
-    template : '#template-integrations',
+    template : "#template-integrations",
     data 	 : () => {
         return window._integrationsControllerInstance.getData();
     },

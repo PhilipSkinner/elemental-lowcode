@@ -12,12 +12,12 @@ const _websitesController = function(page) {
 _websitesController.prototype.setNav = function() {
     this.navitems = [
         {
-            name 		: 'Websites',
+            name 		: "Websites",
             event 		: this.showWebsites.bind(this),
             selected 	: this.websitesVisible
         },
         {
-            name 		: 'Tagsets',
+            name 		: "Tagsets",
             event 		: this.showTagsets.bind(this),
             selected 	: this.tagsetsVisible
         }
@@ -114,7 +114,7 @@ _websitesController.prototype._deleteWebsite = function(name) {
 };
 
 window.Websites = {
-    template : '#template-websites',
+    template : "#template-websites",
     data 	 : () => {
         return window._websitesControllerInstance.getWebsites();
     },

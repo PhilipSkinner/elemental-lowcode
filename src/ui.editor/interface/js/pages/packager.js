@@ -11,27 +11,27 @@ _packagerController.prototype.getData = function() {
 _packagerController.prototype.export = function() {
     //generate the package
     window.axiosProxy.get(`${window.hosts.kernel}`, {
-        responseType: 'arraybuffer'
+        responseType: "arraybuffer"
     }).then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data], { type : 'application/tar' }));
-   		const link = document.createElement('a');
+        const url = window.URL.createObjectURL(new Blob([response.data], { type : "application/tar" }));
+   		const link = document.createElement("a");
    		link.href = url;
-   		link.setAttribute('download', 'export.tar');
+   		link.setAttribute("download", "export.tar");
    		document.body.appendChild(link);
    		link.click();
     });
 };
 
 _packagerController.prototype.import = function() {
-    const elem = document.querySelectorAll('input[name=\'importFile\']')[0];
+    const elem = document.querySelectorAll("input[name=\"importFile\"]")[0];
 
     return window.getBase64(elem.files[0]).then((file) => {
         return window.axiosProxy.post(`${window.hosts.kernel}`, {
             file : file,
-            name : 'import.tar'
+            name : "import.tar"
         }, {
             headers: {
-                'Content-Type' : 'application/json',
+                "Content-Type" : "application/json",
             }
         }).then(() => {
             console.log(response);
@@ -40,7 +40,7 @@ _packagerController.prototype.import = function() {
 };
 
 window.Packager = {
-    template : '#template-packager',
+    template : "#template-packager",
     data 	 : () => {
         return window._packagerControllerInstance.getData();
     },

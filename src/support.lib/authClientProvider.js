@@ -12,7 +12,7 @@ authClientProvider.prototype.loginUser = function(username, password) {
     return new Promise((resolve, reject) => {
         this.request.post(`${this.hostnameResolver.resolveIdentity()}/token`, {
             form : {
-                grant_type 		: 'password',
+                grant_type 		: "password",
                 username 		: username,
                 password 		: password,
                 scope 			: this.config.scope,
@@ -30,7 +30,7 @@ authClientProvider.prototype.loginUser = function(username, password) {
                 try {
                     payload = JSON.parse(body);
                 } catch(e) {
-                    return reject(new Error('Error parsing token response'));
+                    return reject(new Error("Error parsing token response"));
                 }
 
                 //set our sessions access token
@@ -46,7 +46,7 @@ authClientProvider.prototype.loginUser = function(username, password) {
                 return resolve();
             }
 
-            return reject(new Error('Invalid credentials'));
+            return reject(new Error("Invalid credentials"));
         });
     });
 };
@@ -56,17 +56,17 @@ authClientProvider.prototype.logoutUser = function() {
 };
 
 authClientProvider.prototype.tokenExpired = function(token) {
-    if (token === null || typeof(token) === 'undefined' || token.replace(/ /g, '') === '') {
+    if (token === null || typeof(token) === "undefined" || token.replace(/ /g, "") === "") {
         return true;
     }
 
-    if (token.split('.').length != 3) {
+    if (token.split(".").length != 3) {
         return true;
     }
 
-    let claims = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString('utf8'));
+    let claims = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString("utf8"));
 
-    if (typeof(claims.exp) !== 'undefined' && claims.exp !== null && claims.exp > 0) {
+    if (typeof(claims.exp) !== "undefined" && claims.exp !== null && claims.exp > 0) {
         const currentEpoch = Math.floor(new Date() / 1000);
 
         //allow for 60 seconds
@@ -91,7 +91,7 @@ authClientProvider.prototype.refreshUserToken = function() {
     return new Promise((resolve, reject) => {
         this.request.post(`${this.hostnameResolver.resolveIdentity()}/token`, {
             form : {
-                grant_type 		: 'refresh_token',
+                grant_type 		: "refresh_token",
                 refresh_token 	: refreshToken,
                 scope 			: this.config.scope,
                 client_id 		: this.config.client_id,
@@ -107,7 +107,7 @@ authClientProvider.prototype.refreshUserToken = function() {
                 try {
                     data = JSON.parse(body);
                 } catch(e) {
-                    return reject(new Error('Error parsing refresh token response'));
+                    return reject(new Error("Error parsing refresh token response"));
                 }
 
                 if (data) {
@@ -127,7 +127,7 @@ authClientProvider.prototype.refreshUserToken = function() {
                 return resolve(this.sessionState.getAccessToken());
             }
 
-            return reject(new Error('Error refreshing user access token'));
+            return reject(new Error("Error refreshing user access token"));
         });
     });
 };
@@ -145,7 +145,7 @@ authClientProvider.prototype.getAccessToken = function() {
     }
 
     if (!this.config) {
-        return Promise.resolve('');
+        return Promise.resolve("");
     }
 
     return new Promise((resolve, reject) => {
@@ -153,7 +153,7 @@ authClientProvider.prototype.getAccessToken = function() {
 
         this.request.post(`${this.hostnameResolver.resolveIdentity()}/token`, {
             form : {
-                grant_type 		: 'client_credentials',
+                grant_type 		: "client_credentials",
                 scope 			: this.config.scope,
                 client_id 		: this.config.client_id,
                 client_secret 	: this.config.client_secret
@@ -170,7 +170,7 @@ authClientProvider.prototype.getAccessToken = function() {
                 try {
                     data = JSON.parse(body);
                 } catch(e) {
-                    return reject(new Error('Error parsing token response'));
+                    return reject(new Error("Error parsing token response"));
                 }
 
                 console.log(data);
@@ -181,18 +181,18 @@ authClientProvider.prototype.getAccessToken = function() {
             }
 
 
-            return resolve('');
+            return resolve("");
         });
     });
 };
 
 module.exports = function(config, request, hostnameResolver) {
     if (!request) {
-        request = require('request');
+        request = require("request");
     }
 
     if (!hostnameResolver) {
-        hostnameResolver = require('./hostnameResolver')();
+        hostnameResolver = require("./hostnameResolver")();
     }
 
     return new authClientProvider(config, request, hostnameResolver);

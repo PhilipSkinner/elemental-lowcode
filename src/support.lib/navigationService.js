@@ -15,7 +15,7 @@ navigationService.prototype.setContext = function(request, response) {
 
 navigationService.prototype.generateResponseHeaders = function() {
     if (this.url) {
-        this.response.setHeader('Location', this.url);
+        this.response.setHeader("Location", this.url);
         this.response.status(302);
     }
 };
