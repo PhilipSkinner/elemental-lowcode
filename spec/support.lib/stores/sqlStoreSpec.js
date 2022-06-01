@@ -11,6 +11,10 @@ const sequelize = {
     UUID    : 6,
     STRING  : () => {
         return 6;
+    },
+    Op : {
+        or  : 'or',
+        and : 'and'
     }
 };
 
@@ -316,7 +320,7 @@ const convertReturnDataSimpleChildren = (done) => {
         rows : [
             {
                 _modelOptions : {
-                    name : {
+                        name : {
                         singular : 'bloot'
                     }
                 },
@@ -366,6 +370,286 @@ const convertReturnDataSimpleChildren = (done) => {
     });
 };
 
+const getResourcesRetryMechanism = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as not ready
+    instance.isReady = false;
+
+    //set the timeout
+    instance.timeout = 10;
+    instance.attempts = 3;
+
+    instance.getResources('type', 1, 10).then((res) => {
+        expect(res).toEqual(null);
+
+        done();
+    });
+};
+
+const getResourcesExceptionTest = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as ready
+    instance.isReady = true;
+
+    //model
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where   : {},
+        order   : [],
+        limit   : 10,
+        offset  : 0
+    }).returns(Promise.reject(new Error('oh dear')));
+    instance.models.type = model;
+
+    instance.getResources('type', 1, 10).catch((err) => {
+        expect(err).toEqual(new Error('oh dear'));
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const getResourcesDefaultCounts = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as ready
+    instance.isReady = true;
+
+    //model
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where   : {},
+        order   : [],
+        limit   : 5,
+        offset  : 0
+    }).returns(Promise.resolve({
+        rows : []
+    }));
+    instance.models.type = model;
+
+    instance.getResources('type').then((res) => {
+        expect(res).toEqual([]);
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const getResourcesFilters = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as ready
+    instance.isReady = true;
+
+    //model
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where   : {
+            id : 12,
+            or : [
+                {
+                    this : 'that'
+                },
+                {
+                    that : 'this'
+                }
+            ],
+            and : [
+                {
+                    this : 'that'
+                },
+                {
+                    that : 'this'
+                }
+            ]
+        },
+        order   : [],
+        limit   : 5,
+        offset  : 0
+    }).returns(Promise.resolve({
+        rows : []
+    }));
+    instance.models.type = model;
+
+    instance.getResources('type', 1, 5, [
+        {
+            path : '$.id',
+            value : 12
+        },
+        {
+            value : {
+                operator : "or",
+                fields : {
+                    '$.this' : 'that',
+                    '$.that' : 'this'
+                }
+            }
+        },
+        {
+            value : {
+                operator : "and",
+                fields : {
+                    '$.this' : 'that',
+                    '$.that' : 'this'
+                }
+            }
+        },
+        {
+            value : {
+                operator : "and"
+            }
+        }
+    ]).then((res) => {
+        expect(res).toEqual([]);
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const getResourcesOrdering = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as ready
+    instance.isReady = true;
+
+    //model
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where   : {},
+        order   : [
+            [
+                'id',
+                'desc'
+            ]
+        ],
+        limit   : 5,
+        offset  : 0
+    }).returns(Promise.resolve({
+        rows : []
+    }));
+    instance.models.type = model;
+
+    instance.getResources('type', 1, 5, [], [
+        {
+            path : '$.id',
+            value : 'desc'
+        }
+    ]).then((res) => {
+        expect(res).toEqual([]);
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const getResourceRetryMechanism = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as not ready
+    instance.isReady = false;
+
+    //set the timeout
+    instance.timeout = 10;
+    instance.attempts = 3;
+
+    instance.getResource('type', 1).then((res) => {
+        expect(res).toEqual(null);
+
+        done();
+    });
+};
+
+const getResourceInvalidId = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as not ready
+    instance.isReady = true;
+
+    instance.getResource('type', null).then((res) => {
+        expect(res).toEqual(null);
+
+        done();
+    });
+};
+
+const getResourceNoResults = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as ready
+    instance.isReady = true;
+
+    //model
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where   : {
+            id : 1234
+        },
+        order   : [],
+        limit   : 1,
+        offset  : 0
+    }).returns(Promise.resolve({
+        rows : []
+    }));
+    instance.models.type = model;
+
+    instance.getResource('type', 1234).then((res) => {
+        expect(res).toEqual(null);
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const getResourceTest = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as ready
+    instance.isReady = true;
+
+    //model
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where   : {
+            id : 1234
+        },
+        order   : [],
+        limit   : 1,
+        offset  : 0
+    }).returns(Promise.resolve({
+        rows : [
+            {
+                _modelOptions : {
+                    name : {
+                        singular : 'type'
+                    }
+                },
+                dataValues : {
+                    id : 1234
+                }
+            }
+        ]
+    }));
+    instance.models.type = model;
+
+    instance.getResource('type', 1234).then((res) => {
+        expect(res).toEqual({
+            id : 1234
+        });
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
 describe('A sql store', () => {
     describe('determine type', () => {
         it('can determine booleans', determineBooleansTest);
@@ -390,5 +674,20 @@ describe('A sql store', () => {
         it('handling no result/values', convertReturnNoValues);
         it('handling data values', convertReturnDataValues);
         it('handling simple children relationships', convertReturnDataSimpleChildren);
+    });
+
+    describe('can get resources', () => {
+        it('handling retries', getResourcesRetryMechanism);
+        it('handles exceptions', getResourcesExceptionTest);
+        it('handles default counts', getResourcesDefaultCounts);
+        it('applies filters correctly', getResourcesFilters);
+        it('handles ordering', getResourcesOrdering);
+    });
+
+    describe('can get a resource', () => {
+        it('handling retries', getResourceRetryMechanism);
+        it('handling invalid ids', getResourceInvalidId);
+        it('handling no results', getResourceNoResults);
+        it('correctly', getResourceTest);
     });
 });

@@ -115,8 +115,6 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
             allowNull 		: false,
         };
 
-        console.log(this);
-
         if (this.simpleTypes.indexOf(schemaConfig.type) !== -1) {
             columns.value = {
                 type 		: this.determineType(schemaConfig.type, schemaConfig.format),
@@ -303,7 +301,7 @@ sqlStore.prototype.getResources = function(type, start, count, filters, orders, 
         return new Promise((resolve) => {
             setTimeout(resolve, this.timeout/this.attempts);
         }).then(() => {
-            return this.getResources(type, start, count, filters, orders, attempts);
+            return this.getResources(type, start, count, filters, orders, attempts+1);
         });
     }
 
