@@ -407,7 +407,9 @@ sqlStore.prototype.mapData = function(data, tableName, id) {
         ret[col] = data[col];
     });
 
-    ret[id] = id;
+    if (id) {
+        ret.id = id;
+    }
 
     return ret;
 };
@@ -432,7 +434,7 @@ sqlStore.prototype.saveResource = function(name, data, id, parentId) {
                 if (!item) {
                     data.etag = this.uuid();
                     data.id = id;
-                    return this.models[this._normalizedTableName(name)].create(this.mapData(data, name)).then(resolve).catch(reject);
+                    return this.models[this._normalizedTableName(name)].create(this.mapData(data, name, id)).then(resolve).catch(reject);
                 }
 
                 data.id = id;
@@ -493,7 +495,7 @@ sqlStore.prototype.createResource = function(type, id, data, attempts) {
     let newResource = null;
     data.id = id;
 
-    return this.saveResource(type, data, null).then((_newResource) => {
+    return this.saveResource(type, data, id).then((_newResource) => {
         newResource = _newResource;
         return Promise.resolve(newResource.dataValues);
     }).catch((err) => {

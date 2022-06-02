@@ -19,12 +19,15 @@ const sequelize = {
 };
 
 const uuid = {
-
+    main : () => {}
 };
 
 const model = {
-    count : () => {},
+    count           : () => {},
     findAndCountAll : () => {},
+    destroy         : () => {},
+    update          : () => {},
+    create          : () => {},
 };
 
 const determineBooleansTest = () => {
@@ -650,6 +653,596 @@ const getResourceTest = (done) => {
     });
 };
 
+const deleteResourceRetryMechanism = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as not ready
+    instance.isReady = false;
+
+    //set the timeout
+    instance.timeout = 10;
+    instance.attempts = 3;
+
+    instance.deleteResource('type', 1).then((res) => {
+        expect(res).toEqual(null);
+
+        done();
+    });
+};
+
+const deleteResourceExceptionTest = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('destroy').once().withArgs({
+        where : {
+            id : 1
+        }
+    }).returns(Promise.reject(new Error('oh noes')));
+    instance.models.type = model;
+
+    instance.deleteResource('type', 1).catch((err) => {
+        expect(err).toEqual(new Error('oh noes'));
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const deleteResourceTest = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('destroy').once().withArgs({
+        where : {
+            id : 1
+        }
+    }).returns(Promise.resolve());
+    instance.models.type = model;
+
+    instance.deleteResource('type', 1).then(() => {
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const updateResourceRetryMechanism = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as not ready
+    instance.isReady = false;
+
+    //set the timeout
+    instance.timeout = 10;
+    instance.attempts = 3;
+
+    instance.updateResource('type', 1, {
+        hello : 'world'
+    }).then((res) => {
+        expect(res).toEqual(null);
+
+        done();
+    });
+};
+
+const updateResourceExceptionTest = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid.main);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where : {
+            id : 1
+        },
+        order : [],
+        limit : 1,
+        offset : 0
+    }).returns(Promise.resolve({
+        rows : [
+            {
+                _modelOptions : {
+                    name : {
+                        singular : 'type'
+                    }
+                },
+                dataValues : {
+                    id : 1
+                }
+            }
+        ]
+    }));
+    modelMock.expects('update').once().withArgs({
+        id : 1,
+        hello : 'world'
+    }, {
+        where : {
+            id : 1
+        }
+    }).returns(Promise.reject(new Error('oh dear')));
+
+    instance.models.type = model;
+    instance.tables.type = {
+        hello : ''
+    };
+
+    instance.updateResource('type', 1, {
+        hello : 'world'
+    }).catch((err) => {
+        expect(err).toEqual(new Error('oh dear'));
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const updateResourceTest = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid.main);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where : {
+            id : 1
+        },
+        order : [],
+        limit : 1,
+        offset : 0
+    }).returns(Promise.resolve({
+        rows : [
+            {
+                _modelOptions : {
+                    name : {
+                        singular : 'type'
+                    }
+                },
+                dataValues : {
+                    id : 1
+                }
+            }
+        ]
+    }));
+    modelMock.expects('update').once().withArgs({
+        id : 1,
+        hello : 'world'
+    }, {
+        where : {
+            id : 1
+        }
+    }).returns(Promise.resolve());
+
+    instance.models.type = model;
+    instance.tables.type = {
+        hello : ''
+    };
+
+    instance.updateResource('type', 1, {
+        hello : 'world'
+    }).then((res) => {
+        expect(res).toEqual({
+            id : 1,
+            hello : 'world'
+        });
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const updateResourceWithParent = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid.main);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where : {
+            id : 1
+        },
+        order : [],
+        limit : 1,
+        offset : 0
+    }).returns(Promise.resolve({
+        rows : [
+            {
+                _modelOptions : {
+                    name : {
+                        singular : 'type'
+                    }
+                },
+                dataValues : {
+                    id : 1
+                }
+            }
+        ]
+    }));
+    modelMock.expects('update').once().withArgs({
+        id : 1,
+        hello : 'world',
+        parent : 'parent'
+    }, {
+        where : {
+            id : 1
+        }
+    }).returns(Promise.resolve());
+
+    instance.models.type = model;
+    instance.tables.type = {
+        hello : '',
+        parent : ''
+    };
+
+    instance.updateResource('type', 1, {
+        hello : 'world'
+    }, 'parent').then((res) => {
+        expect(res).toEqual({
+            id : 1,
+            hello : 'world',
+            parent : 'parent'
+        });
+
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const createResourceRetryMechanism = (done) => {
+    const instance = sqlStore(null, {}, sequelize, uuid);
+
+    //mark as not ready
+    instance.isReady = false;
+
+    //set the timeout
+    instance.timeout = 10;
+    instance.attempts = 3;
+
+    instance.createResource('type', 1, {
+        hello : 'world'
+    }).then((res) => {
+        expect(res).toEqual(null);
+
+        done();
+    });
+};
+
+const createResourceExceptionTest = (done) => {
+    const uuidMock = sinon.mock(uuid);
+    uuidMock.expects('main').once().returns('etag');
+
+    const instance = sqlStore(null, {}, sequelize, uuid.main);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where : {
+            id : 1
+        },
+        order : [],
+        limit : 1,
+        offset : 0
+    }).returns(Promise.resolve({
+        rows : []
+    }));
+    modelMock.expects('create').once().withArgs({
+        id : 1,
+        hello : 'world',
+        etag : 'etag',
+    }).returns(Promise.reject(new Error('oops')));
+
+    instance.models.type = model;
+    instance.tables.type = {
+        hello : '',
+        etag : ''
+    };
+
+    instance.createResource('type', 1, {
+        hello : 'world'
+    }).catch((err) => {
+        expect(err).toEqual(new Error('oops'));
+
+        uuidMock.verify();
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const createResourceHandleDuplication = (done) => {
+    const uuidMock = sinon.mock(uuid);
+    uuidMock.expects('main').once().returns('etag');
+
+    const instance = sqlStore(null, {}, sequelize, uuid.main);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where : {
+            id : 1
+        },
+        order : [],
+        limit : 1,
+        offset : 0
+    }).returns(Promise.resolve({
+        rows : []
+    }));
+    modelMock.expects('create').once().withArgs({
+        id : 1,
+        hello : 'world',
+        etag : 'etag',
+    }).returns(Promise.reject({
+        original : {
+            code : 'ER_DUP_ENTRY'
+        }
+    }));
+
+    instance.models.type = model;
+    instance.tables.type = {
+        hello : '',
+        etag : ''
+    };
+
+    instance.createResource('type', 1, {
+        hello : 'world'
+    }).catch((err) => {
+        expect(err).toEqual(new Error('Resource already exists'));
+
+        uuidMock.verify();
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const createResourceHandleDuplicationAlternative = (done) => {
+    const uuidMock = sinon.mock(uuid);
+    uuidMock.expects('main').once().returns('etag');
+
+    const instance = sqlStore(null, {}, sequelize, uuid.main);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where : {
+            id : 1
+        },
+        order : [],
+        limit : 1,
+        offset : 0
+    }).returns(Promise.resolve({
+        rows : []
+    }));
+    modelMock.expects('create').once().withArgs({
+        id : 1,
+        hello : 'world',
+        etag : 'etag',
+    }).returns(Promise.reject({
+        original : {
+            code : 'ER_DUP_ENTRY_WHAT',
+        },
+        fields : [
+            "id"
+        ]
+    }));
+
+    instance.models.type = model;
+    instance.tables.type = {
+        hello : '',
+        etag : ''
+    };
+
+    instance.createResource('type', 1, {
+        hello : 'world'
+    }).catch((err) => {
+        expect(err).toEqual(new Error('Resource already exists'));
+
+        uuidMock.verify();
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const createResourceWithIdTest = (done) => {
+    const uuidMock = sinon.mock(uuid);
+    uuidMock.expects('main').once().returns('etag');
+
+    const instance = sqlStore(null, {}, sequelize, uuid.main);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('findAndCountAll').once().withArgs({
+        where : {
+            id : 1
+        },
+        order : [],
+        limit : 1,
+        offset : 0
+    }).returns(Promise.resolve({
+        rows : []
+    }));
+    modelMock.expects('create').once().withArgs({
+        id : 1,
+        hello : 'world',
+        etag : 'etag',
+    }).returns(Promise.resolve({
+        dataValues : {
+            id : 1,
+            hello : 'world',
+            etag : 'etag'
+        }
+    }));
+
+    instance.models.type = model;
+    instance.tables.type = {
+        hello : '',
+        etag : ''
+    };
+
+    instance.createResource('type', 1, {
+        hello : 'world'
+    }).then((res) => {
+        expect(res).toEqual({
+            id : 1,
+            hello : 'world',
+            etag : 'etag'
+        });
+
+        uuidMock.verify();
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const createResourceWithoutIdTest = (done) => {
+    const uuidMock = sinon.mock(uuid);
+    uuidMock.expects('main').once().returns('id');
+    uuidMock.expects('main').once().returns('etag');
+
+    const instance = sqlStore(null, {}, sequelize, uuid.main);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('create').once().withArgs({
+        id : 'id',
+        hello : 'world',
+        etag : 'etag',
+    }).returns(Promise.resolve({
+        dataValues : {
+            id : 'id',
+            hello : 'world',
+            etag : 'etag'
+        }
+    }));
+
+    instance.models.type = model;
+    instance.tables.type = {
+        hello : '',
+        etag : '',
+        id : ''
+    };
+
+    instance.createResource('type', null, {
+        hello : 'world',
+        ignore : ['me']
+    }).then((res) => {
+        expect(res).toEqual({
+            id : 'id',
+            hello : 'world',
+            etag : 'etag'
+        });
+
+        uuidMock.verify();
+        modelMock.verify();
+
+        done();
+    });
+};
+
+const createComplexChildren = (done) => {
+    const uuidMock = sinon.mock(uuid);
+    uuidMock.expects('main').once().returns('id');
+    uuidMock.expects('main').once().returns('etag');
+    uuidMock.expects('main').once().returns('child_one');
+    uuidMock.expects('main').once().returns('etag_one');
+    uuidMock.expects('main').once().returns('child_two');
+    uuidMock.expects('main').once().returns('etag_two');
+
+    const instance = sqlStore(null, {}, sequelize, uuid.main);
+
+    //mark as ready
+    instance.isReady = true;
+
+    const modelMock = sinon.mock(model);
+    modelMock.expects('create').once().withArgs({
+        id : 'id',
+        hello : 'world',
+        etag : 'etag',
+    }).returns(Promise.resolve({
+        dataValues : {
+            id : 'id',
+            hello : 'world',
+            etag : 'etag'
+        }
+    }));
+    modelMock.expects('destroy').once().withArgs({
+        where : {
+            parent : 'id'
+        }
+    }).returns(Promise.resolve());
+    modelMock.expects('create').once().withArgs({
+        id : 'child_one',
+        etag : 'etag_one',
+        value : 'yes',
+        parent : 'id'
+    }).returns(Promise.resolve());
+    modelMock.expects('create').once().withArgs({
+        id : 'child_two',
+        etag : 'etag_two',
+        value : 'sir',
+        parent : 'id'
+    }).returns(Promise.resolve());
+
+    instance.models.type = model;
+    instance.models.type_children = model;
+    instance.tables.type = {
+        hello : '',
+        etag : '',
+        id : ''
+    };
+    instance.tables.type_children = {
+        id : '',
+        etag : '',
+        value : '',
+        parent : '',
+    }
+    instance.columnTableLookups['type@@children'] = 'type_children';
+
+    instance.createResource('type', null, {
+        hello : 'world',
+        children : [
+            'yes',
+            'sir'
+        ]
+    }).then((res) => {
+        expect(res).toEqual({
+            id : 'id',
+            hello : 'world',
+            etag : 'etag'
+        });
+
+        uuidMock.verify();
+        modelMock.verify();
+
+        done();
+    });
+};
+
 describe('A sql store', () => {
     describe('determine type', () => {
         it('can determine booleans', determineBooleansTest);
@@ -689,5 +1282,28 @@ describe('A sql store', () => {
         it('handling invalid ids', getResourceInvalidId);
         it('handling no results', getResourceNoResults);
         it('correctly', getResourceTest);
+    });
+
+    describe('can delete a resource', () => {
+        it('handling retries', deleteResourceRetryMechanism);
+        it('handling exceptions', deleteResourceExceptionTest);
+        it('correctly', deleteResourceTest);
+    });
+
+    describe('can update a resource', () => {
+        it('handling retries', updateResourceRetryMechanism);
+        it('handling exceptions', updateResourceExceptionTest);
+        it('correctly', updateResourceTest);
+        it('with a parent', updateResourceWithParent);
+    });
+
+    describe('can create a resource', () => {
+        it('handling retries', createResourceRetryMechanism);
+        it('handles exceptions', createResourceExceptionTest);
+        it('handles duplication', createResourceHandleDuplication);
+        it('handles duplication alternative', createResourceHandleDuplicationAlternative);
+        it('correctly with id', createResourceWithIdTest);
+        it('correctly without id', createResourceWithoutIdTest);
+        it('with complex children', createComplexChildren);
     });
 });
