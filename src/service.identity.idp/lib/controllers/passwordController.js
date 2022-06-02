@@ -295,6 +295,15 @@ passwordController.prototype.resetPassword = function(req, res, next) {
         account = _account;
         return this.provider.Client.find(details.params.client_id);
     }).then((client) => {
+        if (!this.clientHelper.resetEnabled(client) || !details.lastSubmission) {
+            //not good, redirect back to login
+            return this.provider.interactionFinished(req, res, {
+                prompt : "login"
+            }, {
+                mergeWithLastSubmission : false
+            });
+        }
+
         //check our password rules
         const rules = this.clientHelper.getPasswordRules(client);
         const bannedPasswords = this.clientHelper.getBannedPasswords(client);

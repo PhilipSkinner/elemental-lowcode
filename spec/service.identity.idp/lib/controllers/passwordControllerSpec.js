@@ -1020,7 +1020,7 @@ const handleResetCodeValidCode = (done) => {
                 },
                 passwordError   : null,
                 title           : 'Reset password',
-            })
+            });
 
             providerMock.verify();
             clientMock.verify();
@@ -1029,6 +1029,319 @@ const handleResetCodeValidCode = (done) => {
             done();
         }
     });
+};
+
+const resetPasswordExceptionTest = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs('req', 'res').returns(Promise.reject(new Error('oh dear')));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.resetPassword('req', 'res', (err) => {
+        expect(err).toEqual(new Error('oh dear'));
+
+        providerMock.verify();
+
+        done();
+    });
+};
+
+const resetPasswordNotEnabled = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs('req', 'res').returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        lastSubmission : {
+            username : 'my-username'
+        }
+    }));
+    providerMock.expects('interactionFinished').once().withArgs('req', 'res', {
+        prompt : 'login'
+    }, {
+        mergeWithLastSubmission : false
+    }).returns(Promise.resolve());
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(false);
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve({}));
+
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByUsername').once().withArgs('my-username');
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.resetPassword('req', 'res');
+
+    setTimeout(() => {
+        providerMock.verify();
+        clientMock.verify();
+        clientHelperMock.verify();
+        accountMock.verify();
+
+        done();
+    });
+};
+
+const resetPasswordWeakPassword = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, sinon.match.any).returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        lastSubmission : {
+            username : 'my-username'
+        },
+        uid : 'my-uid'
+    }));
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+    clientHelperMock.expects('getPasswordRules').once().returns({
+        error : 'not good enough mate'
+    });
+    clientHelperMock.expects('getBannedPasswords').once().returns('my-banned-passwords');
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve('my-client'));
+
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByUsername').once().withArgs('my-username');
+
+    const passwordMock = sinon.mock(passwordHelper);
+    passwordMock.expects('passwordStrongEnough').once().withArgs({
+        error : 'not good enough mate'
+    }, 'my-password').returns(false);
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.resetPassword({
+        body : {
+            password: 'my-password',
+        }
+    }, {
+        render : (template, data) => {
+            expect(template).toEqual('resetPassword');
+            expect(data).toEqual({
+                client          : 'my-client',
+                uid             : 'my-uid',
+                details         : {
+                    username : 'my-username'
+                },
+                params          : {
+                    client_id : 'client-id'
+                },
+                passwordError   : 'not good enough mate',
+                title           : 'Reset password',
+            })
+
+            providerMock.verify();
+            clientMock.verify();
+            clientHelperMock.verify();
+            accountMock.verify();
+            passwordMock.verify();
+
+            done();
+        }
+    });
+};
+
+const resetPasswordBannedPassword = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, sinon.match.any).returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        lastSubmission : {
+            username : 'my-username'
+        },
+        uid : 'my-uid'
+    }));
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+    clientHelperMock.expects('getPasswordRules').once().returns({
+        error : 'not good enough mate'
+    });
+    clientHelperMock.expects('getBannedPasswords').once().returns('my-banned-passwords');
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve('my-client'));
+
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByUsername').once().withArgs('my-username');
+
+    const passwordMock = sinon.mock(passwordHelper);
+    passwordMock.expects('passwordStrongEnough').once().withArgs({
+        error : 'not good enough mate'
+    }, 'my-password').returns(true);
+    passwordMock.expects('isBannedPassword').once().withArgs('my-banned-passwords', 'my-password').returns(true);
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.resetPassword({
+        body : {
+            password: 'my-password',
+        }
+    }, {
+        render : (template, data) => {
+            expect(template).toEqual('resetPassword');
+            expect(data).toEqual({
+                client          : 'my-client',
+                uid             : 'my-uid',
+                details         : {
+                    username : 'my-username'
+                },
+                params          : {
+                    client_id : 'client-id'
+                },
+                passwordError   : 'That password is not allowed - it has been banned.',
+                title           : 'Reset password',
+            })
+
+            providerMock.verify();
+            clientMock.verify();
+            clientHelperMock.verify();
+            accountMock.verify();
+            passwordMock.verify();
+
+            done();
+        }
+    });
+};
+
+const resetPasswordBadRepetition = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, sinon.match.any).returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        lastSubmission : {
+            username : 'my-username'
+        },
+        uid : 'my-uid'
+    }));
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+    clientHelperMock.expects('getPasswordRules').once().returns({
+        error : 'not good enough mate'
+    });
+    clientHelperMock.expects('getBannedPasswords').once().returns('my-banned-passwords');
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve('my-client'));
+
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByUsername').once().withArgs('my-username');
+
+    const passwordMock = sinon.mock(passwordHelper);
+    passwordMock.expects('passwordStrongEnough').once().withArgs({
+        error : 'not good enough mate'
+    }, 'my-password').returns(true);
+    passwordMock.expects('isBannedPassword').once().withArgs('my-banned-passwords', 'my-password').returns(false);
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.resetPassword({
+        body : {
+            password: 'my-password',
+        }
+    }, {
+        render : (template, data) => {
+            expect(template).toEqual('resetPassword');
+            expect(data).toEqual({
+                client          : 'my-client',
+                uid             : 'my-uid',
+                details         : {
+                    username : 'my-username'
+                },
+                params          : {
+                    client_id : 'client-id'
+                },
+                passwordError   : 'Your passwords did not match.',
+                title           : 'Reset password',
+            })
+
+            providerMock.verify();
+            clientMock.verify();
+            clientHelperMock.verify();
+            accountMock.verify();
+            passwordMock.verify();
+
+            done();
+        }
+    });
+};
+
+const resetPasswordTest = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, sinon.match.any).returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        lastSubmission : {
+            username : 'my-username'
+        },
+        uid : 'my-uid'
+    }));
+    providerMock.expects('interactionFinished').once().withArgs(sinon.match.any, sinon.match.any, {
+        select_account : {},
+        login : {
+            account : '1234'
+        }
+    }, {
+        mergeWithLastSubmission : false
+    });
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+    clientHelperMock.expects('getPasswordRules').once().returns({
+        error : 'not good enough mate'
+    });
+    clientHelperMock.expects('getBannedPasswords').once().returns('my-banned-passwords');
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve('my-client'));
+
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByUsername').once().withArgs('my-username').returns(Promise.resolve({
+        accountId : '1234',
+        profile : {
+            password : 'old-password'
+        }
+    }));
+        accountMock.expects('generatePassword').once().withArgs('my-password').returns(Promise.resolve('hashed-password'));
+    accountMock.expects('updateUser').once().withArgs('1234', {
+        password : 'hashed-password'
+    }).returns(Promise.resolve());
+
+    const passwordMock = sinon.mock(passwordHelper);
+    passwordMock.expects('passwordStrongEnough').once().withArgs({
+        error : 'not good enough mate'
+    }, 'my-password').returns(true);
+    passwordMock.expects('isBannedPassword').once().withArgs('my-banned-passwords', 'my-password').returns(false);
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.resetPassword({
+        body : {
+            password: 'my-password',
+            repeat : 'my-password'
+        }
+    }, {});
+
+    setTimeout(() => {
+        providerMock.verify();
+        clientMock.verify();
+        clientHelperMock.verify();
+        accountMock.verify();
+        passwordMock.verify();
+
+        done();
+    }, 1);
 };
 
 describe('A password controller', () => {
@@ -1067,5 +1380,14 @@ describe('A password controller', () => {
         it('renders the form', handleResetCodeRendersForm);
         it('handles invalid codes', handleResetCodeInvalidCode);
         it('handles valid codes', handleResetCodeValidCode);
+    });
+
+    describe('reset password', () => {
+        it('handles exceptions', resetPasswordExceptionTest);
+        it('with reset not being enabled', resetPasswordNotEnabled);
+        it('handles weak passwords', resetPasswordWeakPassword);
+        it('handles banned passwords', resetPasswordBannedPassword);
+        it('handles mismatched repetition', resetPasswordBadRepetition);
+        it('works', resetPasswordTest);
     });
 });
