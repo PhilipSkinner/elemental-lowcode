@@ -154,6 +154,7 @@ passwordController.prototype.showForgottenPasswordForm = function(req, res, next
 passwordController.prototype.sendVerificationEmail = function(req, res, next) {
     let details = null;
     let validationCode = null;
+    let skip = false;
 
     this.provider.interactionDetails(req, res).then((_details) => {
         details = _details;
@@ -161,6 +162,8 @@ passwordController.prototype.sendVerificationEmail = function(req, res, next) {
     }).then((client) => {
         if (!this.clientHelper.resetEnabled(client)) {
             //not good, redirect back to login
+            skip = true;
+
             return this.provider.interactionFinished(req, res, {
                 prompt : "login"
             }, {
@@ -170,49 +173,61 @@ passwordController.prototype.sendVerificationEmail = function(req, res, next) {
 
         //attempt to find the account
         return this.accountService.findByUsername(req.body.username).then((user) => {
-            if (user) {
-                validationCode = this.totpGenerator.generateTotp(user.profile.subject, this.clientHelper.getTotpSettings(client));
-
-                let template = "";
-
-                if (client.features.reset.mechanism === "link-token") {
-                    template = "forgottenLinkToken";
-                }
-
-                if (client.features.reset.mechanism === "totp") {
-                    template = "forgottenTotpCode";
-                }
-
-                return this.ejs.renderFile(this.path.join(__dirname, `../../emails/${template}.ejs`), {
-                    code        : validationCode,
-                    idpHost     : this.hostnameResolver.resolveIdentity(),
-                    uid         : details.uid,
-                    username    : user.profile.username
-                }).then((html) => {
-                    return this.emailService.sendEmail(
-                        this.clientHelper.getFromEmailAddress(client),
-                        user.profile.username,
-                        "Reset password",
-                        html
-                    );
-                }).then(() => {
-                    return Promise.resolve(user.profile);
-                });
+            if (!user) {
+                return Promise.resolve(null);
             }
+
+            validationCode = this.totpGenerator.generateTotp(user.profile.subject, this.clientHelper.getTotpSettings(client));
+
+            let template = "";
+
+            if (client.features.reset.mechanism === "link-token") {
+                template = "forgottenLinkToken";
+            }
+
+            if (client.features.reset.mechanism === "totp") {
+                template = "forgottenTotpCode";
+            }
+
+            return this.ejs.renderFile(this.path.join(__dirname, `../../emails/${template}.ejs`), {
+                code        : validationCode,
+                idpHost     : this.hostnameResolver.resolveIdentity(),
+                uid         : details.uid,
+                username    : user.profile.username
+            }).then((html) => {
+                return this.emailService.sendEmail(
+                    this.clientHelper.getFromEmailAddress(client),
+                    user.profile.username,
+                    "Reset password",
+                    html
+                );
+            }).then(() => {
+                return Promise.resolve(user.profile);
+            });
         });
     }).then((user) => {
-        if (user && user.username) {
-            //we"ll just pretend that we sent the thing
-            return this.provider.interactionFinished(req, res, {
-                prompt : "code",
-                email_sent : true,
-                validation_code : validationCode,
-                username : user.username,
-                subject : user.subject,
-            }, {
-                mergeWithLastSubmission : true
-            });
+        if (skip) {
+            return Promise.resolve();
         }
+
+        let username = null;
+        let subject = null;
+
+        if (user && user.username) {
+            username = user.username;
+            subject = user.subject;
+        }
+
+        //we"ll just pretend that we sent the thing
+        return this.provider.interactionFinished(req, res, {
+            prompt : "code",
+            email_sent : true,
+            validation_code : validationCode,
+            username : username,
+            subject : subject,
+        }, {
+            mergeWithLastSubmission : true
+        });
     }).catch((err) => {
         next(err);
     });
@@ -234,7 +249,7 @@ passwordController.prototype.handleResetCode = function(req, res, next) {
             });
         }
 
-        if (!details.lastSubmission || !details.lastSubmission.validation_code || !details.lastSubmission.username || !details.lastSubmission.subject) {
+        if (!details.lastSubmission) {
             //not good, this is a very odd state to be in
             return this.provider.interactionFinished(req, res, {
                 prompt : "login"
@@ -249,7 +264,7 @@ passwordController.prototype.handleResetCode = function(req, res, next) {
         if (receivedCode) {
             receivedCode = receivedCode.trim();
 
-            if (receivedCode === details.lastSubmission.validation_code) {
+            if (receivedCode === details.lastSubmission.validation_code && details.lastSubmission.validation_code !== null && typeof(details.lastSubmission.validation_code) !== "undefined") {
                 //can reset their password now
                 return res.render("resetPassword", {
                     client          : client,

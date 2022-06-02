@@ -12,6 +12,7 @@ const provider = {
 
 const accountService = {
     findAccount : () => {},
+    findByUsername : () => {},
     generatePassword : () => {},
     updateUser : () => {}
 };
@@ -20,7 +21,9 @@ const clientHelper = {
     registrationEnabled : () => {},
     getPasswordRules : () => {},
     getBannedPasswords : () => {},
-    resetEnabled : () => {}
+    resetEnabled : () => {},
+    getTotpSettings : () => {},
+    getFromEmailAddress : () => {}
 };
 
 const passwordHelper = {
@@ -29,23 +32,23 @@ const passwordHelper = {
 };
 
 const emailService = {
-
+    sendEmail : () => {}
 };
 
 const totpGenerator = {
-
+    generateTotp : () => {}
 };
 
 const ejs = {
-
+    renderFile : () => {}
 };
 
 const path = {
-
+    join : () => {}
 };
 
 const hostnameResolver = {
-
+    resolveIdentity : () => {}
 };
 
 const showPasswordFormExceptions = (done) => {
@@ -514,6 +517,287 @@ const showForgottenForm = (done) => {
     });
 };
 
+const sendVerificationEmailExceptions = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs('req', 'res').returns(Promise.reject(new Error('oh dear')));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.sendVerificationEmail('req', 'res', (err) => {
+        expect(err).toEqual(new Error('oh dear'));
+
+        providerMock.verify();
+
+        done();
+    });
+};
+
+const sendVerificationEmailNotEnabled = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs('req', 'res').returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        }
+    }));
+    providerMock.expects('interactionFinished').once().withArgs('req', 'res', {
+        prompt : 'login'
+    }, {
+        mergeWithLastSubmission : false
+    }).returns(Promise.resolve());
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(false);
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve({}));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.sendVerificationEmail('req', 'res');
+
+    setTimeout(() => {
+        providerMock.verify();
+        clientMock.verify();
+        clientHelperMock.verify();
+
+        done();
+    });
+};
+
+const sendVerificationEmailNoSuchAccount = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs({
+        body : {
+            username : 'my-username'
+        }
+    }, 'res').returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        }
+    }));
+    providerMock.expects('interactionFinished').once().withArgs({
+        body : {
+            username : 'my-username'
+        }
+    }, 'res', {
+        prompt          : 'code',
+        email_sent      : true,
+        validation_code : null,
+        username        : null,
+        subject         : null
+    }, {
+        mergeWithLastSubmission : true
+    }).returns(Promise.resolve());
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve({}));
+
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByUsername').once().withArgs('my-username').returns(Promise.resolve(null));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.sendVerificationEmail({
+        body : {
+            username : 'my-username'
+        }
+    }, 'res');
+
+    setTimeout(() => {
+        providerMock.verify();
+        clientMock.verify();
+        clientHelperMock.verify();
+        accountMock.verify();
+
+        done();
+    });
+};
+
+const sendVerificationEmailLinkToken = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs({
+        body : {
+            username : 'my-username'
+        }
+    }, 'res').returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        uid : 'my-uid',
+    }));
+    providerMock.expects('interactionFinished').once().withArgs({
+        body : {
+            username : 'my-username'
+        }
+    }, 'res', {
+        prompt          : 'code',
+        email_sent      : true,
+        validation_code : 'my-totp',
+        username        : 'my-username',
+        subject         : '1234'
+    }, {
+        mergeWithLastSubmission : true
+    }).returns(Promise.resolve());
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+    clientHelperMock.expects('getTotpSettings').once().returns('totp-settings');
+    clientHelperMock.expects('getFromEmailAddress').once().returns('my@email.com');
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve({
+        features : {
+            reset : {
+                mechanism : 'link-token'
+            }
+        }
+    }));
+
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByUsername').once().withArgs('my-username').returns(Promise.resolve({
+        profile : {
+            subject : '1234',
+            username : 'my-username'
+        }
+    }));
+
+    const totpMock = sinon.mock(totpGenerator);
+    totpMock.expects('generateTotp').once().withArgs('1234', 'totp-settings').returns('my-totp');
+
+    const hostnameMock = sinon.mock(hostnameResolver);
+    hostnameMock.expects('resolveIdentity').once().returns('https://my.idp');
+
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(sinon.match.any, '../../emails/forgottenLinkToken.ejs').returns('link-token');
+
+    const ejsMock = sinon.mock(ejs);
+    ejsMock.expects('renderFile').once().withArgs('link-token', {
+        code        : 'my-totp',
+        idpHost     : 'https://my.idp',
+        uid         : 'my-uid',
+        username    : 'my-username'
+    }).returns(Promise.resolve('some-html'));
+
+    const emailMock = sinon.mock(emailService);
+    emailMock.expects('sendEmail').once().withArgs('my@email.com', 'my-username', 'Reset password', 'some-html').returns(Promise.resolve());
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.sendVerificationEmail({
+        body : {
+            username : 'my-username'
+        }
+    }, 'res');
+
+    setTimeout(() => {
+        providerMock.verify();
+        clientMock.verify();
+        clientHelperMock.verify();
+        accountMock.verify();
+        totpMock.verify();
+        hostnameMock.verify();
+        pathMock.verify();
+        ejsMock.verify();
+        emailMock.verify();
+
+        done();
+    });
+};
+
+const sendVerificationEmailTotpCode = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs({
+        body : {
+            username : 'my-username'
+        }
+    }, 'res').returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        uid : 'my-uid',
+    }));
+    providerMock.expects('interactionFinished').once().withArgs({
+        body : {
+            username : 'my-username'
+        }
+    }, 'res', {
+        prompt          : 'code',
+        email_sent      : true,
+        validation_code : 'my-totp',
+        username        : 'my-username',
+        subject         : '1234'
+    }, {
+        mergeWithLastSubmission : true
+    }).returns(Promise.resolve());
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+    clientHelperMock.expects('getTotpSettings').once().returns('totp-settings');
+    clientHelperMock.expects('getFromEmailAddress').once().returns('my@email.com');
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve({
+        features : {
+            reset : {
+                mechanism : 'totp'
+            }
+        }
+    }));
+
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByUsername').once().withArgs('my-username').returns(Promise.resolve({
+        profile : {
+            subject : '1234',
+            username : 'my-username'
+        }
+    }));
+
+    const totpMock = sinon.mock(totpGenerator);
+    totpMock.expects('generateTotp').once().withArgs('1234', 'totp-settings').returns('my-totp');
+
+    const hostnameMock = sinon.mock(hostnameResolver);
+    hostnameMock.expects('resolveIdentity').once().returns('https://my.idp');
+
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(sinon.match.any, '../../emails/forgottenTotpCode.ejs').returns('totp-code');
+
+    const ejsMock = sinon.mock(ejs);
+    ejsMock.expects('renderFile').once().withArgs('totp-code', {
+        code        : 'my-totp',
+        idpHost     : 'https://my.idp',
+        uid         : 'my-uid',
+        username    : 'my-username'
+    }).returns(Promise.resolve('some-html'));
+
+    const emailMock = sinon.mock(emailService);
+    emailMock.expects('sendEmail').once().withArgs('my@email.com', 'my-username', 'Reset password', 'some-html').returns(Promise.resolve());
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.sendVerificationEmail({
+        body : {
+            username : 'my-username'
+        }
+    }, 'res');
+
+    setTimeout(() => {
+        providerMock.verify();
+        clientMock.verify();
+        clientHelperMock.verify();
+        accountMock.verify();
+        totpMock.verify();
+        hostnameMock.verify();
+        pathMock.verify();
+        ejsMock.verify();
+        emailMock.verify();
+
+        done();
+    });
+};
+
 describe('A password controller', () => {
     describe('show password form', () => {
         it('handles exceptions', showPasswordFormExceptions);
@@ -533,5 +817,13 @@ describe('A password controller', () => {
         it('handles exceptions', showForgottenFormExceptions);
         it('handles reset not being enabled', showForgottenFormNotEnabled);
         it('works', showForgottenForm);
+    });
+
+    describe('sent verification email', () => {
+        it('handles exceptions', sendVerificationEmailExceptions);
+        it('handles reset not being enabled', sendVerificationEmailNotEnabled);
+        it('handles no such account', sendVerificationEmailNoSuchAccount);
+        it('handles link tokens', sendVerificationEmailLinkToken);
+        it('handles totp codes', sendVerificationEmailTotpCode);
     });
 });
