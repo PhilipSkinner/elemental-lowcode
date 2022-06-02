@@ -240,17 +240,8 @@ passwordController.prototype.handleResetCode = function(req, res, next) {
         details = _details;
         return this.provider.Client.find(details.params.client_id);
     }).then((client) => {
-        if (!this.clientHelper.resetEnabled(client)) {
+        if (!this.clientHelper.resetEnabled(client) || !details.lastSubmission) {
             //not good, redirect back to login
-            return this.provider.interactionFinished(req, res, {
-                prompt : "login"
-            }, {
-                mergeWithLastSubmission : false
-            });
-        }
-
-        if (!details.lastSubmission) {
-            //not good, this is a very odd state to be in
             return this.provider.interactionFinished(req, res, {
                 prompt : "login"
             }, {

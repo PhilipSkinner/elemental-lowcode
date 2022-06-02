@@ -798,6 +798,239 @@ const sendVerificationEmailTotpCode = (done) => {
     });
 };
 
+const handleResetCodeExceptions = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs('req', 'res').returns(Promise.reject(new Error('oh dear')));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.handleResetCode('req', 'res', (err) => {
+        expect(err).toEqual(new Error('oh dear'));
+
+        providerMock.verify();
+
+        done();
+    });
+};
+
+const handleResetCodeNotEnabled = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs('req', 'res').returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        }
+    }));
+    providerMock.expects('interactionFinished').once().withArgs('req', 'res', {
+        prompt : 'login'
+    }, {
+        mergeWithLastSubmission : false
+    }).returns(Promise.resolve());
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(false);
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve({}));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.handleResetCode('req', 'res');
+
+    setTimeout(() => {
+        providerMock.verify();
+        clientMock.verify();
+        clientHelperMock.verify();
+
+        done();
+    });
+};
+
+const handleResetCodeInvalidSubmission = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs('req', 'res').returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        }
+    }));
+    providerMock.expects('interactionFinished').once().withArgs('req', 'res', {
+        prompt : 'login'
+    }, {
+        mergeWithLastSubmission : false
+    }).returns(Promise.resolve());
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve({}));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.handleResetCode('req', 'res');
+
+    setTimeout(() => {
+        providerMock.verify();
+        clientMock.verify();
+        clientHelperMock.verify();
+
+        done();
+    });
+};
+
+const handleResetCodeRendersForm = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, sinon.match.any).returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        lastSubmission : {
+            email_sent : true
+        },
+        uid : 'my-uid',
+    }));
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve('my-client'));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.handleResetCode({
+        query : {},
+        body : {}
+    }, {
+        render : (template, data) => {
+            expect(template).toEqual('resetCode');
+            expect(data).toEqual({
+                client      : 'my-client',
+                uid         : 'my-uid',
+                details     : {
+                    email_sent : true
+                },
+                params      : {
+                    client_id : 'client-id'
+                },
+                title       : 'Confirmation code',
+                sent        : true,
+                codeError   : null
+            })
+
+            providerMock.verify();
+            clientMock.verify();
+            clientHelperMock.verify();
+
+            done();
+        }
+    });
+};
+
+const handleResetCodeInvalidCode = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, sinon.match.any).returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        lastSubmission : {
+            email_sent : true,
+            validation_code : '1234'
+        },
+        uid : 'my-uid',
+    }));
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve('my-client'));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.handleResetCode({
+        query : {
+            code : '2345'
+        },
+        body : {}
+    }, {
+        render : (template, data) => {
+            expect(template).toEqual('resetCode');
+            expect(data).toEqual({
+                client      : 'my-client',
+                uid         : 'my-uid',
+                details     : {
+                    email_sent : true,
+                    validation_code : '1234'
+                },
+                params      : {
+                    client_id : 'client-id'
+                },
+                title       : 'Confirmation code',
+                sent        : true,
+                codeError   : 'That code is incorrect, please try again.'
+            })
+
+            providerMock.verify();
+            clientMock.verify();
+            clientHelperMock.verify();
+
+            done();
+        }
+    });
+};
+
+const handleResetCodeValidCode = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, sinon.match.any).returns(Promise.resolve({
+        params : {
+            client_id : 'client-id'
+        },
+        lastSubmission : {
+            email_sent : true,
+            validation_code : '1234'
+        },
+        uid : 'my-uid',
+    }));
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('resetEnabled').once().returns(true);
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve('my-client'));
+
+    const instance = passwordController(provider, accountService, clientHelper, passwordHelper, emailService, totpGenerator, ejs, path, hostnameResolver);
+
+    instance.handleResetCode({
+        query : {
+            code : '1234'
+        },
+        body : {}
+    }, {
+        render : (template, data) => {
+            expect(template).toEqual('resetPassword');
+            expect(data).toEqual({
+                client          : 'my-client',
+                uid             : 'my-uid',
+                details         : {
+                    email_sent : true,
+                    validation_code : '1234'
+                },
+                params          : {
+                    client_id : 'client-id'
+                },
+                passwordError   : null,
+                title           : 'Reset password',
+            })
+
+            providerMock.verify();
+            clientMock.verify();
+            clientHelperMock.verify();
+
+            done();
+        }
+    });
+};
+
 describe('A password controller', () => {
     describe('show password form', () => {
         it('handles exceptions', showPasswordFormExceptions);
@@ -825,5 +1058,14 @@ describe('A password controller', () => {
         it('handles no such account', sendVerificationEmailNoSuchAccount);
         it('handles link tokens', sendVerificationEmailLinkToken);
         it('handles totp codes', sendVerificationEmailTotpCode);
+    });
+
+    describe('handle reset code', () => {
+        it('handles exceptions', handleResetCodeExceptions);
+        it('with reset not being enabled', handleResetCodeNotEnabled);
+        it('handles invalid last submissions', handleResetCodeInvalidSubmission);
+        it('renders the form', handleResetCodeRendersForm);
+        it('handles invalid codes', handleResetCodeInvalidCode);
+        it('handles valid codes', handleResetCodeValidCode);
     });
 });
