@@ -182,6 +182,31 @@ const clientLoadNoClients = (done) => {
     });
 };
 
+const clientLoadUndefinedResult = (done) => {
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', '**/*.client.json').returns('woot/**/*.client.json');
+
+    const globMock = sinon.mock(glob);
+    globMock.expects('main').once().withArgs('woot/**/*.client.json').callsArgWith(1, null, null);
+
+    const fsMock = sinon.mock(fs);
+
+    const instance = configProvider(glob.main, path, fs, jose, userDB, db, hostnameResolver, bcrypt, certProvider);
+
+    instance.getClients('woot').then((clients) => {
+        expect(clients).toEqual([]);
+
+        pathMock.verify();
+        pathMock.restore();
+        globMock.verify();
+        globMock.restore();
+        fsMock.verify();
+        fsMock.restore();
+
+        done();
+    });
+};
+
 const clientFileErrors = (done) => {
     const pathMock = sinon.mock(path);
     pathMock.expects('join').once().withArgs(process.cwd(), 'woot', '**/*.client.json').returns('woot/**/*.client.json');
@@ -272,6 +297,31 @@ const scopeLoadNoScopes = (done) => {
 
     const globMock = sinon.mock(glob);
     globMock.expects('main').once().withArgs('woot/**/*.scope.json').callsArgWith(1, null, []);
+
+    const fsMock = sinon.mock(fs);
+
+    const instance = configProvider(glob.main, path, fs, jose, userDB, db, hostnameResolver, bcrypt, certProvider);
+
+    instance.getScopes('woot').then((scopes) => {
+        expect(scopes).toEqual([]);
+
+        pathMock.verify();
+        pathMock.restore();
+        globMock.verify();
+        globMock.restore();
+        fsMock.verify();
+        fsMock.restore();
+
+        done();
+    });
+};
+
+const scopeLoadUndefinedResult = (done) => {
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', '**/*.scope.json').returns('woot/**/*.scope.json');
+
+    const globMock = sinon.mock(glob);
+    globMock.expects('main').once().withArgs('woot/**/*.scope.json').callsArgWith(1, null, null);
 
     const fsMock = sinon.mock(fs);
 
@@ -571,6 +621,44 @@ const fetchConfigTest = (done) => {
     });
 };
 
+const getBannedPasswordsExceptionTest = (done) => {
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(process.cwd(), 'my-dir', 'banned.passwords.json').returns('an-file.json');
+
+    const fsMock = sinon.mock(fs);
+    fsMock.expects('readFile').once().withArgs('an-file.json').callsArgWith(1, new Error('not good :('));
+
+    const instance = configProvider(glob.main, path, fs, jose, userDB, db, hostnameResolver, bcrypt, certProvider);
+
+    instance.getBannedPasswords('my-dir').then((result) => {
+        expect(result).toEqual([]);
+
+        pathMock.verify();
+        fsMock.verify();
+
+        done();
+    });
+};
+
+const getBannedPasswordsInvalidJSON = (done) => {
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(process.cwd(), 'my-dir', 'banned.passwords.json').returns('an-file.json');
+
+    const fsMock = sinon.mock(fs);
+    fsMock.expects('readFile').once().withArgs('an-file.json').callsArgWith(1, null, '{}{}{}}{}{}{}{D}{ASD}{DS}');
+
+    const instance = configProvider(glob.main, path, fs, jose, userDB, db, hostnameResolver, bcrypt, certProvider);
+
+    instance.getBannedPasswords('my-dir').then((result) => {
+        expect(result).toEqual([]);
+
+        pathMock.verify();
+        fsMock.verify();
+
+        done();
+    });
+};
+
 describe('A config provider', () => {
     it('defaults its constructor args', defaultsTest);
     it('can generate an admin client', adminClientTest);
@@ -583,6 +671,7 @@ describe('A config provider', () => {
         it('can load clients correctly', clientLoadTest);
         it('defaults grants on clients', clientGrantDefaultTest);
         it('handles no clients', clientLoadNoClients);
+        it('handles an undefined glob result', clientLoadUndefinedResult);
         it('handles file errors', clientFileErrors);
         it('handles invalid JSON', clientInvalidJSON);
     });
@@ -590,7 +679,13 @@ describe('A config provider', () => {
     describe('scopes provider', () => {
         it('can load scopes correctly', scopeLoadTest);
         it('handles no scopes', scopeLoadNoScopes);
+        it('handles an undefined glob result', scopeLoadUndefinedResult);
         it('handles file errors', scopeFileErrors);
         it('handles invalid JSON', scopeInvalidJSON);
+    });
+
+    describe('get banned passwords', () => {
+        it('returns an empty list when an error occurs', getBannedPasswordsExceptionTest);
+        it('handles invalid JSON in file', getBannedPasswordsInvalidJSON);
     });
 });
