@@ -908,6 +908,10 @@ _websitesEditorController.prototype.showSaveMessage = function() {
 _websitesEditorController.prototype.newRoute = function() {
     var name = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
 
+    if (this.routes.length === 0) {
+        name = "";
+    }
+
     this.routes.push({
         route       : `/${name}`,
         view        : `./view/${name}.json`,
@@ -930,9 +934,14 @@ _websitesEditorController.prototype.newRoute = function() {
     }, null, 4);
     this.resources[`./controllers/${name}.js`] = [
         "module.exports = {",
-        "   events : {",
-        "       load : function(event) {},",
-        "   }",
+        "    bag : {",
+        "        ",
+        "    },",
+        "    events : {",
+        "        load : async function(event) {",
+        "            ",
+        "        },",
+        "    }",
         "}"
     ].join("\n");
 };
@@ -954,9 +963,14 @@ _websitesEditorController.prototype.newTag = function() {
     }, null, 4);
     this.resources[`./controllers/${name}.js`] = [
         "module.exports = {",
-        "   events : {",
-        "       load : function(event) {},",
-        "   }",
+        "    bag : {",
+        "        ",
+        "    },",
+        "    events : {",
+        "        load : async function(event) {",
+        "            ",
+        "        },",
+        "    }",
         "}"
     ].join("\n");
 };
