@@ -178,6 +178,30 @@ const totpMergeTest = () => {
     });
 };
 
+const resetNotificationEnabled = () => {
+    const instance = clientHelper();
+
+    expect(instance.resetNotificationEnabled({
+        features : {
+            reset : {
+                notify : true
+            }
+        }
+    })).toEqual(true);
+};
+
+const resetNotificationNotEnabled = () => {
+    const instance = clientHelper();
+
+    expect(instance.resetNotificationEnabled({
+        features : {
+            reset : {
+                notify : false
+            }
+        }
+    })).toEqual(false);
+};
+
 describe('A client helper', () => {
     describe('getPasswordRules', () => {
         it('returns the defaults when there is no client', passwordRulesNoClient);
@@ -216,5 +240,10 @@ describe('A client helper', () => {
         it('returns default with no client features', totpNullClientFeatures);
         it('returns default with no totp settings', totpNullSettings);
         it('merges the totp settings', totpMergeTest);
+    });
+
+    describe('resetNotificationEnabled', () => {
+        it('can determine if password reset notifications are enabled', resetNotificationEnabled);
+        it('can determine if password reset notifications are not enabled', resetNotificationNotEnabled);
     });
 });

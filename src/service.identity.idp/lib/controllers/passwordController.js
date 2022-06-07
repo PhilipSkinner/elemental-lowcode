@@ -343,6 +343,21 @@ passwordController.prototype.resetPassword = function(req, res, next) {
                 }, {
                     mergeWithLastSubmission : false
                 });
+            }).then(() => {
+                if (!this.clientHelper.resetNotificationEnabled(client)) {
+                    return Promise.resolve();
+                }
+
+                return this.ejs.renderFile(this.path.join(__dirname, `../../emails/passwordReset.ejs`), {
+                    username    : account.profile.username
+                }).then((html) => {
+                    return this.emailService.sendEmail(
+                        this.clientHelper.getFromEmailAddress(client),
+                        account.profile.username,
+                        "Password changed",
+                        html
+                    );
+                });
             });
         });
     }).catch((err) => {

@@ -36,6 +36,10 @@ clientHelper.prototype.resetEnabled = function(client) {
     return client.features && client.features.reset && client.features.reset.enabled === true;
 };
 
+clientHelper.prototype.resetNotificationEnabled = function(client) {
+    return client.features && client.features.reset && client.features.reset.notify === true;
+};
+
 clientHelper.prototype.termsRequired = function(account, client) {
     if (!account) {
         return false;

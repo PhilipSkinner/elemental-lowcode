@@ -18,6 +18,12 @@ export INITIAL_USER_ROLE=system_admin
 export ADMIN_CLIENT_ID=$INITIAL_CLIENT_ID
 export ADMIN_CLIENT_SECRET=$INITIAL_CLIENT_SECRET
 
+export SMTP_HOST="localhost"
+export SMTP_PORT=1025
+export SMTP_USERNAME=""
+export SMTP_PASSWORD=""
+export SMTP_PROTOCOL="smtp"
+
 docker-compose up core_services
 
 exec_sql "CREATE DATABASE IF NOT EXISTS db"

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-services=( 'mysql' )
-ports=( '3306' )
+services=( 'mysql' 'mailhog')
+ports=( '3306' '1025')
 
 checkService () {
   while ! nc -z $1 $2;
