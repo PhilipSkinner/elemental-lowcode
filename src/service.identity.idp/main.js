@@ -34,6 +34,9 @@ const startup = () => {
         app.use(limiter);
         app.set("views", path.join(__dirname, "views"));
         app.set("view engine", "ejs");
+        app.set("view options", {
+            legacyInclude : true
+        });
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended : false }));
         app.use(cors({

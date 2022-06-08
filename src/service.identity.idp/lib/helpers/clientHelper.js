@@ -44,6 +44,10 @@ clientHelper.prototype.loginNotificationEnabled = function(client) {
     return client.features && client.features.login && client.features.login.notify === true;
 };
 
+clientHelper.prototype.getPasswordHelpers = function(client) {
+    return client.features && client.features.password && client.features.password.helpers ? client.features.password.helpers : [];
+};
+
 clientHelper.prototype.termsRequired = function(account, client) {
     if (!account) {
         return false;

@@ -55,7 +55,8 @@ const _securityClientEditorController = function(page) {
             },
             banned_passwords : [],
             password : {
-                rules : {}
+                rules : {},
+                helpers : []
             }
         }
     };
@@ -74,6 +75,60 @@ const _securityClientEditorController = function(page) {
     this.addingClientClaim = false;
     this.newClaimName = "";
     this.newClaimValue = "";
+    this.addingPasswordHelper = false;
+    this.helperDescription = "";
+    this.helperRegex = "";
+    this.helperIndex = -1;
+};
+
+_securityClientEditorController.prototype.removePasswordHelper = function(index) {
+    this.client.features.password.helpers = this.client.features.password.helpers.reduce((sum, a, i) => {
+        if (i !== index) {
+            sum.push(a);
+        }
+
+        return sum;
+    }, []);
+
+    this.refreshEditorState();
+};
+
+_securityClientEditorController.prototype.cancelAddPasswordHelper = function() {
+    this.addingPasswordHelper = false;
+    this.helperDescription = "";
+    this.helperRegex = "";
+    this.forceRefresh();
+};
+
+_securityClientEditorController.prototype.savePasswordHelper = function(index) {
+    if (index === -1) {
+        this.client.features.password.helpers.push({
+            description : this.caller.helperDescription,
+            regex       : this.caller.helperRegex
+        });
+    } else {
+        this.client.features.password.helpers[index].description = this.caller.helperDescription;
+        this.client.features.password.helpers[index].regex = this.caller.helperRegex;
+    }
+
+    this.addingPasswordHelper = false;
+    this.helperDescription = "";
+    this.helperRegex = "";
+    this.forceRefresh();
+};
+
+_securityClientEditorController.prototype.modifyPasswordHelper = function(index) {
+    this.addingPasswordHelper = true;
+    this.helperDescription = "";
+    this.helperRegex = "";
+    this.helperIndex = index;
+
+    if (index > -1) {
+        this.helperDescription = this.client.features.password.helpers[index].description;
+        this.helperRegex = this.client.features.password.helpers[index].regex;
+    }
+
+    this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.removeClientClaim = function(name, value) {
@@ -249,6 +304,7 @@ _securityClientEditorController.prototype.standardiseClient = function() {
     this.client.features.banned_passwords           = this.client.features.banned_passwords || [];
     this.client.features.password                   = this.client.features.password || {};
     this.client.features.password.rules             = this.client.features.password.rules || {};
+    this.client.features.password.helpers           = this.client.features.password.helpers || [];
     this.client.features.login                      = this.client.features.login || {};
 };
 
@@ -478,6 +534,10 @@ _securityClientEditorController.prototype.getData = function() {
         addingClientClaim               : this.addingClientClaim,
         newClaimName                    : this.newClaimName,
         newClaimValue                   : this.newClaimValue,
+        addingPasswordHelper            : this.addingPasswordHelper,
+        helperDescription               : this.helperDescription,
+        helperRegex                     : this.helperRegex,
+        helperIndex                     : this.helperIndex,
     };
 };
 
@@ -502,6 +562,10 @@ _securityClientEditorController.prototype.forceRefresh = function() {
     this.caller.addingClientClaim               = this.addingClientClaim;
     this.caller.newClaimName                    = this.newClaimName;
     this.caller.newClaimValue                   = this.newClaimValue;
+    this.caller.addingPasswordHelper            = this.addingPasswordHelper;
+    this.caller.helperDescription               = this.helperDescription;
+    this.caller.helperRegex                     = this.helperRegex;
+    this.caller.helperIndex                     = this.helperIndex;
     this.refreshEditorState();
 
     this.caller.$forceUpdate();

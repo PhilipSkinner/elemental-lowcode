@@ -17,7 +17,8 @@ const accountService = {
 const clientHelper = {
     registrationEnabled : () => {},
     getPasswordRules : () => {},
-    getBannedPasswords : () => {}
+    getBannedPasswords : () => {},
+    getPasswordHelpers : () => {}
 };
 
 const passwordHelper = {
@@ -97,6 +98,9 @@ const showRegistrationFormTest = (done) => {
         features : {
             registration : {
                 enabled : true
+            },
+            password : {
+                helpers : 'some-helpers'
             }
         }
     }));
@@ -106,13 +110,17 @@ const showRegistrationFormTest = (done) => {
         render : (template, data) => {
             expect(template).toEqual('register');
             expect(data).toEqual({
-                client : {
+                oidcclient : {
                     features : {
                         registration : {
                             enabled : true
+                        },
+                        password : {
+                            helpers : 'some-helpers'
                         }
                     }
                 },
+                passwordHelpers : 'some-helpers',
                 uid : 'the-uid',
                 details : 'the-details',
                 params : {

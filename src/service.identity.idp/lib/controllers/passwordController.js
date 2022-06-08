@@ -258,12 +258,13 @@ passwordController.prototype.handleResetCode = function(req, res, next) {
             if (receivedCode === details.lastSubmission.validation_code && details.lastSubmission.validation_code !== null && typeof(details.lastSubmission.validation_code) !== "undefined") {
                 //can reset their password now
                 return res.render("resetPassword", {
-                    client          : client,
+                    oidcclient      : client,
                     uid             : details.uid,
                     details         : details.lastSubmission,
                     params          : details.params,
                     passwordError   : null,
-                    title           : "Reset password"
+                    title           : "Reset password",
+                    passwordHelpers : this.clientHelper.getPasswordHelpers(client),
                 });
             } else {
                 codeError = "That code is incorrect, please try again.";

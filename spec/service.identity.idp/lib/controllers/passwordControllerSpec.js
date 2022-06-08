@@ -25,6 +25,7 @@ const clientHelper = {
     getTotpSettings : () => {},
     getFromEmailAddress : () => {},
     resetNotificationEnabled : () => {},
+    getPasswordHelpers : () => {},
 };
 
 const passwordHelper = {
@@ -995,6 +996,7 @@ const handleResetCodeValidCode = (done) => {
 
     const clientHelperMock = sinon.mock(clientHelper);
     clientHelperMock.expects('resetEnabled').once().returns(true);
+    clientHelperMock.expects('getPasswordHelpers').once().returns('some-helpers');
 
     const clientMock = sinon.mock(provider.Client);
     clientMock.expects('find').once().withArgs('client-id').returns(Promise.resolve('my-client'));
@@ -1010,7 +1012,8 @@ const handleResetCodeValidCode = (done) => {
         render : (template, data) => {
             expect(template).toEqual('resetPassword');
             expect(data).toEqual({
-                client          : 'my-client',
+                oidcclient      : 'my-client',
+                passwordHelpers : 'some-helpers',
                 uid             : 'my-uid',
                 details         : {
                     email_sent : true,

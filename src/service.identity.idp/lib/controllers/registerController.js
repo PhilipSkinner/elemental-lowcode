@@ -23,12 +23,13 @@ register.prototype.showRegistrationForm = function(req, res, next) {
         }
 
         return res.render("register", {
-            client          : client,
+            oidcclient      : client,
             uid             : details.uid,
             params          : details.params,
             details         : details.lastSubmission && details.lastSubmission.details ? details.lastSubmission.details : {},
             duplicate       : details.lastSubmission && details.lastSubmission.duplicate,
             passwordError   : details.lastSubmission ? details.lastSubmission.password_error : null,
+            passwordHelpers : this.clientHelper.getPasswordHelpers(client),
             title           : "Register",
         });
     }).catch((err) => {

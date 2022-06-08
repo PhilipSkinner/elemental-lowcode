@@ -899,6 +899,88 @@
 						</div>
 					</div>
 				</div>
+                <div class="col-md-6 pb-3">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <div class="float-right">
+                                <button class="btn btn-sm btn-primary" v-on:click="window._securityClientEditorControllerInstance.modifyPasswordHelper(-1)">
+                                    Add Password Helper
+                                </button>
+                            </div>
+                            <h6 class="m-0 font-weight-bold text-primary">Password Helpers</h6>
+                        </div>
+                        <div class="card-body">
+                            <div v-if="addingPasswordHelper">
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <input type="text" class="form-control" name="terms_consent" v-model="helperDescription" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Regex</label>
+                                    <input type="text" class="form-control" name="terms_consent" v-model="helperRegex" />
+                                </div>
+
+                                <div class="float-right">
+                                    <button class="btn btn-success" v-on:click="window._securityClientEditorControllerInstance.savePasswordHelper(helperIndex)">
+                                        <span v-if="helperIndex === -1">Add</span>
+                                        <span v-if="helperIndex > -1">Update</span>
+                                    </button>
+                                </div>
+
+                                <div class="float-left">
+                                    <button class="btn btn-danger" v-on:click="window._securityClientEditorControllerInstance.cancelAddPasswordHelper()">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive" v-if="!addingPasswordHelper">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Description</th>
+                                            <th>Regex</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="client.features.password.helpers.length === 0">
+                                            <td colspan="3">
+                                                <div class="noResults">
+                                                    No password helpers
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="client.features.password.helpers.length > 0" v-for="(helper, index) in client.features.password.helpers">
+                                            <td>
+                                                {{helper.description}}
+                                            </td>
+                                            <td>
+                                                {{helper.regex}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm" v-on:click="window._securityClientEditorControllerInstance.modifyPasswordHelper(index)">
+                                                    Modify
+                                                </button>
+                                                <button class="btn btn-danger btn-sm" v-on:click="window._securityClientEditorControllerInstance.removePasswordHelper(index)">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Description</th>
+                                            <th>Regex</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</div>
 		</div>
 
