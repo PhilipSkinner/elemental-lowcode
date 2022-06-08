@@ -11,7 +11,7 @@
 			"type" : "string",
 			"enum" : ["get", "post", "put", "delete", "patch", "copy"]
 		},
-		"variables" : {
+		"queryParams" : {
 			"type" : "array",
 			"minItems" : 0,
 			"items" : {
@@ -20,16 +20,16 @@
 					"name" : {
 						"type" : "string"
 					},
-					"type" : {
-						"type" : "string"
-					},
 					"description" : {
 						"type" : "string"
+					},
+					"required" : {
+						"type" : "boolean"
 					}
 				},
 				"required" : [
 					"name",
-					"type",
+					"required",
 					"description"
 				]
 			}
@@ -114,7 +114,7 @@
 		"name",
 		"description",
 		"method",
-		"variables",
+		"queryParams",
 		"roles",
 		"request",
 		"transformer"

@@ -50,10 +50,10 @@ const requestTest = (done) => {
                 type : 'JSON',
             }
         },
-        variables : [
+        queryParams : [
             {
                 name : 'hello',
-                type : 'queryParam'
+                description : 'hello world',
             }
         ],
         transformer : '() => { return \'woot?\'; }'
@@ -80,7 +80,7 @@ const missingVariableTest = (done) => {
     const responseMock = sinon.mock(res);
     responseMock.expects('json').once().withArgs({
         errors : [
-            'Expected queryParam hello but was not found'
+            'Expected queryParam hello (hello world) but was not found'
         ]
     });
 
@@ -91,10 +91,11 @@ const missingVariableTest = (done) => {
                 type : 'JSON',
             }
         },
-        variables : [
+        queryParams : [
             {
                 name : 'hello',
-                type : 'queryParam'
+                description : 'hello world',
+                required : true
             }
         ],
         transformer : '() => { return \'woot?\'; }'
@@ -143,10 +144,10 @@ const validationErrorTest = (done) => {
                 type : 'JSON',
             }
         },
-        variables : [
+        queryParams : [
             {
                 name : 'hello',
-                type : 'queryParam'
+                description : 'hello world',
             }
         ],
         transformer : '() => { return \'woot?\'; }'
@@ -168,6 +169,6 @@ const validationErrorTest = (done) => {
 describe('An integration instance', () => {
     it('defaults its constructor arguments', constructorTest);
     it('can handle requests', requestTest);
-    it('handles missing variables', missingVariableTest);
+    it('handles missing queryParams', missingVariableTest);
     it('handles validation errors', validationErrorTest);
 });

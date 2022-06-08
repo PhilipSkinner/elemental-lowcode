@@ -8,10 +8,10 @@ const integrationInstance = function(name, config, requestService, jsonSchemaVer
 integrationInstance.prototype.validateVariables = function(req) {
     let errors = [];
 
-    if (this.config.variables) {
-        errors = errors.concat(this.config.variables.map((v) => {
-            if (v.name && v.type === "queryParam" && typeof(req.query[v.name]) === "undefined") {
-                return `Expected queryParam ${v.name} but was not found`;
+    if (this.config.queryParams) {
+        errors = errors.concat(this.config.queryParams.map((v) => {
+            if (v.name && v.required && typeof(req.query[v.name]) === "undefined") {
+                return `Expected queryParam ${v.name} (${v.description}) but was not found`;
             }
 
             return null;
@@ -29,9 +29,9 @@ integrationInstance.prototype.validateVariables = function(req) {
 integrationInstance.prototype.generateVariables = function(req) {
     let variables = {};
 
-    if (this.config.variables) {
-        this.config.variables.forEach((v) => {
-            if (v.name && v.type === "queryParam") {
+    if (this.config.queryParams) {
+        this.config.queryParams.forEach((v) => {
+            if (v.name) {
                 variables[v.name] = req.query[v.name];
             }
         });

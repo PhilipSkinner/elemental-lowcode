@@ -112,15 +112,15 @@
 							</ul>
 						</div>
 
-						<p v-if="integration.variables.length === 0">
-							This integration can be called with no parameters.
+						<p v-if="integration.queryParams.length === 0">
+							This integration can be called with no query parameters.
 						</p>
-						<div class="block" v-for="variable in integration.variables">
+						<div class="block" v-for="variable in integration.queryParams">
 							<b>Parameter:</b> <code class="inline">{{variable.name}}</code>
 							<br/>
-							<b>Type:</b> <code class="inline">{{variable.type}}</code>
-							<br/>
 							<b>Description:</b> {{variable.description}}
+                            <br/>
+                            <b>Required:</b> {{variable.required ? "Yes" : "No"}}
 						</div>
 					</div>
 				</div>
