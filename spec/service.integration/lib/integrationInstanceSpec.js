@@ -25,7 +25,7 @@ const constructorTest = (done) => {
 const requestTest = (done) => {
     const verifyMock = sinon.mock(jsonSchemaVerifier);
     verifyMock.expects('verify').once().withArgs({
-        type : 'JSON'
+        hello : 'world'
     }, 'the response').returns({});
 
     const requestMock = sinon.mock(requestService);
@@ -33,6 +33,9 @@ const requestTest = (done) => {
         name : 'outbound request',
         schema : {
             type : 'JSON',
+            value : {
+                hello : 'world'
+            }
         }
     }, {
         hello : 'world'
@@ -48,6 +51,9 @@ const requestTest = (done) => {
             name : 'outbound request',
             schema : {
                 type : 'JSON',
+                value : {
+                    hello : 'world'
+                }
             }
         },
         queryParams : [
@@ -115,7 +121,7 @@ const missingVariableTest = (done) => {
 const validationErrorTest = (done) => {
     const verifyMock = sinon.mock(jsonSchemaVerifier);
     verifyMock.expects('verify').once().withArgs({
-        type : 'JSON'
+        hello : 'world'
     }, 'the response').returns({
         errors : 'oh dear'
     });
@@ -125,6 +131,9 @@ const validationErrorTest = (done) => {
         name : 'outbound request',
         schema : {
             type : 'JSON',
+            value : {
+                hello : 'world'
+            }
         }
     }, {
         hello : 'world'
@@ -142,6 +151,9 @@ const validationErrorTest = (done) => {
             name : 'outbound request',
             schema : {
                 type : 'JSON',
+                value : {
+                    hello : 'world'
+                }
             }
         },
         queryParams : [
@@ -166,9 +178,110 @@ const validationErrorTest = (done) => {
     });
 };
 
+const invalidBodyTest = (done) => {
+    const verifyMock = sinon.mock(jsonSchemaVerifier);
+    verifyMock.expects('verify').once().withArgs({
+        hello : 'world'
+    }, '"oh noes"').returns({
+        errors : 'oh dear'
+    });
+
+    const requestMock = sinon.mock(requestService);
+
+    const responseMock = sinon.mock(res);
+    responseMock.expects('json').once().withArgs({
+        errors : ['oh dear']
+    });
+
+    const instance = integrationInstance('doot', {
+        body : {
+            hello : 'world'
+        },
+        request : {
+            name : 'outbound request',
+            schema : {
+                type : 'JSON',
+                value : {
+                    hello : 'world'
+                }
+            }
+        },
+        queryParams : [],
+        transformer : '() => { return \'woot?\'; }'
+    }, requestService, jsonSchemaVerifier);
+
+    instance.handler({
+        body : 'oh noes'
+    }, res, () => {
+        verifyMock.verify();
+        requestMock.verify();
+        responseMock.verify();
+
+        done();
+    });
+};
+
+const requestBodyTest = (done) => {
+    const verifyMock = sinon.mock(jsonSchemaVerifier);
+    verifyMock.expects('verify').once().withArgs({
+        general : 'kenobi'
+    }, '{"hello":"there"}').returns({});
+    verifyMock.expects('verify').once().withArgs({
+        hello : 'world'
+    }, 'the response').returns({});
+
+    const requestMock = sinon.mock(requestService);
+    requestMock.expects('sendRequest').once().withArgs({
+        name : 'outbound request',
+        schema : {
+            type : 'JSON',
+            value : {
+                hello : 'world'
+            }
+        }
+    }, {
+        hello : 'there'
+    }).returns(Promise.resolve({
+        body : 'the response'
+    }));
+
+    const responseMock = sinon.mock(res);
+    responseMock.expects('json').once().withArgs('woot?');
+
+    const instance = integrationInstance('doot', {
+        request : {
+            name : 'outbound request',
+            schema : {
+                type : 'JSON',
+                value : {
+                    hello : 'world'
+                }
+            }
+        },
+        body : {
+            general : 'kenobi'
+        },
+        transformer : '() => { return \'woot?\'; }'
+    }, requestService, jsonSchemaVerifier);
+
+    instance.handler({
+        body : {
+            hello : 'there'
+        }
+    }, res, () => {
+        verifyMock.verify();
+        requestMock.verify();
+        responseMock.verify();
+
+        done();
+    });
+};
+
 describe('An integration instance', () => {
     it('defaults its constructor arguments', constructorTest);
     it('can handle requests', requestTest);
     it('handles missing queryParams', missingVariableTest);
     it('handles validation errors', validationErrorTest);
+    it('handles invalid body', invalidBodyTest);
+    it('handles requests with bodies', requestBodyTest);
 });

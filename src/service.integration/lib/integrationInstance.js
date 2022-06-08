@@ -23,6 +23,14 @@ integrationInstance.prototype.validateVariables = function(req) {
         }, []));
     }
 
+    if (this.config.body) {
+        const verificationResponse = this.jsonSchemaVerifier.verify(this.config.body, JSON.stringify(req.body));
+
+        if (verificationResponse.errors) {
+            errors = errors.concat(verificationResponse.errors);
+        }
+    }
+
     return errors;
 };
 
@@ -35,6 +43,10 @@ integrationInstance.prototype.generateVariables = function(req) {
                 variables[v.name] = req.query[v.name];
             }
         });
+    }
+
+    if (this.config.body) {
+        variables = Object.assign(variables, req.body);
     }
 
     return variables;
@@ -60,7 +72,7 @@ integrationInstance.prototype.handler = function(req, res, next) {
         let verificationResponse = null;
         if (this.config.request.schema) {
             if (this.config.request.schema.type === "JSON") {
-                verificationResponse = this.jsonSchemaVerifier.verify(this.config.request.schema, thirdPartyResponse.body);
+                verificationResponse = this.jsonSchemaVerifier.verify(this.config.request.schema.value, thirdPartyResponse.body);
             }
         }
 

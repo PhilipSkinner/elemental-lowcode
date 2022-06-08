@@ -48,7 +48,8 @@ _integrationsEditorController.prototype.initBlankType = function() {
         name : "exampleGetRequest",
         description : "Get a single post from our example third party system. ",
         method: "get",
-        variables: [
+        body : {},
+        queryParams: [
             {
                 name: "id",
                 type: "queryParam",

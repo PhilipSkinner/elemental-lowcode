@@ -27,9 +27,7 @@ const verifyTest = (done) => {
 
     const instance = jsonSchemaVerifier(ajv);
     const result = instance.verify({
-        value : {
-            config : 'here'
-        }
+        config : 'here'
     }, JSON.stringify({
         hello : 'world'
     }));
@@ -56,9 +54,7 @@ const errorTest = (done) => {
 
     const instance = jsonSchemaVerifier(ajv);
     const result = instance.verify({
-        value : {
-            config : 'here'
-        }
+        config : 'here'
     }, JSON.stringify({
         hello : 'world'
     }));
@@ -83,9 +79,7 @@ const invalidJSONTest = (done) => {
 
     const instance = jsonSchemaVerifier(ajv);
     const result = instance.verify({
-        value : {
-            config : 'here'
-        }
+        config : 'here'
     }, '{}{SD}{AS}D{}SAD{');
     ajvMock.verify();
 

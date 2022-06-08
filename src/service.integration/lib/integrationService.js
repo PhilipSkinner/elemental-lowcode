@@ -33,11 +33,9 @@ integrationService.prototype.constructInstance = function(name, config) {
         }
     }
 
-    if (config.method === "get") {
-        console.log("Starting", name, "on", `/${name}`);
-        this.app.get(`/${name}`, this.roleCheckHandler.enforceRoles(instance.handler.bind(instance), execRoles));
-        this.hostedEndpoints.push(`/${name}`);
-    }
+    console.log(`Starting ${config.method} ${name} on /${name}`);
+    this.app[config.method](`/${name}`, this.roleCheckHandler.enforceRoles(instance.handler.bind(instance), execRoles));
+    this.hostedEndpoints.push(`/${name}`);
 };
 
 integrationService.prototype.init = function(dir) {

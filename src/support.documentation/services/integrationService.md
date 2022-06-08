@@ -12,10 +12,10 @@ These methods are covered in more detail below.
 
 Parameters:
 
-*   `name` - string, the name of the ruleset to call
-*   `method` - string, the HTTP method to call the integration using
-*   `params` - object, the query parameters (or body) to send to the integration endpoint
-*   `token` - string, the access token to use to access the API *optional*
+* `name` - string, the name of the ruleset to call
+* `method` - string, the HTTP method to call the integration using
+* `params` - object, the query parameters (or body) to send to the integration endpoint
+* `token` - string, the access token to use to access the API *optional*
 
 Calls the named integration with the paramters given and returns the JSON response (as a parsed object) within a promise. This method can reject with an error and needs to be handled correctly.
 

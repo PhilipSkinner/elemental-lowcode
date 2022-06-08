@@ -117,6 +117,7 @@
 		"queryParams",
 		"roles",
 		"request",
-		"transformer"
+		"transformer",
+        "body"
 	]
 }

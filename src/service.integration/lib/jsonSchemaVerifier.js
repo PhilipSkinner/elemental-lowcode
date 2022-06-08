@@ -11,7 +11,7 @@ jsonSchemaVerifier.prototype.verify = function(config, body) {
         data = null;
     }
 
-    let validator = this.ajv.compile(config.value);
+    let validator = this.ajv.compile(config);
 
     if (!validator(data)) {
         return {

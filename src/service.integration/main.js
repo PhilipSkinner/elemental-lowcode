@@ -2,6 +2,7 @@ const
     express 		= require("express"),
     tokenHandler 	= require("../support.lib/tokenHandler"),
     hotreload 		= require("../support.lib/hotReload")(),
+    bodyParser      = require("body-parser"),
     rateLimit       = require("express-rate-limit");
 
 let app = null;
@@ -20,6 +21,8 @@ if (!process.env.DIR) {
 const startup = () => {
     app = express();
     app.use(limiter);
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended : false }));
     app.use(tHandler.tokenCheck.bind(tHandler));
 
     let integrationService = require("./lib/integrationService")(app);
