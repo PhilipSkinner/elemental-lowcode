@@ -123,16 +123,17 @@ module.exports = {
 
 The following services are automatically added into each controller:
 
-*   [authClientProvider](/src/support.documentation/services/authClientProvider)
-*   [environmentService](/src/support.documentation/services/environmentService)
-*   [idmService](/src/support.documentation/services/idmService)
-*   [integrationService](/src/support.documentation/services/integrationService)
-*   [messagingService](/src/support.documentation/services/messagingService)
-*   [navigationService](/src/support.documentation/websites/navigationService)
-*   [rulesetService](/src/support.documentation/services/rulesetService)
-*   [serviceProvider](/src/support.documentation/services/serviceProvider)
-*   [sessionState](/src/support.documentation/websites/sessionState)
-*   [storageService](/src/support.documentation/services/storageService)
+* [authClientProvider](/src/support.documentation/services/authClientProvider)
+* [environmentService](/src/support.documentation/services/environmentService)
+* [idmService](/src/support.documentation/services/idmService)
+* [integrationService](/src/support.documentation/services/integrationService)
+* [messagingService](/src/support.documentation/services/messagingService)
+* [navigationService](/src/support.documentation/websites/navigationService)
+* [rulesetService](/src/support.documentation/services/rulesetService)
+* [serviceProvider](/src/support.documentation/services/serviceProvider)
+* [sessionState](/src/support.documentation/websites/sessionState)
+* [storageService](/src/support.documentation/services/storageService)
+* [locationService](/src/support.documentation/services/locationService)
 
 Each of these are defined upon the controller instance as a property that can be access, for example:
 
@@ -145,5 +146,14 @@ module.exports = {
 	}
 }
 ```
+
+## Context
+
+Your controllers can access certain pieces of information around the context of the incoming request, including information relating to the user who made the request.
+
+The following information can be accessed:
+
+* client IP address - `this.context.client.ip`
+* client user agent - `this.context.client.agent`
 
 [Continue to Tags](/src/support.documentation/websites/tags)

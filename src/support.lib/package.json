@@ -4,6 +4,7 @@
 	"dependencies": {
 		"chokidar": "^3.3.1",
 		"elemental-string-format": "0.1.0",
+		"geoip-lite": "^1.4.5",
 		"jsonpath": "^1.0.2",
 		"jsonwebtoken": "^8.5.1",
 		"jwk-to-pem": "^2.0.5",

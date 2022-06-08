@@ -9,7 +9,8 @@ const controllerState = function(
     navigationService,
     serviceProvider,
     messagingService,
-    environmentService
+    environmentService,
+    locationService
 ) {
     this.controllerDefinition                       = controllerDefinition;
     this.controllerDefinition.storageService        = storageService;
@@ -22,6 +23,7 @@ const controllerState = function(
     this.controllerDefinition.serviceProvider       = serviceProvider;
     this.controllerDefinition.messagingService      = messagingService;
     this.controllerDefinition.environmentService    = environmentService;
+    this.controllerDefinition.locationService       = locationService;
     this.controllerDefinition.mergeBag              = this.mergeBag.bind(this);
 };
 
@@ -29,10 +31,24 @@ controllerState.prototype.mergeBag = function(bag) {
     this.controllerDefinition.bag = Object.assign(this.controllerDefinition.bag || {}, bag || {});
 };
 
+controllerState.prototype.getHeader = function(request, header) {
+    if (!request || !request.headers) {
+        return null;
+    }
+
+    return request.headers[header];
+};
+
 controllerState.prototype.setContext = function(request, response) {
     this.request = request;
     this.response = response;
 
+    this.controllerDefinition.context = {
+        client : {
+            ip      : this.getHeader(request, "x-forwarded-for") || (this.request.socket && this.request.socket.remoteAddress ? this.request.socket.remoteAddress : null),
+            agent   : this.getHeader(request, "user-agent")
+        }
+    };
     this.controllerDefinition.sessionState.setContext(this.request, this.response);
     this.controllerDefinition.navigationService.setContext(this.request, this.response);
     this.controllerDefinition.authClientProvider.setSessionState(this.controllerDefinition.sessionState);
@@ -115,6 +131,7 @@ controllerState.prototype._triggerComponentEvents = function(name, details) {
                 ci.instance.serviceProvider     = this.controllerDefinition.serviceProvider;
                 ci.instance.messagingService    = this.controllerDefinition.messagingService;
                 ci.instance.environmentService  = this.controllerDefinition.environmentService;
+                ci.instance.locationService     = this.controllerDefinition.locationService;
                 ci.instance.parent              = this.controllerDefinition;
 
                 if (ci.instance.events[name]) {
@@ -169,7 +186,8 @@ module.exports = function(
     navigationService,
     serviceProvider,
     messagingService,
-    environmentService
+    environmentService,
+    locationService
 ) {
     if (!storageService) {
         storageService = require("../../support.lib/storageService")();
@@ -211,6 +229,10 @@ module.exports = function(
         environmentService = require("../../support.lib/environmentService")();
     }
 
+    if (!locationService) {
+        locationService = require("../../support.lib/locationService")();
+    }
+
     return new controllerState(
         controllerDefinition,
         storageService,
@@ -222,6 +244,7 @@ module.exports = function(
         navigationService,
         serviceProvider,
         messagingService,
-        environmentService
+        environmentService,
+        locationService
     );
 };

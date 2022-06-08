@@ -143,6 +143,7 @@ You can use the following services within your handler code:
 * [rulesetService](/src/support.documentation/services/rulesetService)
 * [serviceProvider](/src/support.documentation/services/serviceProvider)
 * [storageService](/src/support.documentation/services/storageService)
+* [locationService](/src/support.documentation/services/locationService)
 
 ### Security
 

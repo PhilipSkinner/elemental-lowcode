@@ -40,6 +40,9 @@ const messagingService = {
 const environmentService = {
     setAuthClientProvider : () => {}
 };
+const locationService = {
+    setAuthClientProvider : () => {}
+};
 
 const constructorTest = (done) => {
     const state = {};
@@ -56,6 +59,7 @@ const constructorTest = (done) => {
     expect(state.messagingService).not.toBe(undefined);
     expect(state.environmentService).not.toBe(undefined);
     expect(state.mergeBag).not.toBe(undefined);
+    expect(state.locationService).not.toBe(undefined);
 
     done();
 };
@@ -96,7 +100,7 @@ const mergeNoneNullBagTest = (done) => {
 
 const setContextTest = (done) => {
     const state = {};
-    const instance = controllerState(state, {}, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, serviceProvider, messagingService, environmentService);
+    const instance = controllerState(state, {}, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, serviceProvider, messagingService, environmentService, locationService);
 
     const sessionStateMock = sinon.mock(sessionState);
     sessionStateMock.expects('setContext').once().withArgs('request', 'response');
@@ -113,6 +117,86 @@ const setContextTest = (done) => {
     instance.setContext('request', 'response');
 
     sessionStateMock.verify();    
+    navigationServiceMock.verify();
+    authClientProviderMock.verify();
+    serviceProviderMock.verify();
+
+    done();
+};
+
+const setContextHeadersTest = (done) => {
+    const request = {
+        headers : {
+            'x-forwarded-for'   : 'my-ip',
+            'user-agent'             : 'my-agent'
+        }
+    };
+    const state = {};
+    const instance = controllerState(state, {}, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, serviceProvider, messagingService, environmentService);
+
+    const sessionStateMock = sinon.mock(sessionState);
+    sessionStateMock.expects('setContext').once().withArgs(request, 'response');
+
+    const navigationServiceMock = sinon.mock(navigationService);
+    navigationServiceMock.expects('setContext').once().withArgs(request, 'response');
+
+    const authClientProviderMock = sinon.mock(authClientProvider);
+    authClientProviderMock.expects('setSessionState').once().withArgs(sinon.match.any);
+
+    const serviceProviderMock = sinon.mock(serviceProvider);
+    serviceProviderMock.expects('setContext').once().withArgs(sinon.match.any, request, 'response', sinon.match.any);
+
+    instance.setContext(request, 'response');
+
+    expect(instance.controllerDefinition.context).toEqual({
+        client : {
+            ip : 'my-ip',
+            agent : 'my-agent'
+        }
+    });
+
+    sessionStateMock.verify();
+    navigationServiceMock.verify();
+    authClientProviderMock.verify();
+    serviceProviderMock.verify();
+
+    done();
+};
+
+const setContextRemoteSocket = (done) => {
+    const request = {
+        socket : {
+            remoteAddress : 'my-ip'
+        },
+        headers : {
+            'user-agent'             : 'my-agent'
+        }
+    };
+    const state = {};
+    const instance = controllerState(state, {}, storageService, sessionState, integrationService, rulesetService, authClientProvider, idmService, navigationService, serviceProvider, messagingService, environmentService);
+
+    const sessionStateMock = sinon.mock(sessionState);
+    sessionStateMock.expects('setContext').once().withArgs(request, 'response');
+
+    const navigationServiceMock = sinon.mock(navigationService);
+    navigationServiceMock.expects('setContext').once().withArgs(request, 'response');
+
+    const authClientProviderMock = sinon.mock(authClientProvider);
+    authClientProviderMock.expects('setSessionState').once().withArgs(sinon.match.any);
+
+    const serviceProviderMock = sinon.mock(serviceProvider);
+    serviceProviderMock.expects('setContext').once().withArgs(sinon.match.any, request, 'response', sinon.match.any);
+
+    instance.setContext(request, 'response');
+
+    expect(instance.controllerDefinition.context).toEqual({
+        client : {
+            ip : 'my-ip',
+            agent : 'my-agent'
+        }
+    });
+
+    sessionStateMock.verify();
     navigationServiceMock.verify();
     authClientProviderMock.verify();
     serviceProviderMock.verify();
@@ -469,6 +553,8 @@ describe('A controller state provider', () => {
 
     describe('can set context', () => {
         it('correctly', setContextTest);
+        it('can set context from headers', setContextHeadersTest);
+        it('can set IP from remote socket', setContextRemoteSocket);
     });
 
     describe('can set components', () => {

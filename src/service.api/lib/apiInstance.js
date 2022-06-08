@@ -9,7 +9,8 @@ const apiInstance = function(
     idmService,
     authClientProvider,
     messagingService,
-    environmentService
+    environmentService,
+    locationService
 ) {
     this.app 					= app;
     this.definition 			= definition;
@@ -22,6 +23,7 @@ const apiInstance = function(
     this.authClientProvider 	= authClientProvider;
     this.messagingService 		= messagingService;
     this.environmentService 	= environmentService;
+    this.locationService        = locationService;
 };
 
 apiInstance.prototype.resolveController = function(name) {
@@ -33,6 +35,7 @@ apiInstance.prototype.resolveController = function(name) {
         idmService 			: this.idmService,
         messagingService 	: this.messagingService,
         environmentService  : this.environmentService,
+        locationService     : this.locationService,
     };
 
     Object.keys(services).forEach((prop) => {
@@ -135,7 +138,8 @@ module.exports = function(
     idmService,
     authClientProvider,
     messagingService,
-    environmentService
+    environmentService,
+    locationService
 ) {
     if (!roleCheckHandler) {
         roleCheckHandler = require("../../support.lib/roleCheckHandler")();
@@ -173,6 +177,10 @@ module.exports = function(
         environmentService = require("../../support.lib/environmentService")();
     }
 
+    if (!locationService) {
+        locationService = require("../../support.lib/locationService")();
+    }
+
     return new apiInstance(
         app,
         definition,
@@ -184,6 +192,7 @@ module.exports = function(
         idmService,
         authClientProvider,
         messagingService,
-        environmentService
+        environmentService,
+        locationService
     );
 };
