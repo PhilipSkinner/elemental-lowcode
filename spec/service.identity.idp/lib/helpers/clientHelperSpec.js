@@ -101,7 +101,7 @@ const resetNotEnabledTest = () => {
 const getEmailAddressDefault = () => {
     const instance = clientHelper();
 
-    expect(instance.getFromEmailAddress({})).toEqual('noreply@lowcode.live');
+    expect(instance.getFromEmailAddress({})).toEqual('noreply@elementalsystem.org');
 };
 
 const getEmailAddressClientEmail = () => {
@@ -202,6 +202,30 @@ const resetNotificationNotEnabled = () => {
     })).toEqual(false);
 };
 
+const loginNotificationEnabled = () => {
+    const instance = clientHelper();
+
+    expect(instance.loginNotificationEnabled({
+        features : {
+            login : {
+                notify : true
+            }
+        }
+    })).toEqual(true);
+};
+
+const loginNotificationNotEnabled = () => {
+    const instance = clientHelper();
+
+    expect(instance.loginNotificationEnabled({
+        features : {
+            login : {
+                notify : false
+            }
+        }
+    })).toEqual(false);
+};
+
 describe('A client helper', () => {
     describe('getPasswordRules', () => {
         it('returns the defaults when there is no client', passwordRulesNoClient);
@@ -245,5 +269,10 @@ describe('A client helper', () => {
     describe('resetNotificationEnabled', () => {
         it('can determine if password reset notifications are enabled', resetNotificationEnabled);
         it('can determine if password reset notifications are not enabled', resetNotificationNotEnabled);
+    });
+
+    describe('loginNotificationEnabled', () => {
+        it('can determine if login notifications are enabled', loginNotificationEnabled);
+        it('can determine if login notifications are not enabled', loginNotificationNotEnabled);
     });
 });

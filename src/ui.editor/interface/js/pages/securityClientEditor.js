@@ -17,7 +17,7 @@ const _securityClientEditorController = function(page) {
             selected    : this.sectionVisible == "claims"
         },
         {
-            name        : "Registration",
+            name        : "User Actions",
             event       : this.showRegistration.bind(this),
             selected    : this.sectionVisible == "registration"
         },
@@ -46,6 +46,7 @@ const _securityClientEditorController = function(page) {
             registration : {},
             reset : {},
             totp : {},
+            login : {},
             terms : {
                 implicit_consents : []
             },
@@ -248,6 +249,7 @@ _securityClientEditorController.prototype.standardiseClient = function() {
     this.client.features.banned_passwords           = this.client.features.banned_passwords || [];
     this.client.features.password                   = this.client.features.password || {};
     this.client.features.password.rules             = this.client.features.password.rules || {};
+    this.client.features.login                      = this.client.features.login || {};
 };
 
 _securityClientEditorController.prototype.cancelAddingRedirectUri = function() {

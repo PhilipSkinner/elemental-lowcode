@@ -1,8 +1,11 @@
-const login = function(provider, accountService, clientHelper, passwordHelper) {
-    this.provider = provider;
+const login = function(provider, accountService, clientHelper, passwordHelper, emailService, ejs, path) {
+    this.provider       = provider;
     this.accountService = accountService;
-    this.clientHelper = clientHelper;
+    this.clientHelper   = clientHelper;
     this.passwordHelper = passwordHelper;
+    this.emailService   = emailService;
+    this.ejs            = ejs;
+    this.path           = path;
 };
 
 login.prototype.showLoginForm = function(req, res, next) {
@@ -95,7 +98,22 @@ login.prototype.handleLogin = function(req, res, next) {
             },
         };
 
-        return this.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
+        return this.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false }).then(() => {
+            if (!this.clientHelper.loginNotificationEnabled(client) || !account) {
+                return Promise.resolve();
+            }
+
+            return this.ejs.renderFile(this.path.join(__dirname, `../../emails/loginDetected.ejs`), {
+                username    : account.profile.username
+            }).then((html) => {
+                return this.emailService.sendEmail(
+                    this.clientHelper.getFromEmailAddress(client),
+                    account.profile.username,
+                    "New login detected",
+                    html
+                );
+            });
+        });
     }).catch((err) => {
         console.log(err);
         next(err);
@@ -103,7 +121,7 @@ login.prototype.handleLogin = function(req, res, next) {
     });
 };
 
-module.exports = function(provider, accountService, clientHelper, passwordHelper) {
+module.exports = function(provider, accountService, clientHelper, passwordHelper, emailService, ejs, path) {
     if (!accountService) {
         accountService = require("../account")();
     }
@@ -116,5 +134,23 @@ module.exports = function(provider, accountService, clientHelper, passwordHelper
         passwordHelper = require("../helpers/passwordHelper")();
     }
 
-    return new login(provider, accountService, clientHelper, passwordHelper);
+    if (!emailService) {
+        emailService = require("../../../support.lib/emailService")({
+            host        : process.env.SMTP_HOST,
+            port        : process.env.SMTP_PORT,
+            username    : process.env.SMTP_USERNAME,
+            password    : process.env.SMTP_PASSWORD,
+            protocol    : process.env.SMTP_PROTOCOL
+        });
+    }
+
+    if (!ejs) {
+        ejs = require("ejs");
+    }
+
+    if (!path) {
+        path = require("path");
+    }
+
+    return new login(provider, accountService, clientHelper, passwordHelper, emailService, ejs, path);
 };

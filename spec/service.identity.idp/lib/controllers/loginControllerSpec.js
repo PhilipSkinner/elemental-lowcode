@@ -15,14 +15,28 @@ const accountService = {
 };
 
 const clientHelper = {
-    termsOrPrivacyRequired : () => {},
-    getPasswordRules : () => {},
-    getBannedPasswords : () => {}
+    termsOrPrivacyRequired      : () => {},
+    getPasswordRules            : () => {},
+    getBannedPasswords          : () => {},
+    loginNotificationEnabled    : () => {},
+    getFromEmailAddress         : () => {},
 };
 
 const passwordHelper = {
     passwordStrongEnough : () => {},
     isBannedPassword : () => {}
+};
+
+const ejs = {
+    renderFile : () => {}
+};
+
+const path = {
+    join : () => {}
+};
+
+const emailService = {
+    sendEmail : () => {}
 };
 
 const showLoginFormExceptions = (done) => {
@@ -408,11 +422,12 @@ const handleLoginTest = (done) => {
         password_error : false,
     }, {
         mergeWithLastSubmission : false
-    });
+    }).returns(Promise.resolve());
 
     const clientHelperMock = sinon.mock(clientHelper);
     clientHelperMock.expects('termsOrPrivacyRequired').once().returns(false);
     clientHelperMock.expects('getPasswordRules').once().returns('password-rules');
+    clientHelperMock.expects('loginNotificationEnabled').once().returns(false);
 
     const passwordHelperMock = sinon.mock(passwordHelper);
     passwordHelperMock.expects('passwordStrongEnough').once().withArgs('password-rules', 'password').returns(true);
@@ -459,9 +474,10 @@ const handleLoginFailedTest = (done) => {
         password_error : false,
     }, {
         mergeWithLastSubmission : false
-    });
+    }).returns(Promise.resolve());
 
     const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('loginNotificationEnabled').once().returns(true);
 
     const passwordHelperMock = sinon.mock(passwordHelper);
 
@@ -485,6 +501,83 @@ const handleLoginFailedTest = (done) => {
     }, 1);
 };
 
+const handleLoginNotificationTest = (done) => {
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByLogin').once().withArgs('username', 'password').returns(Promise.resolve({
+        accountId : 1234,
+        profile : {
+            username : 'my-username'
+        }
+    }));
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('my-client').returns(Promise.resolve({}));
+
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, 'response').returns(Promise.resolve({
+        params : {
+            client_id : 'my-client'
+        }
+    }));
+    providerMock.expects('interactionFinished').once().withArgs(sinon.match.any, 'response', {
+        select_account : {},
+        login : {
+            account : 1234
+        },
+        username_error : false,
+        password_error : false,
+    }, {
+        mergeWithLastSubmission : false
+    }).returns(Promise.resolve());
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('termsOrPrivacyRequired').once().returns(false);
+    clientHelperMock.expects('getPasswordRules').once().returns('password-rules');
+    clientHelperMock.expects('loginNotificationEnabled').once().returns(true);
+    clientHelperMock.expects('getFromEmailAddress').once().returns('my@email.com');
+
+    const passwordHelperMock = sinon.mock(passwordHelper);
+    passwordHelperMock.expects('passwordStrongEnough').once().withArgs('password-rules', 'password').returns(true);
+
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(sinon.match.any, '../../emails/loginDetected.ejs').returns('my-template');
+
+    const ejsMock = sinon.mock(ejs);
+    ejsMock.expects('renderFile').once().withArgs('my-template', {
+        username : 'my-username'
+    }).returns(Promise.resolve('some-html'));
+
+    const emailMock = sinon.mock(emailService);
+    emailMock.expects('sendEmail').once().withArgs(
+        'my@email.com',
+        'my-username',
+        'New login detected',
+        'some-html'
+    ).returns(Promise.resolve());
+
+    const instance = loginController(provider, accountService, clientHelper, passwordHelper, emailService, ejs, path);
+
+    instance.handleLogin({
+        body : {
+            login : 'username',
+            password : 'password'
+        }
+    }, 'response');
+
+    setTimeout(() => {
+        clientMock.verify();
+        accountMock.verify();
+        providerMock.verify();
+        clientHelperMock.verify();
+        passwordHelperMock.verify();
+        pathMock.verify();
+        ejsMock.verify();
+        emailMock.verify();
+
+        done();
+    }, 1);
+};
+
 describe('A login controller', () => {
     describe('show login form', () => {
         it('handles exceptions', showLoginFormExceptions);
@@ -500,5 +593,6 @@ describe('A login controller', () => {
         it('handles password being banned', handleLoginBannedPassword);
         it('works', handleLoginTest);
         it('handles failed logins', handleLoginFailedTest);
+        it('notifies on successful login', handleLoginNotificationTest);
     });
 });

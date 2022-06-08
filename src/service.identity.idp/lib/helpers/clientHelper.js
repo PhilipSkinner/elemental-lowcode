@@ -17,7 +17,7 @@ const clientHelper = function() {
         window : 60
     };
 
-    this.defaultEmailAddress = "noreply@lowcode.live";
+    this.defaultEmailAddress = "noreply@elementalsystem.org";
 };
 
 clientHelper.prototype.getFromEmailAddress = function(client) {
@@ -38,6 +38,10 @@ clientHelper.prototype.resetEnabled = function(client) {
 
 clientHelper.prototype.resetNotificationEnabled = function(client) {
     return client.features && client.features.reset && client.features.reset.notify === true;
+};
+
+clientHelper.prototype.loginNotificationEnabled = function(client) {
+    return client.features && client.features.login && client.features.login.notify === true;
 };
 
 clientHelper.prototype.termsRequired = function(account, client) {

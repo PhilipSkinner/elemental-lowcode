@@ -380,11 +380,11 @@ module.exports = function(provider, accountService, clientHelper, passwordHelper
 
     if (!emailService) {
         emailService = require("../../../support.lib/emailService")({
-            host : process.env.SMTP_HOST,
-            port : process.env.SMTP_PORT,
-            username : process.env.SMTP_USERNAME,
-            password : process.env.SMTP_PASSWORD,
-            protocol : process.env.SMTP_PROTOCOL
+            host        : process.env.SMTP_HOST,
+            port        : process.env.SMTP_PORT,
+            username    : process.env.SMTP_USERNAME,
+            password    : process.env.SMTP_PASSWORD,
+            protocol    : process.env.SMTP_PROTOCOL
         });
     }
 
