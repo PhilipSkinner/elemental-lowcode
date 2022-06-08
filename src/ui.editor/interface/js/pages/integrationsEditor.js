@@ -52,8 +52,8 @@ _integrationsEditorController.prototype.initBlankType = function() {
         queryParams: [
             {
                 name: "id",
-                type: "queryParam",
-                description: "The ID of the post to fetch"
+                description: "The ID of the post to fetch",
+                required : true,
             }
         ],
         roles : {
@@ -66,7 +66,7 @@ _integrationsEditorController.prototype.initBlankType = function() {
             }
         },
         request: {
-            uri: "https://jsonplaceholder.typicode.com/posts/$(id)",
+            uri: "https://jsonplaceholder.typicode.com/posts/$.variables.id",
             method: "get",
             schema: {
                 type: "JSON",

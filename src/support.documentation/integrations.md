@@ -6,10 +6,10 @@ The integrations service allows you to connect to third party systems and to sur
 
 Each integration defines:
 
-*   incoming requests
-*   outgoing requests (to the third party system)
-*   transformation logic
-*   authorization rules
+* incoming requests
+* outgoing requests (to the third party system)
+* transformation logic
+* authorization rules
 
 Here is an example integration definition:
 
@@ -18,7 +18,18 @@ Here is an example integration definition:
     "name": "exampleGetRequest",
     "description": "Get a single post from our example third party system.",
     "method": "get",
-    "variables": [
+    "body" : {
+        "type" : "object",
+        "properties" : {
+            "id" : {
+                "type" : "number"
+            }
+        },
+        "required" : [
+            "id"
+        ]
+    },
+    "queryParams": [
         {
             "name": "id",
             "type": "queryParam",
@@ -38,7 +49,7 @@ Here is an example integration definition:
         }
     },
     "request": {
-        "uri": "https://jsonplaceholder.typicode.com/posts/$(id)",
+        "uri": "https://jsonplaceholder.typicode.com/posts/$.variables.id",
         "method": "get",
         "schema": {
             "type": "JSON",
@@ -75,9 +86,10 @@ Here is an example integration definition:
 
 The incoming request definition is taken from the following properties on the integration:
 
-*   name - used to generate the URI for the integration
-*   method - the HTTP method to be used to call the integration
-*   variables - any variables that are required for the integration to be executed
+* name - used to generate the URI for the integration
+* method - the HTTP method to be used to call the integration
+* queryParams - any variables that come in via query parameters
+* body - any variables that come in via the request body
 
 Clicking on the name of an integration within the integrations section provides automatic documentation on how to call the integration.
 
@@ -87,11 +99,39 @@ The outgoing request definition is held within the `request` property of the int
 
 This object allows for the following confirmation options:
 
-*   uri - the URI to call
-*   method - the HTTP method to use to call the URI
-*   schema - the expected shape of the response data
+* uri - the URI to call
+* method - the HTTP method to use to call the URI
+* authentication - authentication mechanism for the outgoing request
+* schema - the expected shape of the response data
 
 When a request is made to the integration, this configuration is used to call the third party system. If an error occurs, such as a 404 or the response does not match the defined schema then an error is thrown by the integration.
+
+#### Authentication
+
+The following authentication mechanisms are supported on outgoing requests:
+
+* HTTP basic
+
+##### HTTP Basic
+
+To authenticate with the third party system using HTTP basic you need to provide a mechanism of `http_basic` plus the username and password to be used:
+
+```
+{
+    "request": {
+        "uri": "https://jsonplaceholder.typicode.com/posts/$.variables.id",
+        "authentication" : {
+            "mechanism" : "http_basic",
+            "config" : {
+                "username" : "$.variables.variable_name",
+                "password" : "$.secrets.secret_name"
+            }
+        }
+    }
+}
+```
+
+It is possible to access variables used to call the integration, or to access secrets scoped to the integrations service. You can use hardcoded values but it is not recommended - instead use the secrets manager with secrets scoped to only the integrations service.
 
 ### Transformation logic
 
@@ -113,16 +153,16 @@ The `roles` section of the integration configuration allows you to define how au
 
 By default, each integration will only allow execution if an incoming token contains the following role claims:
 
-*   `system_admin`
-*   `system_exec`
-*   `integration_exec`
-*   `[integration_name]_exec`
+* `system_admin`
+* `system_exec`
+* `integration_exec`
+* `[integration_name]_exec`
 
 Each integration can have its security configured to:
 
-*   Replace the existing roles with a new set of roles
-*   Append roles to the default set of roles
-*   Remove the need for any roles, accept any valid access token as authorization
+* Replace the existing roles with a new set of roles
+* Append roles to the default set of roles
+* Remove the need for any roles, accept any valid access token as authorization
 
 Here is an example `roles` section:
 
