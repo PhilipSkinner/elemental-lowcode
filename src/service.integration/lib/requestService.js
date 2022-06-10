@@ -9,17 +9,31 @@ requestService.prototype._addHttpBasic = function(req, requestConfig, variables)
 
     let username = this.stringParser.detectValues(requestConfig.authentication.config.username, {
         variables   : variables,
-        secrets     : secrets
+        secret      : secrets
     }, {}, false);
     let password = this.stringParser.detectValues(requestConfig.authentication.config.password, {
-        variables : variables,
-        secrets     : secrets
+        variables  : variables,
+        secret     : secrets
     }, {}, false);
 
     const encoded = Buffer.from(`${username}:${password}`).toString('base64');
 
     req.headers = req.headers || {};
     req.headers.Authorization = `Basic ${encoded}`;
+
+    return Promise.resolve(req);
+};
+
+requestService.prototype._addBearerToken = function(req, requestConfig, variables) {
+    const secrets = this.environmentService.listSecrets();
+
+    let token = this.stringParser.detectValues(requestConfig.authentication.config.token, {
+        variables   : variables,
+        secret      : secrets
+    }, {}, false);
+
+    req.headers = req.headers || {};
+    req.headers.Authorization = `Bearer ${token}`;
 
     return Promise.resolve(req);
 };
@@ -31,6 +45,12 @@ requestService.prototype._addAuthentication = function(req, requestConfig, varia
 
     if (requestConfig.authentication.mechanism === "http_basic") {
         return this._addHttpBasic(req, requestConfig, variables);
+    }
+
+    if (requestConfig.authentication.mechanism === "token") {
+        if (requestConfig.authentication.type === "bearer") {
+            return this._addBearerToken(req, requestConfig, variables);
+        }
     }
 
     return Promise.resolve(req);

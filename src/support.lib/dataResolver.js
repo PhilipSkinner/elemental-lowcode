@@ -32,6 +32,9 @@ dataResolver.prototype.detectValues = function(string, data, scope, replaceUndef
 
                 if (rep === null) {
                     rep = "";
+                } else if (typeof(rep) === 'object' && slicedString !== match) {
+                    //we want to ignore any objects
+                    rep = slicedString;
                 }
 
                 if (typeof(rep) !== "undefined" && rep !== slicedString) {

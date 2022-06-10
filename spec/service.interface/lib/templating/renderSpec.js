@@ -350,7 +350,7 @@ const renderViewTest = (done) => {
     <a>
         oops
     </a>
-    <!-- @clickHandler --><a href="?event=doot&hello__bag__there=world&an__object__with=a%20scalar&an__object__and__0=an&an__object__and__1=array&an__object__and__2=of&an__object__and__3__lots_of=stuff&an__object__and__3___scope__data__bag__bag__there=world&an__object___scope__data__bag__bag__there=world&an___scope__data__bag__bag__there=world&_scope__data__bag__bag__there=world" ><b>
+    <!-- @clickHandler --><a href="?event=doot&hello=%24.bag.there&an__object__with=a%20scalar&an__object__and__0=an&an__object__and__1=array&an__object__and__2=of&an__object__and__3__lots_of=stuff&an__object__and__3___scope__data__bag__bag__there=world&an__object___scope__data__bag__bag__there=world&an___scope__data__bag__bag__there=world&_scope__data__bag__bag__there=world" ><b>
         there
     </b></a><!-- /@clickHandler -->
     <!-- @internalClickHandler --><div><a href="?event=doot&" >
@@ -362,10 +362,10 @@ const renderViewTest = (done) => {
 
     </form>
     <form method="POST" action="?_event=poll"  data-poll="500"  >
-        <input type="hidden"  value="[object Object]"  name="bag$$_$$counter"  />
+        <input type="hidden"  value="$.bag.counter"  name="bag$$_$$counter"  />
     </form>
     <form method="POST" action="?_event=poll"  >
-        <input type="hidden"  value="[object Object]"  name="bag$$_$$counter"  />
+        <input type="hidden"  value="$.bag.counter"  name="bag$$_$$counter"  />
     </form>
     <form method="POST" action=""   />\n\n    \n</div>
 `);

@@ -63,11 +63,23 @@ const functionCorrectString = () => {
 
     expect(instance.detectValues("$.value", { value : "" }, {}, false)).toEqual("");
 
-    expect(instance.detectValues("$.value",{value : false }, {}, false)).toEqual("false");
+    expect(instance.detectValues("$.value", {value : false }, {}, false)).toEqual("false");
 
-    expect(instance.detectValues("$.value",{value : null }, {}, false)).toEqual("");
+    expect(instance.detectValues("$.value", {value : null }, {}, false)).toEqual("");
 
-    expect(instance.detectValues("$.value",{}, {}, false)).toEqual("$.value");
+    expect(instance.detectValues("$.value", {}, {}, false)).toEqual("$.value");
+
+    expect(instance.detectValues("$.nested.value", {
+        nested : null
+    }, {}, false)).toEqual("");
+
+    expect(instance.detectValues("$.nested.value", {
+        nested : undefined
+    }, {}, false)).toEqual("$.nested.value");
+
+    expect(instance.detectValues("$.nested.value", {
+        nested : {}
+    }, {}, false)).toEqual("$.nested.value");
 };
 
 describe('A data resolver', () => {

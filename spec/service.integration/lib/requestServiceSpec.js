@@ -136,13 +136,13 @@ const httpBasicTest = (done) => {
         variables : {
             hello : 'world'
         },
-        secrets : 'some-secrets'
+        secret : 'some-secrets'
     }).returns('username');
-    parserMock.expects('detectValues').once().withArgs('$.secrets.password', {
+    parserMock.expects('detectValues').once().withArgs('$.secret.password', {
         variables : {
             hello : 'world'
         },
-        secrets : 'some-secrets'
+        secret : 'some-secrets'
     }).returns('password');
 
     const environmentMock = sinon.mock(environmentService);
@@ -156,7 +156,57 @@ const httpBasicTest = (done) => {
             mechanism : 'http_basic',
             config : {
                 username : '$.variables.username',
-                password : '$.secrets.password'
+                password : '$.secret.password'
+            }
+        }
+    }, {
+        hello : 'world'
+    }).then((result) => {
+        requestMock.verify();
+        parserMock.verify();
+        environmentMock.verify();
+
+        expect(result).toEqual('my nice result');
+
+        done();
+    });
+};
+
+const bearerTokenTest = (done) => {
+    const requestMock = sinon.mock(request);
+    requestMock.expects('main').once().withArgs({
+        method  : 'GET',
+        uri     : 'http://elementalsystem.org?hello=world',
+        headers : {
+            Authorization : 'Bearer secret_value'
+        }
+    }).callsArgWith(1, null, 'my nice result');
+
+    const parserMock = sinon.mock(stringParser);
+    parserMock.expects('detectValues').once().withArgs('http://elementalsystem.org', {
+        variables : {
+            hello : 'world'
+        }
+    }).returns('http://elementalsystem.org?hello=world');
+    parserMock.expects('detectValues').once().withArgs('$.secret.token', {
+        variables : {
+            hello : 'world'
+        },
+        secret : 'some-secrets'
+    }).returns('secret_value');
+
+    const environmentMock = sinon.mock(environmentService);
+    environmentMock.expects('listSecrets').once().returns('some-secrets');
+
+    const instance = requestService(request.main, stringParser, environmentService);
+    instance.sendRequest({
+        method : 'GET',
+        uri : 'http://elementalsystem.org',
+        authentication : {
+            mechanism : 'token',
+            type : 'bearer',
+            config : {
+                token : '$.secret.token'
             }
         }
     }, {
@@ -178,4 +228,5 @@ describe('A HTTP request service', () => {
     it('can handle request errors', errorTest);
     it('ignores unknown authentication mechanisms', unknownAuthTest);
     it('supports HTTP basic authentication', httpBasicTest);
+    it('supports bearer token authentication', bearerTokenTest);
 });
