@@ -270,6 +270,63 @@ const queryParamTokenTest = (done) => {
     });
 };
 
+const headerTokenTest = (done) => {
+    const requestMock = sinon.mock(request);
+    requestMock.expects('main').once().withArgs({
+        method  : 'GET',
+        uri     : 'http://elementalsystem.org?hello=world',
+        headers : {
+            'x-api-key' : 'secret_value'
+        }
+    }).callsArgWith(1, null, 'my nice result');
+
+    const parserMock = sinon.mock(stringParser);
+    parserMock.expects('detectValues').once().withArgs('http://elementalsystem.org', {
+        variables : {
+            hello : 'world'
+        }
+    }).returns('http://elementalsystem.org?hello=world');
+    parserMock.expects('detectValues').once().withArgs('$.secret.token', {
+        variables : {
+            hello : 'world'
+        },
+        secret : 'some-secrets'
+    }).returns('secret_value');
+    parserMock.expects('detectValues').once().withArgs('x-api-key', {
+        variables : {
+            hello : 'world'
+        },
+        secret : 'some-secrets'
+    }).returns('x-api-key');
+
+    const environmentMock = sinon.mock(environmentService);
+    environmentMock.expects('listSecrets').once().returns('some-secrets');
+
+    const instance = requestService(request.main, stringParser, environmentService);
+    instance.sendRequest({
+        method : 'GET',
+        uri : 'http://elementalsystem.org',
+        authentication : {
+            mechanism : 'token',
+            type : 'header',
+            config : {
+                token : '$.secret.token',
+                header : 'x-api-key'
+            }
+        }
+    }, {
+        hello : 'world'
+    }).then((result) => {
+        requestMock.verify();
+        parserMock.verify();
+        environmentMock.verify();
+
+        expect(result).toEqual('my nice result');
+
+        done();
+    });
+};
+
 describe('A HTTP request service', () => {
     it('defaults its constructor arguments', constructorTest);
     it('can make a request', requestTest);
@@ -278,4 +335,5 @@ describe('A HTTP request service', () => {
     it('supports HTTP basic authentication', httpBasicTest);
     it('supports bearer token authentication', bearerTokenTest);
     it('supports query param token authentication', queryParamTokenTest);
+    it('supports header token authentication', headerTokenTest);
 });

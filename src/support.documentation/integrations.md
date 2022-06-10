@@ -113,6 +113,7 @@ The following authentication mechanisms are supported on outgoing requests:
 * HTTP basic
 * Bearer token
 * Query token
+* Header token
 
 ##### HTTP Basic
 
@@ -179,6 +180,30 @@ To authenticate with the third party system using a static bearer token use a me
 ```
 
 This will be sent to the third party URI as a query/search parameter - `https://jsonplaceholder.typicode.com/posts/1?token_param=token_value`.
+
+It is possible to access variables used to call the integration, or to access secrets scoped to the integrations service. You can use hardcoded values but it is not recommended - instead use the secrets manager with secrets scoped to only the integrations service.
+
+##### Header Token
+
+To authenticate with the third party system using a static header token use a mechanism of `token` along with a type of `header`:
+
+```
+{
+    "request": {
+        "uri": "https://jsonplaceholder.typicode.com/posts/$.variables.id",
+        "authentication" : {
+            "mechanism" : "token",
+            "type" : "query",
+            "config" : {
+                "token" : "$.secret.secret_name",
+                "header" : "x-api-key"
+            }
+        }
+    }
+}
+```
+
+This will be sent to the third party URI as a header - `x-api-key: token_value`.
 
 It is possible to access variables used to call the integration, or to access secrets scoped to the integrations service. You can use hardcoded values but it is not recommended - instead use the secrets manager with secrets scoped to only the integrations service.
 

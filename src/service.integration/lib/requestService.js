@@ -54,6 +54,24 @@ requestService.prototype._addQueryToken = function(req, requestConfig, variables
     return Promise.resolve(req);
 };
 
+requestService.prototype._addHeaderToken = function(req, requestConfig, variables) {
+    const secrets = this.environmentService.listSecrets();
+
+    let token = this.stringParser.detectValues(requestConfig.authentication.config.token, {
+        variables   : variables,
+        secret      : secrets
+    }, {}, false);
+    let header = this.stringParser.detectValues(requestConfig.authentication.config.header, {
+        variables   : variables,
+        secret      : secrets
+    }, {}, false);
+
+    req.headers = req.headers || {};
+    req.headers[header] = token;
+
+    return Promise.resolve(req);
+};
+
 requestService.prototype._addAuthentication = function(req, requestConfig, variables) {
     if (!requestConfig.authentication) {
         return Promise.resolve(req);
@@ -70,6 +88,10 @@ requestService.prototype._addAuthentication = function(req, requestConfig, varia
 
         if (requestConfig.authentication.type === "query") {
             return this._addQueryToken(req, requestConfig, variables);
+        }
+
+        if (requestConfig.authentication.type === "header") {
+            return this._addHeaderToken(req, requestConfig, variables);
         }
     }
 
