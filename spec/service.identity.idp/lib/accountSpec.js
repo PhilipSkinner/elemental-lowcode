@@ -181,8 +181,11 @@ const extraClaimsUserTest = (done) => {
         }
     }));
 
-    instance.extraAccessTokenClaims([])(null, {
-        accountId : 'hello'
+    instance.extraAccessTokenClaims([], {
+        roles : ['roles']
+    })(null, {
+        accountId : 'hello',
+        scopes : ['roles']
     }).then((result) => {
         expect(result.roles).toEqual(['hello', 'world']);
 
@@ -199,8 +202,9 @@ const extraClaimsUserNotFound = (done) => {
     const dbMock = sinon.mock(_db);
     dbMock.expects('find').once().withArgs('hello').returns(Promise.resolve(null));
 
-    instance.extraAccessTokenClaims([])(null, {
-        accountId : 'hello'
+    instance.extraAccessTokenClaims([], {})(null, {
+        accountId : 'hello',
+        scopes : []
     }).then((result) => {
         expect(result).toEqual({});
 
@@ -217,13 +221,18 @@ const extraClaimsClientTest = (done) => {
     instance.extraAccessTokenClaims([
         {
             client_id : 'doot',
-            claims : {
+            client_claims : {
                 hello : 'world'
             }
         }
-    ])(null, {
+    ], {
+        hello_scope : [
+            'hello'
+        ]
+    })(null, {
         clientId : 'doot',
-        kind : 'ClientCredentials'
+        kind : 'ClientCredentials',
+        scopes : ['hello_scope']
     }).then((result) => {
         expect(result).toEqual({
             hello : 'world'
@@ -243,9 +252,14 @@ const extraClaimsClientNotFound = (done) => {
                 hello : 'world'
             }
         }
-    ])(null, {
+    ], {
+        hello_scope : [
+            'hello'
+        ]
+    })(null, {
         clientId : 'woot',
-        kind : 'ClientCredentials'
+        kind : 'ClientCredentials',
+        scopes : ['hello_scope']
     }).then((result) => {
         expect(result).toEqual({});
 
@@ -261,7 +275,13 @@ const extraClaimsInvalidTest = (done) => {
             client_id : 'doot',
             roles : ['hello', 'world']
         }
-    ])(null, {
+    ], {
+        roles : [
+            'roles',
+            'role'
+        ]
+    })(null, {
+        scopes : ['roles']
     }).then((result) => {
         expect(result).toEqual({});
 

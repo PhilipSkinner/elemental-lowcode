@@ -69,8 +69,16 @@ module.exports = function(db, bcrypt, uuid) {
             return new Account(id, user);
         }
 
-        static extraAccessTokenClaims(clients) {
-            return async (ctx, token) => {
+        static extraAccessTokenClaims(clients, allScopes) {
+            const getAllClaims = async (ctx, token) => {
+                let client = null;
+
+                clients.forEach((_client) => {
+                    if (_client.client_id == token.clientId) {
+                        client = _client;
+                    }
+                });
+
                 if (token.accountId) {
                     const user = await userDB.find(token.accountId);
 
@@ -78,23 +86,42 @@ module.exports = function(db, bcrypt, uuid) {
                         return {};
                     }
 
-                    return {
-                        roles 	: user.claims && user.claims.roles ? user.claims.roles : [],
-                        sub 	: user.subject || this.accountId
-                    };
+                    return Object.assign(client ? (client.user_claims || {}) : {}, Object.assign(user.claims || {}, {
+                        subject : user.subject || this.accountId
+                    }));
                 }
 
                 if (token.clientId && token.kind === "ClientCredentials") {
                     //get the claims from the client
-                    return clients.reduce((claims, client) => {
-                        if (client.client_id === token.clientId) {
-                            claims = Object.assign(client.claims || {}, claims);
-                        }
-                        return claims;
-                    }, {});
+                    return client ? client.client_claims : {};
                 }
 
                 return {};
+            };
+
+            return async (ctx, token) => {
+                const claims = JSON.parse(JSON.stringify((await getAllClaims(ctx, token))));
+
+                //now we filter out claims
+                let canKeep = [];
+                token.scopes.forEach((requestedScope) => {
+                    if (typeof(allScopes[requestedScope]) !== "undefined" && allScopes[requestedScope] !== null) {
+                        canKeep = canKeep.concat(allScopes[requestedScope]);
+                    }
+                });
+
+                const toRemove = [];
+                Object.keys(claims).forEach((name) => {
+                    if (canKeep.indexOf(name) === -1) {
+                        toRemove.push(name);
+                    }
+                });
+
+                toRemove.forEach((rem) => {
+                    delete(claims[rem]);
+                });
+
+                return claims;
             };
         }
 

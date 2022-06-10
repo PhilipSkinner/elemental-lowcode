@@ -41,7 +41,8 @@ const _securityClientEditorController = function(page) {
         grant_types : [],
         scope : "",
         redirect_uris : [],
-        claims : {},
+        client_claims : {},
+        user_claims : {},
         features : {
             registration : {},
             reset : {},
@@ -73,6 +74,7 @@ const _securityClientEditorController = function(page) {
     this.addingBannedPassword = false;
     this.newBannedPassword = "";
     this.addingClientClaim = false;
+    this.addingUserClaim = false;
     this.newClaimName = "";
     this.newClaimValue = "";
     this.addingPasswordHelper = false;
@@ -132,11 +134,35 @@ _securityClientEditorController.prototype.modifyPasswordHelper = function(index)
 };
 
 _securityClientEditorController.prototype.removeClientClaim = function(name, value) {
-    this.client.claims = Object.keys(this.client.claims).reduce((sum, a) => {
+    this.client.client_claims = Object.keys(this.client.client_claims).reduce((sum, a) => {
         if (a !== name) {
-            sum[a] = this.client.claims[a];
+            sum[a] = this.client.client_claims[a];
         } else {
-            var newValues = this.client.claims[a].reduce((claims, b) => {
+            var newValues = this.client.client_claims[a].reduce((claims, b) => {
+                if (b !== value) {
+                    claims.push(b);
+                }
+
+                return claims;
+            }, []);
+
+            if (newValues.length > 0) {
+                sum[a] = newValues;
+            }
+        }
+
+        return sum;
+    }, {});
+
+    this.refreshEditorState();
+};
+
+_securityClientEditorController.prototype.removeUserClaim = function(name, value) {
+    this.client.user_claims = Object.keys(this.client.user_claims).reduce((sum, a) => {
+        if (a !== name) {
+            sum[a] = this.client.user_claims[a];
+        } else {
+            var newValues = this.client.user_claims[a].reduce((claims, b) => {
                 if (b !== value) {
                     claims.push(b);
                 }
@@ -162,18 +188,42 @@ _securityClientEditorController.prototype.cancelAddClientClaim = function() {
     this.forceRefresh();
 };
 
+_securityClientEditorController.prototype.cancelAddUserClaim = function() {
+    this.addingUserClaim = false;
+    this.newClaimValue = "";
+    this.newClaimName = "";
+    this.forceRefresh();
+};
+
 _securityClientEditorController.prototype.saveClientClaim = function() {
-    if (typeof(this.client.claims[this.caller.newClaimName]) === "undefined") {
-        this.client.claims[this.caller.newClaimName] = [];
+    if (typeof(this.client.client_claims[this.caller.newClaimName]) === "undefined") {
+        this.client.client_claims[this.caller.newClaimName] = [];
     }
 
-    if (!Array.isArray(this.client.claims[this.caller.newClaimName])) {
-        this.client.claims[this.caller.newClaimName] = [this.client.claims[this.caller.newClaimName]];
+    if (!Array.isArray(this.client.client_claims[this.caller.newClaimName])) {
+        this.client.client_claims[this.caller.newClaimName] = [this.client.client_claims[this.caller.newClaimName]];
     }
 
-    this.client.claims[this.caller.newClaimName].push(this.caller.newClaimValue);
+    this.client.client_claims[this.caller.newClaimName].push(this.caller.newClaimValue);
 
     this.addingClientClaim = false;
+    this.newClaimValue = "";
+    this.newClaimName = "";
+    this.forceRefresh();
+};
+
+_securityClientEditorController.prototype.saveUserClaim = function() {
+    if (typeof(this.client.user_claims[this.caller.newClaimName]) === "undefined") {
+        this.client.user_claims[this.caller.newClaimName] = [];
+    }
+
+    if (!Array.isArray(this.client.user_claims[this.caller.newClaimName])) {
+        this.client.user_claims[this.caller.newClaimName] = [this.client.user_claims[this.caller.newClaimName]];
+    }
+
+    this.client.user_claims[this.caller.newClaimName].push(this.caller.newClaimValue);
+
+    this.addingUserClaim = false;
     this.newClaimValue = "";
     this.newClaimName = "";
     this.forceRefresh();
@@ -186,17 +236,36 @@ _securityClientEditorController.prototype.addClientClaim = function() {
     this.forceRefresh();
 };
 
+_securityClientEditorController.prototype.addUserClaim = function() {
+    this.addingUserClaim = true;
+    this.newClaimValue = "";
+    this.newClaimName = "";
+    this.forceRefresh();
+};
+
 _securityClientEditorController.prototype.clientClaims = function() {
-    return Object.keys(this.client.claims || {}).reduce((sum, key) => {
-        if (!Array.isArray(this.client.claims[key])) {
-            this.client.claims[key] = [this.client.claims[key]];
+    return Object.keys(this.client.client_claims || {}).reduce((sum, key) => {
+        if (!Array.isArray(this.client.client_claims[key])) {
+            this.client.client_claims[key] = [this.client.client_claims[key]];
         }
 
-        return sum.concat(this.client.claims[key].map((m) => {
+        return sum.concat(this.client.client_claims[key].map((m) => {
             return { name : key, value : m }
         }));
     }, []);
-}
+};
+
+_securityClientEditorController.prototype.userClaims = function() {
+    return Object.keys(this.client.user_claims || {}).reduce((sum, key) => {
+        if (!Array.isArray(this.client.user_claims[key])) {
+            this.client.user_claims[key] = [this.client.user_claims[key]];
+        }
+
+        return sum.concat(this.client.user_claims[key].map((m) => {
+            return { name : key, value : m }
+        }));
+    }, []);
+};
 
 _securityClientEditorController.prototype.cancelAddBannedPassword = function() {
     this.newBannedPassword = ""
@@ -291,8 +360,9 @@ _securityClientEditorController.prototype.addTermsImplicitConsent = function() {
 _securityClientEditorController.prototype.standardiseClient = function() {
     this.client.grant_types                         = this.client.grant_types || [];
     this.client.scope                               = this.client.scope || "";
-    this.client.redirect_uris                       = this.client.redirect_uris || [];
-    this.client.claims                              = this.client.claims || {};
+    this.client.redirect_uris                       = this.client.redirect_uris || {};
+    this.client.client_claims                       = this.client.client_claims || {};
+    this.client.user_claims                         = this.client.user_claims || {};
     this.client.features                            = this.client.features || {};
     this.client.features.registration               = this.client.features.registration || {};
     this.client.features.reset                      = this.client.features.reset || {};
@@ -532,6 +602,7 @@ _securityClientEditorController.prototype.getData = function() {
         addingBannedPassword            : this.addingBannedPassword,
         newBannedPassword               : this.newBannedPassword,
         addingClientClaim               : this.addingClientClaim,
+        addingUserClaim                 : this.addingUserClaim,
         newClaimName                    : this.newClaimName,
         newClaimValue                   : this.newClaimValue,
         addingPasswordHelper            : this.addingPasswordHelper,
@@ -560,6 +631,7 @@ _securityClientEditorController.prototype.forceRefresh = function() {
     this.caller.addingBannedPassword            = this.addingBannedPassword;
     this.caller.newBannedPassword               = this.newBannedPassword;
     this.caller.addingClientClaim               = this.addingClientClaim;
+    this.caller.addingUserClaim                 = this.addingUserClaim;
     this.caller.newClaimName                    = this.newClaimName;
     this.caller.newClaimValue                   = this.newClaimValue;
     this.caller.addingPasswordHelper            = this.addingPasswordHelper;

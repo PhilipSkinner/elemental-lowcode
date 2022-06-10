@@ -311,7 +311,10 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
     }).then((scopes) => {
         //mix those scopes in
         scopes.forEach((scope) => {
-            config.scopes.push(scope.name);
+            if (config.scopes.indexOf(scope.name) === -1) {
+                config.scopes.push(scope.name);
+            }
+
             config.claims[scope.name] = scope.claims;
         });
         return this.generateAdminClient(secret);	
@@ -362,7 +365,7 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
 
         //add our account options
         config.findAccount = this.userDB.findAccount;
-        config.extraAccessTokenClaims = this.userDB.extraAccessTokenClaims(config.clients);
+        config.extraAccessTokenClaims = this.userDB.extraAccessTokenClaims(config.clients, config.claims);
         return Promise.resolve(config);
     });
 };

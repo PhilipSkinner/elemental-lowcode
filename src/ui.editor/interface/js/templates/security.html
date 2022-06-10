@@ -680,7 +680,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-if="Object.keys(client.claims || {}).length === 0">
+                                        <tr v-if="Object.keys(client.client_claims || {}).length === 0">
                                             <td colspan="3">
                                                 <div class="noResults">
                                                     No claims
@@ -713,6 +713,84 @@
 						</div>
 					</div>
 				</div>
+                <div class="col-md-6 pb-3">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <div class="float-right">
+                                <button class="btn btn-sm btn-primary" v-on:click="window._securityClientEditorControllerInstance.addUserClaim()">
+                                    Add User Claim
+                                </button>
+                            </div>
+                            <h6 class="m-0 font-weight-bold text-primary">User Claims</h6>
+                        </div>
+                        <div class="card-body">
+                            <div v-if="addingUserClaim">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" class="form-control" name="claim_name" v-model="newClaimName" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Value</label>
+                                    <input type="text" class="form-control" name="claim_value" v-model="newClaimValue" />
+                                </div>
+
+                                <div class="float-right">
+                                    <button class="btn btn-success" v-on:click="window._securityClientEditorControllerInstance.saveUserClaim()">
+                                        Add
+                                    </button>
+                                </div>
+
+                                <div class="float-left">
+                                    <button class="btn btn-danger" v-on:click="window._securityClientEditorControllerInstance.cancelAddUserClaim()">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive" v-if="!addingUserClaim">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="Object.keys(client.user_claims || {}).length === 0">
+                                            <td colspan="3">
+                                                <div class="noResults">
+                                                    No claims
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="claim in _securityClientEditorControllerInstance.userClaims()">
+                                            <td>
+                                                {{claim.name}}
+                                            </td>
+                                            <td>
+                                                {{claim.value}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="_securityClientEditorControllerInstance.removeUserClaim(claim.name, claim.value);">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</div>
 		</div>
 
