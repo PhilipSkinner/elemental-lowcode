@@ -38,6 +38,22 @@ requestService.prototype._addBearerToken = function(req, requestConfig, variable
     return Promise.resolve(req);
 };
 
+requestService.prototype._addQueryToken = function(req, requestConfig, variables) {
+    const secrets = this.environmentService.listSecrets();
+
+    let token = this.stringParser.detectValues(requestConfig.authentication.config.token, {
+        variables   : variables,
+        secret      : secrets
+    }, {}, false);
+
+    const uri = new URL(req.uri);
+    uri.searchParams.append(requestConfig.authentication.config.param, token);
+
+    req.uri = uri.toString();
+
+    return Promise.resolve(req);
+};
+
 requestService.prototype._addAuthentication = function(req, requestConfig, variables) {
     if (!requestConfig.authentication) {
         return Promise.resolve(req);
@@ -50,6 +66,10 @@ requestService.prototype._addAuthentication = function(req, requestConfig, varia
     if (requestConfig.authentication.mechanism === "token") {
         if (requestConfig.authentication.type === "bearer") {
             return this._addBearerToken(req, requestConfig, variables);
+        }
+
+        if (requestConfig.authentication.type === "query") {
+            return this._addQueryToken(req, requestConfig, variables);
         }
     }
 

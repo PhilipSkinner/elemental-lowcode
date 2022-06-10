@@ -112,6 +112,7 @@ The following authentication mechanisms are supported on outgoing requests:
 
 * HTTP basic
 * Bearer token
+* Query token
 
 ##### HTTP Basic
 
@@ -136,7 +137,7 @@ It is possible to access variables used to call the integration, or to access se
 
 ##### Bearer Token
 
-To authenticate with the third party system using a static bearer token use a mechanism of `token` alog with a type of `bearer`:
+To authenticate with the third party system using a static bearer token use a mechanism of `token` along with a type of `bearer`:
 
 ```
 {
@@ -152,6 +153,32 @@ To authenticate with the third party system using a static bearer token use a me
     }
 }
 ```
+
+This will sent the token to the third party system as a bearer token within the authorization header - `Authorization: Bearer token_value`.
+
+It is possible to access variables used to call the integration, or to access secrets scoped to the integrations service. You can use hardcoded values but it is not recommended - instead use the secrets manager with secrets scoped to only the integrations service.
+
+##### Query Token
+
+To authenticate with the third party system using a static bearer token use a mechanism of `token` along with a type of `query`:
+
+```
+{
+    "request": {
+        "uri": "https://jsonplaceholder.typicode.com/posts/$.variables.id",
+        "authentication" : {
+            "mechanism" : "token",
+            "type" : "query",
+            "config" : {
+                "token" : "$.secret.secret_name",
+                "param" : "token_param"
+            }
+        }
+    }
+}
+```
+
+This will be sent to the third party URI as a query/search parameter - `https://jsonplaceholder.typicode.com/posts/1?token_param=token_value`.
 
 It is possible to access variables used to call the integration, or to access secrets scoped to the integrations service. You can use hardcoded values but it is not recommended - instead use the secrets manager with secrets scoped to only the integrations service.
 
