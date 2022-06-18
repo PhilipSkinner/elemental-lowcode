@@ -27,5 +27,35 @@ services:
     networks:
       - all
 
+  elemental:
+    build:
+      context: ./src
+      dockerfile: ../docker/core.dockerfile
+    environment:
+      MYSQL_CONNECTION_STRING: "mysql://root:password@mysql:3306/db"
+      INITIAL_CLIENT_ID: admin
+      INITIAL_CLIENT_SECRET: admin-secret
+      INITIAL_CLIENT_SCOPES: "openid roles offline_access"
+      INITIAL_CLIENT_AUTH_REDIRECT: http://admin.elementalsystem.org/auth
+      INITIAL_CLIENT_LOGOUT_REDIRECT: http://admin.elementalsystem.org
+      INITIAL_ROLES: "system_admin"
+      INITIAL_USER_USERNAME: admin@elementalsystem.org
+      INITIAL_USER_PASSWORD: Password1!
+      INITIAL_USER_ROLE: system_admin
+      ADMIN_CLIENT_ID: admin
+      ADMIN_CLIENT_SECRET: admin-secret
+      SMTP_HOST: "localhost"
+      SMTP_PORT: 1025
+      SMTP_USERNAME: ""
+      SMTP_PASSWORD: ""
+      SMTP_PROTOCOL: "smtp"
+    ports:
+      - 80:80
+    depends_on:
+      - mysql
+      - mailhog
+    networks:
+      - all
+
 networks:
   all:
