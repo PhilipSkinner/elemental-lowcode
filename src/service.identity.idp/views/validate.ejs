@@ -1,0 +1,81 @@
+<div class="ui-columns ui-columns--half">
+    <div class="ui-half ui-half--highlight">
+        <div class="ui-logo">
+            Elemental
+        </div>
+        <div class="ui-feature">
+            <div class="ui-feature-image ui-feature-image--validate"></div>
+        </div>
+    </div>
+    <div class="ui-half">
+        <div class="ui-restricted--thin">
+            <div class="ui-header">
+                <h1 class="ui-header-text">Account Validation</h1>
+            </div>
+
+            <% if (sent) { %>
+                <% if (mechanism == "link-token") { %>
+                    <div class="ui-alert ui-alert--success">
+                        An email has been sent to the address provided with a validation link.
+                    </div>
+                <% } %>
+
+                <% if (mechanism == "totp") { %>
+                    <form autocomplete="off" action="/interaction/<%= uid %>/code" method="post">
+                        <div class="ui-input-field">
+                            <label class="ui-input-field-label" for="code">
+                                Code
+                            </label>
+
+                            <input
+                                class="ui-input-field-input"
+                                id="code"
+                                type="text"
+                                name="code"
+                                placeholder="Enter code"
+                                autofocus="on"
+                            >
+                        </div>
+
+                        <div class="ui-button-wrapper">
+                            <button type="submit" class="ui-button ui-button--primary">
+                                Validate Account
+                            </button>
+                        </div>
+                    </form>
+                <% } %>
+            <% } else { %>
+                <div class="ui-intro">
+                    <p class="ui-intro-text">
+                        You must validate your account before you login.
+                    </p>
+                    <p class="ui-intro-text">
+                        Click the button below to send an email
+                        <% if (mechanism == "link-token") { %>
+                            containing a validation link for you to open. Opening this link will
+                            validate your account.
+                        <% } %>
+                        <% if (mechanism == "totp") { %>
+                            containing a validation code. You will need this code on the next
+                            screen to validate your account.
+                        <% } %>
+                    </p>
+                </div>
+
+                <form autocomplete="off" action="/interaction/<%= uid %>/validate" method="post">
+                    <input type="hidden" name="send" value="1" />
+                    <div class="ui-button-wrapper">
+                        <button type="submit" class="ui-button ui-button--primary">
+                            <% if (mechanism == "link-token") { %>
+                                Send link
+                            <% } %>
+                            <% if (mechanism == "totp") { %>
+                                Send code
+                            <% } %>
+                        </button>
+                    </div>
+                </form>
+            <% } %>
+        </div>
+    </div>
+</div>

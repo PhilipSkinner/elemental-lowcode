@@ -806,6 +806,17 @@
 								<label>Enabled</label>
 								<input type="checkbox" class="form-control" name="registration_enabled" v-model="client.features.registration.enabled" />
 							</div>
+                            <div class="form-group">
+                                <label>Require validation</label>
+                                <input type="checkbox" class="form-control" name="validation_enabled" v-model="client.features.validate.enabled" />
+                            </div>
+                            <div class="form-group">
+                                <label>Mechanism</label>
+                                <select class="form-control" name="reset_mechanism" v-model="client.features.validate.mechanism">
+                                    <option value="link-token">Link token</option>
+                                    <option value="totp">TOTP</option>
+                                </select>
+                            </div>
 						</div>
 					</div>
 				</div>

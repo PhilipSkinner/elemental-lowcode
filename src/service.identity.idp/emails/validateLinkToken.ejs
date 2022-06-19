@@ -1,0 +1,19 @@
+<p>
+    You have been sent this email as you need to verify the account with username <strong><%= username %></strong>
+</p>
+
+<p>
+    To validate your account you must open this link on the same device you either logged in or registered on:
+</p>
+
+<p>
+    <a href="<%= idpHost %>/interaction/<%= uid %>/validate?code=<%= code %>">Validate Account</a>
+</p>
+
+<p>
+    If you cannot open the link above then copy and paste this into your browser: <%= idpHost %>/interaction/<%= uid %>/validate?code=<%= code %>
+</p>
+
+<p>
+    There is a time limit for how long this link is valid for - if that time limit expires then you must start the validation process again.
+</p>

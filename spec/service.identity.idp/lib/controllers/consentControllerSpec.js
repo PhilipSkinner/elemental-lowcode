@@ -59,6 +59,7 @@ const showConsentTerms = (done) => {
     clientMock.expects('find').once().withArgs('my-client').returns(Promise.resolve({
         features : {
             terms : {
+                required : true,
                 version : '2',
                 issue_to : 'terms'
             }

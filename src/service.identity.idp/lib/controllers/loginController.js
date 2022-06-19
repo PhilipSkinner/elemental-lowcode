@@ -71,6 +71,17 @@ login.prototype.handleLogin = function(req, res, next) {
                 }, { mergeWithLastSubmission: false });
             }
 
+
+            if (this.clientHelper.validationRequired(account, client)) {
+                return this.provider.interactionFinished(req, res, {
+                    select_account : {},
+                    login : {
+                        account : account.accountId
+                    },
+                    prompt : "validate"
+                });
+            }
+
             const rules = this.clientHelper.getPasswordRules(client);
             const bannedPasswords = this.clientHelper.getBannedPasswords(client);
             const isBanned = this.passwordHelper.isBannedPassword(bannedPasswords, req.body.password);

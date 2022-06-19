@@ -8,7 +8,8 @@ const routes = function(
     abortController,
     termsController,
     passwordController,
-    passcodeController
+    passcodeController,
+    validationController
 ) {
     this.app                    = app;
     this.provider               = provider;
@@ -20,6 +21,7 @@ const routes = function(
     this.termsController        = termsController;
     this.passwordController     = passwordController;
     this.passcodeController     = passcodeController;
+    this.validationController   = validationController;
 
     //call init
     this.init();
@@ -90,6 +92,10 @@ routes.prototype.init = function() {
     this.app.post("/interaction/:uid/code",      this.setNoCache.bind(this), this.passwordController.handleResetCode.bind(this.passwordController));
     this.app.post("/interaction/:uid/reset",     this.setNoCache.bind(this), this.passwordController.resetPassword.bind(this.passwordController));
 
+    //validate
+    this.app.get("/interaction/:uid/validate",   this.setNoCache.bind(this), this.validationController.showValidationForm.bind(this.validationController));
+    this.app.post("/interaction/:uid/validate",  this.setNoCache.bind(this), this.validationController.showValidationForm.bind(this.validationController));
+
     //abort
     this.app.get("/interaction/:uid/abort",     this.setNoCache.bind(this), this.abortController.abortRequest.bind(this.abortController));
 
@@ -111,7 +117,8 @@ module.exports = (
     abortController,
     termsController,
     passwordController,
-    passcodeController
+    passcodeController,
+    validationController
 ) => {
     if (!interactionController) {
         interactionController = require("./controllers/interactionController")(provider);
@@ -145,6 +152,10 @@ module.exports = (
         passcodeController = require("./controllers/passcodeController")(provider);
     }
 
+    if (!validationController) {
+        validationController = require("./controllers/validationController")(provider);
+    }
+
     return new routes(
         app,
         provider,
@@ -155,6 +166,7 @@ module.exports = (
         abortController,
         termsController,
         passwordController,
-        passcodeController
+        passcodeController,
+        validationController
     );
 };
