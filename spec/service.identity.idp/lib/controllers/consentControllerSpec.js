@@ -15,7 +15,8 @@ const accountService = {
 };
 
 const clientHelper = {
-
+    validationRequired      : () => {},
+    termsOrPrivacyRequired  : () => {}
 };
 
 const showConsentExceptions = (done) => {
@@ -59,6 +60,7 @@ const showConsentTerms = (done) => {
     clientMock.expects('find').once().withArgs('my-client').returns(Promise.resolve({
         features : {
             terms : {
+                required : true,
                 version : '2',
                 issue_to : 'terms'
             }
@@ -88,6 +90,67 @@ const showConsentTerms = (done) => {
     }, 1);
 };
 
+const showConsentsValidation = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs('request', 'response').returns(Promise.resolve({
+        params : {
+            client_id : 'my-client'
+        },
+        uid : 'the-uid',
+        prompt : {
+            details : 'prompt-details'
+        },
+        session : {
+            accountId : 1234
+        }
+    }));
+    providerMock.expects('interactionFinished').once().withArgs('request', 'response', {
+        select_account : {},
+        login : {
+            account : 1234
+        },
+        prompt : 'validate'
+    });
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('my-client').returns(Promise.resolve({
+        features : {
+            terms : {
+                required : true,
+                version : '2',
+                issue_to : 'terms'
+            }
+        }
+    }));
+
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findAccount').once().withArgs(null, 1234).returns(Promise.resolve({
+        accountId : 1234,
+        profile : {
+            claims : {
+                terms : '1'
+            }
+        }
+    }));
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('termsOrPrivacyRequired').once().returns(false);
+    clientHelperMock.expects('validationRequired').once().returns(true);
+
+    const instance = consentController(provider, accountService, clientHelper);
+
+    instance.showConsent('request', 'response');
+
+    setTimeout(() => {
+        accountMock.verify();
+        providerMock.verify();
+        clientMock.verify();
+        clientHelperMock.verify();
+
+        done();
+    }, 1);
+};
+
 const showConsentTest = (done) => {
     const providerMock = sinon.mock(provider);
     providerMock.expects('interactionDetails').once().withArgs('request', sinon.match.any).returns(Promise.resolve({
@@ -111,7 +174,11 @@ const showConsentTest = (done) => {
         accountId : 1234
     }))
 
-    const instance = consentController(provider, accountService);
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('termsOrPrivacyRequired').once().returns(false);
+    clientHelperMock.expects('validationRequired').once().returns(false);
+
+    const instance = consentController(provider, accountService, clientHelper);
 
     instance.showConsent('request', {
         render : (template, data) => {
@@ -129,6 +196,7 @@ const showConsentTest = (done) => {
             accountMock.verify();
             providerMock.verify();
             clientMock.verify();
+            clientHelperMock.verify();
 
             done();
         }
@@ -206,6 +274,7 @@ describe('A consents controller', () => {
     describe('can show consents', () => {
         it('handling exceptions', showConsentExceptions);
         it('redirects to terms if terms are required', showConsentTerms);
+        it('redirects to validation if required', showConsentsValidation);
         it('correctly', showConsentTest);
     });
 

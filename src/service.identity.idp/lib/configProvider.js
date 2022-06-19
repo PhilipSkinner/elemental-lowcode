@@ -208,7 +208,7 @@ configProvider.prototype.addCookies = function() {
                 httpOnly: true,
                 overwrite: true,
                 sameSite: "lax",
-                maxAge : 3600000
+                maxAge : 3600000 * 6
             }
         });
     });
@@ -299,7 +299,7 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
                 return 3600;
             },
             AuthorizationCode : 1800, // 30 minutes,
-            Interaction : 3600, // 1 hour
+            Interaction : 86400, // 24 hours
         },
     };
 

@@ -18,6 +18,7 @@ const clientHelper = function() {
     };
 
     this.defaultEmailAddress = "noreply@elementalsystem.org";
+    this.defaultValidationMechanism = "totp";
 };
 
 clientHelper.prototype.getFromEmailAddress = function(client) {
@@ -48,6 +49,26 @@ clientHelper.prototype.getPasswordHelpers = function(client) {
     return client.features && client.features.password && client.features.password.helpers ? client.features.password.helpers : [];
 };
 
+clientHelper.prototype.validationMechanism = function(client) {
+    return client.features && client.features.validate && client.features.validate.mechanism ? client.features.validate.mechanism : this.defaultValidationMechanism;
+};
+
+clientHelper.prototype.validationRequired = function(account, client) {
+    if (!account) {
+        return false;
+    }
+
+    if (!client) {
+        return false;
+    }
+
+    if (account.profile && account.profile.claims && account.profile.claims.validated_at) {
+        return false;
+    }
+
+    return client.features && client.features.validate && client.features.validate.enabled === true ? true : false;
+};
+
 clientHelper.prototype.termsRequired = function(account, client) {
     if (!account) {
         return false;
@@ -66,7 +87,7 @@ clientHelper.prototype.termsRequired = function(account, client) {
         return false;
     }
 
-    return true;
+    return client.features && client.features.terms && client.features.terms.required;
 };
 
 clientHelper.prototype.privacyRequired = function(account, client) {
@@ -87,7 +108,7 @@ clientHelper.prototype.privacyRequired = function(account, client) {
         return false;
     }
 
-    return true;
+    return client.features && client.features.privacy && client.features.privacy.required;
 };
 
 clientHelper.prototype.getPasswordRules = function(client) {

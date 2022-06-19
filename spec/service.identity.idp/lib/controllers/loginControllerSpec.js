@@ -20,6 +20,7 @@ const clientHelper = {
     getBannedPasswords          : () => {},
     loginNotificationEnabled    : () => {},
     getFromEmailAddress         : () => {},
+    validationRequired          : () => {},
 };
 
 const passwordHelper = {
@@ -288,6 +289,66 @@ const handleLoginTerms = (done) => {
     }, 1);
 };
 
+const handleLoginValidation = (done) => {
+    const accountMock = sinon.mock(accountService);
+    accountMock.expects('findByLogin').once().withArgs('username', 'password').returns(Promise.resolve({
+        accountId : 1234,
+        profile : {
+            claims : {
+                terms : '1'
+            }
+        }
+    }));
+
+    const clientMock = sinon.mock(provider.Client);
+    clientMock.expects('find').once().withArgs('my-client').returns(Promise.resolve({
+        features : {
+            terms : {
+                required : false,
+            },
+            validate : {
+                enabled : true,
+            }
+        }
+    }));
+
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, 'response').returns(Promise.resolve({
+        params : {
+            client_id : 'my-client'
+        }
+    }));
+    providerMock.expects('interactionFinished').once().withArgs(sinon.match.any, 'response', {
+        select_account : {},
+        login : {
+            account : 1234
+        },
+        prompt : 'validate'
+    });
+
+    const clientHelperMock = sinon.mock(clientHelper);
+    clientHelperMock.expects('termsOrPrivacyRequired').once().returns(false);
+    clientHelperMock.expects('validationRequired').once().returns(true);
+
+    const instance = loginController(provider, accountService, clientHelper);
+
+    instance.handleLogin({
+        body : {
+            login : 'username',
+            password : 'password'
+        }
+    }, 'response');
+
+    setTimeout(() => {
+        clientMock.verify();
+        accountMock.verify();
+        providerMock.verify();
+        clientHelperMock.verify();
+
+        done();
+    }, 1);
+};
+
 const handleLoginWeakPassword = (done) => {
     const accountMock = sinon.mock(accountService);
     accountMock.expects('findByLogin').once().withArgs('username', 'password').returns(Promise.resolve({
@@ -428,6 +489,7 @@ const handleLoginTest = (done) => {
     clientHelperMock.expects('termsOrPrivacyRequired').once().returns(false);
     clientHelperMock.expects('getPasswordRules').once().returns('password-rules');
     clientHelperMock.expects('loginNotificationEnabled').once().returns(false);
+    clientHelperMock.expects('validationRequired').once().returns(false);
 
     const passwordHelperMock = sinon.mock(passwordHelper);
     passwordHelperMock.expects('passwordStrongEnough').once().withArgs('password-rules', 'password').returns(true);
@@ -589,6 +651,7 @@ describe('A login controller', () => {
     describe('handle login', () => {
         it('handles exceptions', handleLoginExceptions);
         it('handles terms being required', handleLoginTerms);
+        it('handles validation being required', handleLoginValidation);
         it('handles password being too weak', handleLoginWeakPassword);
         it('handles password being banned', handleLoginBannedPassword);
         it('works', handleLoginTest);

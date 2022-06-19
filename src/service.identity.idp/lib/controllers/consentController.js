@@ -26,6 +26,16 @@ consent.prototype.showConsent = function(req, res, next) {
             });
         }
 
+        if (this.clientHelper.validationRequired(account, client)) {
+            return this.provider.interactionFinished(req, res, {
+                select_account : {},
+                login : {
+                    account : account.accountId
+                },
+                prompt : "validate"
+            });
+        }
+
         return res.render("consents", {
             client    : client,
             uid       : details.uid,

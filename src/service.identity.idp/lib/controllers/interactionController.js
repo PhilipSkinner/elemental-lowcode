@@ -44,6 +44,11 @@ interactionController.prototype.handleInteraction = function(req, res, next) {
             return;
         }
 
+        if (pageName == "validate") {
+            res.redirect(`/interaction/${req.params.uid}/validate`);
+            return;
+        }
+
         //otherwise we redirect to the abort screen
         res.redirect(`/interaction/${req.params.uid}/abort`);
         return;

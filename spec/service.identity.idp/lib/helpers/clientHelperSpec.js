@@ -226,6 +226,83 @@ const loginNotificationNotEnabled = () => {
     })).toEqual(false);
 };
 
+const getPasswordHelpers = () => {
+    const instance = clientHelper();
+
+    expect(instance.getPasswordHelpers({
+        features : {
+            password : {
+                helpers : 'my-helpers'
+            }
+        }
+    })).toEqual('my-helpers');
+
+    expect(instance.getPasswordHelpers({
+        features : {
+            password : {}
+        }
+    })).toEqual([]);
+};
+
+const validationMechanism = () => {
+    const instance = clientHelper();
+
+    expect(instance.validationMechanism({
+        features : {
+            validate : {
+                mechanism : 'my-mechanism'
+            }
+        }
+    })).toEqual('my-mechanism');
+
+    expect(instance.validationMechanism({
+        features : {
+            validate : {}
+        }
+    })).toEqual('totp');
+};
+
+const validationRequired = () => {
+    const instance = clientHelper();
+
+    expect(instance.validationRequired()).toEqual(false);
+    expect(instance.validationRequired({})).toEqual(false);
+    expect(instance.validationRequired({}, {})).toEqual(false);
+    expect(instance.validationRequired({
+        profile : {
+            claims : {
+                validated_at : 'today'
+            }
+        }
+    }, {})).toEqual(false);
+    expect(instance.validationRequired({
+        profile : {
+            claims : {
+                validated_at : null
+            }
+        }
+    }, {
+        features : {
+            validate : {
+                enabled : true
+            }
+        }
+    })).toEqual(true);
+    expect(instance.validationRequired({
+        profile : {
+            claims : {
+                validated_at : null
+            }
+        }
+    }, {
+        features : {
+            validate : {
+                enabled : false
+            }
+        }
+    })).toEqual(false);
+};
+
 describe('A client helper', () => {
     describe('getPasswordRules', () => {
         it('returns the defaults when there is no client', passwordRulesNoClient);
@@ -274,5 +351,17 @@ describe('A client helper', () => {
     describe('loginNotificationEnabled', () => {
         it('can determine if login notifications are enabled', loginNotificationEnabled);
         it('can determine if login notifications are not enabled', loginNotificationNotEnabled);
+    });
+
+    describe('getPasswordHelpers', () => {
+        it('returns valid password helpers', getPasswordHelpers);
+    });
+
+    describe('validationMechanism', () => {
+        it('can determine validation mechanism', validationMechanism);
+    });
+
+    describe('validationRequired', () => {
+        it('can determine if validation is required', validationRequired);
     });
 });

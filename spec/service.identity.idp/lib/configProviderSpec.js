@@ -579,7 +579,7 @@ const fetchConfigTest = (done) => {
                     httpOnly: true,
                     overwrite: true,
                     sameSite: 'lax',
-                    maxAge : 3600000
+                    maxAge : 21600000
                 }
         	},
         	adapter : {
@@ -598,7 +598,7 @@ const fetchConfigTest = (done) => {
             ttl : {
                 AccessToken : jasmine.any(Function),
                 AuthorizationCode : 1800,
-                Interaction : 3600
+                Interaction : 86400
             }
         });
 

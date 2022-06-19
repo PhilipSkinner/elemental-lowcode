@@ -44,6 +44,7 @@ const _securityClientEditorController = function(page) {
         client_claims : {},
         user_claims : {},
         features : {
+            validate : {},
             registration : {},
             reset : {},
             totp : {},
@@ -376,6 +377,7 @@ _securityClientEditorController.prototype.standardiseClient = function() {
     this.client.features.password.rules             = this.client.features.password.rules || {};
     this.client.features.password.helpers           = this.client.features.password.helpers || [];
     this.client.features.login                      = this.client.features.login || {};
+    this.client.features.validate                   = this.client.features.validate || {};
 };
 
 _securityClientEditorController.prototype.cancelAddingRedirectUri = function() {

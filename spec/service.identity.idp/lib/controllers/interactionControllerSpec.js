@@ -196,6 +196,31 @@ const handleInteractionCode = (done) => {
     });
 };
 
+const handleValidate = (done) => {
+    const providerMock = sinon.mock(provider);
+    providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, sinon.match.any).returns(Promise.resolve({
+        prompt : {
+            name : 'validate'
+        },
+    }));
+
+    const instance = interactionController(provider);
+
+    instance.handleInteraction({
+        params : {
+            uid : 'the-uid'
+        }
+    }, {
+        redirect : (url) => {
+            expect(url).toEqual('/interaction/the-uid/validate');
+
+            providerMock.verify();
+
+            done();
+        }
+    });
+};
+
 const handleInteractionAbort = (done) => {
     const providerMock = sinon.mock(provider);
     providerMock.expects('interactionDetails').once().withArgs(sinon.match.any, sinon.match.any).returns(Promise.resolve({
@@ -234,6 +259,7 @@ describe('An interaction controller', () => {
         it('can redirect to password', handleInteractionPassword);
         it('can redirect to forgotten', handleInteractionForgotten);
         it('can redirect to code', handleInteractionCode);
+        it('can redirect to validation', handleValidate);
         it('can redirect to abort by default', handleInteractionAbort);
     });
 });
