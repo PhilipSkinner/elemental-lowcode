@@ -154,6 +154,8 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
                     tables = this.determineTables(`${normalisedBaseName}_${normName}`, schemaConfig.properties[propName], tables, normalisedBaseName, normName);
                 }
             });
+            this.columnTableLookups[`${parentName}@@${normalisedOriginalName}`] = normalisedBaseName;
+            this.columnTableLookups[normalisedBaseName] = normalisedOriginalName;
         }
 
         tables[normalisedBaseName] = columns;

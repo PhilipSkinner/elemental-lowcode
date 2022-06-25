@@ -34,8 +34,8 @@ preProcessor.prototype.process = function(definition, data, customTags) {
 
     return this.visitors.arrayWrapper
         .apply(obj)
-        .then(this.visitors.expandCustomTags.apply.bind(this.visitors.expandCustomTags))
         .then(this.visitors.defineScope.apply.bind(this.visitors.defineScope))
+        .then(this.visitors.expandCustomTags.apply.bind(this.visitors.expandCustomTags))
         .then(this.visitors.handleControllerScope.apply.bind(this.visitors.handleControllerScope))
         .then(this.visitors.handleLoops.apply.bind(this.visitors.handleLoops))
         .then(this.visitors.bindValues.apply.bind(this.visitors.bindValues))

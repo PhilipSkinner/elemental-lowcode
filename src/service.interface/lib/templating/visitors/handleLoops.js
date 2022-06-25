@@ -49,6 +49,10 @@ handleLoops.prototype.expandNext = function(view, data) {
             });
             var generated = [];
 
+            if (typeof(arr) === "undefined" || arr === null || arr === "") {
+                return generated;
+            }
+
             if (Array.isArray(arr)) {
                 generated = arr.map((item, index) => {
                     var copy = JSON.parse(base, function(key, value) {

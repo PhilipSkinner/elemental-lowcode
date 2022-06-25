@@ -124,14 +124,7 @@ const undefinedVariablesTest = (done) => {
         ],
         data : null
     }).then((definition) => {        
-        expect(definition.view).toEqual([            
-            {
-                tag : 'div',
-                repeat : '$.item in $.bag.items',
-                text : '$.item',
-                count : '$._index',                
-            }                
-        ]);
+        expect(definition.view).toEqual([[]]);
 
         done();
     });
