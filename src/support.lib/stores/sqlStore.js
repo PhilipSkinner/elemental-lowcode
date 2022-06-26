@@ -19,6 +19,7 @@ const sqlStore = function(connectionString, typeConfig, sequelize, uuid) {
     this.tables = {};
     this.simpleTables = {};
     this.columnTableLookups = {};
+    this.relationships = {};
     this.mainTable = null;
     this.isReady = false;
 
@@ -154,7 +155,6 @@ sqlStore.prototype.determineTables = function(baseName, schemaConfig, tables, pa
                     tables = this.determineTables(`${normalisedBaseName}_${normName}`, schemaConfig.properties[propName], tables, normalisedBaseName, normName);
                 }
             });
-            this.columnTableLookups[`${parentName}@@${normalisedOriginalName}`] = normalisedBaseName;
             this.columnTableLookups[normalisedBaseName] = normalisedOriginalName;
         }
 
@@ -183,8 +183,11 @@ sqlStore.prototype.initType = function() {
         //ensure we handle any fk relationships
         Object.keys(this.tables).forEach((name) => {
             if (this.tables[name].parent && this.tables[name].parent.references) {
-                let childModel = this.models[this._normalizedTableName(name)];
-                let parentModel = this.models[this._normalizedTableName(this.tables[name].parent.references.model)];
+                const childName = this._normalizedTableName(name);
+                const parentName = this._normalizedTableName(this.tables[name].parent.references.model);
+
+                let childModel = this.models[childName];
+                let parentModel = this.models[parentName];
 
                 parentModel.hasMany(childModel, {
                     foreignKey : "parent"
@@ -192,6 +195,8 @@ sqlStore.prototype.initType = function() {
                 childModel.belongsTo(parentModel, {
                     foreignKey : "id"
                 });
+                this.relationships[parentName] = this.relationships[parentName] || [];
+                this.relationships[parentName].push(childName);
             }
         });
 
@@ -356,6 +361,7 @@ sqlStore.prototype.getResources = function(type, start, count, filters, orders, 
         order 	: order,
         limit 	: parseInt(count, 10),
         offset 	: parseInt(start, 10) - 1,
+        include : this.determineIncludes(type),
     }).then((results) => {
         return Promise.all(results.rows.map((r) => {
             return this.convertToReturnValue(r, type);
@@ -364,6 +370,21 @@ sqlStore.prototype.getResources = function(type, start, count, filters, orders, 
         console.log(err);
         return Promise.reject(err);
     });
+};
+
+sqlStore.prototype.determineIncludes = function(type) {
+    const name = this._normalizedTableName(type);
+
+    if (this.relationships[name]) {
+        return this.relationships[name].map((r) => {
+            return {
+                model : this.models[r],
+                include : this.determineIncludes(r)
+            }
+        });
+    }
+
+    return [];
 };
 
 sqlStore.prototype.getResource = function(type, id, attempts) {
@@ -449,28 +470,37 @@ sqlStore.prototype.saveResource = function(name, data, id, parentId) {
         }
     }).then((result) => {
         //ensure any arrays of values are stored correctly
-        let promises = [];
+        let promise = Promise.resolve();
         Object.keys(data).forEach((k) => {
             if (Array.isArray(data[k])) {
                 if (this.columnTableLookups[`${name}@@${k}`]) {
                     //purge the old ones
-                    promises.push(this.models[this._normalizedTableName(this.columnTableLookups[`${name}@@${k}`])].destroy({
+                    promise = this.models[this._normalizedTableName(this.columnTableLookups[`${name}@@${k}`])].destroy({
                         where : {
                             parent : data.id
                         }
-                    }));
-
-                    //save em!
-                    promises.push(data[k].map((value) => {
-                        return this.saveResource(this.columnTableLookups[`${name}@@${k}`], {
-                            value : value
-                        }, null, data.id);
-                    }));
+                    }).then(() => {
+                        return Promise.all(data[k].map((value) => {
+                            return this.saveResource(this.columnTableLookups[`${name}@@${k}`], {
+                                value : value
+                            }, null, data.id)
+                        }));
+                    });
+                } else if (this.tables[`${name}_${k}`]) {
+                    promise = this.models[this._normalizedTableName(`${name}_${k}`)].destroy({
+                            where : {
+                                parent : data.id
+                            }
+                    }).then(() => {
+                        return Promise.all(data[k].map((value) => {
+                            return this.saveResource(`${name}_${k}`, value, null, data.id);
+                        }));
+                    });
                 }
             }
         });
 
-        return Promise.all(promises).then(() => {
+        return promise.then(() => {
             return Promise.resolve(result);
         });
     });

@@ -318,7 +318,8 @@ const convertReturnDataSimpleChildren = (done) => {
         },
         order   : [],
         limit   : 9999,
-        offset  : 0
+        offset  : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : [
             {
@@ -402,7 +403,8 @@ const getResourcesExceptionTest = (done) => {
         where   : {},
         order   : [],
         limit   : 10,
-        offset  : 0
+        offset  : 0,
+        include : []
     }).returns(Promise.reject(new Error('oh dear')));
     instance.models.type = model;
 
@@ -427,7 +429,8 @@ const getResourcesDefaultCounts = (done) => {
         where   : {},
         order   : [],
         limit   : 5,
-        offset  : 0
+        offset  : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : []
     }));
@@ -472,7 +475,8 @@ const getResourcesFilters = (done) => {
         },
         order   : [],
         limit   : 5,
-        offset  : 0
+        offset  : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : []
     }));
@@ -532,7 +536,8 @@ const getResourcesOrdering = (done) => {
             ]
         ],
         limit   : 5,
-        offset  : 0
+        offset  : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : []
     }));
@@ -596,7 +601,8 @@ const getResourceNoResults = (done) => {
         },
         order   : [],
         limit   : 1,
-        offset  : 0
+        offset  : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : []
     }));
@@ -625,7 +631,8 @@ const getResourceTest = (done) => {
         },
         order   : [],
         limit   : 1,
-        offset  : 0
+        offset  : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : [
             {
@@ -746,7 +753,8 @@ const updateResourceExceptionTest = (done) => {
         },
         order : [],
         limit : 1,
-        offset : 0
+        offset : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : [
             {
@@ -799,7 +807,8 @@ const updateResourceTest = (done) => {
         },
         order : [],
         limit : 1,
-        offset : 0
+        offset : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : [
             {
@@ -855,7 +864,8 @@ const updateResourceWithParent = (done) => {
         },
         order : [],
         limit : 1,
-        offset : 0
+        offset : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : [
             {
@@ -936,7 +946,8 @@ const createResourceExceptionTest = (done) => {
         },
         order : [],
         limit : 1,
-        offset : 0
+        offset : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : []
     }));
@@ -980,7 +991,8 @@ const createResourceHandleDuplication = (done) => {
         },
         order : [],
         limit : 1,
-        offset : 0
+        offset : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : []
     }));
@@ -1028,7 +1040,8 @@ const createResourceHandleDuplicationAlternative = (done) => {
         },
         order : [],
         limit : 1,
-        offset : 0
+        offset : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : []
     }));
@@ -1079,7 +1092,8 @@ const createResourceWithIdTest = (done) => {
         },
         order : [],
         limit : 1,
-        offset : 0
+        offset : 0,
+        include : []
     }).returns(Promise.resolve({
         rows : []
     }));

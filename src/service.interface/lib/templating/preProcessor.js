@@ -35,17 +35,22 @@ preProcessor.prototype.process = function(definition, data, customTags) {
     return this.visitors.arrayWrapper
         .apply(obj)
         .then(this.visitors.defineScope.apply.bind(this.visitors.defineScope))
-        .then(this.visitors.expandCustomTags.apply.bind(this.visitors.expandCustomTags))
         .then(this.visitors.handleControllerScope.apply.bind(this.visitors.handleControllerScope))
         .then(this.visitors.handleLoops.apply.bind(this.visitors.handleLoops))
         .then(this.visitors.bindValues.apply.bind(this.visitors.bindValues))
         .then(this.visitors.replaceValues.apply.bind(this.visitors.replaceValues))
-        .then(this.visitors.expandCustomTags.apply.bind(this.visitors.expandCustomTags))
-        .then(this.visitors.handleLoops.apply.bind(this.visitors.handleLoops))
-        .then(this.visitors.replaceValues.apply.bind(this.visitors.replaceValues))
         .then(this.visitors.conditionals.apply.bind(this.visitors.conditionals))
         .then(this.visitors.insertStandardScripts.apply.bind(this.visitors.insertStandardScripts))
         .then((obj) => {
+            //check the before/after from applying our expansion
+            return this.visitors.expandCustomTags.apply(obj).then((result) => {
+                if (result.modified) {
+                    return this.process(result.definition.view, result.definition.data, customTags);
+                }
+
+                return Promise.resolve(result.definition);
+            });
+        }).then((obj) => {
             return Promise.resolve(obj);
         });
 };

@@ -141,7 +141,9 @@ controllerState.prototype._triggerComponentEvents = function(name, details) {
                 }
 
                 if (result && result.then) {
-                    return result;
+                    return new Promise((resolve, reject) => {
+                        result.then(resolve).catch(reject);
+                    });
                 } else {
                     return Promise.resolve(result);
                 }
@@ -167,7 +169,9 @@ controllerState.prototype.triggerEvent = function(name, details) {
         }
 
         if (result && result.then) {
-            return result;
+            return new Promise((resolve, reject) => {
+                result.then(resolve).catch(reject);
+            });
         }    
 
         return Promise.resolve(result);        

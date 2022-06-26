@@ -201,7 +201,7 @@ const expansionTest = (done) => {
             }
         ]
     }).then((definition) => {
-        expect(definition.view).toEqual([
+        expect(definition.definition.view).toEqual([
             {
                 tag : 'div',
                 children : [
@@ -211,11 +211,17 @@ const expansionTest = (done) => {
                     {
                         my : 'value',
                         if : 'this',
-                        _controller : undefined
+                        _controller : undefined,
+                        _scope : {
+                            data : {}
+                        }
                     },
                     {
                         repeat : 'yes please',
                         _controller : undefined,
+                        _scope : {
+                            data : {}
+                        },
                         prop : [
                             'one',
                             'two'

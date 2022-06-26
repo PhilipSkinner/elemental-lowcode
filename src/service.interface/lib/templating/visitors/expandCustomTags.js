@@ -95,6 +95,10 @@ expandCustomTag.prototype.expand = function(view) {
                 data : tag
             }).view[0];
 
+            newTag._scope = newTag._scope || {};
+            tag._scope = tag._scope || {};
+            newTag._scope.data = tag._scope.data || {};
+
             tag = newTag;
         }
 
@@ -110,11 +114,16 @@ expandCustomTag.prototype.expand = function(view) {
 };
 
 expandCustomTag.prototype.apply = function(definition) {
+    let modified = false;
     while (this.needsExpansion(definition.view)) {
         definition.view = this.expand(definition.view);
+        modified = true;
     }
 
-    return Promise.resolve(definition);
+    return Promise.resolve({
+        definition : definition,
+        modified : modified
+    });
 };
 
 module.exports = function(
