@@ -1,0 +1,40 @@
+.documentationWrapper {
+  padding: 20px;
+  color: #000;
+
+  code {
+    display: inline;
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+.documentation-menu {
+  div {
+    >div {
+      padding-left: 15px;
+    }
+  }
+}
+
+.documentationSearch {
+  .searchResult {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    margin: 10px;
+
+    &:last-of-type {
+      border-bottom: 0px none;
+    }
+
+    h5 {
+      text-transform: capitalize;
+      margin-bottom: 10px;
+    }
+
+    pre {
+      white-space: pre-wrap;
+    }
+  }
+}

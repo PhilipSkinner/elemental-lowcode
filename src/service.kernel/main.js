@@ -19,6 +19,7 @@ const
     queueController 		= require("./controllers/queueController"),
     blobController          = require("./controllers/blobController"),
     logsController 			= require("./controllers/logsController"),
+    documentationController = require("./controllers/documentationController"),
     secretsProvider 		= require("./lib/secrets"),
     hotreload 				= require("../support.lib/hotReload")(),
     initialSetup 			= require("./setup")(),
@@ -79,7 +80,7 @@ const startServices = function() {
         serviceRunner.runService("rules", 		"../service.rules/main.js", 		ports.rules, 		directories.rules, secrets.rules);
         serviceRunner.runService("identity", 	"../service.identity.idp/main.js", 	ports.identity, 	directories.identity, secrets.identity);
         serviceRunner.runService("messaging", 	"../service.messaging/main.js",		ports.queues, 		directories.queues, secrets.queues);
-        serviceRunner.runService("blob",         "../service.blob/main.js",         ports.blob,         directories.blob,          secrets.blob);
+        serviceRunner.runService("blob",        "../service.blob/main.js",         ports.blob,         directories.blob,          secrets.blob);
 
         restarting = false;
     });
@@ -123,6 +124,7 @@ const runApp = function() {
     logsController(app, sourcesDir);
     indexController(app, sourcesDir);
     blobController(app, directories.blob);
+    documentationController(app);
 
     app.listen(ports.kernel);
 

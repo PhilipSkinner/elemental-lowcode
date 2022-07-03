@@ -3,6 +3,14 @@
 		<div class="row">
 			<div class="col-md-3 pr-0">
 				<div class="card shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Search</h6>
+                    </div>
+                    <div class="card-body documentation-search">
+                        <input class="form-control" type="text"  v-model="currentSearch" v-on:keyup="_documentationControllerInstance.doSearch();" />
+                    </div>
+                </div>
+                <div class="card shadow">
 					<div class="card-header py-3">
 						<h6 class="m-0 font-weight-bold text-primary">Topics</h6>
 					</div>
@@ -210,7 +218,39 @@
 			</div>
 
 			<div class="col-md-9 pl-0">
-				<div class="card shadow documentationWrapper" id="documentationContent" v-html="html"></div>
+				<div class="card shadow documentationWrapper" id="documentationContent" v-html="html" v-if="!searching"></div>
+                <div class="card shadow documentationSearch" v-if="searching">
+                    <div class="card-header py-3">
+                        <h1 class="m-0 font-weight-bold">Searching "{{currentSearch}}"</h1>
+                    </div>
+                    <div class="card-body">
+                        <div v-if="results === null" class="no-results">
+                            You must enter atleast 4 characters to search.
+                        </div>
+                        <div v-if="results !== null">
+                            <div v-if="results.length === 0" class="no-results">
+                                There are no matches, try another term.
+                            </div>
+                            <div v-for="result in results" class="searchResult">
+                                <h5>
+                                    <a :href="_documentationControllerInstance.generateLink(result.file)">
+                                        {{_documentationControllerInstance.generateLink(result.file).replace('#/documentation/', '').replace('/', ' - ')}}
+                                    </a>
+                                </h5>
+
+                                <p>
+                                    The following matches were found:
+                                </p>
+
+                                <div v-for="line in result.line">
+                                    <div class="match">
+                                        <pre>{{line}}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</div>
 		</div>
 	</div>

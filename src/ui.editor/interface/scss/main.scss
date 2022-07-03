@@ -9,6 +9,7 @@
 @import 'components/swagger';
 @import 'components/monitor';
 @import 'components/loading';
+@import 'components/documentation';
 
 #content {
   position: relative;
@@ -36,19 +37,6 @@
   font-size: 14px;
 }
 
-.documentationWrapper {
-  padding: 20px;
-  color: #000;
-}
-
-.documentationWrapper code {
-  display: inline;
-}
-
-.documentationWrapper img {
-  width: 100%;
-}
-
 .noResults {
   text-align: center;
   padding: 50px 0px;
@@ -70,14 +58,6 @@ div.block {
   padding: 2rem 0rem !important;
   text-align: center;
   font-style: italic;
-}
-
-.documentation-menu {
-  div {
-    >div {
-      padding-left: 15px;
-    }
-  }
 }
 
 .editor-form {
@@ -124,4 +104,20 @@ div.block {
 
 .hidden {
   display: none;
+}
+
+pre {
+  background: #3a3a3a;
+  color: #f9f9f9;
+  padding: 20px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.5);
+
+  &::-webkit-scrollbar {
+    background-color: #3a3a3a;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #f2dede;
+    border-radius: 1px;
+  }
 }
