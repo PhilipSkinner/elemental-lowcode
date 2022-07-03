@@ -82,7 +82,6 @@ configProvider.prototype.getClients = function(dir, bannedPasswords) {
 
                     if (config.grant_types.indexOf("authorization_code") != -1) {
                         config.response_types.push("code");
-                        config.response_types.push("code id_token");
                     }
 
                     allConfig.push(config);

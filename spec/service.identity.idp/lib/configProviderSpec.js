@@ -140,8 +140,7 @@ const clientGrantDefaultTest = (done) => {
                     'refresh_token'
                 ],
                 response_types : [
-                    'code',
-                    'code id_token'
+                    'code'
                 ],
                 redirect_uris : [
                     'http://ignore.me'
