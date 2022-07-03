@@ -9,6 +9,24 @@ blobInstance.prototype.init = function() {
     return new Promise((resolve, reject) => {
         this.provider = null;
 
+        this.config.mechanism = this.config.mechanism || {
+            type : "filesystem",
+            path : this.config.name
+        };
+        this.config.security = this.config.security || {};
+        this.config.security.GET = this.config.security.GET || {
+            require_token : true
+        };
+        this.config.security.POST = this.config.security.POST || {
+            require_token : true
+        };
+        this.config.security.PUT = this.config.security.PUT || {
+            require_token : true
+        };
+        this.config.security.DELETE = this.config.security.DELETE || {
+            require_token : true
+        };
+
         if (this.config.mechanism.type === "filesystem") {
             this.provider = this.filesystemProvider;
         }

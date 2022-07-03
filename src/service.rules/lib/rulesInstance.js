@@ -1,9 +1,9 @@
-const rulesInstance = function(app, definition, ajv, comparitorService, roleCheckHandler) {
+const rulesInstance = function(app, definition, ajv, comparitorService, securityHandler) {
     this.app = app;
     this.definition = definition;
     this.ajv = ajv;
     this.comparitorService = comparitorService;
-    this.roleCheckHandler = roleCheckHandler;
+    this.securityHandler = securityHandler;
 };
 
 rulesInstance.prototype.executeRules = function(req, res) {
@@ -69,12 +69,15 @@ rulesInstance.prototype.init = function() {
         }
 
         console.log(`Hosting ${this.definition.name} on /${this.definition.name}`);
-        this.app.post(`/${this.definition.name}`, this.roleCheckHandler.enforceRoles(this.executeRules.bind(this), execRoles));
+        this.app.post(`/${this.definition.name}`, this.securityHandler.enforce(this.executeRules.bind(this), {
+            mechanism       : this.definition.security ? this.definition.security.mechanism : null,
+            roles           : execRoles
+        }));
         return resolve();
     });
 };
 
-module.exports = function(app, definition, ajv, comparitorService, roleCheckHandler) {
+module.exports = function(app, definition, ajv, comparitorService, securityHandler) {
     if (!ajv) {
         ajv = require("ajv")({
             allErrors : true
@@ -85,9 +88,9 @@ module.exports = function(app, definition, ajv, comparitorService, roleCheckHand
         comparitorService = require("./comparitorService")();
     }
 
-    if (!roleCheckHandler) {
-        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
+    if (!securityHandler) {
+        securityHandler = require("../../support.lib/securityHandler")();
     }
 
-    return new rulesInstance(app, definition, ajv, comparitorService, roleCheckHandler);
+    return new rulesInstance(app, definition, ajv, comparitorService, securityHandler);
 };

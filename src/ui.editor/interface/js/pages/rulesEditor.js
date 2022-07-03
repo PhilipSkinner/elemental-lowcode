@@ -47,6 +47,9 @@ _rulesEditorController.prototype.initBlankType = function() {
 
     this.ruleset = {
         name : "untitled",
+        security : {
+            mechanism : "default"
+        },
         roles : {
             replace : {
                 exec : false

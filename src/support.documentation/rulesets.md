@@ -107,3 +107,17 @@ Here is an example `roles` section:
     }
 }
 ```
+
+#### Disabling security
+
+It is possible to disable all security on a ruleset by setting the security mechanism to `none`:
+
+```
+{
+    "security" : {
+        "mechanism" : "none"
+    }
+}
+```
+
+If this value is anything other than `none` then the system will enforce the default RBAC authentication mechanism.

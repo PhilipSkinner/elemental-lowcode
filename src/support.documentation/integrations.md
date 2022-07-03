@@ -36,6 +36,9 @@ Here is an example integration definition:
             "description": "The ID of the post to fetch"
         }
     ],
+    "security" : {
+        "mechanism" : "default"
+    },
     "roles" : {
         "replace" : {
             "exec" : false
@@ -256,3 +259,17 @@ Here is an example `roles` section:
     }
 }
 ```
+
+#### Disabling Security
+
+It is possible to disable security on your integration by setting the security mechanism to `none`:
+
+```
+{
+    "security" : {
+        "mechanism" : "none"
+    }
+}
+```
+
+If this value is set to anything other that `none` then the system will enforce default RBAC based authentication.

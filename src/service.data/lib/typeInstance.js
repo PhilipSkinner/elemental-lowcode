@@ -1,10 +1,10 @@
-const typeInstance = function(store, app, definition, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver) {
+const typeInstance = function(store, app, definition, uuid, ajv, securityHandler, jsonpath, hostnameResolver) {
     this.store              = store;
     this.app                = app;
     this.definition         = definition;
     this.uuid               = uuid;
     this.ajv                = ajv;
-    this.roleCheckHandler   = roleCheckHandler;
+    this.securityHandler    = securityHandler;
     this.jsonpath           = jsonpath;
     this.hostnameResolver   = hostnameResolver;
     this.schemas            = {};
@@ -835,7 +835,10 @@ typeInstance.prototype.init = function() {
             const handler = this.determineHandler(p.type).bind(this);
 
             console.log(`Hosting ${p.method.toUpperCase()} "${p.path}"`);
-            this.app[p.method](p.path, this.roleCheckHandler.enforceRoles(handler, p.roles));
+            this.app[p.method](p.path, this.securityHandler.enforce(handler, {
+                mechanism   : this.definition.security ? this.definition.security.mechanism : null,
+                roles       : p.roles
+            }));
         });
 
         return resolve();
@@ -985,7 +988,7 @@ typeInstance.prototype.determinePaths = function(parentPath, name, fullName, sch
     return ret;
 };
 
-module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver) {
+module.exports = function(store, app, definition, uuid, ajv, securityHandler, jsonpath, hostnameResolver) {
     if (!uuid) {
         uuid = require("uuid/v4");
     }
@@ -996,8 +999,8 @@ module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler, j
         });
     }
 
-    if (!roleCheckHandler) {
-        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
+    if (!securityHandler) {
+        securityHandler = require("../../support.lib/securityHandler")();
     }
 
     if (!jsonpath) {
@@ -1008,5 +1011,5 @@ module.exports = function(store, app, definition, uuid, ajv, roleCheckHandler, j
         hostnameResolver = require("../../support.lib/hostnameResolver")();
     }
 
-    return new typeInstance(store, app, definition, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    return new typeInstance(store, app, definition, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 };

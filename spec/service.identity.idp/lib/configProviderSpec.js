@@ -93,7 +93,11 @@ const clientLoadTest = (done) => {
                     banned_passwords : [
                         'hello world'
                     ]
-                }
+                },
+                response_types : [],
+                redirect_uris : [
+                    'http://ignore.me'
+                ],
             }
         ]);
 
@@ -134,6 +138,13 @@ const clientGrantDefaultTest = (done) => {
                     'client_credentials',
                     'authorization_code',
                     'refresh_token'
+                ],
+                response_types : [
+                    'code',
+                    'code id_token'
+                ],
+                redirect_uris : [
+                    'http://ignore.me'
                 ],
                 features : {
                     banned_passwords : [

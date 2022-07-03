@@ -29,6 +29,9 @@ Here is an example queue definition:
     "name": "myQueue",
     "storageEngine" : "filesystem",
     "client_id": "my-client",
+    "security" : {
+        "mechanism": "default"
+    },
     "roles": {
         "needsRole": true,
         "replace": true,
@@ -165,7 +168,7 @@ There are a number of default roles that the system sets on these API endpoints,
 
 ; where `[queue_name]` is automatically replaced by the name of your queue.
 
-**Configuring if a role is required**
+#### Configuring if a role is required
 
 You can modify the `needsRole` property on the `roles` object within the queue definition to be either true or false.
 
@@ -173,7 +176,7 @@ When this value is set to false, the system will validate the token only, it wil
 
 When this value is set to true, the system will validate the token and check for the existence of a role that allows access to the endpoint.
 
-**Overwriting the auto-generated system roles**
+#### Overwriting the auto-generated system roles
 
 You can modify the `replace` property on the `roles` object within the queue definition to be either true or false.
 
@@ -181,11 +184,25 @@ When this value is set to false, the system will keep the auto-generated roles i
 
 When this value is set to true, the system will keep only the `system_admin` role from the list of default roles.
 
-**Define your own roles**
+#### Define your own roles
 
 You can add roles into the `roles` array on the `roles` object within the queue definition.
 
 These roles should be simple string values.
+
+#### Disabling security
+
+It is possible to disable all security by setting the security mechanism to `none`:
+
+```
+{
+    "security" : {
+        "mechanism" : "none"
+    }
+}
+```
+
+If this value is set to anything other than `none` then the default RBAC authentication mechanism will be enforced.
 
 ## Storage Engines
 

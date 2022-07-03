@@ -1,7 +1,7 @@
 const apiInstance = function(
     app,
     definition,
-    roleCheckHandler,
+    securityHandler,
     serviceProvider,
     storageService,
     integrationService,
@@ -15,7 +15,7 @@ const apiInstance = function(
 ) {
     this.app 					= app;
     this.definition 			= definition;
-    this.roleCheckHandler 		= roleCheckHandler;
+    this.securityHandler 		= securityHandler;
     this.serviceProvider 		= serviceProvider;
     this.storageService 		= storageService;
     this.integrationService 	= integrationService;
@@ -74,6 +74,8 @@ apiInstance.prototype.setupEndpoints = function() {
             let routePath = `/${this.definition.name}${route}`;
             console.info(`Setting up routes for ${routePath}`);
 
+            console.log(routeConfig);
+
             if (routeConfig.get) {
                 let readerRoles = JSON.parse(JSON.stringify(originalReaderRoles));
                 if (routeConfig.get.replace) {
@@ -89,11 +91,14 @@ apiInstance.prototype.setupEndpoints = function() {
                 }
 
                 console.info(`Setting up GET on ${routePath}`);
-                this.app.get(routePath, this.roleCheckHandler.enforceRoles((req, res, next) => {
+                this.app.get(routePath, this.securityHandler.enforce((req, res, next) => {
                     this.resolveController(routeConfig.get.controller).bind({
                         serviceProvider : this.serviceProvider
                     })(req, res, next);
-                }, readerRoles));
+                }, {
+                    mechanism   : routeConfig.get.mechanism,
+                    roles       : readerRoles
+                }));
             }
 
             if (routeConfig.post) {
@@ -111,9 +116,14 @@ apiInstance.prototype.setupEndpoints = function() {
                 }
 
                 console.info(`Setting up POST on ${routePath}`);
-                this.app.post(routePath, this.roleCheckHandler.enforceRoles((req, res, next) => {
-                    this.resolveController(routeConfig.post.controller)(req, res, next);
-                }, writerRoles));
+                this.app.post(routePath, this.securityHandler.enforce((req, res, next) => {
+                    this.resolveController(routeConfig.post.controller).bind({
+                        serviceProvider : this.serviceProvider
+                    })(req, res, next);
+                }, {
+                    mechanism   : routeConfig.post.mechanism,
+                    roles       : writerRoles
+                }));
             }
         });
 
@@ -132,7 +142,7 @@ apiInstance.prototype.init = function() {
 module.exports = function(
     app,
     definition,
-    roleCheckHandler,
+    securityHandler,
     serviceProvider,
     storageService,
     integrationService,
@@ -144,8 +154,8 @@ module.exports = function(
     locationService,
     blobService
 ) {
-    if (!roleCheckHandler) {
-        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
+    if (!securityHandler) {
+        securityHandler = require("../../support.lib/securityHandler")();
     }
 
     if (!serviceProvider) {
@@ -191,7 +201,7 @@ module.exports = function(
     return new apiInstance(
         app,
         definition,
-        roleCheckHandler,
+        securityHandler,
         serviceProvider,
         storageService,
         integrationService,

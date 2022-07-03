@@ -8,8 +8,18 @@ Most systems allow these roles to be configured by either replacing them, adding
 
 Each of these systems default roles can be found within their documentation:
 
-*   [APIs](/src/support.documentation/apis/routes)
-*   [Integrations](/src/support.documentation/integrations)
-*   [Data Types](/src/support.documentation/data)
-*   [Messaging](/src/support.documentation/messaging)
-*   [Rulesets](/src/support.documentation/rulesets)
+* [APIs](/src/support.documentation/apis/routes)
+* [Integrations](/src/support.documentation/integrations)
+* [Data Types](/src/support.documentation/data)
+* [Messaging](/src/support.documentation/messaging)
+* [Rulesets](/src/support.documentation/rulesets)
+
+## Disabling security
+
+It is possible to disable security in alot of the parts of the system. To find out how to disable security access the documentation for the services which support this:
+
+* [APIs](/src/support.documentation/apis/routes)
+* [Integrations](/src/support.documentation/integrations)
+* [Data Types](/src/support.documentation/data)
+* [Messaging](/src/support.documentation/messaging)
+* [Rulesets](/src/support.documentation/rulesets)

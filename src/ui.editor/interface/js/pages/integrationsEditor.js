@@ -56,6 +56,9 @@ _integrationsEditorController.prototype.initBlankType = function() {
                 required : true,
             }
         ],
+        security : {
+            mechanism : "default"
+        },
         roles : {
             replace : {
                 exec : false

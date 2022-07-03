@@ -38,6 +38,20 @@ const initFilesystem = (done) => {
     fsProviderMock.expects('init').once().withArgs({
         mechanism : {
             type : 'filesystem'
+        },
+        security : {
+            GET : {
+                require_token : true
+            },
+            POST : {
+                require_token : true
+            },
+            PUT : {
+                require_token : true
+            },
+            DELETE : {
+                require_token : true
+            }
         }
     }).returns(Promise.resolve());
 

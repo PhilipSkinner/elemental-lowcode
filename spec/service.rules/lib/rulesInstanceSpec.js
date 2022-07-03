@@ -15,15 +15,15 @@ const comparitorService = {
     evaluate : () => {}
 };
 
-const roleCheckHandler = {
-    enforceRoles : () => {}
+const securityHandler = {
+    enforce : () => {}
 };
 
 const constructorTest = (done) => {
     const instance = rulesInstance();
     expect(instance.ajv).not.toBe(null);
     expect(instance.comparitorService).not.toBe(null);
-    expect(instance.roleCheckHandler).not.toBe(null);
+    expect(instance.securityHandler).not.toBe(null);
     done();
 };
 
@@ -31,15 +31,18 @@ const initTest = (done) => {
     const appMock = sinon.mock(app);
     appMock.expects('post').once().withArgs('/doot');
 
-    const roleCheckHandlerMock = sinon.mock(roleCheckHandler);
-    roleCheckHandlerMock.expects('enforceRoles').once().withArgs(sinon.match.any, ['system_admin', 'system_exec', 'rules_exec', 'doot_exec']);
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : ['system_admin', 'system_exec', 'rules_exec', 'doot_exec']
+    });
 
     const instance = rulesInstance(app, {
         name : 'doot'
-    }, ajv, comparitorService, roleCheckHandler);
+    }, ajv, comparitorService, securityHandler);
     instance.init().then(() => {
         appMock.verify();
-        roleCheckHandlerMock.verify();
+        securityHandlerMock.verify();
 
         done();
     });
@@ -56,7 +59,7 @@ const invalidFactsTest = (done) => {
                 }
             }
         }
-    }, null, comparitorService, roleCheckHandler);
+    }, null, comparitorService, securityHandler);
     instance.executeRules({
         body : {
             value : {
@@ -109,7 +112,7 @@ const noMatchingRulesets = (done) => {
                 comparitors : 'doot'
             }
         ]
-    }, null, comparitorService, roleCheckHandler);
+    }, null, comparitorService, securityHandler);
     instance.executeRules({
         body : {
             value : 'a string'
@@ -153,7 +156,7 @@ const executionTest = (done) => {
                 }
             }
         ]
-    }, null, comparitorService, roleCheckHandler);
+    }, null, comparitorService, securityHandler);
     instance.executeRules({
         body : {
             value : 'a string'
@@ -176,8 +179,11 @@ const roleReplaceTest = (done) => {
     const appMock = sinon.mock(app);
     appMock.expects('post').once().withArgs('/doot');
 
-    const roleCheckHandlerMock = sinon.mock(roleCheckHandler);
-    roleCheckHandlerMock.expects('enforceRoles').once().withArgs(sinon.match.any, ['system_admin', 'one', 'two']);
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : ['system_admin', 'one', 'two']
+    });
 
     const instance = rulesInstance(app, {
         name : 'doot',
@@ -190,10 +196,10 @@ const roleReplaceTest = (done) => {
                 'two'
             ]
         }
-    }, ajv, comparitorService, roleCheckHandler);
+    }, ajv, comparitorService, securityHandler);
     instance.init().then(() => {
         appMock.verify();
-        roleCheckHandlerMock.verify();
+        securityHandlerMock.verify();
 
         done();
     });
@@ -203,11 +209,17 @@ const extraRolesTest = (done) => {
     const appMock = sinon.mock(app);
     appMock.expects('post').once().withArgs('/doot');
 
-    const roleCheckHandlerMock = sinon.mock(roleCheckHandler);
-    roleCheckHandlerMock.expects('enforceRoles').once().withArgs(sinon.match.any, ['system_admin', 'system_exec', 'rules_exec', 'doot_exec', 'one', 'two']);
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : 'test',
+        roles       : ['system_admin', 'system_exec', 'rules_exec', 'doot_exec', 'one', 'two']
+    });
 
     const instance = rulesInstance(app, {
         name : 'doot',
+        security : {
+            mechanism : 'test'
+        },
         roles : {
             replace : {},
             exec : [
@@ -216,10 +228,10 @@ const extraRolesTest = (done) => {
             ],
             needsRole : {}
         }
-    }, ajv, comparitorService, roleCheckHandler);
+    }, ajv, comparitorService, securityHandler);
     instance.init().then(() => {
         appMock.verify();
-        roleCheckHandlerMock.verify();
+        securityHandlerMock.verify();
 
         done();
     });
@@ -229,8 +241,11 @@ const noRolesTest = (done) => {
     const appMock = sinon.mock(app);
     appMock.expects('post').once().withArgs('/doot');
 
-    const roleCheckHandlerMock = sinon.mock(roleCheckHandler);
-    roleCheckHandlerMock.expects('enforceRoles').once().withArgs(sinon.match.any, null);
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : null
+    });
 
     const instance = rulesInstance(app, {
         name : 'doot',
@@ -239,10 +254,10 @@ const noRolesTest = (done) => {
                 exec : false
             }
         }
-    }, ajv, comparitorService, roleCheckHandler);
+    }, ajv, comparitorService, securityHandler);
     instance.init().then(() => {
         appMock.verify();
-        roleCheckHandlerMock.verify();
+        securityHandlerMock.verify();
 
         done();
     });

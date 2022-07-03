@@ -12,8 +12,8 @@ const integrationInstance = {
     handler : () => {}
 };
 
-const roleCheckHandler = {
-    enforceRoles : () => {}
+const securityHandler = {
+    enforce : () => {}
 };
 
 const app = {
@@ -24,7 +24,7 @@ const constructorTest = (done) => {
     const instance = integrationService();
     expect(instance.configReader).not.toBe(null);
     expect(instance.integrationInstance).not.toBe(null);
-    expect(instance.roleCheckHandler).not.toBe(null);
+    expect(instance.securityHandler).not.toBe(null);
     expect(instance.hostedEndpoints).not.toBe(null);
     done();
 };
@@ -37,6 +37,9 @@ const endpointInitTest = (done) => {
         },
         replaceRoles : {
             method : 'get',
+            security : {
+                mechanism : 'test',
+            },
             roles : {
                 replace : {
                     exec : true
@@ -72,6 +75,9 @@ const endpointInitTest = (done) => {
     }).returns(integrationInstance);
     integrationMock.expects('main').once().withArgs('replaceRoles', {
         method : 'get',
+        security : {
+            mechanism : 'test',
+        },
         roles : {
             replace : {
                 exec : true
@@ -100,33 +106,48 @@ const endpointInitTest = (done) => {
         }
     }).returns(integrationInstance);
 
-    const roleMock = sinon.mock(roleCheckHandler);
-    roleMock.expects('enforceRoles').once().withArgs(sinon.match.any, [
-        'system_admin',
-        'system_exec',
-        'integration_exec',
-        'basicRoles_exec'
-    ]).returns('basic roles');
-    roleMock.expects('enforceRoles').once().withArgs(sinon.match.any, [
-        'system_admin',
-        'one',
-        'two'
-    ]).returns('replace roles');
-    roleMock.expects('enforceRoles').once().withArgs(sinon.match.any, null).returns('no roles');
-    roleMock.expects('enforceRoles').once().withArgs(sinon.match.any, [
-        'system_admin',
-        'system_exec',
-        'integration_exec',
-        'extraRoles_exec',
-        'one',
-        'two'
-    ]).returns('extra roles');
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : [
+            'system_admin',
+            'system_exec',
+            'integration_exec',
+            'basicRoles_exec'
+        ]
+    }).returns('basic roles');
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : 'test',
+        roles       : [
+            'system_admin',
+            'one',
+            'two'
+        ]
+    }).returns('replace roles');
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : null
+    }).returns('no roles');
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : [
+            'system_admin',
+            'system_exec',
+            'integration_exec',
+            'extraRoles_exec',
+            'one',
+            'two'
+        ]
+    }).returns('extra roles');
 
-    roleMock.expects('enforceRoles').once().withArgs(sinon.match.any, [
-        'system_admin',
-        'system_reader',
-        'integration_reader'
-    ]).returns('discovery endpoint');
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : [
+            'system_admin',
+            'system_reader',
+            'integration_reader'
+        ]
+    }).returns('discovery endpoint');
 
     const appMock = sinon.mock(app);
     appMock.expects('get').once().withArgs('/basicRoles', 'basic roles');
@@ -135,11 +156,11 @@ const endpointInitTest = (done) => {
     appMock.expects('get').once().withArgs('/extraRoles', 'extra roles');
     appMock.expects('get').once().withArgs('/', 'discovery endpoint');
 
-    const instance = integrationService(app, configReader, integrationInstance.main, roleCheckHandler);
+    const instance = integrationService(app, configReader, integrationInstance.main, securityHandler);
     instance.init('doot').then(() => {
         configMock.verify();
         integrationMock.verify();
-        roleMock.verify();
+        securityHandlerMock.verify();
         appMock.verify();
 
         done();

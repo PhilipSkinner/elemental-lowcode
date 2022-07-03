@@ -41,6 +41,9 @@ _dataTypeEditorController.prototype.initBlankType = function() {
     this.editor.setValue(JSON.stringify({
         name : "typeName",
         keys : [],
+        security : {
+            mechanism : "default"
+        },
         roles : {
             replace : {
                 read : false,

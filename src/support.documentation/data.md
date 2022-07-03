@@ -41,6 +41,9 @@ The following is an example data type definition:
             "paths" : "$.name"
         }
     ],
+    "security" : {
+        "mechanism" : "default"
+    },
     "roles" : {
     	"replace" : {
     		"read" : false,
@@ -204,7 +207,7 @@ The roles section within a data type definition document supports the ability fo
 *   What are the extra (or complete) set of roles for operations
 *   Is a role required
 
-**Operation Types**
+### Operation Types
 
 There are three operation types that be carried out on a data type and its entities, these are:
 
@@ -214,7 +217,7 @@ There are three operation types that be carried out on a data type and its entit
 
 The roles for each of these can be controlled individually within the configuration, along with if a role is required for the operation and if the system default roles are to be left intact.
 
-**Default Roles**
+### Default Roles
 
 Each data type comes with a set of default roles that are used to protect its three types of operations:
 
@@ -236,7 +239,7 @@ Each data type comes with a set of default roles that are used to protect its th
 
 ; where `typeName` is automatically taken from your data types name. For example, if your data type is called `pets` then your data type will allow read operations if a token containint the `pets_reader` role is present.
 
-**Disabling Default Roles**
+### Disabling Default Roles
 
 The default roles can be disabled on a data type by using the replace property within the roles section:
 
@@ -260,7 +263,7 @@ The properties that are available on this replace property object are:
 
 All three are boolean values. Setting them to true disables the default list of roles for each operation type and the system will rely upon you to specify your own roles for the operations.
 
-**Specifying Roles**
+### Specifying Roles
 
 Roles for the operations can be defined in one of three properties on the roles object:
 
@@ -288,7 +291,7 @@ If you wanted to allow access to any token which has the role of `user` on it, y
 }
 ```
 
-**Disabling the need for roles**
+### Disabling the need for roles
 
 If you do not want to protect a data type and its operation with any roles and just want to check that a valid access token has been used, you can specify if the operations need a role to be present in the needsRole property:
 
@@ -311,6 +314,20 @@ The needsRole object has three properties that can be set:
 *   delete
 
 Each of these is a boolean. Setting a property to true will enforce a role being present on the token. Setting a property to false will only check if a valid token was presented to the storage API.
+
+### Disabling all security
+
+It is possible to disable all security by setting the security mechanism to `none`:
+
+```
+{
+    "security" : {
+        "mechanism" : "none"
+    }
+}
+```
+
+If this value is set to anything other than `none` then the system will enforce RBAC with valid tokens.
 
 ## Constraints
 

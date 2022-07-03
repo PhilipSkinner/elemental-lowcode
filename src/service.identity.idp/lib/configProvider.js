@@ -72,8 +72,21 @@ configProvider.prototype.getClients = function(dir, bannedPasswords) {
                     config.features = config.features || {};
                     config.features.banned_passwords = config.features.banned_passwords || [];
                     config.features.banned_passwords = config.features.banned_passwords.concat(bannedPasswords);
+                    config.redirect_uris = config.redirect_uris || ['http://ignore.me'];
+
+                    if (config.redirect_uris.length === 0) {
+                        config.redirect_uris.push('http://ignore.me');
+                    }
+
+                    config.response_types = [];
+
+                    if (config.grant_types.indexOf("authorization_code") != -1) {
+                        config.response_types.push("code");
+                        config.response_types.push("code id_token");
+                    }
 
                     allConfig.push(config);
+
                     return doNext();
                 });
             };
@@ -300,7 +313,7 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
             },
             AuthorizationCode : 1800, // 30 minutes,
             Interaction : 86400, // 24 hours
-        },
+        }
     };
 
     return this.getBannedPasswords(dir).then((passwords) => {

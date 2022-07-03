@@ -8,8 +8,8 @@ const app = {
     post : () => {}
 };
 
-const roleCheckHandler = {
-    enforceRoles : () => {}
+const securityHandler = {
+    enforce : () => {}
 };
 
 const serviceProvider = {
@@ -41,9 +41,21 @@ const messagingService = {
     setAuthClientProvider 	: () => {}
 };
 
+const environmentService = {
+
+};
+
+const locationService = {
+
+};
+
+const blobService = {
+
+};
+
 const constructorTest = (done) => {
     const instance = apiInstance();
-    expect(instance.roleCheckHandler).not.toBe(null);
+    expect(instance.securityHandler).not.toBe(null);
     expect(instance.serviceProvider).not.toBe(null);
     expect(instance.storageService).not.toBe(null);
     expect(instance.integrationService).not.toBe(null);
@@ -76,7 +88,7 @@ const controllerResolutionTest = (done) => {
         controllers : {
             myController : myController
         }
-    }, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService);
+    }, securityHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService, environmentService, locationService, blobService);
 
     const controllerInstance = instance.resolveController('myController');
 
@@ -94,15 +106,35 @@ const endpointSetupTest = (done) => {
     appMock.expects('get').once().withArgs('/testreplaceRoles');
     appMock.expects('post').once().withArgs('/testreplaceRoles');
 
-    const roleCheckMock = sinon.mock(roleCheckHandler);
-    roleCheckMock.expects('enforceRoles').once().withArgs(sinon.match.any, ['system_admin', 'system_reader', 'api_reader', 'test_reader']);
-    roleCheckMock.expects('enforceRoles').once().withArgs(sinon.match.any, ['system_admin', 'system_writer', 'api_writer', 'test_writer']);
-    roleCheckMock.expects('enforceRoles').twice().withArgs(sinon.match.any, null);
-    roleCheckMock.expects('enforceRoles').once().withArgs(sinon.match.any, ['system_admin', 'system_reader', 'api_reader', 'test_reader', 'two']);
-    roleCheckMock.expects('enforceRoles').once().withArgs(sinon.match.any, ['system_admin', 'system_writer', 'api_writer', 'test_writer', 'one']);
-    roleCheckMock.expects('enforceRoles').once().withArgs(sinon.match.any, ['system_admin', 'two']);
-    roleCheckMock.expects('enforceRoles').once().withArgs(sinon.match.any, ['system_admin', 'one']);
-	
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : undefined,
+        roles       : ['system_admin', 'system_reader', 'api_reader', 'test_reader']
+    });
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : undefined,
+        roles       : ['system_admin', 'system_writer', 'api_writer', 'test_writer']
+    });
+    securityHandlerMock.expects('enforce').twice().withArgs(sinon.match.any, {
+        mechanism   : undefined,
+        roles       : null
+    });
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : undefined,
+        roles       : ['system_admin', 'system_reader', 'api_reader', 'test_reader', 'two']
+    });
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : 'test',
+        roles       : ['system_admin', 'system_writer', 'api_writer', 'test_writer', 'one']
+    });
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : undefined,
+        roles       : ['system_admin', 'two']
+    });
+    securityHandlerMock.expects('enforce').once().withArgs(sinon.match.any, {
+        mechanism   : undefined,
+        roles       : ['system_admin', 'one']
+    });
 
     const instance = apiInstance(app, {
         name : 'test',
@@ -129,6 +161,7 @@ const endpointSetupTest = (done) => {
             },
             extraRoles : {
                 post : {
+                    mechanism : 'test',
                     roles : [
                         'one'
                     ]
@@ -154,11 +187,11 @@ const endpointSetupTest = (done) => {
                 }
             }
         }
-    }, roleCheckHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService);
+    }, securityHandler, serviceProvider, storageService, integrationService, rulesetService, idmService, authClientProvider, messagingService, environmentService, locationService, blobService);
 
     instance.init().then(() => {
         appMock.verify();
-        roleCheckMock.verify();
+        securityHandlerMock.verify();
 
         done();
     });

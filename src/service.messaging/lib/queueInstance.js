@@ -1,7 +1,7 @@
 const queueInstance = function(
     app,
     definition,
-    roleCheckHandler,
+    securityHandler,
     sqlQueueProvider,
     uuid,
     serviceProvider,
@@ -19,7 +19,7 @@ const queueInstance = function(
 ) {
     this.app                    = app;
     this.definition             = definition;
-    this.roleCheckHandler       = roleCheckHandler;
+    this.securityHandler        = securityHandler;
     this.dataResolver           = dataResolver;
     this.environmentService     = environmentService;
 
@@ -141,11 +141,21 @@ queueInstance.prototype.setupEndpoints = function() {
         }
 
         console.log(`Setting up POST /${this.definition.name}`);
-        this.app.post(`/${this.definition.name}`,       this.roleCheckHandler.enforceRoles(this.queueMessage.bind(this), roles));
+        const mechanism = this.definition.security ? this.definition.security.mechanism : null;
+        this.app.post(`/${this.definition.name}`,       this.securityHandler.enforce(this.queueMessage.bind(this), {
+            mechanism   : mechanism,
+            roles       : roles
+        }));
         console.log(`Setting up GET /${this.definition.name}/:id`);
-        this.app.get(`/${this.definition.name}/:id`,    this.roleCheckHandler.enforceRoles(this.getMessage.bind(this), roles));
+        this.app.get(`/${this.definition.name}/:id`,    this.securityHandler.enforce(this.getMessage.bind(this), {
+            mechanism   : mechanism,
+            roles       : roles
+        }));
         console.log(`Setting up DELETE /${this.definition.name}/:id`);
-        this.app.delete(`/${this.definition.name}/:id`, this.roleCheckHandler.enforceRoles(this.deleteMessage.bind(this), roles));
+        this.app.delete(`/${this.definition.name}/:id`, this.securityHandler.enforce(this.deleteMessage.bind(this), {
+            mechanism   : mechanism,
+            roles       : roles
+        }));
 
         return resolve();
     });
@@ -221,7 +231,7 @@ queueInstance.prototype.init = function() {
 module.exports = function(
     app,
     definition,
-    roleCheckHandler,
+    securityHandler,
     sqlQueueProvider,
     uuid,
     serviceProvider,
@@ -237,8 +247,8 @@ module.exports = function(
     locationService,
     blobService
 ) {
-    if (!roleCheckHandler) {
-        roleCheckHandler = require("../../support.lib/roleCheckHandler")();
+    if (!securityHandler) {
+        securityHandler = require("../../support.lib/securityHandler")();
     }
 
     if (!sqlQueueProvider) {
@@ -302,7 +312,7 @@ module.exports = function(
     return new queueInstance(
         app,
         definition,
-        roleCheckHandler,
+        securityHandler,
         sqlQueueProvider,
         uuid,
         serviceProvider,

@@ -29,8 +29,8 @@ const ajv = {
     validate : () => {}
 };
 
-const roleCheckHandler = {
-    enforceRoles : () => {}
+const securityHandler = {
+    enforce : () => {}
 };
 
 const jsonpath = () => {
@@ -45,7 +45,7 @@ const constructorTest = (done) => {
     const instance = typeInstance(null, null, { schema : { properties : {} } });
     expect(instance.uuid).not.toBe(null);
     expect(instance.ajv).not.toBe(null);
-    expect(instance.roleCheckHandler).not.toBe(null);
+    expect(instance.securityHandler).not.toBe(null);
     done();
 };
 
@@ -54,7 +54,7 @@ const determineIdentifiersTest = () => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     expect(instance.determineIdentifiers({
         path : '/parent/1/child/2/list',
@@ -83,7 +83,7 @@ const determineIdentifiersEmptyPathTest = () => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     expect(instance.determineIdentifiers({
         path : '/'
@@ -98,7 +98,7 @@ const getListNotFoundTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/list',
@@ -139,7 +139,7 @@ const getListParentFoundTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/list',
@@ -173,7 +173,7 @@ const getListErrorTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent'
@@ -213,7 +213,7 @@ const getListFilterTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent',
@@ -251,7 +251,7 @@ const getListOrderTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent',
@@ -284,7 +284,7 @@ const getDetailsNotFoundTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/children/.details',
@@ -317,7 +317,7 @@ const getDetailsParentFoundTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/children/.details',
@@ -348,7 +348,7 @@ const getDetailsErrorTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/children/.details',
@@ -380,7 +380,7 @@ const uniqueNoKeysTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     instance.isUnique('this thing').then((result) => {
         expect(result).toEqual({
@@ -402,7 +402,7 @@ const uniqueNoneUniqueKeysTest = (done) => {
                 type : 'this is not unique'
             }
         ]
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     instance.isUnique('this thing').then((result) => {
         expect(result).toEqual({
@@ -438,7 +438,7 @@ const uniqueNotUniqueTest = (done) => {
                 ]
             }
         ]
-    }, uuid, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid, ajv, securityHandler, null, hostnameResolver);
 
     instance.isUnique({
         this : {
@@ -480,7 +480,7 @@ const uniqueTest = (done) => {
                 ]
             }
         ]
-    }, uuid, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid, ajv, securityHandler, null, hostnameResolver);
 
     instance.isUnique({
         this : {
@@ -512,7 +512,7 @@ const createInvalidBodyTest = (done) => {
         schema : {
             properties : {}
         },
-    }, uuid, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent_child = 'my-schema';
@@ -576,7 +576,7 @@ const createNoneUniqueTest = (done) => {
                 ]
             }
         ]
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -631,7 +631,7 @@ const createNoSuchParentTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -679,7 +679,7 @@ const createParentErrorTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -739,7 +739,7 @@ const createExistingParent = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -791,7 +791,7 @@ const createFailureTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -843,7 +843,7 @@ const createErrorTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -884,7 +884,7 @@ const createErrorTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/children/2',
@@ -922,7 +922,7 @@ const getSingleExistingParentTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/object',
@@ -958,7 +958,7 @@ const getSingleExistingParentUndefinedChildTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/object',
@@ -994,7 +994,7 @@ const getSingleParentErrorTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/object',
@@ -1032,7 +1032,7 @@ const getSingleNoSuchResource = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/child/2',
@@ -1065,7 +1065,7 @@ const getSingleErrorTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/child/2',
@@ -1103,7 +1103,7 @@ const updateInvalidBodyTest = (done) => {
         schema : {
             properties : {}
         },
-    }, uuid, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent_child = 'my-schema';
@@ -1152,7 +1152,7 @@ const updateMissingParentTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1195,7 +1195,7 @@ const updateMissingResource = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1239,7 +1239,7 @@ const updateErrorFetchingTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1292,7 +1292,7 @@ const updateFailureTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1348,7 +1348,7 @@ const updateTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1389,7 +1389,7 @@ const deleteNotExistTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/child/2',
@@ -1423,7 +1423,7 @@ const deleteSuccessErrorTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/child/2',
@@ -1463,7 +1463,7 @@ const deleteExceptionTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/child/2',
@@ -1503,7 +1503,7 @@ const deleteTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid, ajv, roleCheckHandler, jsonpath, hostnameResolver);
+    }, uuid, ajv, securityHandler, jsonpath, hostnameResolver);
 
     const req = {
         path : '/parent/1/child/2',
@@ -1544,7 +1544,7 @@ const patchMissingParentTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1588,7 +1588,7 @@ const patchMissingResource = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1632,7 +1632,7 @@ const patchErrorFetchingTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1685,7 +1685,7 @@ const patchInvalidMergeTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1741,7 +1741,7 @@ const patchFailureTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1802,7 +1802,7 @@ const patchInvalidMergeParentTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1866,7 +1866,7 @@ const patchFailureParentTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1924,7 +1924,7 @@ const patchTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -1986,7 +1986,7 @@ const patchParentTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -2048,7 +2048,7 @@ const patchParentNotDefinedTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     //manually set the schemas
     instance.schemas.parent = 'my-schema';
@@ -2088,7 +2088,7 @@ const determineGetHandlerTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determineHandler('listing')).toEqual(instance.getHandler);
 
@@ -2101,7 +2101,7 @@ const determineGetDetailsHandlerTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determineHandler('details')).toEqual(instance.getDetailsHandler);
 
@@ -2114,7 +2114,7 @@ const determineCreateHandlerTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determineHandler('create')).toEqual(instance.createHandler);
 
@@ -2127,7 +2127,7 @@ const determineGetSingleHandlerTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determineHandler('singular')).toEqual(instance.getSingleHandler);
 
@@ -2140,7 +2140,7 @@ const determineUpdateHandlerTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determineHandler('update')).toEqual(instance.updateHandler);
 
@@ -2153,7 +2153,7 @@ const determineDeleteHandlerTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determineHandler('delete')).toEqual(instance.deleteHandler);
 
@@ -2166,7 +2166,7 @@ const determinePatchHandlerTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determineHandler('patch')).toEqual(instance.patchHandler);
 
@@ -2179,7 +2179,7 @@ const determineUnknownHandlerTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determineHandler('woot')()).toEqual(undefined);
 
@@ -2192,7 +2192,7 @@ const normaliseNameTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.normaliseName('hello there')).toEqual('hello_there');
 
@@ -2205,7 +2205,7 @@ const determinePathSimpleSchemaTest = (done) => {
         schema : {
             properties : {}
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determinePaths('parent', 'child', 'child full name', true)).toEqual([
         {
@@ -2280,7 +2280,7 @@ const determinePathListsOfChildrenTest = (done) => {
                 }
             }
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determinePaths('parent', 'child', 'child full name', {
         type : 'object',
@@ -2486,7 +2486,7 @@ const determinePathChildrenObjectsTest = (done) => {
                 }
             }
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     expect(instance.determinePaths('parent', 'child', 'child full name', {
         type : 'object',
@@ -2619,9 +2619,15 @@ const determinePathChildrenObjectsTest = (done) => {
 };
 
 const initRoleDefaultsCheck = (done) => {
-    const roleMock = sinon.mock(roleCheckHandler);
-    roleMock.expects('enforceRoles').exactly(4).withArgs(sinon.match.any, ['system_admin', 'system_reader', 'data_reader', 'this thing_reader']).returns('reader roles');
-    roleMock.expects('enforceRoles').exactly(3).withArgs(sinon.match.any, ['system_admin', 'system_writer', 'data_writer', 'this thing_writer']).returns('writer roles');
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').exactly(4).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : ['system_admin', 'system_reader', 'data_reader', 'this thing_reader']
+    }).returns('reader roles');
+    securityHandlerMock.expects('enforce').exactly(3).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : ['system_admin', 'system_writer', 'data_writer', 'this thing_writer']
+    }).returns('writer roles');
 
     const appMock = sinon.mock(app);
     appMock.expects('get').once().withArgs('/this_thing/.definition', sinon.match.any);
@@ -2639,10 +2645,10 @@ const initRoleDefaultsCheck = (done) => {
                 }
             }
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     instance.init().then(() => {
-        roleMock.verify();
+        securityHandlerMock.verify();
         appMock.verify();
 
         done();
@@ -2650,8 +2656,11 @@ const initRoleDefaultsCheck = (done) => {
 };
 
 const initRoleReplaceCheck = (done) => {
-    const roleMock = sinon.mock(roleCheckHandler);
-    roleMock.expects('enforceRoles').exactly(7).withArgs(sinon.match.any, ['system_admin']).returns('system admin only role');
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').exactly(7).withArgs(sinon.match.any, {
+        mechanism   : 'test',
+        roles       : ['system_admin']
+    }).returns('system admin only role');
 
     const appMock = sinon.mock(app);
     appMock.expects('get').once().withArgs('/this_thing/.definition', sinon.match.any);
@@ -2661,6 +2670,9 @@ const initRoleReplaceCheck = (done) => {
 
     const instance = typeInstance(store, app, {
         name : 'this thing',
+        security : {
+            mechanism : 'test'
+        },
         roles : {
             replace : {
                 read : true,
@@ -2676,10 +2688,10 @@ const initRoleReplaceCheck = (done) => {
                 }
             }
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     instance.init().then(() => {
-        roleMock.verify();
+        securityHandlerMock.verify();
         appMock.verify();
 
         done();
@@ -2687,10 +2699,19 @@ const initRoleReplaceCheck = (done) => {
 };
 
 const initRoleAddsCheck = (done) => {
-    const roleMock = sinon.mock(roleCheckHandler);
-    roleMock.expects('enforceRoles').exactly(4).withArgs(sinon.match.any, ['system_admin', 'reader']).returns('custom roles');
-    roleMock.expects('enforceRoles').exactly(2).withArgs(sinon.match.any, ['system_admin', 'writer']).returns('custom roles');
-    roleMock.expects('enforceRoles').exactly(1).withArgs(sinon.match.any, ['system_admin', 'deleter']).returns('custom roles');
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').exactly(4).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : ['system_admin', 'reader']
+    }).returns('custom roles');
+    securityHandlerMock.expects('enforce').exactly(2).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : ['system_admin', 'writer']
+    }).returns('custom roles');
+    securityHandlerMock.expects('enforce').exactly(1).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : ['system_admin', 'deleter']
+    }).returns('custom roles');
 
     const appMock = sinon.mock(app);
     appMock.expects('get').once().withArgs('/this_thing/.definition', sinon.match.any);
@@ -2718,10 +2739,10 @@ const initRoleAddsCheck = (done) => {
                 }
             }
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     instance.init().then(() => {
-        roleMock.verify();
+        securityHandlerMock.verify();
         appMock.verify();
 
         done();
@@ -2729,10 +2750,19 @@ const initRoleAddsCheck = (done) => {
 };
 
 const initRoleNoRolesCheck = (done) => {
-        const roleMock = sinon.mock(roleCheckHandler);
-    roleMock.expects('enforceRoles').exactly(4).withArgs(sinon.match.any, null).returns('no roles');
-    roleMock.expects('enforceRoles').exactly(2).withArgs(sinon.match.any, null).returns('no roles');
-    roleMock.expects('enforceRoles').exactly(1).withArgs(sinon.match.any, null).returns('no roles');
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').exactly(4).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : null
+    }).returns('no roles');
+    securityHandlerMock.expects('enforce').exactly(2).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : null
+    }).returns('no roles');
+    securityHandlerMock.expects('enforce').exactly(1).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : null
+    }).returns('no roles');
 
     const appMock = sinon.mock(app);
     appMock.expects('get').once().withArgs('/this_thing/.definition', sinon.match.any);
@@ -2757,10 +2787,10 @@ const initRoleNoRolesCheck = (done) => {
                 }
             }
         }
-    }, uuid.main, ajv, roleCheckHandler, null, hostnameResolver);
+    }, uuid.main, ajv, securityHandler, null, hostnameResolver);
 
     instance.init().then(() => {
-        roleMock.verify();
+        securityHandlerMock.verify();
         appMock.verify();
 
         done();

@@ -122,6 +122,9 @@ _queueEditorController.prototype.initBlankType = function() {
     this.editor.setValue(JSON.stringify({
         "name"  		: "myQueue",
         "client_id" 	: "",
+        "security"      : {
+            "mechanism" : "default"
+        },
         "roles"  		: {
             "needsRole" : true,
             "replace" 	: false,

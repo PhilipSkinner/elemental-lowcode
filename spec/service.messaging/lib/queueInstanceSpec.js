@@ -8,8 +8,8 @@ const app = {
     delete : () => {}
 };
 
-const roleCheckHandler = {
-    enforceRoles : () => {}
+const securityHandler = {
+    enforce : () => {}
 };
 
 const sqlQueueProvider = {
@@ -70,7 +70,7 @@ const dataResolver = {
 const constructorTest = (done) => {
     const instance = queueInstance();
 
-    expect(instance.roleCheckHandler).not.toBe(null);
+    expect(instance.securityHandler).not.toBe(null);
     expect(instance.queueProvider).not.toBe(null);
     expect(instance.uuid).not.toBe(null);
     expect(instance.hostnameResolver).not.toBe(null);
@@ -100,7 +100,7 @@ const sqlNullConnectionStringTest = (done) => {
             storageEngine : 'sql',
             connectionString : 'original-connection-string'
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -126,7 +126,7 @@ const queueMessageInvalidBodyTest = (done) => {
                 schema : 'my-schema'
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -180,7 +180,7 @@ const queueMessageInsertionError = (done) => {
                 schema : 'my-schema'
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -238,7 +238,7 @@ const queueMessageTest = (done) => {
                 schema : 'my-schema'
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -275,7 +275,7 @@ const getMessageErrorTest = (done) => {
                 schema : 'my-schema'
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -309,7 +309,7 @@ const getMessageNotFoundTest = (done) => {
                 schema : 'my-schema'
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -343,7 +343,7 @@ const getMessageTest = (done) => {
                 schema : 'my-schema'
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -380,7 +380,7 @@ const deleteMessageErrorTest = (done) => {
                 schema : 'my-schema'
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -414,7 +414,7 @@ const deleteMessageTest = (done) => {
                 schema : 'my-schema'
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -446,7 +446,7 @@ const setupMissingName = (done) => {
                 replace : false
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -457,13 +457,16 @@ const setupMissingName = (done) => {
 };
 
 const setupDefaultRolesTest = (done) => {
-    const roleHandlerMock = sinon.mock(roleCheckHandler);
-    roleHandlerMock.expects('enforceRoles').exactly(3).withArgs(sinon.match.any, [
-        'system_admin',
-        'system_writer',
-        'queue_writer',
-        'queue-name_writer'
-    ]).returns('roles');
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').exactly(3).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : [
+            'system_admin',
+            'system_writer',
+            'queue_writer',
+            'queue-name_writer'
+        ]
+    }).returns('roles');
 
     const appMock = sinon.mock(app);
     appMock.expects('post').once().withArgs('/queue-name', 'roles');
@@ -480,13 +483,13 @@ const setupDefaultRolesTest = (done) => {
                 replace : false
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
 
     instance.setupEndpoints().then(() => {
-        roleHandlerMock.verify();
+        securityHandlerMock.verify();
         appMock.verify();
 
         done();
@@ -494,8 +497,11 @@ const setupDefaultRolesTest = (done) => {
 };
 
 const setupRoleReplaceTest = (done) => {
-    const roleHandlerMock = sinon.mock(roleCheckHandler);
-    roleHandlerMock.expects('enforceRoles').exactly(3).withArgs(sinon.match.any, ['system_admin']).returns('roles');
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').exactly(3).withArgs(sinon.match.any, {
+        mechanism   : 'test',
+        roles       : ['system_admin']
+    }).returns('roles');
 
     const appMock = sinon.mock(app);
     appMock.expects('post').once().withArgs('/queue-name', 'roles');
@@ -504,6 +510,9 @@ const setupRoleReplaceTest = (done) => {
 
     const instance = queueInstance(
         app, {
+            security : {
+                mechanism : 'test'
+            },
             name : 'queue-name',
             incoming : {
                 schema : 'my-schema'
@@ -512,13 +521,13 @@ const setupRoleReplaceTest = (done) => {
                 replace : true
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
 
     instance.setupEndpoints().then(() => {
-        roleHandlerMock.verify();
+        securityHandlerMock.verify();
         appMock.verify();
 
         done();
@@ -526,8 +535,11 @@ const setupRoleReplaceTest = (done) => {
 };
 
 const setupCustomRolesTest = (done) => {
-    const roleHandlerMock = sinon.mock(roleCheckHandler);
-    roleHandlerMock.expects('enforceRoles').exactly(3).withArgs(sinon.match.any, ['system_admin', 'my-role']).returns('roles');
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').exactly(3).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : ['system_admin', 'my-role']
+    }).returns('roles');
 
     const appMock = sinon.mock(app);
     appMock.expects('post').once().withArgs('/queue-name', 'roles');
@@ -545,13 +557,13 @@ const setupCustomRolesTest = (done) => {
                 roles : ['my-role']
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
 
     instance.setupEndpoints().then(() => {
-        roleHandlerMock.verify();
+        securityHandlerMock.verify();
         appMock.verify();
 
         done();
@@ -559,8 +571,11 @@ const setupCustomRolesTest = (done) => {
 };
 
 const setupNoRolesTest = (done) => {
-    const roleHandlerMock = sinon.mock(roleCheckHandler);
-    roleHandlerMock.expects('enforceRoles').exactly(3).withArgs(sinon.match.any, null).returns('roles');
+    const securityHandlerMock = sinon.mock(securityHandler);
+    securityHandlerMock.expects('enforce').exactly(3).withArgs(sinon.match.any, {
+        mechanism   : null,
+        roles       : null
+    }).returns('roles');
 
     const appMock = sinon.mock(app);
     appMock.expects('post').once().withArgs('/queue-name', 'roles');
@@ -577,13 +592,13 @@ const setupNoRolesTest = (done) => {
                 needsRole : false
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
 
     instance.setupEndpoints().then(() => {
-        roleHandlerMock.verify();
+        securityHandlerMock.verify();
         appMock.verify();
 
         done();
@@ -601,7 +616,7 @@ const terminateTest = (done) => {
                 needsRole : false
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -625,7 +640,7 @@ const handlerMissingName = (done) => {
                 needsRole : false
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -650,7 +665,7 @@ const handlerPauseTest = (done) => {
                 needsRole : false
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -693,7 +708,7 @@ const handlerResultTest = (done) => {
                 needsRole : false
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );
@@ -734,7 +749,7 @@ const handlerErrorTest = (done) => {
                 needsRole : false
             }
         },
-        roleCheckHandler, sqlQueueProvider.main, uuid,
+        securityHandler, sqlQueueProvider.main, uuid,
         serviceProvider, storageService, integrationService, rulesetService, idmService,
         authClientProvider, messagingService, ajv, environmentService, dataResolver
     );

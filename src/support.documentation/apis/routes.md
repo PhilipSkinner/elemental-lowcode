@@ -34,14 +34,14 @@ The system will generate a standard list of roles based upon if the operation is
 
 The `system_admin` role always allows access on any method endpoint.
 
-**Read roles**
+### Read roles
 
 *   `system_admin`
 *   `system_reader`
 *   `api_reader`
 *   `[api_name]_reader`
 
-**Write roles**
+### Write roles
 
 *   `system_admin`
 *   `system_writer`,
@@ -49,5 +49,11 @@ The `system_admin` role always allows access on any method endpoint.
 *   `[api_name]_writer`
 
 Where the value `[api_name]` will be replaced with the name of your API.
+
+### Disabling
+
+Security can be disabled by setting the security mechanism on an endpoint to `none`.
+
+If the mechanism is set to any other value then the system will enforce the default RBAC based authentication mechanism.
 
 [Continue to Controllers](/src/support.documentation/apis/controllers)
