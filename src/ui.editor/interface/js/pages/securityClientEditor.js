@@ -60,7 +60,9 @@ const _securityClientEditorController = function(page) {
                 rules : {},
                 helpers : []
             }
-        }
+        },
+        redirect_uris : [],
+        post_logout_redirect_uris : []
     };
     this.grantTypes = {};
     this.addingScope = false;
@@ -378,6 +380,40 @@ _securityClientEditorController.prototype.standardiseClient = function() {
     this.client.features.password.helpers           = this.client.features.password.helpers || [];
     this.client.features.login                      = this.client.features.login || {};
     this.client.features.validate                   = this.client.features.validate || {};
+    this.client.redirect_uris                       = this.client.redirect_uris || [];
+    this.client.post_logout_redirect_uris           = this.client.post_logout_redirect_uris || [];
+};
+
+_securityClientEditorController.prototype.cancelAddingLogoutRedirectUri = function() {
+    this.addingLogoutRedirectUri = false;
+    this.newLogoutRedirectUri = "https://";
+    this.forceRefresh();
+};
+
+_securityClientEditorController.prototype.saveLogoutRedirectUri = function() {
+    this.client.post_logout_redirect_uris.push(this.caller.newLogoutRedirectUri.trim());
+
+    this.addingLogoutRedirectUri = false;
+    this.newLogoutRedirectUri = "https://";
+    this.forceRefresh();
+};
+
+_securityClientEditorController.prototype.addLogoutRedirectUri = function() {
+    this.addingLogoutRedirectUri = true;
+    this.newLogoutRedirectUri = "https://";
+    this.forceRefresh();
+};
+
+_securityClientEditorController.prototype.removeLogoutRedirectUri = function(uri) {
+    this.client.post_logout_redirect_uris = this.client.post_logout_redirect_uris.reduce((sum, a) => {
+        if (a !== uri) {
+            sum.push(a);
+        }
+
+        return sum;
+    }, []);
+
+    this.forceRefresh();
 };
 
 _securityClientEditorController.prototype.cancelAddingRedirectUri = function() {
@@ -387,7 +423,7 @@ _securityClientEditorController.prototype.cancelAddingRedirectUri = function() {
 };
 
 _securityClientEditorController.prototype.saveRedirectUri = function() {
-    this.client.redirect_uris.push(this.caller.newRedirectUri);
+    this.client.redirect_uris.push(this.caller.newRedirectUri.trim());
 
     this.addingRedirectUri = false;
     this.newRedirectUri = "https://";
@@ -611,6 +647,8 @@ _securityClientEditorController.prototype.getData = function() {
         helperDescription               : this.helperDescription,
         helperRegex                     : this.helperRegex,
         helperIndex                     : this.helperIndex,
+        addingLogoutRedirectUri         : this.addingLogoutRedirectUri,
+        newLogoutRedirectUri            : this.newLogoutRedirectUri,
     };
 };
 
@@ -640,6 +678,8 @@ _securityClientEditorController.prototype.forceRefresh = function() {
     this.caller.helperDescription               = this.helperDescription;
     this.caller.helperRegex                     = this.helperRegex;
     this.caller.helperIndex                     = this.helperIndex;
+    this.caller.addingLogoutRedirectUri         = this.addingLogoutRedirectUri;
+    this.caller.newLogoutRedirectUri            = this.newLogoutRedirectUri;
     this.refreshEditorState();
 
     this.caller.$forceUpdate();

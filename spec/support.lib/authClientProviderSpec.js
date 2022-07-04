@@ -8,7 +8,8 @@ const request = {
 };
 
 const hostnameResolver = {
-    resolveIdentity : () => {}
+    resolveIdentity : () => {},
+    resolveInterface : () => {},
 };
 
 const sessionState = {
@@ -18,6 +19,11 @@ const sessionState = {
     wipeSession			: () => {},
     getRefreshToken 	: () => {},
     getAccessToken 		: () => {},
+    getIdentityToken    : () => {},
+};
+
+const navigationService = {
+    navigateTo : () => {}
 };
 
 const defaultsTest = () => {
@@ -204,6 +210,46 @@ const logoutTest = () => {
     sessionMock.verify();
     sessionMock.restore();
 };
+
+const logoutRedirectTest = () => {
+    const navigationServiceMock = sinon.mock(navigationService);
+    navigationServiceMock.expects('navigateTo').once().withArgs('http://my.idp/session/end?post_logout_redirect_uri=http%3A%2F%2Fmy.website%2Fhello&id_token_hint=my-token&');
+
+    const hostnameResolverMock = sinon.mock(hostnameResolver);
+    hostnameResolverMock.expects('resolveIdentity').once().returns('http://my.idp');
+    hostnameResolverMock.expects('resolveInterface').once().returns('http://my.website');
+
+    const sessionMock = sinon.mock(sessionState);
+    sessionMock.expects('getIdentityToken').once().returns('my-token');
+    sessionMock.expects('wipeSession').once();
+
+    const instance = authClientProvider({}, request, hostnameResolver);
+    instance.setSessionState(sessionState);
+    instance.setNavigationService(navigationService);
+
+    instance.logoutUser("/hello");
+
+    sessionMock.verify();
+    navigationServiceMock.verify();
+    hostnameResolverMock.verify();
+};
+
+const logoutRedirectAbsoluteUrls = () => {
+    const navigationServiceMock = sinon.mock(navigationService);
+    navigationServiceMock.expects('navigateTo').once().withArgs('http://my.idp/session/end?post_logout_redirect_uri=http%3A%2F%2Fmy.website%2Fhello&');
+
+    const hostnameResolverMock = sinon.mock(hostnameResolver);
+    hostnameResolverMock.expects('resolveIdentity').once().returns('http://my.idp');
+
+    const instance = authClientProvider({}, request, hostnameResolver);
+    instance.setNavigationService(navigationService);
+
+    instance.logoutUser("http://my.website/hello");
+
+    navigationServiceMock.verify();
+    hostnameResolverMock.verify();
+};
+
 
 const expirationNullTokenTest = () => {
     const instance = authClientProvider();
@@ -704,7 +750,11 @@ describe('AuthClientProvider', () => {
         it('correctly', loginTest);
     });
 
-    it('can logout a user', logoutTest);
+    describe('can logout a user', () => {
+        it('wiping the session', logoutTest);
+        it('redirecting to end the session', logoutRedirectTest);
+        it('doesnt correct absolute urls', logoutRedirectAbsoluteUrls);
+    });
 
     describe('can determine if a token has expired', () => {
         it('handling null tokens', expirationNullTokenTest);

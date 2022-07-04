@@ -54,6 +54,7 @@ controllerState.prototype.setContext = function(request, response) {
     this.controllerDefinition.sessionState.setContext(this.request, this.response);
     this.controllerDefinition.navigationService.setContext(this.request, this.response);
     this.controllerDefinition.authClientProvider.setSessionState(this.controllerDefinition.sessionState);
+    this.controllerDefinition.authClientProvider.setNavigationService(this.controllerDefinition.navigationService);
     this.controllerDefinition.serviceProvider.setContext(this.controllerDefinition.sessionState, this.request, this.response, this.controllerDefinition.navigationService);
 
     //set this within all of the services

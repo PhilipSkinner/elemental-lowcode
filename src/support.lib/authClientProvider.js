@@ -8,6 +8,10 @@ authClientProvider.prototype.setSessionState = function(sessionState) {
     this.sessionState = sessionState;
 };
 
+authClientProvider.prototype.setNavigationService = function(navigationService) {
+    this.navigationService = navigationService;
+}
+
 authClientProvider.prototype.loginUser = function(username, password) {
     return new Promise((resolve, reject) => {
         this.request.post(`${this.hostnameResolver.resolveIdentity()}/token`, {
@@ -51,8 +55,30 @@ authClientProvider.prototype.loginUser = function(username, password) {
     });
 };
 
-authClientProvider.prototype.logoutUser = function() {
-    this.sessionState.wipeSession();
+authClientProvider.prototype.logoutUser = function(redirectTo) {
+    let url = `${this.hostnameResolver.resolveIdentity()}/session/end?`;
+
+    if (redirectTo) {
+        if (redirectTo.indexOf("/") === 0) {
+            redirectTo = `${this.hostnameResolver.resolveInterface()}${redirectTo}`;
+        }
+
+        url = `${url}post_logout_redirect_uri=${encodeURIComponent(redirectTo)}&`;
+    }
+
+    let idToken = this.sessionState && this.sessionState.getIdentityToken ? this.sessionState.getIdentityToken() : null;
+
+    if (idToken) {
+        url = `${url}id_token_hint=${encodeURIComponent(idToken)}&`;
+    }
+
+    if (this.sessionState && this.sessionState.wipeSession) {
+        this.sessionState.wipeSession();
+    }
+
+    if (this.navigationService && this.navigationService.navigateTo) {
+        this.navigationService.navigateTo(url);
+    }
 };
 
 authClientProvider.prototype.tokenExpired = function(token) {
@@ -149,8 +175,6 @@ authClientProvider.prototype.getAccessToken = function() {
     }
 
     return new Promise((resolve, reject) => {
-        console.log(this.config);
-
         this.request.post(`${this.hostnameResolver.resolveIdentity()}/token`, {
             form : {
                 grant_type 		: "client_credentials",
@@ -159,8 +183,6 @@ authClientProvider.prototype.getAccessToken = function() {
                 client_secret 	: this.config.client_secret
             }
         }, (err, response, body) => {
-            console.log(body);
-
             if (err) {
                 return reject(err);
             }
@@ -172,8 +194,6 @@ authClientProvider.prototype.getAccessToken = function() {
                 } catch(e) {
                     return reject(new Error("Error parsing token response"));
                 }
-
-                console.log(data);
 
                 if (data && data.access_token) {
                     return resolve(data.access_token);

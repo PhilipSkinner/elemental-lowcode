@@ -20,7 +20,8 @@ const rulesetService = {
 };
 const authClientProvider = {
     setSessionState : () => {},
-    setAuthClientProvider : () => {}
+    setAuthClientProvider : () => {},
+    setNavigationService : () => {},
 };
 const idmService = {
     setAuthClientProvider : () => {}
@@ -110,6 +111,7 @@ const setContextTest = (done) => {
 
     const authClientProviderMock = sinon.mock(authClientProvider);
     authClientProviderMock.expects('setSessionState').once().withArgs(sinon.match.any);
+    authClientProviderMock.expects('setNavigationService').once().withArgs(sinon.match.any);
 
     const serviceProviderMock = sinon.mock(serviceProvider);
     serviceProviderMock.expects('setContext').once().withArgs(sinon.match.any, 'request', 'response', sinon.match.any);
@@ -142,6 +144,7 @@ const setContextHeadersTest = (done) => {
 
     const authClientProviderMock = sinon.mock(authClientProvider);
     authClientProviderMock.expects('setSessionState').once().withArgs(sinon.match.any);
+    authClientProviderMock.expects('setNavigationService').once().withArgs(sinon.match.any);
 
     const serviceProviderMock = sinon.mock(serviceProvider);
     serviceProviderMock.expects('setContext').once().withArgs(sinon.match.any, request, 'response', sinon.match.any);
@@ -183,6 +186,7 @@ const setContextRemoteSocket = (done) => {
 
     const authClientProviderMock = sinon.mock(authClientProvider);
     authClientProviderMock.expects('setSessionState').once().withArgs(sinon.match.any);
+    authClientProviderMock.expects('setNavigationService').once().withArgs(sinon.match.any);
 
     const serviceProviderMock = sinon.mock(serviceProvider);
     serviceProviderMock.expects('setContext').once().withArgs(sinon.match.any, request, 'response', sinon.match.any);

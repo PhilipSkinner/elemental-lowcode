@@ -630,6 +630,74 @@
 						</div>
 					</div>
 				</div>
+                <div class="col-md-6 py-3">
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Logout Redirect URIs</h6>
+                        </div>
+                        <div class="card-body" v-if="addingLogoutRedirectUri">
+                            <div class="form-group">
+                                <label>URI</label>
+                                <input type="uri" class="form-control" name="new_uri" v-model="newLogoutRedirectUri">
+                            </div>
+
+                            <div class="float-right">
+                                <button class="btn btn-success" v-on:click="window._securityClientEditorControllerInstance.saveLogoutRedirectUri()">
+                                    Add
+                                </button>
+                            </div>
+
+                            <div class="float-left">
+                                <button class="btn btn-danger" v-on:click="window._securityClientEditorControllerInstance.cancelAddingLogoutRedirectUri()">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body" v-if="!addingLogoutRedirectUri">
+                            <div class="float-right">
+                                <button class="btn btn-sm btn-primary" v-on:click="window._securityClientEditorControllerInstance.addLogoutRedirectUri()">
+                                    Add URI
+                                </button>
+                            </div>
+
+                            <div class="table-responsive py-3">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>URI</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="client.post_logout_redirect_uris.length === 0">
+                                            <td colspan="2">
+                                                <div class="noResults">
+                                                    No logout redirect URIs
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="client.post_logout_redirect_uris.length > 0" v-for="uri in client.post_logout_redirect_uris">
+                                            <td>
+                                                {{uri}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" v-on:click="window._securityClientEditorControllerInstance.removeLogoutRedirectUri(uri)">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>URI</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</div>
 		</div>
 

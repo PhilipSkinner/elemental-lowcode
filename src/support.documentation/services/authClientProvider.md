@@ -4,11 +4,11 @@
 
 The auth client provider allows you to access the users authentication state, and to request access tokens - either user or application. You can access the following methods on this service:
 
-*   loginUser
-*   logoutUser
-*   getAccessToken
-*   tokenExpired
-*   refreshUserToken
+* loginUser
+* logoutUser
+* getAccessToken
+* tokenExpired
+* refreshUserToken
 
 These methods are covered in more detail below.
 
@@ -57,9 +57,11 @@ module.exports = {
 
 ### logoutUser
 
-Logs the users session out.
+Parameters:
 
-If the user is not logged in, this will fail silently.
+* `redirectUri` - string, optional URL to redirect to - needs to be configured within your IdP clients post logout redirect URIs
+
+Logs the users session out on the website and redirects the user to logout from the identity provider.
 
 **Note:** This method is only available for website controllers.
 
@@ -70,11 +72,17 @@ Called from your controllers like so:
 module.exports = {
 	events : {
 		logout : (event) => {
-			this.authClientProvider.logoutUser();
+            //logout and redirect back afterwards
+			this.authClientProvider.logoutUser("/todo");
+
+            //logout and display the standard logout message on the IdP
+            this.authClientProvider.logoutUser();
 		}
 	}
 };
 ```
+
+If you pass a URL into this method without the protocol/hostname then the system will automatically resolve the website hostname and prefix the URL with it.
 
 ### getAccessToken
 
