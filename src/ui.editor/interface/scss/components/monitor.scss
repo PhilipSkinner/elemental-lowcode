@@ -9,6 +9,12 @@
     margin-right: 0px;
   }
 
+  .monitorSystems {
+    .systemSelected {
+      font-weight: bold;
+    }
+  }
+
   #monitorContent {
     position: absolute;
     right: 0px;

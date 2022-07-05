@@ -30,7 +30,82 @@ _monitorController.prototype.generateNavItems = function() {
 
 _monitorController.prototype.getData = function() {
     return {
-        navItems 		: this.generateNavItems()
+        navItems 		: this.generateNavItems(),
+        system          : null,
+        systems         : [
+            {
+                name : 'interface.errors',
+                title : 'Website Errors'
+            },
+            {
+                name : 'interface.debug',
+                title : 'Website Debug'
+            },
+            {
+                name : 'storage.errors',
+                title : 'Data Errors'
+            },
+            {
+                name : 'storage.debug',
+                title : 'Data Debug'
+            },
+            {
+                name : 'admin.errors',
+                title : 'Admin Errors'
+            },
+            {
+                name : 'admin.debug',
+                title : 'Admin Debug'
+            },
+            {
+                name : 'api.errors',
+                title : 'API Errors'
+            },
+            {
+                name : 'api.debug',
+                title : 'API Debug'
+            },
+            {
+                name : 'identity.errors',
+                title : 'Identity Errors'
+            },
+            {
+                name : 'identity.debug',
+                title : 'Identity Debug'
+            },
+            {
+                name : 'integration.errors',
+                title : 'Integration Errors'
+            },
+            {
+                name : 'integration.debug',
+                title : 'Integration Debug'
+            },
+            {
+                name : 'messaging.errors',
+                title : 'Messaging Errors'
+            },
+            {
+                name : 'messaging.debug',
+                title : 'Messaging Debug'
+            },
+            {
+                name : 'rules.errors',
+                title : 'Ruleset Errors'
+            },
+            {
+                name : 'rules.debug',
+                title : 'Ruleset Debug'
+            },
+            {
+                name : 'blob.errors',
+                title : 'Blob Errors'
+            },
+            {
+                name : 'blob.debug',
+                title : 'Blob Debug'
+            },
+        ]
     };
 };
 
@@ -108,6 +183,12 @@ _monitorController.prototype._monitorSystem = function() {
 
                 //render the lines
                 this._renderLines(lines.data.lines);
+
+                //append it to our download cache
+
+                this.downloadCache += Object.keys(lines.data.lines).sort().map((num) => {
+                    return lines.data.lines[num].replace(/\[\d+m/g, '');
+                }).join("\n");
             }
         }
 
@@ -117,10 +198,25 @@ _monitorController.prototype._monitorSystem = function() {
     });
 };
 
+_monitorController.prototype.download = function() {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.downloadCache));
+    element.setAttribute('download', `${this.system}-${(new Date()).toISOString()}.log`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+};
+
 _monitorController.prototype.monitorSystem = function(system) {
     clearTimeout(this.timeout);
     this.system = system;
+    this.caller.system = system;
+    this.caller.$forceUpdate();
     this.lastSeen = -1;
+    this.downloadCache = "";
 
     //wipe it
     const elem = document.querySelectorAll("#monitorContent")[0];
