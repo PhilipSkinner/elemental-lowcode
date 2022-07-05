@@ -76,8 +76,10 @@ _monitorController.prototype._renderLines = function(lines) {
     }
 
     for (var i = numbers[totalNew - toAdd]; i <= numbers.slice(-1)[0]; i++) {
-        var lm = document.createElement("div");
-        var corrected = lines[i].replace(/[\r\n]/g, "");
+        const lm = document.createElement("div");
+        let corrected = lines[i].replace(/[\r\n]/g, "");
+        corrected = corrected.replace(/\[39m/g, '</span>')
+        corrected = corrected.replace(/\[(\d+)m/g, '<span class="sgr-$1">')
         lm.innerHTML = `<span class="number">${i}</span><span class="message"><pre>${corrected}</pre></span>`;
         elem.appendChild(lm);
     }
@@ -110,7 +112,7 @@ _monitorController.prototype._monitorSystem = function() {
         }
 
         if (!this.disabled) {
-            setTimeout(this._monitorSystem.bind(this), 1000);
+            this.timeout = setTimeout(this._monitorSystem.bind(this), 1000);
         }
     });
 };
@@ -118,7 +120,11 @@ _monitorController.prototype._monitorSystem = function() {
 _monitorController.prototype.monitorSystem = function(system) {
     clearTimeout(this.timeout);
     this.system = system;
-    this.lastSeen = 0;
+    this.lastSeen = -1;
+
+    //wipe it
+    const elem = document.querySelectorAll("#monitorContent")[0];
+    elem.innerHTML = "";
 
     if (system) {
         this.disabled = false;

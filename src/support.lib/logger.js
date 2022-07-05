@@ -1,6 +1,6 @@
 const logger = function(log4js) {
     process.setMaxListeners(0);
-    log4js.configure(require("./config/log4js.json"));
+    log4js.configure(require("./config/log4js.js"));
 
     this.loggers = {
         admin 		: log4js.getLogger("admin"),
