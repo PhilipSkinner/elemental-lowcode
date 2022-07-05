@@ -3,6 +3,7 @@ const _monitorController = function(page) {
     this.system = "interface.errors";
     this.timeout = null;
     this.lastSeen = 0;
+    this.disabled = true;
     this.navItems = [
         {
             name : "Home",
@@ -84,20 +85,33 @@ _monitorController.prototype._renderLines = function(lines) {
     elem.scrollTop = elem.scrollHeight;
 };
 
+_monitorController.prototype.disableMonitoring = function() {
+    clearTimeout(this.timeout);
+    this.disabled = true;
+};
+
 _monitorController.prototype._monitorSystem = function() {
     clearTimeout(this.timeout);
 
+    if (!this.system) {
+        return;
+    }
+
     //fetch the last lines
     window.axiosProxy.get(`${window.hosts.kernel}/logs/${this.system}?from=${this.lastSeen + 1}`).then((lines) => {
-        const numbers = Object.keys(lines.data.lines).map((n) => { return parseInt(n, 10); }).sort((a,b) => {return a - b;});
-        if (numbers.length > 0) {
-            this.lastSeen = numbers.slice(-1)[0];
+        if (lines && lines.data && lines.data.lines) {
+            const numbers = Object.keys(lines.data.lines).map((n) => { return parseInt(n, 10); }).sort((a,b) => {return a - b;});
+            if (numbers.length > 0) {
+                this.lastSeen = numbers.slice(-1)[0];
 
-            //render the lines
-            this._renderLines(lines.data.lines);
+                //render the lines
+                this._renderLines(lines.data.lines);
+            }
         }
 
-        setTimeout(this._monitorSystem.bind(this), 250);
+        if (!this.disabled) {
+            setTimeout(this._monitorSystem.bind(this), 1000);
+        }
     });
 };
 
@@ -105,7 +119,11 @@ _monitorController.prototype.monitorSystem = function(system) {
     clearTimeout(this.timeout);
     this.system = system;
     this.lastSeen = 0;
-    this._monitorSystem();
+
+    if (system) {
+        this.disabled = false;
+        this._monitorSystem();
+    }
 };
 
 _monitorController.prototype.refresh = function() {
@@ -120,7 +138,10 @@ window.Monitor = {
     },
     mounted  : function() {
         window._monitorControllerInstance.setCaller(this);
-        window._monitorControllerInstance._monitorSystem();
+        window._monitorControllerInstance.monitorSystem();
+    },
+    destroyed : function() {
+        window._monitorControllerInstance.disableMonitoring();
     }
 };
 
