@@ -496,6 +496,8 @@ window.templates.fetchTemplates().then(window.fetchRoles).then(() => {
             routes : routes,
         });
 
+        window.Vue.use(window.JsonSchemaEditor);
+
         const app = new Vue({
             router
         }).$mount("#app");

@@ -1,0 +1,63 @@
+.json-schema-vue-editor {
+  .delete-item {
+    margin-left: 8px;
+    margin-top: 2px;
+    padding-right: 0px;
+  }
+
+  .description-set {
+    margin-right: 8px;
+  }
+
+  .adv-set {
+    padding-right: 0px;
+    margin-right: 8px;
+    color: #00a854;
+
+    &--left-pad {
+      margin-left: 24px;
+    }
+  }
+
+  .add-field {
+    &--right-pad {
+      margin-right: 24px;
+    }
+  }
+
+  .down-style-col {
+    width: 28px;
+  }
+
+  .el-icon-caret-right, .el-icon-caret-bottom {
+    padding: 8px;
+  }
+
+  .el-row {
+    margin-bottom: 8px;
+
+    .el-row {
+      margin-bottom: 0px;
+    }
+  }
+
+  .object-style {
+    margin-bottom: 8px;
+  }
+
+  .el-icon-close {
+    color: #ff561b;
+  }
+
+  .el-input-group__append {
+    padding: 0px 0px;
+
+    >* {
+      padding: 8px 20px;
+    }
+  }
+}
+
+.el-dialog__body {
+  word-break: normal;
+}

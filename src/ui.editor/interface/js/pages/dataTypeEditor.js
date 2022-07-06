@@ -1,18 +1,51 @@
 const _dataTypeEditorController = function(page) {
     this._page = page;
-    this.dataType = {};
+    this.dataType = {
+        schema : {
+            "type" : "object",
+            "properties" : {}
+        }
+    };
     this.caller = null;
     this.name = null;
     this.editor = null;
-    this.data = {
-        dataType 	: this.dataType,
-        showAlert 	: false,
-        error 	 	: {
-            visible : false
-        },
-        navitems 	: [],
-        name 		: "untitled"
+    this.showAlert = false,
+    this.error = {
+        visible : false
     };
+    this.navitems = [];
+    this.name = "untitled";
+    this.sectionVisible = "schemaEditor";
+};
+
+_dataTypeEditorController.prototype.showSchemaEditor = function() {
+    this.navitems[0].selected = true;
+    this.navitems[1].selected = false;
+    this.sectionVisible = "schemaEditor";
+
+    this.refreshInternalState();
+
+    this.forceRefresh();
+};
+
+_dataTypeEditorController.prototype.showSourceEditor = function() {
+    this.navitems[0].selected = false;
+    this.navitems[1].selected = true;
+    this.sectionVisible = "sourceEditor";
+
+    this.refreshEditorState();
+
+    this.forceRefresh();
+};
+
+_dataTypeEditorController.prototype.refreshInternalState = function() {
+    this.dataType = JSON.parse(this.editor.getValue());
+
+    this.forceRefresh();
+};
+
+_dataTypeEditorController.prototype.refreshEditorState = function() {
+    this.editor.setValue(JSON.stringify(this.dataType, null, 4));
 };
 
 _dataTypeEditorController.prototype.initEditor = function() {
@@ -69,10 +102,9 @@ _dataTypeEditorController.prototype.initBlankType = function() {
         }
     }, null, 4));
 
-    this.caller.name = "untitled";
-    this.data.name = "untitled";
-    this.caller.dataType = JSON.parse(this.editor.getValue());
-    this.caller.$forceUpdate();
+    this.name = "untitled";
+    this.dataType = JSON.parse(this.editor.getValue());
+    this.forceRefresh();
 };
 
 _dataTypeEditorController.prototype.setCaller = function(caller) {
@@ -80,7 +112,44 @@ _dataTypeEditorController.prototype.setCaller = function(caller) {
 };
 
 _dataTypeEditorController.prototype.getData = function() {
-    return this.data;
+    return {
+        dataType        : this.dataType,
+        showAlert       : this.showAlert,
+        error           : this.error,
+        navitems        : this.navitems,
+        name            : this.name,
+        schema          : this.dataType.schema,
+        sectionVisible  : this.sectionVisible
+    };
+};
+
+_dataTypeEditorController.prototype.forceRefresh = function() {
+    this.caller.dataType = this.dataType;
+    this.caller.showAlert = this.showAlert;
+    this.caller.error = this.error;
+    this.caller.navitems = this.navitems;
+    this.caller.name = this.name;
+    this.caller.schema = this.dataType.schema;
+    this.caller.sectionVisible = this.sectionVisible;
+
+    this.caller.$children.forEach((child) => {
+        if (child.$options._componentTag === "s-json-schema-editor") {
+            child._data.schemaData = JSON.parse(JSON.stringify(this.dataType.schema));
+            child.schemaData = child._data.schemaData;
+            child.forceUpdate();
+        }
+    });
+
+    this.caller.$forceUpdate();
+};
+
+_dataTypeEditorController.prototype.getSchema = function() {
+    return JSON.parse(JSON.stringify(this.dataType.schema));
+};
+
+_dataTypeEditorController.prototype.updateSchema = function(schema) {
+    _dataTypeEditorInstance.dataType.schema = JSON.parse(JSON.stringify(schema));
+    _dataTypeEditorInstance.refreshEditorState();
 };
 
 _dataTypeEditorController.prototype.fetchType = function(name) {
@@ -89,11 +158,8 @@ _dataTypeEditorController.prototype.fetchType = function(name) {
         .get(`${window.hosts.kernel}/data/types/${name}`)
         .then((response) => {
             this.name = response.data.name;
-            this.data.name = response.data.name;
-            this.dataTypes = response.data;
-            this.caller.dataType = response.data;
-            this.caller.name = response.data.name;
-            this.caller.$forceUpdate();
+            this.dataType = response.data;
+            this.forceRefresh();
 
             this.editor.setValue(JSON.stringify(response.data, null, 4));
         });
@@ -110,22 +176,20 @@ _dataTypeEditorController.prototype.saveType = function() {
                 }
             })
             .then((response) => {
-                this.caller.dataType = JSON.parse(this.editor.getValue());
-                this.data.error.visible = false;
-                this.caller.showAlert = true;
-                this.caller.$forceUpdate();
+                this.dataType = JSON.parse(this.editor.getValue());
+                this.error.visible = false;
+                this.showAlert = true;
+                this.forceRefresh();
 
                 setTimeout(() => {
-                    this.caller.showAlert = false;
-                    this.caller.$forceUpdate();
+                    this.showAlert = false;
+                    this.forceRefresh();
                 }, 1500);
             }).catch((err) => {
-                this.data.error.visible = true;
-                this.data.error.title = "Error saving datatype";
-                this.data.error.description = err.toString();
-
-                this.caller.error = this.getData().error;
-                this.caller.$forceUpdate();
+                this.error.visible = true;
+                this.error.title = "Error saving datatype";
+                this.error.description = err.toString();
+                this.forceRefresh();
             });
     } else {
         return window.axiosProxy
@@ -137,12 +201,10 @@ _dataTypeEditorController.prototype.saveType = function() {
             .then((response) => {
                 //set our name
                 this.name = parsed.name;
-                this.data.name = parsed.name;
-                this.caller.name = parsed.name;
                 location.href = "/#/data/editor/" + this.name;
-                this.caller.dataType = JSON.parse(this.editor.getValue());
+                this.dataType = JSON.parse(this.editor.getValue());
 
-                window._dataTypeEditorInstance.data.navitems.push({
+                this.navitems.push({
                     name 		: "API Explorer",
                     event 		: () => {
                         window.router.push({
@@ -155,31 +217,27 @@ _dataTypeEditorController.prototype.saveType = function() {
                     selected 	: false
                 });
 
-                window._dataTypeEditorInstance.data.navitems.push({
+                this.navitems.push({
                     name 		: "Definition",
                     link		: `${window.hosts.storage}/${this.name}/.definition`,
                     selected	: false
                 });
 
-
-                this.data.error.visible = false;
-                this.caller.showAlert = true;
-                this.caller.$forceUpdate();
+                this.error.visible = false;
+                this.showAlert = true;
+                this.forceRefresh();
 
                 setTimeout(() => {
-                    this.caller.showAlert = false;
-                    this.caller.$forceUpdate();
+                    this.showAlert = false;
+                    this.forceRefresh();
                 }, 1500);
             }).catch((err) => {
-                this.data.error.visible = true;
-                this.data.error.title = "Error saving datatype";
-                this.data.error.description = err.toString();
-
-                this.caller.error = this.getData().error;
-                this.caller.$forceUpdate();
+                this.error.visible = true;
+                this.error.title = "Error saving datatype";
+                this.error.description = err.toString();
+                this.forceRefresh();
             });
     }
-
 };
 
 window.DataTypeEditor = {
@@ -190,21 +248,29 @@ window.DataTypeEditor = {
     mounted  : function() {
         window._dataTypeEditorInstance.setCaller(this);
         window._dataTypeEditorInstance.initEditor();
-        window._dataTypeEditorInstance.data.navitems = [
+        window._dataTypeEditorInstance.navitems = [
             {
-                name 		: "Edit",
-                event 		: () => {
-
+                name        : "Definition",
+                event       : () => {
+                    _dataTypeEditorInstance.showSchemaEditor();
                 },
-                selected	: true
+                selected    : _dataTypeEditorInstance.sectionVisible == "schemaEditor"
+            },
+            {
+                name 		: "Source Editor",
+                event 		: () => {
+                    _dataTypeEditorInstance.showSourceEditor();
+                },
+                selected	: _dataTypeEditorInstance.sectionVisible == "sourceEditor"
             }
         ];
+
         if (this.$route.params.type === ".new") {
             window._dataTypeEditorInstance.initBlankType();
             return null;
         }
 
-        window._dataTypeEditorInstance.data.navitems.push({
+        window._dataTypeEditorInstance.navitems.push({
             name 		: "API Explorer",
             event 		: () => {
                 window.router.push({
@@ -217,7 +283,7 @@ window.DataTypeEditor = {
             selected 	: false
         });
 
-        window._dataTypeEditorInstance.data.navitems.push({
+        window._dataTypeEditorInstance.navitems.push({
             name 		: "Definition",
             link		: `${window.hosts.storage}/${this.$route.params.type}/.definition`,
             selected	: false

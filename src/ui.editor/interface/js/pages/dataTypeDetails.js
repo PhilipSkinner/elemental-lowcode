@@ -46,8 +46,9 @@ window.DataTypeDetails = {
         window._dataTypeDetailsInstance.fetchType(this.$route.params.type);
         window._dataTypeDetailsInstance.data.navitems = [
             {
-                name 		: "Edit",
+                name 		: "Definition",
                 event 		: () => {
+                    _dataTypeEditorInstance.showSchemaEditor();
                     window.router.push({
                         name : "dataTypeEditor",
                         params : {
@@ -56,6 +57,19 @@ window.DataTypeDetails = {
                     });
                 },
                 selected	: false
+            },
+            {
+                name        : "Source Editor",
+                event       : () => {
+                    _dataTypeEditorInstance.showSourceEditor();
+                    window.router.push({
+                        name : "dataTypeEditor",
+                        params : {
+                            type : this.$route.params.type
+                        }
+                    });
+                },
+                selected    : false
             },
             {
                 name 		: "API Explorer",
