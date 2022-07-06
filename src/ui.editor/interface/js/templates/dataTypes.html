@@ -89,7 +89,20 @@
 
 		<navigation :title="dataType.name" :navitems="navitems"></navigation>
 
-		<div class="entityWrapper">
+        <div v-bind:class="{ 'container-fluid' : true, 'hidden' : sectionVisible !== 'schemaEditor' }">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Data definition</h6>
+                </div>
+                <div class="card-body">
+                    <s-json-schema-editor
+                        :schema="_dataTypeEditorInstance.getSchema()"
+                        @schema-change="_dataTypeEditorInstance.updateSchema"
+                    />
+                </div>
+            </div>
+        </div>
+		<div v-bind:class="{ 'entityWrapper' : true, 'hidden' : sectionVisible !== 'sourceEditor' }">
 			<div id="typeEditor" class="editorWindow editorWindow--withHeader"></div>
 		</div>
 		<div class="actionButtons">
