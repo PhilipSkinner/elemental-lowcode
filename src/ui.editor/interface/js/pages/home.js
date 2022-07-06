@@ -219,20 +219,23 @@ _homeController.prototype.generateRAMGraphData = function() {
 _homeController.prototype.refresh = function() {
     const cpudata = this.generateCPUGraphData();
     if (!this.cpuchart) {
-        const ctx = document.getElementById('cpu-chart').getContext('2d');
-        this.cpuchart = new Chart(ctx, {
-            type: 'line',
-            data: cpudata,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        min : 0
-                    }
+        const ctx = document.getElementById('cpu-chart');
+
+        if (ctx) {
+            this.cpuchart = new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: cpudata,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            min : 0
+                        }
+                    },
+                    maintainAspectRatio: false,
                 },
-                maintainAspectRatio: false,
-            },
-        });
+            });
+        }
     } else {
         this.cpuchart.data.datasets.forEach((d, i) => {
             d = cpudata.datasets[i];
@@ -242,20 +245,22 @@ _homeController.prototype.refresh = function() {
 
     const ramdata = this.generateRAMGraphData();
     if (!this.ramchart) {
-        const ctx = document.getElementById('ram-chart').getContext('2d');
-        this.ramchart = new Chart(ctx, {
-            type: 'line',
-            data: ramdata,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        min : 0
-                    }
-                },
-                maintainAspectRatio: false,
-            }
-        });
+        const ctx = document.getElementById('ram-chart');
+        if (ctx) {
+            this.ramchart = new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: ramdata,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            min : 0
+                        }
+                    },
+                    maintainAspectRatio: false,
+                }
+            });
+        }
     } else {
         this.ramchart.data.datasets.forEach((d, i) => {
             d = ramdata.datasets[i];
@@ -302,6 +307,11 @@ _homeController.prototype.toHumanTime = function(seconds) {
     return 'less than a second';
 };
 
+_homeController.prototype.disableMonitoring = function() {
+    this.cpuchart = null;
+    this.ramchart = null;
+};
+
 window.Home = {
     template : "#template-home",
     data 	 : () => {
@@ -322,6 +332,9 @@ window.Home = {
         ]).then(() => {
             window._homeControllerInstance.refresh();
         });
+    },
+    destroyed : function() {
+        window._homeControllerInstance.disableMonitoring();
     }
 };
 
