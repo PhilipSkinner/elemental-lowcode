@@ -161,7 +161,7 @@
 				<div class="col-md-3">
 					<div class="card shadow">
 						<div class="card-header py-3">
-							<h6 class="m-0 font-weight-bold text-primary">System Status</h6>
+							<h6 class="m-0 font-weight-bold text-primary">Resources</h6>
 						</div>
 						<div class="card-body">
 							<div class="status">
@@ -206,17 +206,34 @@
 				<div class="col-md-9">
 					<div class="card shadow">
 						<div class="card-header py-3">
-							<h6 class="m-0 font-weight-bold text-primary">Information</h6>
+							<h6 class="m-0 font-weight-bold text-primary">Uptime</h6>
 						</div>
 						<div class="card-body">
-							<p>
-								Version: 0.0.1
-							</p>
-							<p>
-								Uptime: 0 hours 0 minutes 0 seconds
-							</p>
+                            <div class="service-status">
+                                <div v-for="service in status" class="service-status-item">
+                                    <b>{{service.name}}</b>
+                                    <span>{{_homeControllerInstance.toHumanTime(service.uptime)}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card shadow mt-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">CPU Usage</h6>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="cpu-chart" width="100%" height="250"></canvas>
 						</div>
 					</div>
+
+                    <div class="card shadow mt-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Memory Usage</h6>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="ram-chart" width="100%" height="250"></canvas>
+                        </div>
+                    </div>
 				</div>
 			</div>
 		</div>

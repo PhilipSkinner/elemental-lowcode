@@ -1,29 +1,69 @@
-const serviceRunner = function(childProcess, logger, path) {
+const processes = {};
+
+const serviceRunner = function(childProcess, logger, path, pidusage) {
     this.childProcess = childProcess;
     this.logger = logger;
     this.path = path;
+    this.pidusage = pidusage;
 
     this.nodeProcess = "./node_modules/.bin/nodemon";
 
     if (process.platform === "win32") {
         this.nodeProcess = "node.exe";
     }
+};
 
-    this.processes = {};
+serviceRunner.prototype.listServices = function() {
+    return Promise.all(Object.keys(processes).map((name) => {
+        return this.pidusage(processes[name].pid).then((stats) => {
+            let cpu = 0;
+            let memory = 0;
+            let pids = [];
+            let uptime = null;
+
+            Object.keys(stats).forEach((pid) => {
+                pids.push(pid);
+                cpu += stats[pid].cpu;
+                memory += stats[pid].memory;
+
+                if (uptime === null || stats[pid].elapsed < uptime) {
+                    uptime = stats[pid].elapsed;
+                }
+            });
+
+            return {
+                name    : name,
+                pids    : pids,
+                uptime  : uptime / 1000,
+                cpu     : cpu,
+                memory  : memory,
+            };
+        });
+    }));
+};
+
+serviceRunner.prototype._resetProcesses = function() {
+    Object.keys(processes).forEach((key) => {
+        delete(processes[key]);
+    });
+};
+
+serviceRunner.prototype._insertProcess = function(name, proc) {
+    processes[name] = proc;
 };
 
 serviceRunner.prototype.stopService = function(name) {
-    this.processes[name].kill();
+    processes[name].kill();
 };
 
 serviceRunner.prototype.runService = function(name, script, port, dir, other) {
-    if (this.processes[name]) {
+    if (processes[name]) {
         this.stopService(name);
     }
 
     this.logger.logStartup(name);
 
-    this.processes[name] = this.childProcess.spawn(this.nodeProcess, [
+    processes[name] = this.childProcess.spawn(this.nodeProcess, [
         "--watch",
         this.path.dirname(script),
         "--watch",
@@ -37,12 +77,12 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
         }), other || {})
     });
 
-    this.processes[name].on("error", (data) => {
+    processes[name].on("error", (data) => {
         const lines = data.toString("utf8").split("\n");
         this.logger.error(name, lines);
     });
 
-    this.processes[name].stdout.on("data", (data) => {
+    processes[name].stdout.on("data", (data) => {
         const lines = data.toString("utf8").split("\n");
 
         lines.forEach((l) => {
@@ -52,7 +92,7 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
         });
     });
 
-    this.processes[name].stderr.on("data", (data) => {
+    processes[name].stderr.on("data", (data) => {
         const lines = data.toString("utf8").split("\n");
 
         lines.forEach((l) => {
@@ -62,12 +102,12 @@ serviceRunner.prototype.runService = function(name, script, port, dir, other) {
         });
     });
 
-    this.processes[name].on("close", () => {
+    processes[name].on("close", () => {
         this.logger.error(name, "SERVICE HAS CLOSED!");
     });
 };
 
-module.exports = function(childProcess, logger, path) {
+module.exports = function(childProcess, logger, path, pidusage) {
     if (!childProcess) {
         childProcess = require("child_process");
     }
@@ -80,5 +120,9 @@ module.exports = function(childProcess, logger, path) {
         path = require("path");
     }
 
-    return new serviceRunner(childProcess, logger, path);
+    if (!pidusage) {
+        pidusage = require("pidusage-tree");
+    }
+
+    return new serviceRunner(childProcess, logger, path, pidusage);
 };

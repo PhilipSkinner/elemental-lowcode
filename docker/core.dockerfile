@@ -2,7 +2,7 @@ FROM nginx:latest
 
 #dependencies
 RUN apt-get update
-RUN apt-get install xz-utils wget sqlite3 libsqlite3-dev python3 python3-dev -y
+RUN apt-get install xz-utils wget sqlite3 libsqlite3-dev python3 python3-dev procps -y
 
 #set dir
 WORKDIR /var/elemental
