@@ -22,7 +22,11 @@ const logger = {
     logStartup : () => {},
     log : () => {},
     error : () => {}
-}
+};
+
+const pidusage = {
+    main : () => {}
+};
 
 const constructorTest = (done) => {
     const instance = serviceRunner();
@@ -33,11 +37,11 @@ const constructorTest = (done) => {
 
 const killTest = (done) => {
     const instance = serviceRunner();
-    instance.processes.test = {
+    instance._insertProcess('test', {
         kill : () => {
             done();
         }
-    };
+    });
     instance.stopService('test');
 };
 
@@ -64,6 +68,7 @@ const startServiceTest = (done) => {
     processMock.expects('on').once().withArgs('close').callsArg(1);
 
     const instance = serviceRunner(childProcess, logger, path);
+    instance._resetProcesses();
 
     instance.runService('doot', 'this-script', '9090', 'my-dir', { custom : 'env'});
 
@@ -99,11 +104,12 @@ const startServiceKillTest = (done) => {
 
     const instance = serviceRunner(childProcess, logger, path);
     let called = false;
-    instance.processes.doot = {
+    instance._resetProcesses();
+    instance._insertProcess('doot', {
         kill : () => {
             called = true;
         }
-    };
+    });
     instance.runService('doot', 'this-script', '9090', 'my-dir');
 
     pathMock.verify();
@@ -115,6 +121,44 @@ const startServiceKillTest = (done) => {
     done();
 };
 
+const listServicesTest = (done) => {
+    const pidMock = sinon.mock(pidusage);
+    pidMock.expects('main').once().withArgs(1234).returns(Promise.resolve({
+        one : {
+            cpu : 10,
+            memory : 20,
+            elapsed : 30000
+        },
+        two : {
+            cpu : 40,
+            memory : 50,
+            elapsed : 60000
+        }
+    }));
+
+    const instance = serviceRunner(childProcess, logger, path, pidusage.main);
+    instance._resetProcesses();
+    instance._insertProcess('hello', {
+        pid : 1234
+    });
+
+    instance.listServices().then((result) => {
+        expect(result).toEqual([
+            {
+                name : 'hello',
+                pids : ['one', 'two'],
+                memory : 70,
+                cpu : 50,
+                uptime : 30
+            }
+        ]);
+
+        pidMock.verify();
+
+        done();
+    });
+};
+
 describe('A service runner', () => {
     it('defaults its constructor arguments', constructorTest);
     it('can kill a service', killTest);
@@ -122,5 +166,9 @@ describe('A service runner', () => {
     describe('run service', () => {
         it('can start a service', startServiceTest);
         it('can kill an existing service', startServiceKillTest);
+    });
+
+    describe('listServices', () => {
+        it('works', listServicesTest);
     });
 });
