@@ -61,3 +61,145 @@
 .el-dialog__body {
   word-break: normal;
 }
+
+.json-schema-vue-editor {
+  cursor: pointer;
+
+  .el-input--medium {
+    height: 36px;
+  }
+
+  .el-input.is-disabled {
+    background-color: #f5f7fa;
+    border-color: #dfe4ed;
+    color: #c0c4cc;
+    cursor: not-allowed;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .required-icon {
+    font-size: 1em;
+    color: red;
+    font-weight: bold;
+    padding-left: 5px;
+  }
+
+  .col-item-type {
+    text-align: center;
+  }
+
+  .down-style {
+    cursor: pointer;
+  }
+
+  .col-item-desc {
+    text-align: center;
+  }
+
+  .col-item-mock {
+    text-align: center;
+    padding-right: 6px;
+  }
+
+  .col-item-setting {
+    padding-left: 6px;
+    cursor: pointer;
+  }
+
+  .plus {
+    color: #2395f1;
+  }
+
+  .close {
+    color: #ff561b;
+  }
+
+  .array-type {
+    margin-top: 8px;
+  }
+
+  .object-style {
+    .name-item {
+      .ant-input-group-addon {
+        background-color: unset;
+        border: unset;
+      }
+
+      .ant-input-group {
+        >.ant-input {
+          &:first-child {
+            border-bottom-right-radius: 4px;
+            border-top-right-radius: 4px;
+          }
+        }
+      }
+    }
+  }
+
+  .icon-object {
+    color: #0d1b3ea6;
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  .wrapper {
+    padding-left: 8px;
+  }
+
+  .type-select-style {
+    width: 90%;
+  }
+}
+
+.ant-input-group-addon {
+  &:first-child {
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+}
+
+.json-schema-vue-editor-import-modal {
+  .ant-tabs-nav {
+    .ant-tabs-tab {
+      height: auto;
+    }
+  }
+}
+
+.json-schema-vue-editor-adv-modal {
+  .other-row {
+    margin-bottom: 16px;
+  }
+
+  .other-label {
+    text-align: right;
+    padding-right: 8px;
+  }
+
+  .default-setting {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 16px;
+    border-left: 3px solid #2395f1;
+    padding-left: 8px;
+  }
+
+  .ant-modal-body {
+    min-height: 400px;
+
+    .ace_editor {
+      min-height: 350px;
+    }
+  }
+}
+
+.json-schema-vue-editor-adv-modal-select {
+  .format-items-title {
+    color: #999;
+    position: absolute;
+    right: 16px;
+  }
+}
