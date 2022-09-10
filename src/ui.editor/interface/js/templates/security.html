@@ -459,6 +459,10 @@
 								<label>Send emails from:</label>
 								<input type="email" class="form-control" name="email_from" v-model="client.features.email_from" />
 							</div>
+                            <div class="form-group">
+                                <label>Access token TTL (seconds):</label>
+                                <input type="number" min="300" class="form-control" name="access_token_ttl" v-model="client.features.access_token_ttl" />
+                            </div>
 						</div>
 					</div>
 				</div>

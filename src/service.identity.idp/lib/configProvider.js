@@ -307,7 +307,15 @@ configProvider.prototype.fetchConfig = function(dir, secret) {
             ]
         },
         ttl : {
-            AccessToken : () => {
+            AccessToken : (ctx, token, client) => {
+                if (client && client.features && client.features.access_token_ttl) {
+                    const ttl = parseInt(client.features.access_token_ttl);
+
+                    if (`${ttl}` == client.features.access_token_ttl) {
+                        return ttl;
+                    }
+                }
+
                 return 3600;
             },
             AuthorizationCode : 1800, // 30 minutes,

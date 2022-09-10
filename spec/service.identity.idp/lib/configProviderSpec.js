@@ -669,6 +669,157 @@ const getBannedPasswordsInvalidJSON = (done) => {
     });
 };
 
+const accessTokenTtlTestWellFormed = (done) => {
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', 'banned.passwords.json').returns('woot/banned.passwords.json');
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', '**/*.client.json').returns('woot/**/*.client.json');
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', '**/*.scope.json').returns('woot/**/*.scope.json');
+
+    const fsMock = sinon.mock(fs);
+    fsMock.expects('readFile').once().withArgs('woot/banned.passwords.json').callsArgWith(1, null, '["hello world"]');
+
+    const globMock = sinon.mock(glob);
+    globMock.expects('main').once().withArgs('woot/**/*.client.json').callsArgWith(1, null, []);
+    globMock.expects('main').once().withArgs('woot/**/*.scope.json').callsArgWith(1, null, []);
+
+    const resolverMock = sinon.mock(hostnameResolver);
+    resolverMock.expects('resolveAdmin').twice().returns('http://elemental');
+
+    const keyMock = sinon.mock(jose.JWKS._KeyStore);
+    keyMock.expects('add').once().withArgs('woot');
+    keyMock.expects('toJWKS').once().withArgs(true).returns('keystore');
+
+    const jwkMock = sinon.mock(jose.JWK);
+    jwkMock.expects('asKey').once().withArgs({
+        key : 'privpub',
+        format : 'pem',
+        type : 'pkcs8'
+    }).returns('woot');
+
+    const dbMock = sinon.mock(db);
+    dbMock.expects('connect').once().returns(Promise.resolve());
+
+    const instance = configProvider(glob.main, path, fs, jose, userDB, db, hostnameResolver, bcrypt, certProvider);
+
+    instance.fetchConfig('woot', 'doot').then((config) => {
+        expect(config.ttl.AccessToken(null, null, {
+            features : {
+                access_token_ttl: '9000'
+            }
+        })).toEqual(9000);
+
+        pathMock.verify();
+        fsMock.verify();
+        globMock.verify();
+        resolverMock.verify();
+        keyMock.verify();
+        jwkMock.verify();
+        dbMock.verify();
+
+        done();
+    });
+};
+
+const accessTokenTtlDefaultNotWellFormed = (done) => {
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', 'banned.passwords.json').returns('woot/banned.passwords.json');
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', '**/*.client.json').returns('woot/**/*.client.json');
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', '**/*.scope.json').returns('woot/**/*.scope.json');
+
+    const fsMock = sinon.mock(fs);
+    fsMock.expects('readFile').once().withArgs('woot/banned.passwords.json').callsArgWith(1, null, '["hello world"]');
+
+    const globMock = sinon.mock(glob);
+    globMock.expects('main').once().withArgs('woot/**/*.client.json').callsArgWith(1, null, []);
+    globMock.expects('main').once().withArgs('woot/**/*.scope.json').callsArgWith(1, null, []);
+
+    const resolverMock = sinon.mock(hostnameResolver);
+    resolverMock.expects('resolveAdmin').twice().returns('http://elemental');
+
+    const keyMock = sinon.mock(jose.JWKS._KeyStore);
+    keyMock.expects('add').once().withArgs('woot');
+    keyMock.expects('toJWKS').once().withArgs(true).returns('keystore');
+
+    const jwkMock = sinon.mock(jose.JWK);
+    jwkMock.expects('asKey').once().withArgs({
+        key : 'privpub',
+        format : 'pem',
+        type : 'pkcs8'
+    }).returns('woot');
+
+    const dbMock = sinon.mock(db);
+    dbMock.expects('connect').once().returns(Promise.resolve());
+
+    const instance = configProvider(glob.main, path, fs, jose, userDB, db, hostnameResolver, bcrypt, certProvider);
+
+    instance.fetchConfig('woot', 'doot').then((config) => {
+        expect(config.ttl.AccessToken(null, null, {
+            features : {
+                access_token_ttl: 'what'
+            }
+        })).toEqual(3600);
+
+        pathMock.verify();
+        fsMock.verify();
+        globMock.verify();
+        resolverMock.verify();
+        keyMock.verify();
+        jwkMock.verify();
+        dbMock.verify();
+
+        done();
+    });
+};
+
+const accessTokenTtlDefault = (done) => {
+    const pathMock = sinon.mock(path);
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', 'banned.passwords.json').returns('woot/banned.passwords.json');
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', '**/*.client.json').returns('woot/**/*.client.json');
+    pathMock.expects('join').once().withArgs(process.cwd(), 'woot', '**/*.scope.json').returns('woot/**/*.scope.json');
+
+    const fsMock = sinon.mock(fs);
+    fsMock.expects('readFile').once().withArgs('woot/banned.passwords.json').callsArgWith(1, null, '["hello world"]');
+
+    const globMock = sinon.mock(glob);
+    globMock.expects('main').once().withArgs('woot/**/*.client.json').callsArgWith(1, null, []);
+    globMock.expects('main').once().withArgs('woot/**/*.scope.json').callsArgWith(1, null, []);
+
+    const resolverMock = sinon.mock(hostnameResolver);
+    resolverMock.expects('resolveAdmin').twice().returns('http://elemental');
+
+    const keyMock = sinon.mock(jose.JWKS._KeyStore);
+    keyMock.expects('add').once().withArgs('woot');
+    keyMock.expects('toJWKS').once().withArgs(true).returns('keystore');
+
+    const jwkMock = sinon.mock(jose.JWK);
+    jwkMock.expects('asKey').once().withArgs({
+        key : 'privpub',
+        format : 'pem',
+        type : 'pkcs8'
+    }).returns('woot');
+
+    const dbMock = sinon.mock(db);
+    dbMock.expects('connect').once().returns(Promise.resolve());
+
+    const instance = configProvider(glob.main, path, fs, jose, userDB, db, hostnameResolver, bcrypt, certProvider);
+
+    instance.fetchConfig('woot', 'doot').then((config) => {
+        expect(config.ttl.AccessToken(null, null, {
+            features : {}
+        })).toEqual(3600);
+
+        pathMock.verify();
+        fsMock.verify();
+        globMock.verify();
+        resolverMock.verify();
+        keyMock.verify();
+        jwkMock.verify();
+        dbMock.verify();
+
+        done();
+    });
+};
+
 describe('A config provider', () => {
     it('defaults its constructor args', defaultsTest);
     it('can generate an admin client', adminClientTest);
@@ -697,5 +848,11 @@ describe('A config provider', () => {
     describe('get banned passwords', () => {
         it('returns an empty list when an error occurs', getBannedPasswordsExceptionTest);
         it('handles invalid JSON in file', getBannedPasswordsInvalidJSON);
+    });
+
+    describe('access token ttl', () => {
+        it('returns a custom ttl when it is a well formed integer', accessTokenTtlTestWellFormed);
+        it('returns the default when its not a well formed integer', accessTokenTtlDefaultNotWellFormed);
+        it('returns the default when the client feature is not set', accessTokenTtlDefault);
     });
 });
