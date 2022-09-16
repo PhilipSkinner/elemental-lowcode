@@ -11,7 +11,7 @@
 		"find-in-files": "^0.5.0",
 		"glob": "^7.1.6",
 		"inquirer": "^7.1.0",
-		"jose": "^1.22.2",
+		"jose": "^1.28.2",
 		"mkdirp": "^1.0.3",
 		"nodemon": "^2.0.15",
 		"pidusage": "^3.0.0",
