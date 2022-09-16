@@ -9,7 +9,7 @@
 		"express-compile-sass": "^4.0.0",
 		"express-rate-limit": "^6.4.0",
 		"glob": "^7.1.6",
-		"jose": "^1.22.2",
+		"jose": "^1.28.2",
 		"node-sass": "^7.0.1",
 		"notp": "^2.0.3",
 		"oidc-provider": "6.20.1",
