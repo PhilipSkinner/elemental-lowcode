@@ -13,7 +13,7 @@
 		"inquirer": "^7.1.0",
 		"jose": "^1.22.2",
 		"mkdirp": "^1.0.3",
-		"nodemon": "^2.0.15",
+		"nodemon": "^2.0.20",
 		"pidusage": "^3.0.0",
 		"pidusage-tree": "^2.0.5",
 		"read-last-lines": "^1.7.2",
